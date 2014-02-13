@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eux
+
+# Clean up from any previous runs...
+# TODO: figure out if we want upstream patches for this along the lines of a
+# "cleanup" element that cleans up the environment at the very beginning of a
+# run.
+sudo rm -rf \
+  /var/lib/use-ephemeral \
+  /etc/neutron/plugin.ini \
+  /opt/stack \
+  /usr/local/bin/* \
+  /mnt/state \
+  /var/lib/heat-cfntools

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+set -eux
+
+LOGFILE=~/.instack/install-undercloud.log
+
+mkdir -p ~/.instack
+
+exec > >(tee $LOGFILE)
+exec 2>&1
+
+# generate ssh authentication keys if they don't exist
+if [ ! -f ~/.ssh/id_rsa ]; then
+  ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
+fi
+
+sudo yum -y install python-pip
+
+pushd instack
+  sudo pip install -e .
+popd
+
+# Upstream dib is fine
+if [ ! -d diskimage-builder ]; then
+  git clone https://git.openstack.org/openstack/diskimage-builder
+  pushd diskimage-builder
+    git remote add github-slagle https://github.com/slagle/diskimage-builder.git
+    git fetch github-slagle
+    git checkout environmentd
+    sudo python setup.py install
+  popd
+fi
+
+# We need the undercloud-stack-config branch of tie
+if [ ! -d tripleo-image-elements ]; then
+  git clone https://github.com/slagle/tripleo-image-elements
+  pushd tripleo-image-elements
+    git checkout undercloud-stack-config
+  popd
+fi
+
+# Needed by source-repositories
+sudo yum -y install tar
+
+INSTACK_DIR=$(dirname $0)/..
+
+source $INSTACK_DIR/instack.answers
+
+export LOCAL_IP
+export DNSMASQ_START
+export DNSMASQ_END
+export LOCAL_INTERFACE
+export MASQUERADE_NETWORK
+export POWER_DRIVER
+export VIRTUAL_POWER_USER
+export VIRTUAL_POWER_HOST
+export DHCP_START
+export DHCP_END
+export NETWORK_CIDR
+export NETWORK_GATEWAY
+
+sudo -E instack \
+  -p diskimage-builder/elements/ tripleo-image-elements/elements/ instack/elements \
+  -j instack/json-files/fedora-20-undercloud.json
+
+sudo os-refresh-config
+
+echo "install-undercloud Complete!"

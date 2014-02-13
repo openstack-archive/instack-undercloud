@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eux
+
+# Needed for our iptables rules
+yum -y erase firewalld
+install-packages iptables-services
+# This does not happen automatically, but is required in the systemd service
+# file for iptables: ConditionPathExists=/etc/sysconfig/iptables
+touch /etc/sysconfig/iptables
+os-svc-enable -n iptables
+os-svc-restart -n iptables

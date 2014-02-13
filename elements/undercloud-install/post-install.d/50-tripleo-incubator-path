@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eux
+
+# Add scripts directory from tripleo-incubator and diskimage-builder to the
+# path.
+# These scripts can't just be symlinked into a bin directory because they do
+# directory manipulation that assumes they're in a known location.
+if [ ! -e /etc/profile.d/tripleo-incubator-scripts.sh ]; then
+    sudo bash -c "echo export PATH='\$PATH':/opt/stack/tripleo-incubator/scripts/ >> /etc/profile.d/tripleo-incubator-scripts.sh"
+    sudo bash -c "echo export PATH=/opt/stack/diskimage-builder/bin/:'\$PATH' >> /etc/profile.d/tripleo-incubator-scripts.sh"
+fi
+

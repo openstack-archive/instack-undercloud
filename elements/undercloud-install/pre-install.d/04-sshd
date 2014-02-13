@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+
+# Make sure ssh is enabled and running
+systemctl enable sshd
+systemctl start sshd

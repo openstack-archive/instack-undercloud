@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -eux
+
+sudo cp /root/stackrc .
+sudo chown $USER: stackrc
+source stackrc
+
+# generate ssh authentication keys if they don't exist
+if [ ! -f ~/.ssh/id_rsa ]; then
+  ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
+fi
+
+user-config
+
+load-image overcloud-control.qcow2
+load-image overcloud-compute.qcow2
+
+# setup-baremetal requires this to be set
+export TRIPLEO_ROOT=.
+CPU=1
+MEM=2048
+DISK=30
+ARCH=amd64
+MACS="52:54:00:b5:bd:f0 52:54:00:f2:be:f0"
+setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud 
+
+sleep 30
+
+sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
+
+
+setup-overcloud-passwords
+source tripleo-overcloud-passwords
+
+# Define the interface that will be bridged onto the Neutron defined
+# network.
+NeutronPublicInterface=eth0
+# Define the overcloud libvirt type for virtualization. kvm for
+# baremetal, qemu for an overcloud running in vm's.
+OVERCLOUD_LIBVIRT_TYPE=qemu
+
+heat stack-create -f /opt/stack/tripleo-heat-templates/overcloud.yaml \
+    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
+    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
+    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+    -P NeutronPublicInterface=$NeutronPublicInterface \
+    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+    overcloud
