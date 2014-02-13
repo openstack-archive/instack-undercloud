@@ -1,14 +1,15 @@
 Undercloud Install via instack
 ==============================
 
-1. Clone this repository
+1. Clone this repository and instack
 
+        git clone https://github.com/slagle/instack-undercloud
         git clone https://github.com/slagle/instack
 
 2. Create and edit your answers file. The descriptions of the parameters that
    can be set are in the sample answers file.
 
-        cd instack
+        cd instack-undercloud
         cp instack.answers.sample instack.answers
         # Return back to directory where instack was cloned
         cd ..
@@ -17,7 +18,7 @@ Undercloud Install via instack
    the sceen. It also logs to ~/.instack/install-undercloud.log. You should see
    `install-undercloud Complete!` at the end of a successful run.
 
-        instack/scripts/install-undercloud
+        instack-undercloud/scripts/install-undercloud
 
 4. The install script has to manipulate your $PATH (until we get everything
    packaged), so you'll need to start a new shell.
