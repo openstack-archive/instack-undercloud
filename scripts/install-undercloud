@@ -61,7 +61,7 @@ export NETWORK_GATEWAY
 
 sudo -E instack \
   -p diskimage-builder/elements/ tripleo-image-elements/elements/ instack-undercloud/elements \
-  -j instack/json-files/fedora-20-undercloud.json
+  -j instack-undercloud/json-files/fedora-20-undercloud.json
 
 sudo os-refresh-config
 
