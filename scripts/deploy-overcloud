@@ -2,9 +2,7 @@
 
 set -eux
 
-sudo cp /root/stackrc .
-sudo chown $USER: stackrc
-source stackrc
+source /etc/sysconfig/stackrc
 
 # generate ssh authentication keys if they don't exist
 if [ ! -f ~/.ssh/id_rsa ]; then
