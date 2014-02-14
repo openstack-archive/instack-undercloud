@@ -1,0 +1,58 @@
+#!/bin/bash
+
+set -eux
+
+TRIPLEO_ROOT=/opt/stack
+
+source tripleo-overcloud-passwords
+
+wait_for 220 10 stack-ready overcloud
+export OVERCLOUD_IP=$(nova list | grep notCompute0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
+
+ssh-keygen -R $OVERCLOUD_IP
+
+source $TRIPLEO_ROOT/tripleo-incubator/overcloudrc
+
+export no_proxy=${no_proxy:-""}
+export no_proxy=$no_proxy,$OVERCLOUD_IP
+
+init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
+    $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
+    ${SSLBASE:+--ssl $PUBLIC_API_URL}
+setup-endpoints $OVERCLOUD_IP --cinder-password $OVERCLOUD_CINDER_PASSWORD \
+    --glance-password $OVERCLOUD_GLANCE_PASSWORD \
+    --heat-password $OVERCLOUD_HEAT_PASSWORD \
+    --neutron-password $OVERCLOUD_NEUTRON_PASSWORD \
+    --nova-password $OVERCLOUD_NOVA_PASSWORD \
+    --swift-password $OVERCLOUD_SWIFT_PASSWORD \
+    ${SSLBASE:+--ssl $PUBLIC_API_URL}
+keystone role-create --name heat_stack_user
+user-config
+setup-neutron "" "" 10.0.0.0/8 "" "" "" 172.17.0.45 172.17.0.64 172.17.0.0/16
+
+os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
+
+nova flavor-delete m1.tiny
+nova flavor-create m1.tiny 1 512 2 1
+
+glance image-create --name user --public --disk-format qcow2 \
+    --container-format bare --file cirros-0.3.0-x86_64-disk.img
+
+wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| grep 'enabled.*\ up\ '
+
+wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host \| grep "\":-).*Open vSwitch agent.*overcloud-novacompute\""
+
+source $TRIPLEO_ROOT/tripleo-incubator/overcloudrc-user
+
+user-config
+
+nova boot --key-name default --flavor m1.tiny --image user demo
+
+wait_for 10 5 neutron port-list -f csv -c id --quote none \| grep id
+PORT=$(neutron port-list -f csv -c id --quote none | tail -n1)
+neutron floatingip-create ext-net --port-id "${PORT//[[:space:]]/}"
+
+neutron security-group-rule-create default --protocol icmp \
+    --direction ingress --port-range-min 8 --port-range-max 8
+neutron security-group-rule-create default --protocol tcp \
+    --direction ingress --port-range-min 22 --port-range-max 22
