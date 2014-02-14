@@ -3,7 +3,12 @@
 set -eux
 
 export DIB_REPOTYPE_nova=package
-export DIB_REPOTYPE_heat=package
+# export DIB_REPOTYPE_heat=package
+# Still installing from git for heat for now, due to tripleo-heat-templates
+# needing the OS::Heat::UpdateWaitConditionHandle functionality, which was not
+# added until after the icehouse-2 tarball, and thus the rdo package.
+export DIB_REPOREF_heat=5f0f9f213c6cf2ddc3ced5600efba72785a3e939
+
 export DIB_REPOTYPE_keystone=package
 export DIB_REPOTYPE_neutron=package
 export DIB_REPOTYPE_glance=package
