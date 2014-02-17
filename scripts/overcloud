@@ -4,6 +4,8 @@ set -eux
 
 TRIPLEO_ROOT=/opt/stack
 
+source /etc/sysconfig/stackrc
+
 source tripleo-overcloud-passwords
 
 wait_for 220 10 stack-ready overcloud
