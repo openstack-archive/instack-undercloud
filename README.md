@@ -21,3 +21,5 @@ Undercloud Install via instack
         instack-undercloud/scripts/install-undercloud
 
 
+That completes the Undercloud install. To proceed with deploying and using the
+Overcloud see [Overcloud](Overcloud.md).
