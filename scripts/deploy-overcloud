@@ -11,6 +11,22 @@ fi
 
 user-config
 
+if [ ! -f deploy-ramdisk.initramfs ]; then
+    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.initramfs
+fi
+
+if [ ! -f deploy-ramdisk.kernel ]; then
+    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.kernel
+fi
+
+if [ ! -f overcloud-control.qcow2 ]; then
+    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-control.qcow2
+fi
+
+if [ ! -f overcloud-compute.qcow2 ]; then
+    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-compute.qcow2
+fi
+
 load-image overcloud-control.qcow2
 load-image overcloud-compute.qcow2
 
