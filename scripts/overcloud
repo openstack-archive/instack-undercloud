@@ -9,6 +9,8 @@ source tripleo-overcloud-passwords
 wait_for 220 10 stack-ready overcloud
 export OVERCLOUD_IP=$(nova list | grep notCompute0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
 
+touch ~/.ssh/known_hosts
+chmod 600 ~/.ssh/known_hosts
 ssh-keygen -R $OVERCLOUD_IP
 
 source $TRIPLEO_ROOT/tripleo-incubator/overcloudrc
