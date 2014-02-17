@@ -13,3 +13,5 @@ sudo rm -rf \
   /usr/local/bin/* \
   /mnt/state \
   /var/lib/heat-cfntools
+
+yum -y erase rdo-release-icehouse || true
