@@ -30,7 +30,8 @@ setup-endpoints $OVERCLOUD_IP --cinder-password $OVERCLOUD_CINDER_PASSWORD \
     ${SSLBASE:+--ssl $PUBLIC_API_URL}
 keystone role-create --name heat_stack_user
 user-config
-setup-neutron "" "" 10.0.0.0/8 "" "" "" 172.17.0.45 172.17.0.64 172.17.0.0/16
+nova boot --key-name default --flavor m1.tiny --image user demo
+setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
 
 os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
