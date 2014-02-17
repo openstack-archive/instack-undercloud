@@ -35,13 +35,13 @@ Undercloud Install via instack
 
 5. Download the deployment kernel and ramdisk
 
-        curl -L -O http://fedorapeople.org/~slagle/slagle-tripleo-images-fedora-i2/deploy-ramdisk.initramfs
-        curl -L -O http://fedorapeople.org/~slagle/slagle-tripleo-images-fedora-i2/deploy-ramdisk.kernel
+        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.initramfs
+        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.kernel
 
 5. Download overcloud images
 
-        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-fedora-i2-dib-patches/overcloud-compute.qcow2
-        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-fedora-i2-dib-patches/overcloud-control.qcow2
+        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-control.qcow2
+        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-compute.qcow2
 
 5. Load images into glance
 
