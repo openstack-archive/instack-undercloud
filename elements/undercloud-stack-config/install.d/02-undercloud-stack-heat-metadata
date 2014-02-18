@@ -1,0 +1,35 @@
+#!/usr/bin/python
+
+
+import os
+
+import pystache
+
+
+renderer = pystache.Renderer()
+template = os.path.join(os.path.dirname(__file__),
+                        '..',
+                        'config.json.template')
+
+context = { 
+    'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
+    'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
+    'DNSMASQ_START': os.environ.get('DNSMASQ_START', '192.0.2.4'),
+    'DNSMASQ_END': os.environ.get('DNSMASQ_END', '192.0.2.4'),
+    'MASQUERADE_NETWORK': os.environ.get('MASQUERADE_NETWORK', '192.0.2.0/24'),
+    'POWER_DRIVER': os.environ.get('POWER_DRIVER', 'nova.virt.baremetal.ipmi.IPMI'),
+    'VIRTUAL_POWER_USER': os.environ.get('VIRTUAL_POWER_USER', 'stack'),
+    'VIRTUAL_POWER_HOST': os.environ.get('VIRTUAL_POWER_HOST', '192.168.122.1'),
+    'DHCP_START': os.environ.get('DHCP_START', '192.0.2.5'),
+    'DHCP_END': os.environ.get('DHCP_END', '192.0.2.24'),
+    'NETWORK_CIDR': os.environ.get('NETWORK_CIDR', '192.0.2.0/24'),
+    'NETWORK_GATEWAY': os.environ.get('NETWORK_GATEWAY', '192.0.2.1'),
+}
+
+with open(template) as f:
+    config_json = renderer.render(f.read(), context)
+
+cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
+os.makedirs(os.path.dirname(cfn_path))
+with open(cfn_path, 'w') as f:
+    f.write(config_json)
