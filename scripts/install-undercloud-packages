@@ -27,6 +27,7 @@ if [ ! -d diskimage-builder ]; then
   popd
 fi
 
+sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
 sudo yum install -y openstack-tripleo-heat-templates
 
