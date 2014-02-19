@@ -10,7 +10,11 @@ Undercloud Install via instack
    can be set are in the sample answers file.
 
         cd instack-undercloud
-        cp instack.answers.sample instack.answers
+
+        # Use either the baremetal or virt sample answers file
+        # cp instack-baremetal.answers.sample instack.answers
+        # cp instack-virt.answers.sample instack.answers
+
         # Return back to directory where instack was cloned
         cd ..
 

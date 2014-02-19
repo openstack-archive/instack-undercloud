@@ -13,7 +13,9 @@ Undercloud Install via instack
    can be set are in the sample answers file.
 
         # Answers file must exist in home directory for now
-        cp /usr/share/doc/instack-undercloud/instack-virt.answers.sample ~/instack.answers
+        # Use either the baremetal or virt sample answers file
+        # cp /usr/share/doc/instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
+        # cp /usr/share/doc/instack-undercloud/instack-virt.answers.sample ~/instack.answers
         # Perform any answer file edits
 
 3. Run script to install undercloud. The script will produce a lot of output on
