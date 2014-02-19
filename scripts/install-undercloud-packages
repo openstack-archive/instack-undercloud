@@ -16,6 +16,10 @@ fi
 
 sudo yum -y install python-pip
 
+# Workaround for:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1066983
+sudo yum -y update vim-minimal
+
 # Upstream dib is still needed due to environmentd patch
 if [ ! -d diskimage-builder ]; then
   git clone https://git.openstack.org/openstack/diskimage-builder
@@ -50,8 +54,10 @@ export NETWORK_CIDR
 export NETWORK_GATEWAY
 
 sudo -E instack \
-  -p diskimage-builder/elements/ tripleo-image-elements/elements/ instack-undercloud/elements \
-  -j instack-undercloud/json-files/fedora-20-undercloud-packages.json
+  -p diskimage-builder/elements/ \
+     /usr/share/tripleo-image-elements/ \
+     /usr/share/instack-undercloud/elements \
+  -j /usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json
 
 sudo os-refresh-config
 
