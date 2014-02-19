@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -eux
+
+LOGFILE=~/.instack/install-undercloud.log
+
+mkdir -p ~/.instack
+
+exec > >(tee $LOGFILE)
+exec 2>&1
+
+# generate ssh authentication keys if they don't exist
+if [ ! -f ~/.ssh/id_rsa ]; then
+  ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
+fi
+
+sudo yum -y install python-pip
+
+# Upstream dib is still needed due to environmentd patch
+if [ ! -d diskimage-builder ]; then
+  git clone https://git.openstack.org/openstack/diskimage-builder
+  pushd diskimage-builder
+    git remote add github-slagle https://github.com/slagle/diskimage-builder.git
+    git fetch github-slagle
+    git checkout environmentd
+    sudo python setup.py install
+  popd
+fi
+
+sudo yum install -y openstack-tripleo-image-elements
+sudo yum install -y openstack-tripleo-heat-templates
+
+# Needed by source-repositories
+sudo yum -y install tar
+
+source ~/instack.answers
+
+export LOCAL_IP
+export DNSMASQ_START
+export DNSMASQ_END
+export LOCAL_INTERFACE
+export MASQUERADE_NETWORK
+export POWER_DRIVER
+export VIRTUAL_POWER_USER
+export VIRTUAL_POWER_HOST
+export DHCP_START
+export DHCP_END
+export NETWORK_CIDR
+export NETWORK_GATEWAY
+
+sudo -E instack \
+  -p diskimage-builder/elements/ tripleo-image-elements/elements/ instack-undercloud/elements \
+  -j instack-undercloud/json-files/fedora-20-undercloud-packages.json
+
+sudo os-refresh-config
+
+echo "install-undercloud Complete!"
