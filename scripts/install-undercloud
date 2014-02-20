@@ -31,11 +31,11 @@ if [ ! -d diskimage-builder ]; then
   popd
 fi
 
-# We need the undercloud-stack-config branch of tie
+# We need the packages branch of tie
 if [ ! -d tripleo-image-elements ]; then
   git clone https://github.com/slagle/tripleo-image-elements
   pushd tripleo-image-elements
-    git checkout undercloud-stack-config
+    git checkout packages
   popd
 fi
 
