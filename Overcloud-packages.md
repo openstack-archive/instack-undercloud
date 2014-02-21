@@ -102,7 +102,9 @@ http://docs.openstack.org/developer/tripleo-incubator/devtest_overcloud.html.
 
 You won't be able to follow the steps exactly. Here's what you need to modify:
 
-* When $TRIPLEO_ROOT is used, replace with /opt/stack instead
+* When source'ing the rc files use the following paths instead of what's shown:
+        source /etc/tripleo/overcloudrc
+        source /etc/tripleo/overcloudrc-user
 * When running setup-neutron, correct subnet ranges will need to be used if
   192.0.2.0/24 is not applicable to the environment.
 * When loading the user.qcow2 image into glance, I would use a cirros image
