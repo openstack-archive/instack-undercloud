@@ -41,9 +41,6 @@ setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud
 
 sleep 30
 
-sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
-
-
 setup-overcloud-passwords
 source tripleo-overcloud-passwords
 
@@ -53,6 +50,12 @@ NeutronPublicInterface=eth0
 # Define the overcloud libvirt type for virtualization. kvm for
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=qemu
+
+
+# TODO 
+# steps below here will be replaced with calls to python-tuskarclient
+sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
+
 
 heat stack-create -f /opt/stack/tripleo-heat-templates/overcloud.yaml \
     -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
