@@ -94,4 +94,7 @@ FLOATING_IP_END=${FLOATING_IP_END:-"172.17.0.64"}
 FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"172.17.0.0/16"}
 setup-neutron "" "" $NETWORK_CIDR "" "" "" $FLOATING_IP_START $FLOATING_IP_END $FLOATING_IP_CIDR
 
+nova flavor-delete m1.tiny
+nova flavor-create m1.tiny 1 512 2 1
+
 echo "Overcloud Deployed"

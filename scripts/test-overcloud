@@ -21,9 +21,6 @@ export no_proxy=$no_proxy,$OVERCLOUD_IP
 
 os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
-nova flavor-delete m1.tiny
-nova flavor-create m1.tiny 1 512 2 1
-
 if [ ! -f cirros-0.3.0-x86_64-disk.img ]; then
     curl -L -O https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
 fi
