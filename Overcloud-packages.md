@@ -5,9 +5,9 @@ installed.
 
 There are 3 scripts for convenience.
 
-Note that deploy-overcloud can be configured for individual environments via
+Note that deploy-overcloud and test-overcloud can be configured for individual environments via
 environment variables. The variables you can set are documented below before
-the calls to the script. For their default values, see the deploy-overcloud
+the calls to each script. For their default values, see the deploy-overcloud
 script itself.
 
 1. Run the prepare-for-overcloud script to get setup. This script will
@@ -39,4 +39,8 @@ environment. Skip this step if you are using all baremetal.
 1. Run the test-overcloud script to launch a cirros image on the overcloud and
 wait until it pings successfully
 
+        # NETWORK_CIDR: neutron network cidr
+        # FLOATING_IP_START: floating ip allocation start
+        # FLOATING_IP_END: floating ip allocation end
+        # FLOATING_IP_CIDR: floating ip network cidr
         test-overcloud
