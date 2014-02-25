@@ -2,62 +2,46 @@
 
 set -eux
 
-source /etc/sysconfig/stackrc
-
-# generate ssh authentication keys if they don't exist
-if [ ! -f ~/.ssh/id_rsa ]; then
-  ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
-fi
-
-user-config
-
-if [ ! -f deploy-ramdisk.initramfs ]; then
-    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.initramfs
-fi
-
-if [ ! -f deploy-ramdisk.kernel ]; then
-    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.kernel
-fi
-
-if [ ! -f overcloud-control.qcow2 ]; then
-    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-control.qcow2
-fi
-
-if [ ! -f overcloud-compute.qcow2 ]; then
-    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-compute.qcow2
-fi
-
-load-image overcloud-control.qcow2
-load-image overcloud-compute.qcow2
-
 # setup-baremetal requires this to be set
 export TRIPLEO_ROOT=.
-CPU=1
-MEM=2048
-DISK=30
-ARCH=amd64
-MACS="52:54:00:b5:bd:f0 52:54:00:f2:be:f0"
-setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud 
+CPU=${CPU:-1}
+MEM=${MEM:-2048}
+DISK=${DISK:-30}
+ARCH=${ARCH:-amd64}
+MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}
+PM_IPS=${PM_IPS:-}
+PM_USERS=${PM_USERS:-}
+PM_PASSWORDS=${PM_PASSWORDS:-}
+setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
 
-sleep 30
+# Must wait for baremetal nodes to register as nova hypervisors
+sleep 60
 
-setup-overcloud-passwords
+setup-overcloud-passwords -o
 source tripleo-overcloud-passwords
 
 # Define the interface that will be bridged onto the Neutron defined
 # network.
-NeutronPublicInterface=eth0
+NeutronPublicInterface=${NeutronPublicInterface:-eth0}
 # Define the overcloud libvirt type for virtualization. kvm for
 # baremetal, qemu for an overcloud running in vm's.
-OVERCLOUD_LIBVIRT_TYPE=qemu
+OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 
+if [ -d /usr/share/tripleo-heat-templates ]; then
+    tripleo-heat-merge \
+        --included-template-dir /usr/share/tripleo-heat-templates \
+        --scale NovaCompute=1 \
+        /usr/share/tripleo-heat-templates/overcloud-source.yaml \
+        /usr/share/tripleo-heat-templates/swift-source.yaml \
+        /usr/share/tripleo-heat-templates/ssl-source.yaml \
+        > overcloud.yaml
+    OVERCLOUD_YAML_PATH=overcloud.yaml
+else
+    sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
+    OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud.yaml
+fi
 
-# TODO 
-# steps below here will be replaced with calls to python-tuskarclient
-sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
-
-
-heat stack-create -f /opt/stack/tripleo-heat-templates/overcloud.yaml \
+heat stack-create -f $OVERCLOUD_YAML_PATH \
     -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
     -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
@@ -70,3 +54,7 @@ heat stack-create -f /opt/stack/tripleo-heat-templates/overcloud.yaml \
     -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
     overcloud
+
+wait_for 220 10 stack-ready overcloud
+
+echo "Overcloud CREATE_COMPLETE"
