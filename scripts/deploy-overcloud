@@ -2,6 +2,8 @@
 
 set -eux
 
+source /etc/sysconfig/stackrc
+
 # setup-baremetal requires this to be set
 export TRIPLEO_ROOT=.
 CPU=${CPU:-1}
