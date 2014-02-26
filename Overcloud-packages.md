@@ -22,7 +22,10 @@ environment. Skip this step if you are using all baremetal.
 
         ssh $UNDERCLOUD_IP cat /opt/stack/boot-stack/virtual-power-key.pub >> ~/.ssh/authorized_keys 
         
-1. Run the deploy-overcloud script to actually deploy the overcloud
+1. Run the deploy-overcloud script to actually deploy the overcloud. Note that
+   the variables must be exported so that their values are picked up by
+   deploy-overcloud. If you put them in an rc file that you intend to source,
+   make sure there are exports in that file as well.
 
         # CPU: number of cpus on baremetal nodes
         # MEM: amount of ram on baremetal nodes, in MB
