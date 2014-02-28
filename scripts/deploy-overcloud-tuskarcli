@@ -1,0 +1,111 @@
+#!/bin/bash
+
+set -eux
+
+source /etc/sysconfig/stackrc
+
+# setup-baremetal requires this to be set
+export TRIPLEO_ROOT=.
+CPU=${CPU:-1}
+MEM=${MEM:-2048}
+DISK=${DISK:-30}
+ARCH=${ARCH:-amd64}
+MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}
+PM_IPS=${PM_IPS:-}
+PM_USERS=${PM_USERS:-}
+PM_PASSWORDS=${PM_PASSWORDS:-}
+setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
+
+# Must wait for baremetal nodes to register as nova hypervisors
+sleep 60
+
+setup-overcloud-passwords -o
+source tripleo-overcloud-passwords
+
+# Define the interface that will be bridged onto the Neutron defined
+# network.
+NeutronPublicInterface=${NeutronPublicInterface:-eth0}
+# Define the overcloud libvirt type for virtualization. kvm for
+# baremetal, qemu for an overcloud running in vm's.
+OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
+
+export TUSKAR_URL=http://localhost:8585/
+
+# tuskar needs the baremetal flavor id
+flavor_id=$(nova flavor-show baremetal | grep '^| id ' | cut -d '|' -f3 | tr -d ' ')
+
+tuskar overcloud-role-create controller \
+    --description 'Controller Node' \
+    --image-name 'overcloud-control' \
+    --flavor-id $flavor_id;
+
+tuskar overcloud-role-create compute \
+    --description 'Compute Nodes' \
+    --image-name 'overcloud-compute' \
+    --flavor-id $flavor_id;
+
+# to circumvent https://bugs.launchpad.net/tuskar/+bug/1281051
+controller_role_id=$(tuskar overcloud-role-list | grep overcloud-control | cut -d '|' -f2 | tr -d ' ')
+compute_role_id=$(tuskar overcloud-role-list | grep overcloud-compute | cut -d '|' -f2 | tr -d ' ')
+
+# create an overcloud with 1 controller and 1 compute node
+tuskar overcloud-create overcloud \
+    --description 'My overcloud' \
+    --attributes 'AdminToken=${OVERCLOUD_ADMIN_TOKEN}' \
+    --attributes 'AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}' \
+    --attributes 'CinderPassword=${OVERCLOUD_CINDER_PASSWORD}' \
+    --attributes 'GlancePassword=${OVERCLOUD_GLANCE_PASSWORD}' \
+    --attributes 'HeatPassword=${OVERCLOUD_HEAT_PASSWORD}' \
+    --attributes 'NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}' \
+    --attributes 'NovaPassword=${OVERCLOUD_NOVA_PASSWORD}' \
+    --attributes 'NeutronPublicInterface=$NeutronPublicInterface' \
+    --attributes 'SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}' \
+    --attributes 'SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}' \
+    --attributes 'NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE' \
+    --roles $controller_role_id=1 \ 
+    --roles $compute_role_id=1; 
+
+
+wait_for 220 10 stack-ready overcloud
+
+echo "Overcloud CREATE_COMPLETE"
+
+if [ -d /etc/tripleo ]; then
+    TRIPLEO_ROOT=/etc/tripleo
+else
+    TRIPLEO_ROOT=/opt/stack/tripleo-incubator
+fi
+
+export OVERCLOUD_IP=$(nova list | grep notCompute0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
+
+touch ~/.ssh/known_hosts
+chmod 600 ~/.ssh/known_hosts
+ssh-keygen -R $OVERCLOUD_IP
+
+source $TRIPLEO_ROOT/overcloudrc
+
+export no_proxy=${no_proxy:-""}
+export no_proxy=$no_proxy,$OVERCLOUD_IP
+
+init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
+    $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
+    ${SSLBASE:+--ssl $PUBLIC_API_URL}
+setup-endpoints $OVERCLOUD_IP --cinder-password $OVERCLOUD_CINDER_PASSWORD \
+    --glance-password $OVERCLOUD_GLANCE_PASSWORD \
+    --heat-password $OVERCLOUD_HEAT_PASSWORD \
+    --neutron-password $OVERCLOUD_NEUTRON_PASSWORD \
+    --nova-password $OVERCLOUD_NOVA_PASSWORD \
+    --swift-password $OVERCLOUD_SWIFT_PASSWORD \
+    ${SSLBASE:+--ssl $PUBLIC_API_URL}
+keystone role-create --name heat_stack_user
+# setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
+NETWORK_CIDR=${NETWORK_CIDR:-"10.0.0.0/8"}
+FLOATING_IP_START=${FLOATING_IP_START:-"172.17.0.45"}
+FLOATING_IP_END=${FLOATING_IP_END:-"172.17.0.64"}
+FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"172.17.0.0/16"}
+setup-neutron "" "" $NETWORK_CIDR "" "" "" $FLOATING_IP_START $FLOATING_IP_END $FLOATING_IP_CIDR
+
+nova flavor-delete m1.tiny
+nova flavor-create m1.tiny 1 512 2 1
+
+echo "Overcloud Deployed"
