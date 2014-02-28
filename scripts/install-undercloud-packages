@@ -35,6 +35,10 @@ sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
 sudo yum install -y openstack-tripleo-heat-templates
 
+# TODO include tuskar-ui when available
+sudo yum install -y openstack-tuskar
+sudo yum install -y python-tuskarclient
+
 # Needed by source-repositories
 sudo yum -y install tar
 
