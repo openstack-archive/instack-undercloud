@@ -27,5 +27,10 @@ if [ ! -f overcloud-compute.qcow2 ]; then
     curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-compute.qcow2
 fi
 
+if [ ! -f overcloud-cinder-volume.qcow2 ]; then
+    curl -L -O http://file.rdu.redhat.com/~rbrady/tripleo-images-rdo-icehouse/overcloud-cinder-volume.qcow2
+fi
+
 load-image overcloud-control.qcow2
 load-image overcloud-compute.qcow2
+load-image overcloud-cinder-volume.qcow2
