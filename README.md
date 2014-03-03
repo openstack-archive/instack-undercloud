@@ -3,8 +3,8 @@ Undercloud Install via instack
 
 1. Clone this repository and instack
 
-        git clone https://github.com/slagle/instack-undercloud
-        git clone https://github.com/slagle/instack
+        git clone https://github.com/agroup/instack-undercloud
+        git clone https://github.com/agroup/instack
 
 2. Create and edit your answers file. The descriptions of the parameters that
    can be set are in the sample answers file.
