@@ -36,11 +36,12 @@ if [ -d /usr/share/tripleo-heat-templates ]; then
         /usr/share/tripleo-heat-templates/overcloud-source.yaml \
         /usr/share/tripleo-heat-templates/swift-source.yaml \
         /usr/share/tripleo-heat-templates/ssl-source.yaml \
-        > overcloud.yaml
-    OVERCLOUD_YAML_PATH=overcloud.yaml
+        /usr/share/tripleo-heat-templates/block-storage.yaml \
+        > overcloud-with-block-storage.yaml
+    OVERCLOUD_YAML_PATH=overcloud-with-block-storage.yaml
 else
-    sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
-    OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud.yaml
+    sudo make -C /opt/stack/tripleo-heat-templates overcloud-with-block-storage.yaml COMPUTESCALE=1
+    OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud-with-block-storage.yaml
 fi
 
 heat stack-create -f $OVERCLOUD_YAML_PATH \
