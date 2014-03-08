@@ -39,6 +39,11 @@ if [ ! -d tripleo-image-elements ]; then
   popd
 fi
 
+if [ ! -d /opt/stack/tripleo-heat-templates ]; then
+    sudo mkdir -p /opt/stack
+    sudo git clone https://git.openstack.org/openstack/tripleo-heat-templates /opt/stack/tripleo-heat-templates
+fi
+
 # Needed by source-repositories
 sudo yum -y install tar
 
