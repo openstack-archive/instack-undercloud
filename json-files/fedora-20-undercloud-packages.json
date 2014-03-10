@@ -30,7 +30,9 @@
     ],
     "exclude-element": [
       "yum",
-      "dkms"
+      "dkms",
+      "tripleo-heat-templates",
+      "tripleo-incubator"
     ],
     "blacklist": [
       "15-fedora-remove-grub",

@@ -67,11 +67,6 @@ sudo -E instack \
   -p diskimage-builder/elements/ tripleo-image-elements/elements/ instack-undercloud/elements \
   -j instack-undercloud/json-files/fedora-20-undercloud.json
 
-if [ ! -d /opt/stack/tripleo-heat-templates ]; then
-    sudo mkdir -p /opt/stack
-    sudo git clone https://git.openstack.org/openstack/tripleo-heat-templates /opt/stack/tripleo-heat-templates
-fi
-
 sudo os-refresh-config
 
 echo "install-undercloud Complete!"
