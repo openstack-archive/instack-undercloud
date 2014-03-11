@@ -43,10 +43,16 @@ tuskar overcloud-role-create compute \
     --description 'Compute Nodes' \
     --image-name 'overcloud-compute' \
     --flavor-id $flavor_id;
+    
+tuskar overcloud-role-create blockstorage \
+    --description 'Block Storage Nodes' \
+    --image-name 'overcloud-cinder-volume' \
+    --flavor-id $flavor_id;
 
 # to circumvent https://bugs.launchpad.net/tuskar/+bug/1281051
 controller_role_id=$(tuskar overcloud-role-list | grep overcloud-control | cut -d '|' -f2 | tr -d ' ')
 compute_role_id=$(tuskar overcloud-role-list | grep overcloud-compute | cut -d '|' -f2 | tr -d ' ')
+blockstorage_role_id=$(tuskar overcloud-role-list | grep overcloud-cinder-volume | cut -d '|' -f2 | tr -d ' ')
 
 # create an overcloud with 1 controller and 1 compute node
 tuskar overcloud-create overcloud \
@@ -63,7 +69,8 @@ tuskar overcloud-create overcloud \
     --attributes 'SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}' \
     --attributes 'NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE' \
     --roles $controller_role_id=1 \ 
-    --roles $compute_role_id=1; 
+    --roles $compute_role_id=1 \
+    --roles $blockstorage_role_id=1;
 
 
 wait_for 220 10 stack-ready overcloud
