@@ -23,6 +23,21 @@ Undercloud Install via instack
    `install-undercloud Complete!` at the end of a successful run.
 
         install-undercloud-packages
+        
+4. Configure tuskar. Edit /etc/tuskar/tuskar.conf so the following settings are enabled: 
+   
+        connection=sqlite:////home/stack/tuskar.sqlite   
+        tht_local_dir=/usr/share/tripleo-heat-templates/
+        username=admin  # OS_USERNAME from /etc/sysconfig/stackrc
+        password=unset   # OS_PASSWORD from /etc/sysconfig/stackrc
+        tenant_name=admin  # OS_TENANT_NAME from /etc/sysconfig/stackrc
+        auth_url=http://localhost:5000/v2.0   
+        insecure=true
+
+5. Initialise the tuskar database and restart the service
+
+        sudo tuskar-dbsync --config-file /etc/tuskar/tuskar.conf
+        sudo service openstack-tuskar-api restart
 
 
 That completes the Undercloud install. To proceed with deploying and using the
