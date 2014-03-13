@@ -14,7 +14,7 @@ script itself.
 re-downloading images if they already exist in the current working directory.
 If you want to force a redownload of the images, delete them first.
 
-        prepare-for-overcloud
+        instack-prepare-for-overcloud
 
 1. If you're testing an all VM setup, copy the ssh key for the virtual power
 driver user to your authorized keys file. Define $UNDERCLOUD_IP for your
@@ -41,9 +41,9 @@ environment. Skip this step if you are using all baremetal.
         # FLOATING_IP_START: floating ip allocation start
         # FLOATING_IP_END: floating ip allocation end
         # FLOATING_IP_CIDR: floating ip network cidr
-        deploy-overcloud
+        instack-deploy-overcloud
 
 1. Run the test-overcloud script to launch a cirros image on the overcloud and
 wait until it pings successfully
 
-        test-overcloud
+        instack-test-overcloud

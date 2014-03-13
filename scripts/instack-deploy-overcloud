@@ -14,12 +14,12 @@ MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}
 PM_IPS=${PM_IPS:-}
 PM_USERS=${PM_USERS:-}
 PM_PASSWORDS=${PM_PASSWORDS:-}
-setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
+tripleo setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
 
 # Must wait for baremetal nodes to register as nova hypervisors
 sleep 60
 
-setup-overcloud-passwords -o
+tripleo setup-overcloud-passwords -o
 source tripleo-overcloud-passwords
 
 # Define the interface that will be bridged onto the Neutron defined
@@ -58,7 +58,7 @@ heat stack-create -f $OVERCLOUD_YAML_PATH \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
     overcloud
 
-wait_for 220 10 stack-ready overcloud
+tripleo wait_for 220 10 tripleo stack-ready overcloud
 
 echo "Overcloud CREATE_COMPLETE"
 
@@ -79,10 +79,10 @@ source $TRIPLEO_ROOT/overcloudrc
 export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
-init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
+tripleo init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
     $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
     ${SSLBASE:+--ssl $PUBLIC_API_URL}
-setup-endpoints $OVERCLOUD_IP --cinder-password $OVERCLOUD_CINDER_PASSWORD \
+tripleo setup-endpoints $OVERCLOUD_IP --cinder-password $OVERCLOUD_CINDER_PASSWORD \
     --glance-password $OVERCLOUD_GLANCE_PASSWORD \
     --heat-password $OVERCLOUD_HEAT_PASSWORD \
     --neutron-password $OVERCLOUD_NEUTRON_PASSWORD \
@@ -95,7 +95,7 @@ NETWORK_CIDR=${NETWORK_CIDR:-"10.0.0.0/8"}
 FLOATING_IP_START=${FLOATING_IP_START:-"172.17.0.45"}
 FLOATING_IP_END=${FLOATING_IP_END:-"172.17.0.64"}
 FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"172.17.0.0/16"}
-setup-neutron "" "" $NETWORK_CIDR "" "" "" $FLOATING_IP_START $FLOATING_IP_END $FLOATING_IP_CIDR
+tripleo setup-neutron "" "" $NETWORK_CIDR "" "" "" $FLOATING_IP_START $FLOATING_IP_END $FLOATING_IP_CIDR
 
 nova flavor-delete m1.tiny
 nova flavor-create m1.tiny 1 512 2 1

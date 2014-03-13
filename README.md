@@ -22,7 +22,7 @@ Undercloud Install via instack
    the sceen. It also logs to ~/.instack/install-undercloud.log. You should see
    `install-undercloud Complete!` at the end of a successful run.
 
-        instack-undercloud/scripts/install-undercloud
+        instack-undercloud/scripts/instack-install-undercloud
 
 
 That completes the Undercloud install. To proceed with deploying and using the

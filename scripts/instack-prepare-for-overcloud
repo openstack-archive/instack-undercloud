@@ -9,7 +9,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
-user-config
+tripleo user-config
 
 if [ ! -f deploy-ramdisk.initramfs ]; then
     curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/deploy-ramdisk.initramfs
@@ -31,6 +31,6 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
     curl -L -O http://file.rdu.redhat.com/~rbrady/tripleo-images-rdo-icehouse/overcloud-cinder-volume.qcow2
 fi
 
-load-image overcloud-control.qcow2
-load-image overcloud-compute.qcow2
-load-image overcloud-cinder-volume.qcow2
+tripleo load-image overcloud-control.qcow2
+tripleo load-image overcloud-compute.qcow2
+tripleo load-image overcloud-cinder-volume.qcow2

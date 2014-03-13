@@ -19,7 +19,7 @@ source $TRIPLEO_ROOT/overcloudrc
 export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
-os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
+tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
 if [ ! -f cirros-0.3.0-x86_64-disk.img ]; then
     curl -L -O https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
@@ -28,13 +28,13 @@ fi
 glance image-create --name user --public --disk-format qcow2 \
     --container-format bare --file cirros-0.3.0-x86_64-disk.img
 
-wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| grep 'enabled.*\ up\ '
+tripleo wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| grep 'enabled.*\ up\ '
 
-wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host \| grep "\":-).*Open vSwitch agent.*overcloud-novacompute\""
+tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host \| grep "\":-).*Open vSwitch agent.*overcloud-novacompute\""
 
 source $TRIPLEO_ROOT/overcloudrc-user
 
-user-config
+tripleo user-config
 
 nova boot --key-name default --flavor m1.tiny --image user demo
 
@@ -47,4 +47,4 @@ neutron security-group-rule-create default --protocol icmp \
 neutron security-group-rule-create default --protocol tcp \
     --direction ingress --port-range-min 22 --port-range-max 22
 
-wait_for 30 10 ping -c 1 $FLOATINGIP
+tripleo wait_for 30 10 ping -c 1 $FLOATINGIP

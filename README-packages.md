@@ -22,7 +22,7 @@ Undercloud Install via instack
    the sceen. It also logs to ~/.instack/install-undercloud.log. You should see
    `install-undercloud Complete!` at the end of a successful run.
 
-        install-undercloud-packages
+        instack-install-undercloud-packages
         
 4. Configure tuskar. Edit /etc/tuskar/tuskar.conf so the following settings are enabled: 
    

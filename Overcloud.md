@@ -19,7 +19,7 @@ scripts/deploy-overcloud.
 
 4. Add your ssh key pair to nova
 
-        user-config
+        tripleo user-config
 
 5. Download the deployment kernel and ramdisk
 
@@ -33,8 +33,8 @@ scripts/deploy-overcloud.
 
 5. Load images into glance
 
-        load-image overcloud-control.qcow2
-        load-image overcloud-compute.qcow2
+        tripleo load-image overcloud-control.qcow2
+        tripleo load-image overcloud-compute.qcow2
 
 6. Use the setup-baremetal script to add your baremetal nodes
 
@@ -51,7 +51,7 @@ scripts/deploy-overcloud.
         # $MACS and $PM_* variables should be in the same node order, e.g., the 
         #   first MAC address should correspond to the first power management
         #   IP, etc.
-        setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
+        tripleo setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
 
 7. Create your overcloud heat template. You can adjust COMPUTESCALE to launch
    more than one compute node if you choose to.
@@ -60,7 +60,7 @@ scripts/deploy-overcloud.
 
 8. Create and source the overcloud passwords
 
-        setup-overcloud-passwords
+        tripleo setup-overcloud-passwords
         source tripleo-overcloud-passwords
 
 9. Deploy the overcloud
