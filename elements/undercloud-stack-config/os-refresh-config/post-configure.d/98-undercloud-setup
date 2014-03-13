@@ -39,17 +39,17 @@ fi
 
 # Ensure keystone is up before continuing on.
 # Waits for up to 2 minutes.
-wait_for 12 10 service $KEYSTONE_SERVICE status
+tripleo wait_for 12 10 service $KEYSTONE_SERVICE status
 
 # Because keystone just still isn't up yet...
 sleep 20
 
 export UNDERCLOUD_IP=$(os-apply-config --key local-ipv4 --type netaddress)
 
-init-keystone -p unset unset \
+tripleo init-keystone -p unset unset \
     $UNDERCLOUD_IP admin@example.com root@$UNDERCLOUD_IP
 
-setup-endpoints \
+tripleo setup-endpoints \
     $UNDERCLOUD_IP \
     --glance-password unset \
     --heat-password unset \
@@ -65,8 +65,9 @@ NETWORK_GATEWAY=$(os-apply-config --key neutron.network_gateway --type netaddres
 METADATA_SERVER=$UNDERCLOUD_IP
 PHYSICAL_NETWORK=ctlplane
 
-setup-neutron $DHCP_START $DHCP_END \
-              $NETWORK_CIDR $NETWORK_GATEWAY \
-              $METADATA_SERVER $PHYSICAL_NETWORK
+tripleo setup-neutron \
+    $DHCP_START $DHCP_END \
+    $NETWORK_CIDR $NETWORK_GATEWAY \
+    $METADATA_SERVER $PHYSICAL_NETWORK
 
 touch $OK_FILE
