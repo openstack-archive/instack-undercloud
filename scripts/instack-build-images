@@ -88,3 +88,14 @@ if [ ! -f overcloud-compute.qcow2 ]; then
         fedora-updates-testing-repository \
         2>&1 | tee dib-overcloud-compute.log
 fi
+
+if [ ! -f overcloud-cinder-volume.qcow2 ]; then
+    diskimage-builder/bin/disk-image-create \
+        -a $NODE_ARCH \
+        -o overcloud-cinder-volume \
+        $NODE_DIST pip-cache cinder-volume neutron-openvswitch-agent os-collect-config \
+        baremetal \
+        dhcp-all-interfaces stackuser fedora-rdo-icehouse \
+        fedora-updates-testing-repository \
+        2>&1 | tee dib-overcloud-compute.log
+fi
