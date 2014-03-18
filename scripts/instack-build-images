@@ -2,7 +2,7 @@
 
 set -eux
 
-# Override TMP_DIR for image build. 
+# Override TMP_DIR for image build.
 # It defaults /tmp. But, /tmp is usually tmpfs mounted on Fedora, and dib will
 # use a tmpfs on it's own if there is enough free RAM.
 export TMP_DIR=${TMP_DIR:-/var/tmp}
@@ -26,6 +26,10 @@ fi
 sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-1.noarch.rpm || true
 # install t-i-e from rpm
 sudo yum -y install openstack-tripleo-image-elements
+
+# Currently only needed so we can use the fedora-updates-testing-repository
+# element.
+sudo yum -y install instack-undercloud
 
 export DIB_INSTALLTYPE_nova=package
 export DIB_INSTALLTYPE_heat=package
@@ -51,7 +55,7 @@ export DIB_REPOLOCATION_os_refresh_config=http://tarballs.openstack.org/os-refre
 export DIB_REPOTYPE_os_apply_config=tar
 export DIB_REPOLOCATION_os_apply_config=http://tarballs.openstack.org/os-apply-config/os-apply-config-0.1.11.tar.gz
 
-export ELEMENTS_PATH=$ELEMENTS_PATH:/usr/share/tripleo-image-elements
+export ELEMENTS_PATH=$ELEMENTS_PATH:/usr/share/tripleo-image-elements:/usr/share/instack-undercloud
 
 diskimage-builder/bin/disk-image-create \
     -a $NODE_ARCH \
@@ -59,6 +63,7 @@ diskimage-builder/bin/disk-image-create \
     $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
     neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
     fedora-rdo-icehouse \
+    fedora-updates-testing-repository \
     2>&1 | tee dib-overcloud-control.log
 
 diskimage-builder/bin/disk-image-create \
@@ -66,4 +71,5 @@ diskimage-builder/bin/disk-image-create \
     -o overcloud-compute \
     $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
     dhcp-all-interfaces stackuser fedora-rdo-icehouse \
+    fedora-updates-testing-repository \
     2>&1 | tee dib-overcloud-compute.log
