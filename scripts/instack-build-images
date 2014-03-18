@@ -1,0 +1,62 @@
+#!/bin/bash
+
+NODE_ARCH=${NODE_ARCH:-amd64}
+NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
+DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
+
+# Must use git checkout of diskimage-builder until we get a new release and rpm
+# respin.
+if [ ! -d diskimage-builder ]; then
+    git clone https://git.openstack.org/openstack/diskimage-builder
+else
+    echo "diskimage-builder checkout already exists, attempting git pull"
+    pushd diskimage-builder
+    git pull
+    popd
+fi
+
+# openstack-m repo enabled
+sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-1.noarch.rpm || true
+# install t-i-e from rpm
+sudo yum -y install openstack-tripleo-image-elements
+
+export DIB_INSTALLTYPE_nova=package
+export DIB_INSTALLTYPE_heat=package
+export DIB_INSTALLTYPE_keystone=package
+export DIB_INSTALLTYPE_neutron=package
+export DIB_INSTALLTYPE_glance=package
+export DIB_INSTALLTYPE_swift=package
+export DIB_INSTALLTYPE_cinder=package
+export DIB_INSTALLTYPE_python_cinderclient=package
+export DIB_INSTALLTYPE_python_glanceclient=package
+export DIB_INSTALLTYPE_python_heatclient=package
+export DIB_INSTALLTYPE_python_keystoneclient=package
+export DIB_INSTALLTYPE_python_neutronclient=package
+export DIB_INSTALLTYPE_python_novaclient=package
+export DIB_INSTALLTYPE_python_swiftclient=package
+export DIB_INSTALLTYPE_python_ceilometerclient=package
+export DIB_INSTALLTYPE_python_ironicclient=package
+
+export DIB_REPOTYPE_os_collect_config=tar
+export DIB_REPOLOCATION_os_collect_config=http://tarballs.openstack.org/os-collect-config/os-collect-config-0.1.10.tar.gz
+export DIB_REPOTYPE_os_refresh_config=tar
+export DIB_REPOLOCATION_os_refresh_config=http://tarballs.openstack.org/os-refresh-config/os-refresh-config-0.0.7.tar.gz
+export DIB_REPOTYPE_os_apply_config=tar
+export DIB_REPOLOCATION_os_apply_config=http://tarballs.openstack.org/os-apply-config/os-apply-config-0.1.11.tar.gz
+
+export ELEMENTS_PATH=$ELEMENTS_PATH:/usr/share/tripleo-image-elements
+
+diskimage-builder/bin/disk-image-create \
+    -a $NODE_ARCH \
+    -o overcloud-control \
+    $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
+    neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
+    fedora-rdo-icehouse \
+    2>&1 | tee dib-overcloud-control.log
+
+diskimage-builder/bin/disk-image-create \
+    -a $NODE_ARCH \
+    -o overcloud-compute \
+    $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
+    dhcp-all-interfaces stackuser fedora-rdo-icehouse \
+    2>&1 | tee dib-overcloud-compute.log
