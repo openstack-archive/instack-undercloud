@@ -55,7 +55,7 @@ export DIB_REPOLOCATION_os_refresh_config=http://tarballs.openstack.org/os-refre
 export DIB_REPOTYPE_os_apply_config=tar
 export DIB_REPOLOCATION_os_apply_config=http://tarballs.openstack.org/os-apply-config/os-apply-config-0.1.11.tar.gz
 
-export ELEMENTS_PATH=$ELEMENTS_PATH:/usr/share/tripleo-image-elements:/usr/share/instack-undercloud
+export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud:instack-undercloud/elements
 
 diskimage-builder/bin/disk-image-create \
     -a $NODE_ARCH \
