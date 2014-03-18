@@ -56,11 +56,18 @@ export DIB_REPOLOCATION_os_apply_config=http://tarballs.openstack.org/os-apply-c
 
 export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud:instack-undercloud/elements
 
+diskimage-builder/bin/ramdisk-image-create \
+    -a $NODE_ARCH \
+    -o deploy-ramdisk \
+    $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
+    2>&1 | tee dib-deploy.log
+
 diskimage-builder/bin/disk-image-create \
     -a $NODE_ARCH \
     -o overcloud-control \
     $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
     neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
+    baremetal \
     fedora-rdo-icehouse \
     fedora-updates-testing-repository \
     2>&1 | tee dib-overcloud-control.log
@@ -69,6 +76,7 @@ diskimage-builder/bin/disk-image-create \
     -a $NODE_ARCH \
     -o overcloud-compute \
     $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
+    baremetal \
     dhcp-all-interfaces stackuser fedora-rdo-icehouse \
     fedora-updates-testing-repository \
     2>&1 | tee dib-overcloud-compute.log
