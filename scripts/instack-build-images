@@ -98,5 +98,5 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse \
         fedora-updates-testing-repository \
-        2>&1 | tee dib-overcloud-compute.log
+        2>&1 | tee dib-overcloud-cinder-volume.log
 fi
