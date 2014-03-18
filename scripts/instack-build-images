@@ -1,8 +1,15 @@
 #!/bin/bash
 
-NODE_ARCH=${NODE_ARCH:-amd64}
-NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
-DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
+set -eux
+
+# Override TMP_DIR for image build. 
+# It defaults /tmp. But, /tmp is usually tmpfs mounted on Fedora, and dib will
+# use a tmpfs on it's own if there is enough free RAM.
+export TMP_DIR=${TMP_DIR:-/var/tmp}
+
+export NODE_ARCH=${NODE_ARCH:-amd64}
+export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
+export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
 # Must use git checkout of diskimage-builder until we get a new release and rpm
 # respin.
