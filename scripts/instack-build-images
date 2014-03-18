@@ -57,7 +57,8 @@ export DIB_REPOLOCATION_os_apply_config=http://tarballs.openstack.org/os-apply-c
 
 export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud:instack-undercloud/elements
 
-if [ ! -f deploy-ramdisk.initramfs ]; then
+if [ ! -f deploy-ramdisk.initramfs -o \
+     ! -f deploy-ramdisk.kernel ]; then
     diskimage-builder/bin/ramdisk-image-create \
         -a $NODE_ARCH \
         -o deploy-ramdisk \
