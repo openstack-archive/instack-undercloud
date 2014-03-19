@@ -20,5 +20,9 @@ instack-undercloud virt setup
 
 
 You should now have a vm called instack that you can use for the
-instack-undercloud installation. Start and logon to the vm, then return to the [README](README.md) and choose
-either a source or package based install.
+instack-undercloud installation. It still needs to be installed to Fedora 20
+x86_64 however. You can use any method to do so, such as a live cd, kickstart,
+etc.
+
+Once the vm is installed, start and logon to the vm, then return to the
+[README](README.md) and choose either a source or package based install.
