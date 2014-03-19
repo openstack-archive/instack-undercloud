@@ -1,9 +1,9 @@
-Undercloud Install via instack
-==============================
-
+instack-undercloud via packages
+===============================
+    
 1. Enable the openstack-m repository
 
-        sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-1.noarch.rpm
+        sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm
 
 2. Install instack-undercloud
 

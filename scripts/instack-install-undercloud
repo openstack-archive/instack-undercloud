@@ -24,7 +24,7 @@ pushd instack
   sudo pip install -e .
 popd
 
-# Upstream dib is fine
+# Upstream dib is still needed due to environmentd patch
 if [ ! -d diskimage-builder ]; then
   git clone https://git.openstack.org/openstack/diskimage-builder
   pushd diskimage-builder
@@ -35,13 +35,13 @@ if [ ! -d diskimage-builder ]; then
   popd
 fi
 
-# We need the packages branch of tie
-if [ ! -d tripleo-image-elements ]; then
-  git clone https://github.com/slagle/tripleo-image-elements
-  pushd tripleo-image-elements
-    git checkout packages
-  popd
-fi
+sudo yum install -y openstack-tripleo
+sudo yum install -y openstack-tripleo-image-elements
+sudo yum install -y openstack-tripleo-heat-templates
+
+# TODO include tuskar-ui when available
+sudo yum install -y openstack-tuskar
+sudo yum install -y python-tuskarclient
 
 # Needed by source-repositories
 sudo yum -y install tar
@@ -64,7 +64,9 @@ export NETWORK_CIDR
 export NETWORK_GATEWAY
 
 sudo -E instack \
-  -p diskimage-builder/elements/ tripleo-image-elements/elements/ instack-undercloud/elements \
+  -p diskimage-builder/elements/ \
+     /usr/share/tripleo-image-elements/ \
+     instack-undercloud/elements \
   -j instack-undercloud/json-files/fedora-20-undercloud.json
 
 sudo os-refresh-config
