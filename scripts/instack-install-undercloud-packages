@@ -36,7 +36,7 @@ sudo yum install -y openstack-tripleo-heat-templates
 
 # Must delete packaged diskimage-builder for now b/c it is too old and messes
 # up the install.
-sudo rpm -e diskimage-builder --nodeps
+sudo rpm -e diskimage-builder --nodeps || true
 
 # TODO include tuskar-ui when available
 sudo yum install -y openstack-tuskar
