@@ -23,12 +23,8 @@ sudo yum -y update vim-minimal
 # Upstream dib is still needed due to environmentd patch
 if [ ! -d diskimage-builder ]; then
   git clone https://git.openstack.org/openstack/diskimage-builder
-  pushd diskimage-builder
-    git remote add github-slagle https://github.com/slagle/diskimage-builder.git
-    git fetch github-slagle
-    git checkout environmentd
-    sudo python setup.py install
-  popd
+  # Nothing special about this commit hash, just that it is latest known # working
+  git reset --hard 39964b975e724cffaa0a94e80ed57ebff7221020
 fi
 
 sudo yum install -y openstack-tripleo

@@ -13,6 +13,7 @@
   },
   {
     "element": [
+      "base",
       "undercloud-install",
       "fedora",
       "boot-stack",
@@ -30,10 +31,17 @@
       "post-install"
     ],
     "exclude-element": [
-      "yum",
       "dkms"
     ],
     "blacklist": [
+      "10-cloud-init",
+      "50-store-build-settings",
+      "99-dkms",
+      "99-up-to-date",
+      "01-yum-keepcache",
+      "15-fedora-remove-grub",
+      "51-ironicclient",
+      "05-fstab-rootfs-label"
       "15-fedora-remove-grub",
       "51-ironicclient",
       "05-fstab-rootfs-label"
