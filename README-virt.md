@@ -12,7 +12,7 @@ instack-undercloud virt setup
 
 1. Install instack-undercloud
 
-        sudo yum -y install openstack-tripleo
+        sudo yum -y install instack-undercloud
 
 1. Run script to setup your virtual environment
 
