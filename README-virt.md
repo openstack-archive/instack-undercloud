@@ -20,5 +20,5 @@ instack-undercloud virt setup
 
 
 You should now have a vm called instack that you can use for the
-instack-undercloud installation. Start and logon to the vm, then return to the (README)[README.md] and choose
+instack-undercloud installation. Start and logon to the vm, then return to the [README](README.md) and choose
 either a source or package based install.
