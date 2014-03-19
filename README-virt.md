@@ -24,5 +24,18 @@ instack-undercloud installation. It still needs to be installed to Fedora 20
 x86_64 however. You can use any method to do so, such as a live cd, kickstart,
 etc.
 
+Note that you don't have to use the pre-created instack vm and could instead create a
+new one via some other method (virt-install, virt-clone, etc). If you do so
+however make sure all the NIC interfaces are set to use virtio, and also
+manually add an additional interface to the vm by adding the following the
+libvirt xml for the domain (you may need to adjust slot as needed):
+
+        <interface type='network'>
+          <source network='brbm'/>
+          <model type='virtio'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+        </interface>
+
+
 Once the vm is installed, start and logon to the vm, then return to the
 [README](README.md) and choose either a source or package based install.
