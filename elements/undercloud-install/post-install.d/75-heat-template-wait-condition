@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-sed -i "s/OS::Heat::UpdateWaitConditionHandle/AWS::CloudFormation::WaitConditionHandle/g" /opt/stack/tripleo-heat-templates/overcloud-source.yaml
