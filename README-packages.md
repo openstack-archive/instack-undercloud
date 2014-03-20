@@ -37,9 +37,7 @@ instack-undercloud via packages
         qpid_password=guest
 
         [heat_keystone]
-        username=admin  # OS_USERNAME from /etc/sysconfig/stackrc
         password=unset   # OS_PASSWORD from /etc/sysconfig/stackrc
-        tenant_name=admin  # OS_TENANT_NAME from /etc/sysconfig/stackrc
         auth_url=http://localhost:5000/v2.0   
 
 5. Initialise the tuskar database and restart the service
