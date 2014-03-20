@@ -68,7 +68,7 @@ tuskar overcloud-create overcloud \
     --attributes "SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}" \
     --attributes "SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}" \
     --attributes "NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE" \
-    --roles $controller_role_id=1 \ 
+    --roles $controller_role_id=1 \
     --roles $compute_role_id=1 \
     --roles $blockstorage_role_id=1;
 
