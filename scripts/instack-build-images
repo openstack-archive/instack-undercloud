@@ -23,7 +23,9 @@ else
 fi
 
 # openstack-m repo enabled
-sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-1.noarch.rpm || true
+sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm || true
+sudo yum -y install yum-utils
+sudo yum-config-manager --enable fedora-openstack-m-testing
 # install t-i-e from rpm
 sudo yum -y install openstack-tripleo-image-elements
 
@@ -48,12 +50,9 @@ export DIB_INSTALLTYPE_python_novaclient=package
 export DIB_INSTALLTYPE_python_swiftclient=package
 export DIB_INSTALLTYPE_python_ceilometerclient=package
 
-export DIB_REPOTYPE_os_collect_config=tar
-export DIB_REPOLOCATION_os_collect_config=http://tarballs.openstack.org/os-collect-config/os-collect-config-0.1.10.tar.gz
-export DIB_REPOTYPE_os_refresh_config=tar
-export DIB_REPOLOCATION_os_refresh_config=http://tarballs.openstack.org/os-refresh-config/os-refresh-config-0.0.7.tar.gz
-export DIB_REPOTYPE_os_apply_config=tar
-export DIB_REPOLOCATION_os_apply_config=http://tarballs.openstack.org/os-apply-config/os-apply-config-0.1.11.tar.gz
+export DIB_INSTALLTYPE_os_collect_config=package
+export DIB_INSTALLTYPE_os_refresh_config=package
+export DIB_INSTALLTYPE_os_apply_config=package
 
 export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud:instack-undercloud/elements
 
