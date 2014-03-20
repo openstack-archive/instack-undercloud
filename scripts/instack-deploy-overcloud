@@ -58,7 +58,7 @@ heat stack-create -f $OVERCLOUD_YAML_PATH \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
     overcloud
 
-tripleo wait_for 220 10 tripleo stack-ready overcloud
+tripleo wait_for 220 10 stack-ready overcloud
 
 echo "Overcloud CREATE_COMPLETE"
 
