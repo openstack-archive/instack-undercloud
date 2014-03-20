@@ -71,7 +71,6 @@ if [ ! -f overcloud-control.qcow2 ]; then
         -o overcloud-control \
         $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
         neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
-        horizon \
         baremetal \
         fedora-rdo-icehouse \
         fedora-updates-testing-repository \
