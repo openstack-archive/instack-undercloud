@@ -31,13 +31,13 @@ instack-undercloud via packages
         
 4. Configure tuskar. Edit /etc/tuskar/tuskar.conf so the following settings are enabled: 
    
-        connection=sqlite:////home/stack/tuskar.sqlite   
         tht_local_dir=/usr/share/tripleo-heat-templates/
         username=admin  # OS_USERNAME from /etc/sysconfig/stackrc
         password=unset   # OS_PASSWORD from /etc/sysconfig/stackrc
         tenant_name=admin  # OS_TENANT_NAME from /etc/sysconfig/stackrc
         auth_url=http://localhost:5000/v2.0   
-        insecure=true
+        qpid_username=guest
+        qpid_password=guest
 
 5. Initialise the tuskar database and restart the service
 
