@@ -22,7 +22,8 @@
       "neutron-dhcp-agent",
       "undercloud-stack-config",
       "selinux-permissive",
-      "fedora-updates-testing-repository"
+      "fedora-updates-testing-repository",
+      "qpidd"
     ],
     "hook": [
       "extra-data",
@@ -31,7 +32,8 @@
       "post-install"
     ],
     "exclude-element": [
-      "dkms"
+      "dkms",
+      "rabbitmq-server"
     ],
     "blacklist": [
       "10-cloud-init",
