@@ -72,7 +72,7 @@ tuskar overcloud-create overcloud \
     --roles $compute_role_id=1 \
     --roles $blockstorage_role_id=1;
 
-tripleo wait_for 220 10 tripleo stack-ready overcloud
+tripleo wait_for 220 10 stack-ready overcloud
 
 echo "Overcloud CREATE_COMPLETE"
 
