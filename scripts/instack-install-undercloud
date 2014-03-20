@@ -71,4 +71,8 @@ sudo -E instack \
 
 sudo os-refresh-config
 
+# Install the dib rpm, just so that we can now use it for disk-image-get-kernel
+# when we run load-image.
+sudo yum -y install diskimage-builder
+
 echo "install-undercloud Complete!"
