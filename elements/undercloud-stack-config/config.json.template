@@ -9,9 +9,10 @@
     "host": "127.0.0.1",
     "db": "mysql://keystone:unset@localhost/keystone"
   },
-  "rabbit": {
+  "qpid": {
     "host": "127.0.0.1",
-    "password": "guest"
+    "password": "guest",
+    "username": "guest"
   },
   "glance": {
     "backend": "file",
