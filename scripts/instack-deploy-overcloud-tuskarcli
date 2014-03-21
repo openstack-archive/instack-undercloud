@@ -57,20 +57,20 @@ blockstorage_role_id=$(tuskar overcloud-role-list | grep overcloud-cinder-volume
 # create an overcloud with 1 controller and 1 compute node
 tuskar overcloud-create overcloud \
     --description "My overcloud" \
-    --attributes "AdminToken=${OVERCLOUD_ADMIN_TOKEN}" \
-    --attributes "AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}" \
-    --attributes "CinderPassword=${OVERCLOUD_CINDER_PASSWORD}" \
-    --attributes "GlancePassword=${OVERCLOUD_GLANCE_PASSWORD}" \
-    --attributes "HeatPassword=${OVERCLOUD_HEAT_PASSWORD}" \
-    --attributes "NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}" \
-    --attributes "NovaPassword=${OVERCLOUD_NOVA_PASSWORD}" \
-    --attributes "NeutronPublicInterface=$NeutronPublicInterface" \
-    --attributes "SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}" \
-    --attributes "SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}" \
-    --attributes "NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE" \
-    --roles $controller_role_id=1 \
-    --roles $compute_role_id=1 \
-    --roles $blockstorage_role_id=1;
+    --attribute "AdminToken=${OVERCLOUD_ADMIN_TOKEN}" \
+    --attribute "AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}" \
+    --attribute "CinderPassword=${OVERCLOUD_CINDER_PASSWORD}" \
+    --attribute "GlancePassword=${OVERCLOUD_GLANCE_PASSWORD}" \
+    --attribute "HeatPassword=${OVERCLOUD_HEAT_PASSWORD}" \
+    --attribute "NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}" \
+    --attribute "NovaPassword=${OVERCLOUD_NOVA_PASSWORD}" \
+    --attribute "NeutronPublicInterface=$NeutronPublicInterface" \
+    --attribute "SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}" \
+    --attribute "SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}" \
+    --attribute "NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE" \
+    --role-count $controller_role_id=1 \
+    --role-count $compute_role_id=1 \
+    --role-count $blockstorage_role_id=1;
 
 tripleo wait_for 220 10 stack-ready overcloud
 
