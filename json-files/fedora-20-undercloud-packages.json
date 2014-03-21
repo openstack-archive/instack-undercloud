@@ -23,7 +23,8 @@
       "undercloud-stack-config",
       "selinux-permissive",
       "fedora-updates-testing-repository",
-      "qpidd"
+      "qpidd",
+      "tuskar-conf"
     ],
     "hook": [
       "extra-data",
