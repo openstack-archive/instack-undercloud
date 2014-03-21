@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eux
+
+cp ../tuskar.conf /etc/tuskar/tuskar.conf
+chown root:root /etc/tuskar/tuskar.conf
