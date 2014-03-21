@@ -20,7 +20,7 @@
     "db": "mysql://glance:unset@localhost/glance",
     "service-password": "unset",
     "notifier-strategy": "noop",
-    "log-file": ""
+    "log-file": "''"
   },
   "nova": {
     "compute_hostname": "undercloud",
