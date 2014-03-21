@@ -29,19 +29,19 @@ NeutronPublicInterface=${NeutronPublicInterface:-eth0}
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 
-if [ -d /usr/share/tripleo-heat-templates ]; then
+if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     tripleo-heat-merge \
-        --included-template-dir /usr/share/tripleo-heat-templates \
+        --included-template-dir /usr/share/openstack-tripleo-heat-templates \
         --scale NovaCompute=1 \
-        /usr/share/tripleo-heat-templates/overcloud-source.yaml \
-        /usr/share/tripleo-heat-templates/swift-source.yaml \
-        /usr/share/tripleo-heat-templates/ssl-source.yaml \
-        /usr/share/tripleo-heat-templates/block-storage.yaml \
-        > overcloud-with-block-storage.yaml
-    OVERCLOUD_YAML_PATH=overcloud-with-block-storage.yaml
+        /usr/share/openstack-tripleo-heat-templates/overcloud-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/swift-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/ssl-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/block-storage.yaml \
+        > overcloud.yaml
+    OVERCLOUD_YAML_PATH=overcloud.yaml
 else
-    sudo make -C /opt/stack/tripleo-heat-templates overcloud-with-block-storage.yaml COMPUTESCALE=1
-    OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud-with-block-storage.yaml
+    sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1
+    OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud.yaml
 fi
 
 heat stack-create -f $OVERCLOUD_YAML_PATH \
