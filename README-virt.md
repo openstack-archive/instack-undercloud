@@ -16,6 +16,9 @@ instack-undercloud virt setup
 
 1. Run script to setup your virtual environment
 
+        # you may need to ensure openvswtich service is installed and running for the
+        # next script to run properly
+
         instack-virt-setup
 
 
