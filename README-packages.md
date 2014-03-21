@@ -29,17 +29,6 @@ instack-undercloud via packages
 
         instack-install-undercloud-packages
         
-4. Configure tuskar. Edit /etc/tuskar/tuskar.conf so the following settings are enabled: 
-   
-        [DEFAULT]
-        tht_local_dir=/usr/share/tripleo-heat-templates/
-        qpid_username=guest
-        qpid_password=guest
-
-        [heat_keystone]
-        password=unset   # OS_PASSWORD from /etc/sysconfig/stackrc
-        auth_url=http://localhost:5000/v2.0   
-
 5. Initialise the tuskar database and restart the service
 
         sudo tuskar-dbsync --config-file /etc/tuskar/tuskar.conf
