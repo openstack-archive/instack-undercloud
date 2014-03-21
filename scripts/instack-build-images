@@ -74,7 +74,6 @@ if [ ! -f overcloud-control.qcow2 ]; then
         baremetal \
         fedora-rdo-icehouse \
         fedora-updates-testing-repository \
-        horizon \
         qpidd \
         2>&1 | tee dib-overcloud-control.log
 fi
