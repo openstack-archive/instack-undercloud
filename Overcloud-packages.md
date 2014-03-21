@@ -41,7 +41,7 @@ environment. Skip this step if you are using all baremetal.
         # FLOATING_IP_START: floating ip allocation start
         # FLOATING_IP_END: floating ip allocation end
         # FLOATING_IP_CIDR: floating ip network cidr
-        instack-deploy-overcloud
+        instack-deploy-overcloud-tuskarcli
 
 1. Run the test-overcloud script to launch a cirros image on the overcloud and
 wait until it pings successfully
