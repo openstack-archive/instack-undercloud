@@ -18,7 +18,9 @@
     "backend": "file",
     "host": "127.0.0.1",
     "db": "mysql://glance:unset@localhost/glance",
-    "service-password": "unset"
+    "service-password": "unset",
+    "notifier-strategy": "noop",
+    "log-file": ""
   },
   "nova": {
     "compute_hostname": "undercloud",
