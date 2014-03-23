@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eux
+
+if [ -n "$SSH_KEY" ]; then
+	cp $SSH_KEY /opt/stack/boot-stack/virtual-power-key
+	cp $SSH_KEY.pub /opt/stack/boot-stack/virtual-power-key.pub
+fi
+
+# Be sure permissions are correct
+chown nova:nova /opt/stack/boot-stack/virtual-power-key || true
+chown nova:nova /opt/stack/boot-stack/virtual-power-key.pub || true
+
+chmod 0600 /opt/stack/boot-stack/virtual-power-key || true
+chmod 0644 /opt/stack/boot-stack/virtual-power-key.pub || true

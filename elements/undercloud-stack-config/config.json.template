@@ -39,6 +39,7 @@
       "use_file_injection": "False",
       "virtual_power": {
         "user": "{{VIRTUAL_POWER_USER}}",
+        "ssh_key": "{{SSH_KEY}}",
         "key": "/opt/stack/boot-stack/virtual-power-key",
         "ssh_host": "{{VIRTUAL_POWER_HOST}}",
         "type": "virsh"
