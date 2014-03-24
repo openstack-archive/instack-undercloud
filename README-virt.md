@@ -42,3 +42,6 @@ libvirt xml for the domain (you may need to adjust slot as needed):
 
 Once the vm is installed, start and logon to the vm, then return to the
 [README](README.md) and choose either a source or package based install.
+
+You can use the instack-virt.answers.sample file to help create an answers
+file.

@@ -29,6 +29,15 @@ VIRTUAL_POWER_USER=stack
 # for Overcloud instances. Unused if POWER_DRIVER is IPMI.
 VIRTUAL_POWER_HOST=192.168.122.1
 
+### SSH_KEY ###
+# When POWER_DRIVER is set to the VirtualPowerManager, the ssh key to use to
+# ssh to the virsh host.  Unused if POWER_DRIVER is IPMI.
+# This should be a path to an ssh private key. The public key portion must be
+# added to the ~/.ssh/authorized_keys file for the virtual power user.
+# You can generate this key with a command like:
+# ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
+SSH_KEY=/home/stack/virtual-power-key
+
 ### MASQUERADE_NETWORK ###
 # Network that will be masqueraded for external access if required.
 MASQUERADE_NETWORK=192.0.2.0/24
