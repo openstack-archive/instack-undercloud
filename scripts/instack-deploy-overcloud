@@ -57,6 +57,7 @@ heat stack-create -f $OVERCLOUD_YAML_PATH \
     -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
     -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+    -P GlanceLogFile="''" \
     overcloud
 
 tripleo wait_for 220 10 stack-ready overcloud
