@@ -16,12 +16,10 @@ If you want to force a redownload of the images, delete them first.
 
         instack-prepare-for-overcloud
 
-1. If you're testing an all VM setup, copy the ssh key for the virtual power
-driver user to your authorized keys file. Define $UNDERCLOUD_IP for your
-environment. Skip this step if you are using all baremetal. 
+1. If you're testing an all VM setup, make sure you have copied the public key
+portion of the virtual power ssh key into the virtual power user's
+~/.ssh/authorized_keys on the virsh host.
 
-        ssh $UNDERCLOUD_IP cat /opt/stack/boot-stack/virtual-power-key.pub >> ~/.ssh/authorized_keys 
-        
 1. Run the deploy-overcloud script to actually deploy the overcloud. Note that
    the variables must be exported so that their values are picked up by
    deploy-overcloud. If you put them in an rc file that you intend to source,

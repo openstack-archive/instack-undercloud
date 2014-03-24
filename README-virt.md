@@ -44,4 +44,6 @@ Once the vm is installed, start and logon to the vm, then return to the
 [README](README.md) and choose either a source or package based install.
 
 You can use the instack-virt.answers.sample file to help create an answers
-file.
+file. Note that will you need to generate an ssh key for the virtual power
+driver to use. See the SSH_KEY setting in the sample answers file for more
+details.
