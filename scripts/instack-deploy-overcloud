@@ -79,6 +79,7 @@ heat stack-create -f $OVERCLOUD_YAML_PATH \
     -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
     -P GlanceLogFile="''" \
+    -P NeutronDnsmasqOptions="dhcp-option-force=26,1400" \
     overcloud
 
 tripleo wait_for 220 10 stack-ready overcloud

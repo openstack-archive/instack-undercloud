@@ -89,6 +89,7 @@ tuskar overcloud-create overcloud \
     --attribute "SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}" \
     --attribute "NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE" \
     --attribute "GlanceLogFile=''" \
+    --attribute "NeutronDnsmasqOptions=dhcp-option-force=26,1400" \
     --role-count $controller_role_id=1 \
     --role-count $compute_role_id=$COMPUTESCALE \
     --role-count $blockstorage_role_id=$BLOCKSTORAGESCALE;
