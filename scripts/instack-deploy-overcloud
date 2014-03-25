@@ -29,10 +29,16 @@ NeutronPublicInterface=${NeutronPublicInterface:-eth0}
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 
+COMPUTESCALE=${COMPUTESCALE:-1}
+BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
+SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+
 if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     tripleo-heat-merge \
         --included-template-dir /usr/share/openstack-tripleo-heat-templates \
-        --scale NovaCompute=1 --scale BlockStorage=1 --scale SwiftStorage=0 \
+        --scale NovaCompute=$COMPUTESCALE \
+        --scale BlockStorage=$BLOCKSTORAGESCALE \
+        --scale SwiftStorage=$SWIFTSTORAGESCALE \
         /usr/share/openstack-tripleo-heat-templates/overcloud-source.yaml \
         /usr/share/openstack-tripleo-heat-templates/swift-source.yaml \
         /usr/share/openstack-tripleo-heat-templates/swift-storage-source.yaml \

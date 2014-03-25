@@ -54,6 +54,10 @@ controller_role_id=$(tuskar overcloud-role-list | grep overcloud-control | cut -
 compute_role_id=$(tuskar overcloud-role-list | grep overcloud-compute | cut -d '|' -f2 | tr -d ' ')
 blockstorage_role_id=$(tuskar overcloud-role-list | grep overcloud-cinder-volume | cut -d '|' -f2 | tr -d ' ')
 
+COMPUTESCALE=${COMPUTESCALE:-1}
+BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
+SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+
 # create an overcloud with 1 controller and 1 compute node
 tuskar overcloud-create overcloud \
     --description "My overcloud" \
@@ -70,8 +74,8 @@ tuskar overcloud-create overcloud \
     --attribute "NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE" \
     --attribute "GlanceLogFile=''" \
     --role-count $controller_role_id=1 \
-    --role-count $compute_role_id=1 \
-    --role-count $blockstorage_role_id=1;
+    --role-count $compute_role_id=$COMPUTESCALE \
+    --role-count $blockstorage_role_id=$BLOCKSTORAGESCALE;
 
 tripleo wait_for 220 10 stack-ready overcloud
 
