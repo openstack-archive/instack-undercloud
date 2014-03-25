@@ -11,7 +11,6 @@ template = os.path.join(os.path.dirname(__file__),
                         '..',
                         'config.json.template')
 
-ssh_key_contents = open(os.environ["SSH_KEY"]).read().replace("\n", "\\n")
 
 context = { 
     'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
@@ -26,8 +25,11 @@ context = {
     'DHCP_END': os.environ.get('DHCP_END', '192.0.2.24'),
     'NETWORK_CIDR': os.environ.get('NETWORK_CIDR', '192.0.2.0/24'),
     'NETWORK_GATEWAY': os.environ.get('NETWORK_GATEWAY', '192.0.2.1'),
-    'SSH_KEY': ssh_key_contents,
 }
+
+if "SSH_KEY" in os.environ:
+    ssh_key_contents = open(os.environ["SSH_KEY"]).read().replace("\n", "\\n")
+    context["SSH_KEY"] = ssh_key_contents
 
 with open(template) as f:
     config_json = renderer.render(f.read(), context)
