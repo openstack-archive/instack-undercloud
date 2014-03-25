@@ -24,7 +24,7 @@ source tripleo-overcloud-passwords
 
 # TODO: Remove once Tuskar supports swift
 # Unapply Tuskar Hack if it had been applied.
-patch -f /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py << EOF || true
+sudo patch -f /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py << EOF || true
 --- /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py2014-03-24 10:05:38.072000000 -0400
 +++ /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py.new 2014-03-24 11:42:07.390000000 -0400
 @@ -113,7 +113,6 @@

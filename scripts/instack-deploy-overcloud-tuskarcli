@@ -25,7 +25,7 @@ source tripleo-overcloud-passwords
 # TODO: Remove once Tuskar supports swift
 # Hack for Tuskar to work with the latest openstack-tripleo-heat-templates.
 # Tuskar does not yet have swift support.
-patch -f /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py <<EOF || true
+sudo patch -f /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py <<EOF || true
 --- /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py2014-03-23 22:20:54.691000000 -0400
 +++ /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py.new 2014-03-23 22:20:48.154000000 -0400
 @@ -113,6 +113,7 @@
