@@ -111,3 +111,11 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         fedora-updates-testing-repository \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
+
+if [ ! -f fedora-user.qcow2 ]; then
+    diskimage-builder/bin/disk-image-create \
+        -a $NODE_ARCH \
+        -o fedora-user \
+        fedora \
+        2>&1 | tee dib-fedora-user.log
+fi
