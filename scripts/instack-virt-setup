@@ -7,7 +7,7 @@ source /usr/libexec/openstack-tripleo/devtest_variables.sh
 tripleo devtest_testenv.sh instackenv.json
 
 export UNDERCLOUD_VM_NAME=instack
-virsh vol-create-as default $UNDERCLOUD_VM_NAME.qcow2 20G --format qcow2
+virsh vol-create-as default $UNDERCLOUD_VM_NAME.qcow2 ${NODE_DISK:-30}G --format qcow2
 tripleo configure-vm \
     --name $UNDERCLOUD_VM_NAME \
     --image /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 \
