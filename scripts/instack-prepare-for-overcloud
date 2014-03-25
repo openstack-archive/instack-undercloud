@@ -42,3 +42,4 @@ fi
 tripleo load-image overcloud-control.qcow2
 tripleo load-image overcloud-compute.qcow2
 tripleo load-image overcloud-cinder-volume.qcow2
+tripleo load-image overcloud-swift-storage.qcow2
