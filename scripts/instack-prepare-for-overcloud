@@ -31,6 +31,10 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
     curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-cinder-volume.qcow2
 fi
 
+if [ ! -f overcloud-swift-storage.qcow2 ]; then
+    curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/overcloud-swift-storage.qcow2
+fi
+
 if [ ! -f fedora-user.qcow2 ]; then
     curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/fedora-user.qcow2
 fi
