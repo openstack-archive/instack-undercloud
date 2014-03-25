@@ -22,6 +22,22 @@ sleep 60
 tripleo setup-overcloud-passwords -o
 source tripleo-overcloud-passwords
 
+# TODO: Remove once Tuskar supports swift
+# Hack for Tuskar to work with the latest openstack-tripleo-heat-templates.
+# Tuskar does not yet have swift support.
+patch -f /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py <<EOF || true
+--- /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py2014-03-23 22:20:54.691000000 -0400
++++ /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py.new 2014-03-23 22:20:48.154000000 -0400
+@@ -113,6 +113,7 @@
+ def parse_scaling(scaling_args):
+     """Translate a list of scaling requests to a dict prefix:count."""
+     scaling_args = scaling_args or []
++    scaling_args.append("SwiftStorage=0")
+     result = {}
+     for item in scaling_args:
+         key, value = item.split('=')
+EOF
+
 # Define the interface that will be bridged onto the Neutron defined
 # network.
 NeutronPublicInterface=${NeutronPublicInterface:-eth0}
