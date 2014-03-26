@@ -23,7 +23,7 @@ sudo yum -y update vim-minimal
 
 # Must use updates-testing version of diskimage-builder (0.1.9) until it gets
 # pushed to stable.
-sudo yum --enablerepo=updates-testing update diskimage-builder
+sudo yum -y --enablerepo=updates-testing update diskimage-builder
 
 sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
