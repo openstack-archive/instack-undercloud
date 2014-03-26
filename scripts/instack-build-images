@@ -51,7 +51,7 @@ export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-underc
 
 if [ ! -f deploy-ramdisk.initramfs -o \
      ! -f deploy-ramdisk.kernel ]; then
-    diskimage-builder/bin/ramdisk-image-create \
+    ramdisk-image-create \
         -a $NODE_ARCH \
         -o deploy-ramdisk \
         $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
@@ -59,7 +59,7 @@ if [ ! -f deploy-ramdisk.initramfs -o \
 fi
 
 if [ ! -f overcloud-control.qcow2 ]; then
-    diskimage-builder/bin/disk-image-create \
+    disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-control \
         $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
@@ -73,7 +73,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
 fi
 
 if [ ! -f overcloud-compute.qcow2 ]; then
-    diskimage-builder/bin/disk-image-create \
+    disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-compute \
         $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
@@ -83,7 +83,7 @@ if [ ! -f overcloud-compute.qcow2 ]; then
 fi
 
 if [ ! -f overcloud-cinder-volume.qcow2 ]; then
-    diskimage-builder/bin/disk-image-create \
+    disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-cinder-volume \
         $NODE_DIST pip-cache cinder-volume neutron-openvswitch-agent os-collect-config \
@@ -93,7 +93,7 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
 fi
 
 if [ ! -f overcloud-swift-storage.qcow2 ]; then
-    diskimage-builder/bin/disk-image-create \
+    disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-swift-storage \
         $NODE_DIST pip-cache swift-storage neutron-openvswitch-agent os-collect-config \
@@ -103,7 +103,7 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
 fi
 
 if [ ! -f fedora-user.qcow2 ]; then
-    diskimage-builder/bin/disk-image-create \
+    disk-image-create \
         -a $NODE_ARCH \
         -o fedora-user \
         fedora \
