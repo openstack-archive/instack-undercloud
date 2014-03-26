@@ -76,6 +76,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
         fedora-updates-testing-repository \
         horizon \
         qpidd \
+        keystone-1289935 \
         2>&1 | tee dib-overcloud-control.log
 fi
 

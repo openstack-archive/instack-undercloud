@@ -24,7 +24,8 @@
       "selinux-permissive",
       "fedora-updates-testing-repository",
       "qpidd",
-      "tuskar-config"
+      "tuskar-config",
+      "keystone-1289935"
     ],
     "hook": [
       "extra-data",
