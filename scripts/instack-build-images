@@ -11,16 +11,9 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
-# Must use git checkout of diskimage-builder until we get a new release and rpm
-# respin.
-if [ ! -d diskimage-builder ]; then
-    git clone https://git.openstack.org/openstack/diskimage-builder
-else
-    echo "diskimage-builder checkout already exists, attempting git pull"
-    pushd diskimage-builder
-    git pull
-    popd
-fi
+# Must use updates-testing version of diskimage-builder (0.1.9) until it gets
+# pushed to stable.
+sudo yum --enablerepo=updates-testing update diskimage-builder
 
 # openstack-m repo enabled
 sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm || true

@@ -20,23 +20,14 @@ sudo yum -y install python-pip
 # https://bugzilla.redhat.com/show_bug.cgi?id=1066983
 sudo yum -y update vim-minimal
 
-# Upstream dib is still needed due to environmentd patch
-if [ ! -d diskimage-builder ]; then
-  git clone https://git.openstack.org/openstack/diskimage-builder
-  pushd diskimage-builder
-  # Nothing special about this commit hash, just that it is latest known # working
-  git reset --hard 39964b975e724cffaa0a94e80ed57ebff7221020
-  sudo pip install -e .
-  popd
-fi
+
+# Must use updates-testing version of diskimage-builder (0.1.9) until it gets
+# pushed to stable.
+sudo yum --enablerepo=updates-testing update diskimage-builder
 
 sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
 sudo yum install -y openstack-tripleo-heat-templates
-
-# Must delete packaged diskimage-builder for now b/c it is too old and messes
-# up the install.
-sudo rpm -e diskimage-builder --nodeps || true
 
 # TODO include tuskar-ui when available
 sudo yum install -y openstack-tuskar
@@ -72,9 +63,5 @@ sudo -E instack \
   -j /usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json
 
 sudo os-refresh-config
-
-# Install the dib rpm, just so that we can now use it for disk-image-get-kernel
-# when we run load-image.
-sudo yum -y install diskimage-builder
 
 echo "install-undercloud Complete!"
