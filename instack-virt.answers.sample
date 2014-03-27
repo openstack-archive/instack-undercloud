@@ -21,7 +21,7 @@ POWER_DRIVER=nova.virt.baremetal.virtual_power_driver.VirtualPowerManager
 
 ### VIRTUAL_POWER_USER ###
 # When POWER_DRIVER is set to the VirtualPowerManager, the user to use to
-# connect to to VIRTUAL_POWER_HOST. Unused if POWER_DRIVER is IPMI.
+# connect to VIRTUAL_POWER_HOST. Unused if POWER_DRIVER is IPMI.
 VIRTUAL_POWER_USER=stack
 
 ### VIRTUAL_POWER_HOST ###
