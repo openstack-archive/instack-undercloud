@@ -28,19 +28,55 @@ tripleo wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| g
 
 tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host \| grep "\":-).*Open vSwitch agent.*overcloud-novacompute\""
 
-source $TRIPLEO_ROOT/overcloudrc-user
+# source $TRIPLEO_ROOT/overcloudrc-user
+
+NET_ID=$(neutron net-list -f csv --quote none | grep default-net | cut -d, -f1)
 
 tripleo user-config
 
-nova boot --key-name default --flavor m1.tiny --image user demo
+nova boot --key-name default --flavor m1.tiny --image user --nic net-id=$NET_ID demo
 
 tripleo wait_for 10 5 neutron port-list -f csv -c id --quote none \| grep id
 PORT=$(neutron port-list -f csv -c id --quote none | tail -n1)
 FLOATINGIP=$(neutron floatingip-create ext-net --port-id "${PORT//[[:space:]]/}" | awk '$2=="floating_ip_address" {print $4}')
 
-neutron security-group-rule-create default --protocol icmp \
+SECGROUPID=$(neutron security-group-list -f csv --quote none | grep default | head -n 1 | cut -d, -f1)
+neutron security-group-rule-create $SECGROUPID --protocol icmp \
     --direction ingress --port-range-min 8 --port-range-max 8
-neutron security-group-rule-create default --protocol tcp \
+neutron security-group-rule-create $SECGROUPID --protocol tcp \
     --direction ingress --port-range-min 22 --port-range-max 22
 
 tripleo wait_for 30 10 ping -c 1 $FLOATINGIP
+
+TEST_CINDER=${TEST_CINDER:-""}
+
+if [ -z "$TEST_CINDER" ]; then
+    echo Not testing cinder.
+    exit 0
+fi
+
+CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
+
+nova volume-attach demo $CINDER_VOLUME_ID
+
+ssh-keygen -R $FLOATINGIP
+tripleo wait_for 30 10 ssh -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls /dev/vdb
+
+ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
+o
+w
+EOF
+
+ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
+n
+p
+1
+
+
+w
+EOF
+
+ssh -tt fedora@$FLOATINGIP sudo mkfs.ext4 /dev/vdb1
+
+ssh -tt fedora@$FLOATINGIP sudo mount /dev/vdb1 /mnt
+ssh -tt fedora@$FLOATINGIP sudo umount /mnt
