@@ -19,10 +19,12 @@ source $TRIPLEO_ROOT/overcloudrc
 export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
-tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
+# tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
-glance image-create --name user --public --disk-format qcow2 \
-    --container-format bare --file fedora-user.qcow2
+if ! glance image-show user 2>&1 1>/dev/null; then
+	glance image-create --name user --public --disk-format qcow2 \
+	    --container-format bare --file fedora-user.qcow2
+fi
 
 tripleo wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| grep 'enabled.*\ up\ '
 
@@ -32,44 +34,48 @@ tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host 
 
 NET_ID=$(neutron net-list -f csv --quote none | grep default-net | cut -d, -f1)
 
-tripleo user-config
+if ! nova keypair-show default 2>&1 1>/dev/null; then
+	tripleo user-config
+fi
 
 nova boot --key-name default --flavor m1.tiny --image user --nic net-id=$NET_ID demo
 
+sleep 3
+
+PRIVATEIP=$(nova list | grep demo | awk -F"default-net=" '{print $2}' | awk '{print $1}')
+
 tripleo wait_for 10 5 neutron port-list -f csv -c id --quote none \| grep id
-PORT=$(neutron port-list -f csv -c id --quote none | tail -n1)
+PORT=$(neutron port-list | grep $PRIVATEIP | cut -d'|' -f2)
 FLOATINGIP=$(neutron floatingip-create ext-net --port-id "${PORT//[[:space:]]/}" | awk '$2=="floating_ip_address" {print $4}')
 
 SECGROUPID=$(neutron security-group-list -f csv --quote none | grep default | head -n 1 | cut -d, -f1)
 neutron security-group-rule-create $SECGROUPID --protocol icmp \
-    --direction ingress --port-range-min 8 --port-range-max 8
+    --direction ingress --port-range-min 8 --port-range-max 8 || true
 neutron security-group-rule-create $SECGROUPID --protocol tcp \
-    --direction ingress --port-range-min 22 --port-range-max 22
+    --direction ingress --port-range-min 22 --port-range-max 22 || true
 
 tripleo wait_for 30 10 ping -c 1 $FLOATINGIP
 
-TEST_CINDER=${TEST_CINDER:-""}
-
-if [ -z "$TEST_CINDER" ]; then
-    echo Not testing cinder.
-    exit 0
-fi
-
 tripleo wait_for 10 10 nova list \| grep ACTIVE
 
-CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
-
-nova volume-attach demo $CINDER_VOLUME_ID
-
 ssh-keygen -R $FLOATINGIP
-tripleo wait_for 30 10 ssh -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls /dev/vdb
+tripleo wait_for 30 10 ssh -o BatchMode=yes -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls
 
-ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
+echo Compute test successful!
+
+if [ $BLOCKSTORAGESCALE -gt 0 ]; then
+    CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
+
+    nova volume-attach demo $CINDER_VOLUME_ID
+
+    tripleo wait_for 30 10 ssh -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls /dev/vdb
+
+    ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
 o
 w
 EOF
 
-ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
+    ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
 n
 p
 1
@@ -78,7 +84,24 @@ p
 w
 EOF
 
-ssh -tt fedora@$FLOATINGIP sudo mkfs.ext4 /dev/vdb1
+    ssh -tt fedora@$FLOATINGIP sudo mkfs.ext4 /dev/vdb1
 
-ssh -tt fedora@$FLOATINGIP sudo mount /dev/vdb1 /mnt
-ssh -tt fedora@$FLOATINGIP sudo umount /mnt
+    ssh -tt fedora@$FLOATINGIP sudo mount /dev/vdb1 /mnt
+    ssh -tt fedora@$FLOATINGIP sudo umount /mnt
+
+    echo Cinder test successful!
+fi
+
+if [ $SWIFTSTORAGESCALE -gt 0 ]; then
+    tmpfile=$(mktemp)
+    echo SWIFTTEST > $tmpfile
+
+    swift upload test $tmpfile
+    swiftfile=$(swift list test)
+
+    if [ ! $(swift download --output - test $swiftfile) == "SWIFTTEST" ]; then
+        echo Swift test failed!
+    fi
+
+    echo Swift test successful!
+fi
