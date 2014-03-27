@@ -40,6 +40,8 @@ EOF
 
 # Need to restart tuskar after above patch
 sudo systemctl restart openstack-tuskar-api
+# Wait for it to come back
+sleep 3
 
 # Define the interface that will be bridged onto the Neutron defined
 # network.

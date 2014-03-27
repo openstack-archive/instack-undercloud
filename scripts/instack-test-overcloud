@@ -55,6 +55,8 @@ if [ -z "$TEST_CINDER" ]; then
     exit 0
 fi
 
+tripleo wait_for 10 10 nova list \| grep ACTIVE
+
 CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
 
 nova volume-attach demo $CINDER_VOLUME_ID
