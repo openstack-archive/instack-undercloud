@@ -37,7 +37,7 @@ libvirt xml for the domain (you may need to adjust slot as needed):
         <interface type='network'>
           <source network='brbm'/>
           <model type='virtio'/>
-          <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
         </interface>
 
 
