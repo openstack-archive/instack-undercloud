@@ -14,7 +14,9 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
-sudo yum -y install python-pip
+# TODO: There are still 1 or 2 things using pip and git.
+# Once these are cleaned up, this line can be removed.
+sudo yum -y install python-pip git
 
 # Workaround for:
 # https://bugzilla.redhat.com/show_bug.cgi?id=1066983
