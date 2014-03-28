@@ -4,12 +4,12 @@ set -eux
 
 export DIB_INSTALLTYPE_nova=package
 export DIB_INSTALLTYPE_heat=package
-
 export DIB_INSTALLTYPE_keystone=package
 export DIB_INSTALLTYPE_neutron=package
 export DIB_INSTALLTYPE_glance=package
 export DIB_INSTALLTYPE_swift=package
 export DIB_INSTALLTYPE_cinder=package
+export DIB_INSTALLTYPE_novnc=package
 
 # Use packages for the clients
 export DIB_INSTALLTYPE_python_cinderclient=package
