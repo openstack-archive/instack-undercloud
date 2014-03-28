@@ -37,9 +37,6 @@ sudo patch -f /usr/lib/python2.7/site-packages/tripleo_heat_merge/merge.py << EO
          key, value = item.split('=')
 EOF
 
-# Restart to pick up above patch
-sudo systemctl restart openstack-tuskar-api
-
 # Define the interface that will be bridged onto the Neutron defined
 # network.
 NeutronPublicInterface=${NeutronPublicInterface:-eth0}
