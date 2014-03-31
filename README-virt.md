@@ -14,10 +14,11 @@ instack-undercloud virt setup
 
         sudo yum -y install instack-undercloud
 
-1. Run script to setup your virtual environment.
+1. Run script to install required dependencies
 
-        # you may need to ensure openvswtich service is installed and running for the
-        # next script to run properly.
+        instack-install-dependencies
+        
+1. Run script to setup your virtual environment.
 
         export NODE_DISK=30
         instack-virt-setup
