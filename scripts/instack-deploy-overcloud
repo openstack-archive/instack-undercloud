@@ -62,7 +62,7 @@ if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
         > overcloud.yaml
     OVERCLOUD_YAML_PATH=overcloud.yaml
 else
-    sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=1 BLOCKSTORAGESCALE=1 SWIFTSTORAGESCALE=0
+    sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
     OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud.yaml
 fi
 
