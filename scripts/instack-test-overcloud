@@ -2,6 +2,9 @@
 
 set -eux
 
+BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
+SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+
 if [ -d /etc/tripleo ]; then
     TRIPLEO_ROOT=/etc/tripleo
 else
