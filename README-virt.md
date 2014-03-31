@@ -17,7 +17,7 @@ instack-undercloud virt setup
 1. Run script to install required dependencies
 
         instack-install-dependencies
-        
+
 1. Run script to setup your virtual environment.
 
         export NODE_DISK=30

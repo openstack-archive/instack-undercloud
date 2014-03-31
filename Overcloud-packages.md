@@ -41,6 +41,14 @@ portion of the virtual power ssh key into the virtual power user's
         # FLOATING_IP_CIDR: floating ip network cidr
         instack-deploy-overcloud-tuskarcli
 
+   > ## Scailing
+   > To scale the Compute, Block Storage or Swift Storage nodes, you can
+   > override the default values from the deploy-overcloud scripts in your
+   > rc file.  The defaults for those scripts are:
+   >    COMPUTESCALE=${COMPUTESCALE:-1}
+   >    BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
+   >    SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+
 1. Run the test-overcloud script to launch a cirros image on the overcloud and
 wait until it pings successfully
 
