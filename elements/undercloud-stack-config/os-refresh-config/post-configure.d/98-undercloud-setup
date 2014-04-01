@@ -8,6 +8,7 @@ if [ -f $OK_FILE ]; then
     exit
 fi
 
+source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
 # Add scripts directory from tripleo-incubator to the path.
@@ -46,15 +47,15 @@ sleep 20
 
 export UNDERCLOUD_IP=$(os-apply-config --key local-ipv4 --type netaddress)
 
-tripleo init-keystone -p unset unset \
+tripleo init-keystone -p $UNDERCLOUD_ADMIN_PASSWORD $UNDERCLOUD_ADMIN_TOKEN \
     $UNDERCLOUD_IP admin@example.com root@$UNDERCLOUD_IP
 
 tripleo setup-endpoints \
     $UNDERCLOUD_IP \
-    --glance-password unset \
-    --heat-password unset \
-    --neutron-password unset \
-    --nova-password unset
+    --glance-password $UNDERCLOUD_GLANCE_PASSWORD \
+    --heat-password $UNDERCLOUD_HEAT_PASSWORD \
+    --neutron-password $UNDERCLOUD_NEUTRON_PASSWORD \
+    --nova-password $UNDERCLOUD_NOVA_PASSWORD
 
 keystone role-create --name heat_stack_user
 
