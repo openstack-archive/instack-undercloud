@@ -43,9 +43,7 @@ sudo yum install -y patch
 # TODO: move as a req in the rpm spec?
 sudo yum -y install redhat-lsb
 
-INSTACK_DIR=$(dirname $0)/..
-
-source $INSTACK_DIR/instack.answers
+source ~/instack.answers
 
 export LOCAL_IP
 export DNSMASQ_START

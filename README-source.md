@@ -18,14 +18,11 @@ instack-undercloud via source
 2. Create and edit your answers file. The descriptions of the parameters that
    can be set are in the sample answers file.
 
-        cd instack-undercloud
-
+        # Answers file must exist in home directory for now
         # Use either the baremetal or virt sample answers file
-        # cp instack-baremetal.answers.sample instack.answers
-        # cp instack-virt.answers.sample instack.answers
-
-        # Return back to directory where instack was cloned
-        cd ..
+        # cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
+        # cp instack-undercloud/instack-virt.answers.sample ~/instack.answers
+        # Perform any answer file edits
 
 4. Add the instack-undercloud scripts directory to your $PATH for convenience
 
