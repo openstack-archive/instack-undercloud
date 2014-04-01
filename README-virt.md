@@ -18,6 +18,8 @@ instack-undercloud virt setup
 
         instack-install-dependencies
 
+   After running this command, you will need to log out and log back in for the changes to be applied.
+
 1. Run script to setup your virtual environment.
 
         export NODE_DISK=30
