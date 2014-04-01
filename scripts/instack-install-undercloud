@@ -14,26 +14,20 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
-sudo yum -y install python-pip
-
 # Workaround for:
 # https://bugzilla.redhat.com/show_bug.cgi?id=1066983
 sudo yum -y update vim-minimal
 
+# Need pip and git (due to pbr) to install instack since this is the source
+# install.
+sudo yum -y install python-pip git
 pushd instack
   sudo pip install -e .
 popd
 
-# Upstream dib is still needed due to environmentd patch
-if [ ! -d diskimage-builder ]; then
-  git clone https://git.openstack.org/openstack/diskimage-builder
-  pushd diskimage-builder
-    git remote add github-slagle https://github.com/slagle/diskimage-builder.git
-    git fetch github-slagle
-    git checkout environmentd
-    sudo python setup.py install
-  popd
-fi
+# Must use updates-testing version of diskimage-builder (0.1.9) until it gets
+# pushed to stable.
+sudo yum -y --enablerepo=updates-testing update diskimage-builder
 
 sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
@@ -42,13 +36,15 @@ sudo yum install -y openstack-tripleo-heat-templates
 # TODO include tuskar-ui when available
 sudo yum install -y openstack-tuskar
 sudo yum install -y python-tuskarclient
+# tuskar requires python-ipaddr, but it isn't a dep in the rpm
+sudo yum install -y python-ipaddr
+# Install patch so that we can patch merge.py for tuskar
+sudo yum install -y patch
 
-# Needed by source-repositories
-sudo yum -y install tar
+# TODO: move as a req in the rpm spec?
+sudo yum -y install redhat-lsb
 
-INSTACK_DIR=$(dirname $0)/..
-
-source $INSTACK_DIR/instack.answers
+source ~/instack.answers
 
 export LOCAL_IP
 export DNSMASQ_START
@@ -64,15 +60,11 @@ export NETWORK_CIDR
 export NETWORK_GATEWAY
 
 sudo -E instack \
-  -p diskimage-builder/elements/ \
+  -p /usr/share/diskimage-builder/elements/ \
      /usr/share/tripleo-image-elements/ \
      instack-undercloud/elements \
   -j instack-undercloud/json-files/fedora-20-undercloud-packages.json
 
 sudo os-refresh-config
-
-# Install the dib rpm, just so that we can now use it for disk-image-get-kernel
-# when we run load-image.
-sudo yum -y install diskimage-builder
 
 echo "install-undercloud Complete!"
