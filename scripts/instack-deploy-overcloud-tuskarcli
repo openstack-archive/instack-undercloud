@@ -2,7 +2,7 @@
 
 set -eux
 
-ify[ -z "$OS_AUTH_URL" ]; then
+if [ -z "$OS_AUTH_URL" ]; then
     echo "You must source a stackrc file for the Undercloud."
     exit 1
 fi
