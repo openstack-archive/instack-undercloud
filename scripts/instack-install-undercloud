@@ -14,14 +14,12 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
-# TODO: There are still 1 or 2 things using pip and git.
-# Once these are cleaned up, this line can be removed.
-sudo yum -y install python-pip git
-
 # Workaround for:
 # https://bugzilla.redhat.com/show_bug.cgi?id=1066983
 sudo yum -y update vim-minimal
 
+# Need pip to install instack since this is the source install.
+sudo yum -y install python-pip
 pushd instack
   sudo pip install -e .
 popd
@@ -42,8 +40,8 @@ sudo yum install -y python-ipaddr
 # Install patch so that we can patch merge.py for tuskar
 sudo yum install -y patch
 
-# Needed by source-repositories
-sudo yum -y install tar
+# TODO: move as a req in the rpm spec?
+sudo yum -y install redhat-lsb
 
 INSTACK_DIR=$(dirname $0)/..
 
