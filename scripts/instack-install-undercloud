@@ -42,7 +42,7 @@ sudo yum install -y python-ipaddr
 sudo yum install -y patch
 
 # TODO: move as a req in the rpm spec?
-sudo yum -y install redhat-lsb
+sudo yum -y install redhat-lsb-core
 
 source ~/instack.answers
 
