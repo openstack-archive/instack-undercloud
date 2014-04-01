@@ -25,6 +25,14 @@ context = {
     'DHCP_END': os.environ.get('DHCP_END', '192.0.2.24'),
     'NETWORK_CIDR': os.environ.get('NETWORK_CIDR', '192.0.2.0/24'),
     'NETWORK_GATEWAY': os.environ.get('NETWORK_GATEWAY', '192.0.2.1'),
+    'UNDERCLOUD_DB_PASSWORD': os.environ.get('UNDERCLOUD_DB_PASSWORD', 'unset'),
+    'UNDERCLOUD_ADMIN_TOKEN': os.environ.get('UNDERCLOUD_ADMIN_TOKEN', 'unset'),
+    'UNDERCLOUD_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_ADMIN_PASSWORD', 'unset'),
+    'UNDERCLOUD_GLANCE_PASSWORD': os.environ.get('UNDERCLOUD_GLANCE_PASSWORD', 'unset'),
+    'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
+    'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
+    'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
+    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
 }
 
 if "SSH_KEY" in os.environ:
