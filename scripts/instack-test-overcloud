@@ -11,7 +11,10 @@ else
     TRIPLEO_ROOT=/opt/stack/tripleo-incubator
 fi
 
-source /etc/sysconfig/stackrc
+if [ -z "$OS_AUTH_URL" ]; then
+    echo "You must source a stackrc file for the Undercloud."
+    exit 1
+fi
 
 source tripleo-overcloud-passwords
 

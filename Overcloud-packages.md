@@ -10,6 +10,11 @@ environment variables. The variables you can set are documented below before
 the calls to the script. For their default values, see the deploy-overcloud
 script itself.
 
+1. You must source the contents of `/root/stackrc` into your shell before running the 
+   instack-* scripts that interact with the undercloud and overcloud. In order to do that
+   you can copy that file to a more convenient location or use sudo to cat the file and copy/paste
+   the lines into your shell environment.
+
 1. Run the prepare-for-overcloud script to get setup. This script will
 re-downloading images if they already exist in the current working directory.
 If you want to force a redownload of the images, delete them first.
