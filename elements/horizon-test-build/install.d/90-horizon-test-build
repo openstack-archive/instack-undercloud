@@ -12,4 +12,6 @@ pushd /usr/share/openstack-dashboard
 python manage.py compress --force
 popd
 
+sed -i 's/^ALLOWED_HOSTS.*/ALLOWED_HOSTS = ["*"]/' /etc/openstack-dashboard/local_settings 
 
+systemctl restart httpd
