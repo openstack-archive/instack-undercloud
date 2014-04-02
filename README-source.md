@@ -34,6 +34,10 @@ instack-undercloud via source
 
         instack-install-undercloud
 
+5. Initialise the tuskar database and restart the service
+
+        sudo tuskar-dbsync --config-file /etc/tuskar/tuskar.conf
+        sudo service openstack-tuskar-api restart
 
 That completes the Undercloud install. To proceed with deploying and using the
 Overcloud see [Overcloud-packages](Overcloud-packages.md).
