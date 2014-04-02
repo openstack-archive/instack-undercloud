@@ -58,6 +58,7 @@ export DHCP_START
 export DHCP_END
 export NETWORK_CIDR
 export NETWORK_GATEWAY
+export SSH_KEY
 
 sudo -E instack \
   -p /usr/share/diskimage-builder/elements/ \
