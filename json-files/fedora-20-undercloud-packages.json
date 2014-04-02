@@ -25,7 +25,8 @@
       "fedora-updates-testing-repository",
       "qpidd",
       "tuskar-config",
-      "keystone-1289935"
+      "keystone-1289935",
+      "horizon-test-build"
     ],
     "hook": [
       "extra-data",
