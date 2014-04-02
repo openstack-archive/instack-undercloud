@@ -32,7 +32,6 @@ context = {
     'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
     'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
     'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
-    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
 }
 
 if "SSH_KEY" in os.environ:
