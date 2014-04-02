@@ -58,3 +58,43 @@ NETWORK_CIDR=192.0.2.0/24
 ### NETWORK_GATEWAY ###
 # Network gateway for neturon managed network for Overcloud instances
 NETWORK_GATEWAY=192.0.2.1
+
+### Database password ###
+# Password used for MySQL databases
+# If left unset, one will be automatically generated
+UNDERCLOUD_DB_PASSWORD=
+
+### Admin Token ###
+# Keystone admin token
+# If left unset, one will be automatically generated
+UNDERCLOUD_ADMIN_TOKEN=
+
+### Admin password ###
+# Keystone admin password
+# If left unset, one will be automatically generated
+UNDERCLOUD_ADMIN_PASSWORD=
+
+### Glance password ###
+# Glance service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_GLANCE_PASSWORD=
+
+### Heat password ###
+# Heat service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_HEAT_PASSWORD=
+
+### Neutron password ###
+# Neutron service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_NEUTRON_PASSWORD=
+
+### Nova password ###
+# Nova service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_NOVA_PASSWORD=
+
+### Ironic password ###
+# Ironic service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_IRONIC_PASSWORD=

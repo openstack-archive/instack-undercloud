@@ -2,7 +2,11 @@
 
 set -eux
 
-source /etc/sysconfig/stackrc
+OS_AUTH_URL=${OS_AUTH_URL:-""}
+if [ -z "$OS_AUTH_URL" ]; then
+    echo "You must source a stackrc file for the Undercloud."
+    exit 1
+fi
 
 # generate ssh authentication keys if they don't exist
 if [ ! -f ~/.ssh/id_rsa ]; then
