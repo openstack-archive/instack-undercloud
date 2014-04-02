@@ -4,3 +4,4 @@ set -eux
 
 cp $(dirname $0)/../tuskar.conf /etc/tuskar/tuskar.conf
 chown root:root /etc/tuskar/tuskar.conf
+sed -i "s/%%ADMINPASSWORD%%/$UNDERCLOUD_ADMIN_PASSWORD/" /etc/tuskar/tuskar.conf
