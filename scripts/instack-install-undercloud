@@ -25,10 +25,9 @@ pushd instack
   sudo pip install -e .
 popd
 
-# Must use updates-testing version of diskimage-builder (0.1.9) until it gets
-# pushed to stable.
-sudo yum -y --enablerepo=updates-testing install diskimage-builder
-
+# Source specific. Must install dependent packages that would have previously
+# been installed.
+sudo yum install -y diskimage-builder
 sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
 sudo yum install -y openstack-tripleo-heat-templates
