@@ -21,6 +21,9 @@ popd
 
 service httpd restart
 
+os-svc-enable -n httpd
+os-svc-enable -n openstack-tuskar-api
+
 tuskar-dbsync --config-file /etc/tuskar/tuskar.conf
 service openstack-tuskar-api restart
 sleep 5
