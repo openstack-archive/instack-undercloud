@@ -14,17 +14,9 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
-# Workaround for:
+# TODO: Workaround for:
 # https://bugzilla.redhat.com/show_bug.cgi?id=1066983
 sudo yum -y update vim-minimal
-
-# Must use updates-testing version of diskimage-builder (0.1.9) until it gets
-# pushed to stable.
-sudo yum -y --enablerepo=updates-testing install diskimage-builder
-
-sudo yum install -y openstack-tripleo
-sudo yum install -y openstack-tripleo-image-elements
-sudo yum install -y openstack-tripleo-heat-templates
 
 # TODO include tuskar-ui when available
 sudo yum install -y openstack-tuskar

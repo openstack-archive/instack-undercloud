@@ -22,7 +22,6 @@
       "neutron-dhcp-agent",
       "undercloud-stack-config",
       "selinux-permissive",
-      "fedora-updates-testing-repository",
       "qpidd",
       "tuskar-config",
       "keystone-1289935",

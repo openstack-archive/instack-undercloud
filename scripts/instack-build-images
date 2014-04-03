@@ -11,20 +11,12 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
-# Must use updates-testing version of diskimage-builder (0.1.9) until it gets
-# pushed to stable.
-sudo yum --enablerepo=updates-testing update diskimage-builder
-
 # openstack-m repo enabled
 sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm || true
 sudo yum -y install yum-utils
 sudo yum-config-manager --enable fedora-openstack-m-testing
 # install t-i-e from rpm
 sudo yum -y install openstack-tripleo-image-elements
-
-# Currently only needed so we can use the fedora-updates-testing-repository
-# element.
-sudo yum -y install instack-undercloud
 
 export DIB_INSTALLTYPE_nova=package
 export DIB_INSTALLTYPE_heat=package
@@ -47,7 +39,7 @@ export DIB_INSTALLTYPE_os_collect_config=package
 export DIB_INSTALLTYPE_os_refresh_config=package
 export DIB_INSTALLTYPE_os_apply_config=package
 
-export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud:instack-undercloud/elements
+export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud
 
 if [ ! -f deploy-ramdisk.initramfs -o \
      ! -f deploy-ramdisk.kernel ]; then
@@ -66,7 +58,6 @@ if [ ! -f overcloud-control.qcow2 ]; then
         neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
         baremetal \
         fedora-rdo-icehouse \
-        fedora-updates-testing-repository \
         horizon \
         qpidd \
         keystone-1289935 \
@@ -80,7 +71,6 @@ if [ ! -f overcloud-compute.qcow2 ]; then
         $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse \
-        fedora-updates-testing-repository \
         2>&1 | tee dib-overcloud-compute.log
 fi
 
@@ -91,7 +81,6 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         $NODE_DIST pip-cache cinder-volume neutron-openvswitch-agent os-collect-config \
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse \
-        fedora-updates-testing-repository \
         2>&1 | tee dib-overcloud-cinder-volume.log
 fi
 
@@ -102,7 +91,6 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         $NODE_DIST pip-cache swift-storage neutron-openvswitch-agent os-collect-config \
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse \
-        fedora-updates-testing-repository \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
 
