@@ -27,6 +27,9 @@ sudo yum install -y python-ipaddr
 # TODO: move as a req in the rpm spec?
 sudo yum -y install redhat-lsb-core
 
+# TODO: should move as a req in rpm spec, installs semanage
+sudo yum -y install policycoreutils-python
+
 source ~/instack.answers
 
 export LOCAL_IP
