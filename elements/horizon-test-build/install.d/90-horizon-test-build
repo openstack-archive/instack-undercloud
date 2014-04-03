@@ -2,10 +2,12 @@
 
 set -eux
 
+yum -y erase python-django14 || true
+yum -y install python-django
 yum -y install \
     http://kojipkgs.fedoraproject.org//packages/python-django-horizon/2014.1/0.9.b3.fc21/noarch/openstack-dashboard-2014.1-0.9.b3.fc21.noarch.rpm \
     http://kojipkgs.fedoraproject.org//packages/python-django-horizon/2014.1/0.9.b3.fc21/noarch/openstack-dashboard-theme-2014.1-0.9.b3.fc21.noarch.rpm \
-    http://kojipkgs.fedoraproject.org//packages/python-django-horizon/2014.1/0.9.b3.fc21/noarch/python-django-horizon-2014.1-0.9.b3.fc21.noarch.rpm
+    http://kojipkgs.fedoraproject.org//packages/python-django-horizon/2014.1/0.9.b3.fc21/noarch/python-django-horizon-2014.1-0.9.b3.fc21.noarch.rpm || true
 
 
 pushd /usr/share/openstack-dashboard
