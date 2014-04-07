@@ -51,7 +51,7 @@ sudo -E instack \
   -p /usr/share/diskimage-builder/elements/ \
      /usr/share/tripleo-image-elements/ \
      /usr/share/instack-undercloud/ \
-  -j /usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json
+  -j /usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json \
   --os-refresh-config
 
 echo "$0 complete!"
