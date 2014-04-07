@@ -1,16 +1,19 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 LOGFILE=~/.instack/install-undercloud.log
-
-mkdir -p ~/.instack
 
 exec > >(tee $LOGFILE)
 exec 2>&1
 
+echo "Running $0"
+
+mkdir -p ~/.instack
+
 # generate ssh authentication keys if they don't exist
 if [ ! -f ~/.ssh/id_rsa ]; then
+  echo "Generating an ssh key..."
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
@@ -18,18 +21,7 @@ fi
 # https://bugzilla.redhat.com/show_bug.cgi?id=1066983
 sudo yum -y update vim-minimal
 
-# TODO include tuskar-ui when available
-sudo yum install -y openstack-tuskar
-sudo yum install -y python-tuskarclient
-# tuskar requires python-ipaddr, but it isn't a dep in the rpm
-sudo yum install -y python-ipaddr
-
-# TODO: move as a req in the rpm spec?
-sudo yum -y install redhat-lsb-core
-
-# TODO: should move as a req in rpm spec, installs semanage
-sudo yum -y install policycoreutils-python
-
+echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
 export LOCAL_IP
@@ -60,7 +52,6 @@ sudo -E instack \
      /usr/share/tripleo-image-elements/ \
      /usr/share/instack-undercloud/ \
   -j /usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json
+  --os-refresh-config
 
-sudo os-refresh-config
-
-echo "install-undercloud Complete!"
+echo "$0 complete!"
