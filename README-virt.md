@@ -4,7 +4,7 @@ instack-undercloud virt setup
 You should select a host machine with at least 12G of memory and 200G disk space. The virt setup creates 5 virtual
 machines consisting of 2G of memory and 30G of disk space each.  If you do not plan to deploy Block Storage or Swift
 Storage nodes, you can delete those virtual machines and require less space accordingly.  Most of the virtual machine
-disk files are thinly provisioned and won't take up the full 30G.  The undercloud is not thinly provisioned and will is
+disk files are thinly provisioned and won't take up the full 30G.  The undercloud is not thinly provisioned and is
 completely pre-allocated.
 
 If you're connecting to the virt host remotely from ssh, you will need to use the -t flag to force pseudo-tty
@@ -44,7 +44,7 @@ Some recommended default environment variables before starting:
 
         sudo yum -y install instack-undercloud
 
-1. Run script to install required dependencies
+1. Install required dependencies
 
         sudo yum install -y libguestfs-tools
         source /usr/libexec/openstack-tripleo/devtest_variables.sh
@@ -78,6 +78,13 @@ Some recommended default environment variables before starting:
    file later.
 
          for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i) " "; done; echo
+
+5. Log into your instack virtual machine.  Create the virtual-power-key and copy it to the virt host.  The user in
+   ssh-copy-id should match the VIRTUAL_POWER_USER and the ip should match the VIRTUAL_POWER_HOST in your
+   instack.answers file.
+
+        ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
+        ssh-copy-id -i virtual-power-key.pub stack@192.168.122.1
 
 Note that you don't have to use the pre-created instack vm and could instead create a new one via some other method
 (virt-install, virt-clone, etc). If you do so however make sure all the NIC interfaces are set to use virtio, and also

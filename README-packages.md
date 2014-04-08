@@ -24,12 +24,6 @@ instack vm is already configured with passwordless sudo.
         # cp /usr/share/doc/instack-undercloud/instack-virt.answers.sample ~/instack.answers
         # Perform any answer file edits
 
-5. Create the virtual-power-key and copy it to the virt host.  The user in ssh-copy-id should match
-   the VIRTUAL_POWER_USER and the ip should match the VIRTUAL_POWER_HOST in your instack.answers file.
-
-        ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
-        ssh-copy-id -i virtual-power-key.pub stack@192.168.122.1
-
 3. Run script to install undercloud. The script will produce a lot of output on
    the sceen. It also logs to ~/.instack/install-undercloud.log. You should see
    `install-undercloud Complete!` at the end of a successful run.

@@ -45,7 +45,7 @@ portion of the virtual power ssh key into the virtual power user's
         # FLOATING_IP_END: floating ip allocation end
         # FLOATING_IP_CIDR: floating ip network cidr
 
-   ####Scailing
+   ####Scaling
    To scale the Compute, Block Storage or Swift Storage nodes, you can
    override the default values from the deploy-overcloud scripts in your
    rc file.  The defaults for those scripts are:
@@ -63,7 +63,7 @@ portion of the virtual power ssh key into the virtual power user's
         #tuskar
         instack-deploy-tuskar-cli
 
-1. Run the test-overcloud script to launch a cirros image on the overcloud and
+1. Run the test-overcloud script to launch a Fedora image on the overcloud and
 wait until it pings successfully
 
         instack-test-overcloud
