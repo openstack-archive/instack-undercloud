@@ -54,12 +54,10 @@ Some recommended default environment variables before starting:
    use virt-manager or boxes to visually manage the virtual machines created in the next step, this would be a good time
    to install those tools now.
 
-
-1. Run script to setup your virtual environment. 
+1. Run script to setup your virtual environment.
 
         export NODE_DISK=30
         instack-virt-setup
-
 
    You should now have a vm called instack that you can use for the instack-undercloud installation that contains a minimal
    install of Fedora 20 x86_64. The instack vm contains a user "stack" that uses the password "stack" and is granted
@@ -72,7 +70,6 @@ Some recommended default environment variables before starting:
    file later.
 
          for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i) " "; done; echo
-
 
 Note that you don't have to use the pre-created instack vm and could instead create a new one via some other method
 (virt-install, virt-clone, etc). If you do so however make sure all the NIC interfaces are set to use virtio, and also
