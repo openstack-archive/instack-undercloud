@@ -68,8 +68,8 @@ Some recommended default environment variables before starting:
    You'll need to start the instack virtual machine and obtain its IP address.  You can use your preferred virtual
    machine management software or follow the steps below.
 
-      virsh start instack
-      cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac instack) | awk '{print $3;}'
+        virsh start instack
+        cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac instack) | awk '{print $3;}'
 
 1. Get MAC addresses
 
