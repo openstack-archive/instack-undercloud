@@ -1,4 +1,4 @@
-%global commit 39c79d19758443b81d7e1df1f017ff977ff85bbb
+%global commit 104c37335e94e09e6f2a0139fa27029554d9a420
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global alphatag 20140408git
 
@@ -65,6 +65,7 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 %changelog
 * Tue Apr 08 2014 James Slagle <jslagle@redhat.com> 0-0.10.20140408git
 - Build with tito.
+- Update to remove horizon test builds
 
 * Mon Apr 07 2014 James Slagle <jslagle@redhat.com> 0-0.9.20140407git
 - Add Requires for tuskar, redhat-lsb-core, and policycoreutils-python
