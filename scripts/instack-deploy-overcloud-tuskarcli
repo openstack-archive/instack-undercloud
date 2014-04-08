@@ -41,10 +41,11 @@ flavor_id=$(nova flavor-show baremetal | grep '^| id ' | cut -d '|' -f3 | tr -d 
 controller_role_id=$(tuskar overcloud-role-list | grep overcloud-control | cut -d '|' -f2 | tr -d ' ')
 compute_role_id=$(tuskar overcloud-role-list | grep overcloud-compute | cut -d '|' -f2 | tr -d ' ')
 blockstorage_role_id=$(tuskar overcloud-role-list | grep overcloud-cinder-volume | cut -d '|' -f2 | tr -d ' ')
+swiftstorage_role_id=$(tuskar overcloud-role-list | grep overcloud-swift-storage | cut -d '|' -f2 | tr -d ' ')
 
 for id in $controller_role_id $compute_role_id $blockstorage_role_id; do
     tuskar overcloud-role-update \
-        -f $flavor_id
+        -f $flavor_id \
         $id
 done
 
@@ -70,7 +71,8 @@ tuskar overcloud-create overcloud \
     --attribute "NeutronDnsmasqOptions=dhcp-option-force=26,1400" \
     --role-count $controller_role_id=1 \
     --role-count $compute_role_id=$COMPUTESCALE \
-    --role-count $blockstorage_role_id=$BLOCKSTORAGESCALE;
+    --role-count $blockstorage_role_id=$BLOCKSTORAGESCALE \
+    --role-count $swiftstorage_role_id=$SWIFTSTORAGESCALE
 
 tripleo wait_for 220 10 stack-ready overcloud
 
