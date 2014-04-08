@@ -40,4 +40,8 @@ tuskar overcloud-role-create blockstorage \
     --description 'Block Storage Nodes' \
     --image-name 'overcloud-cinder-volume'
 
+tuskar overcloud-role-create swiftstorage \
+    --description 'Swift Storage Nodes' \
+    --image-name 'overcloud-swift-storage'
+
 touch $OK_FILE
