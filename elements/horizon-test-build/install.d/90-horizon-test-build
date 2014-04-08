@@ -6,6 +6,8 @@ set -eux
 # on the django import.
 yum -y erase python-django14 || true
 
+yum -y install openstack-dashboard openstack-dashboard-theme python-django-horizon
+
 pushd /usr/share/openstack-dashboard
 python manage.py compress --force
 popd
