@@ -63,6 +63,9 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Tue Apr 08 2014 James Slagle <jslagle@redhat.com> 0-0.9.20140403git
+- new package built with tito
+
 * Mon Apr 07 2014 James Slagle <jslagle@redhat.com> 0-0.9.20140407git
 - Add Requires for tuskar, redhat-lsb-core, and policycoreutils-python
 - Bump to latest from git
