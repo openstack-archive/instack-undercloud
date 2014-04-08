@@ -2,12 +2,27 @@
 
 set -ex
 
-source /usr/libexec/openstack-tripleo/devtest_variables.sh 
+source /usr/libexec/openstack-tripleo/devtest_variables.sh
 
 tripleo devtest_testenv.sh instackenv.json
 
+sudo virsh undefine --remove-all-storage seed
+
 export UNDERCLOUD_VM_NAME=instack
-virsh vol-create-as default $UNDERCLOUD_VM_NAME.qcow2 ${NODE_DISK:-30}G --format qcow2
+# root password will be removed before merging to master. this is just testing convenience.
+virt-builder fedora-20 \
+  --size 30G \
+  --format qcow2 \
+  -o $UNDERCLOUD_VM_NAME.qcow2 \
+  --root-password password:redhat \
+  --install net-tools,yum-utils,git \
+  --firstboot-command \
+    'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd' \
+  --firstboot-command \
+    'echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack'
+
+sudo cp $UNDERCLOUD_VM_NAME.qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2
+
 tripleo configure-vm \
     --name $UNDERCLOUD_VM_NAME \
     --image /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 \
@@ -15,4 +30,4 @@ tripleo configure-vm \
     --libvirt-nic-driver virtio \
     --arch x86_64 \
     --memory 2097152 \
-    --cpus 1 
+    --cpus 1

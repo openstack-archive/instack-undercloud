@@ -44,7 +44,6 @@ portion of the virtual power ssh key into the virtual power user's
         # FLOATING_IP_START: floating ip allocation start
         # FLOATING_IP_END: floating ip allocation end
         # FLOATING_IP_CIDR: floating ip network cidr
-        instack-deploy-overcloud-tuskarcli
 
    ####Scailing
    To scale the Compute, Block Storage or Swift Storage nodes, you can
@@ -54,6 +53,15 @@ portion of the virtual power ssh key into the virtual power user's
         COMPUTESCALE=${COMPUTESCALE:-1}
         BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
         SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+
+1. Deploy the overcloud using provided heat templates or use the tuskar cli. Run one of the following examples.
+
+        # heat
+        instack-deploy-overcloud
+
+
+        #tuskar
+        instack-deploy-tuskar-cli
 
 1. Run the test-overcloud script to launch a cirros image on the overcloud and
 wait until it pings successfully
