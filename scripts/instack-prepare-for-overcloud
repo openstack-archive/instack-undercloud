@@ -21,7 +21,7 @@ function download_image {
     local image_name=$1
 
     if [ ! -f $image_name ]; then
-        curl -L -O http://file.rdu.redhat.com/~jslagle/tripleo-images-rdo-icehouse/$image_name
+        curl -L -O http://repos.fedorapeople.org/repos/openstack-m/tripleo-images-rdo-icehouse/$image_name
     fi
 }
 
