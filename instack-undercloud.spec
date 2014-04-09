@@ -1,6 +1,6 @@
-%global commit 104c37335e94e09e6f2a0139fa27029554d9a420
+%global commit 92225b72f14750fb3ae9310880aad398814c5026
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global alphatag 20140408git
+%global alphatag 20140409git
 
 Name:		instack-undercloud
 Version:	0
