@@ -31,15 +31,11 @@ sudo yum install -y diskimage-builder
 sudo yum install -y openstack-tripleo
 sudo yum install -y openstack-tripleo-image-elements
 sudo yum install -y openstack-tripleo-heat-templates
-
-# TODO include tuskar-ui when available
 sudo yum install -y openstack-tuskar
+sudo yum install -y openstack-tuskar-ui
 sudo yum install -y python-tuskarclient
-# tuskar requires python-ipaddr, but it isn't a dep in the rpm
-sudo yum install -y python-ipaddr
-
-# TODO: move as a req in the rpm spec?
-sudo yum -y install redhat-lsb-core
+sudo yum install -y redhat-lsb-core
+sudo yum install -y policycoreutils-python
 
 source ~/instack.answers
 
@@ -74,4 +70,4 @@ sudo -E instack \
 
 sudo os-refresh-config
 
-echo "install-undercloud Complete!"
+echo "$0 complete!"
