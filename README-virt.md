@@ -13,19 +13,19 @@ allocation or enable notty via a $USER.notty file.
 Some recommended default environment variables before starting:
 
         # disk size in GB to set for each virtual machine created
-        NODE_DISK=30
+        export NODE_DISK=30
 
         # memory in MB allocated for each virtual machine created
-        NODE_MEM=2048
+        export NODE_MEM=2048
 
         # Operating system distribution to set for each virtual machine created
-        NODE_DIST=fedora
+        export NODE_DIST=fedora
 
         # CPU count assigned to each virtual machine created
-        NODE_CPU=1
+        export NODE_CPU=1
 
         # 64 bit architecture
-        NODE_ARCH=amd64
+        export NODE_ARCH=amd64
 
 1. Add export of LIVBIRT_DEFAULT_URI to your bashrc file.
 
@@ -44,7 +44,7 @@ Some recommended default environment variables before starting:
 
         sudo yum -y install instack-undercloud
 
-1. Install required dependencies
+1. Install required dependencies for virt
 
         sudo yum install -y libguestfs-tools
         source /usr/libexec/openstack-tripleo/devtest_variables.sh
@@ -86,16 +86,5 @@ Some recommended default environment variables before starting:
         ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
         ssh-copy-id -i virtual-power-key.pub stack@192.168.122.1
 
-Note that you don't have to use the pre-created instack vm and could instead create a new one via some other method
-(virt-install, virt-clone, etc). If you do so however make sure all the NIC interfaces are set to use virtio, and also
-manually add an additional interface to the vm by adding the following the libvirt xml for the domain (you may need to
-adjust slot as needed):
-
-        <interface type='network'>
-          <source network='brbm'/>
-          <model type='virtio'/>
-          <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
-        </interface>
-
-Once the vm is installed, start and logon to the vm, obtain the IP address and then return to the
-[README-packages](README-packages.md).
+Return to [README-packages](README-packages.md) to continue with installing the
+undercloud on the instack vm.
