@@ -31,7 +31,7 @@ installation.
 
 
 %prep
-%setup -q -n %{name}-%{commit}
+%setup -q -n %{name}-%{version}
 
 
 %install
