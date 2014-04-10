@@ -4,7 +4,7 @@
 
 Name:		instack-undercloud
 Version:	0
-Release:	0.10.%{alphatag}%{?dist}
+Release:	0.11.%{alphatag}%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
 Group:		Development/Languages
