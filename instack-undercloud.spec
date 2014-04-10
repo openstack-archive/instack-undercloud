@@ -1,6 +1,6 @@
 Name:		instack-undercloud
 Version:	0.0.1
-Release:	0%{?dist}
+Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
 Group:		Development/Languages
@@ -58,6 +58,10 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Thu Apr 10 2014 James Slagle <jslagle@redhat.com> 0.0.1-1
+- Update spec to no longer build from git commits (jslagle@redhat.com)
+- Update Building-RPMs.md (james.slagle@gmail.com)
+
 * Wed Apr 09 2014 James Slagle <jslagle@redhat.com> 0-0.10.20140409git
 - Update spec file (jslagle@redhat.com)
 - Update source install script (jslagle@redhat.com)
