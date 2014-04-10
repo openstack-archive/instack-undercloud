@@ -15,7 +15,7 @@ the main commands used for instack-undercloud.
 Releasing new builds
 --------------------
 
-First, tag a new release on master. This creates a git tag and takes care of bumping the version in the specfile and generatinga ChangeLog entries for you in the specfile. Follow the prompts from tito for
+First, tag a new release on master. This creates a git tag and takes care of bumping the version in the specfile and generating ChangeLog entries for you in the specfile. Follow the prompts from tito for
 applying the ChangeLog entries.
 
         tito tag
