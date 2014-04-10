@@ -12,6 +12,29 @@ repository.
 Most of what you need to know is in the tito documentation. What follows are
 the main commands used for instack-undercloud.
 
+Releasing new builds
+--------------------
+
+First, tag a new release on master. This creates a git tag and takes care of bumping the version in the specfile and generatinga ChangeLog entries for you in the specfile. Follow the prompts from tito for
+applying the ChangeLog entries.
+
+        tito tag
+        git push origin master
+        git push --tags
+
+Then build an rpm from the new tag for local testing.
+
+        tito build --rpm
+
+
+Then, build an rpm in Fedora koji from the new tag. Note that you will need to be an Owner/CC of the package in Fedora dist-git. This will update the sources in Fedora dist-git and perform a build in koji.
+
+        tito release fedora-git
+
+Note if you want to test some scratch builds first, you can use:
+
+        tito release fedora-git --scratch
+        
 Build a test rpm
 ----------------
 To build a test rpm from the latest git commit in your local repository:
@@ -20,31 +43,4 @@ To build a test rpm from the latest git commit in your local repository:
 
 The rpm is written to /tmp/tito. See the output from the above command for
 the exact path. You can then copy the rpm around (e.g., over to your
-undercloud) to test it out.
-
-Tag a new release on master
----------------------------
-Note that this takes care of bumping the version in the specfile and generating
-a ChangeLog entries for you in the specfile. Follow the prompts from tito for
-applying the ChangeLog entries.
-
-        tito tag
-        git push origin master
-        git push --tags
-
-Build an rpm from the latest tag
---------------------------------
-
-        tito build --rpm
-
-
-Build an rpm in Fedora koji from the latest tag
------------------------------------------------
-Note that you will need to be an Owner/CC of the package in Fedora dist-git.
-
-        tito release fedora-git
-
-Scratch build of an rpm in Fedora koji from the latest tag
-------------------------------------------------------------------
-
-        tito release fedora-git --scratch
+undercloud) to test it out.        
