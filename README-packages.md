@@ -1,8 +1,9 @@
 instack-undercloud via packages
 ===============================
 
-It helps when setting up the undercloud to use a user with passwordless sudo enabled.  The stack user in the default
-instack vm is already configured with passwordless sudo.
+The commands in these instructions should be applied to the baremetal machine or the instack virtual machine to create
+an undercloud.  It helps when setting up the undercloud to use a user with passwordless sudo enabled.  If you're using a
+virtual machine environment, the stack user in the default instack vm is already configured with passwordless sudo.
 
 1. Enable the openstack-m repository
 
