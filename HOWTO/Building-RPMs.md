@@ -22,12 +22,12 @@ applying the ChangeLog entries.
         git push origin master
         git push --tags
 
-Then build an rpm from the new tag for local testing.
+Build an rpm from the new tag for local testing.
 
         tito build --rpm
 
 
-Then, build an rpm in Fedora koji from the new tag. Note that you will need to be an Owner/CC of the package in Fedora dist-git. This will update the sources in Fedora dist-git and perform a build in koji. You will be prompted to confirm the diff and commit message of the git commit that is done in dist-git.
+Build an rpm in Fedora koji from the new tag. Note that you will need to be an Owner/CC of the package in Fedora dist-git. This will update the sources in Fedora dist-git and perform a build in koji. You will be prompted to confirm the diff and commit message of the git commit that is done in dist-git.
 
         tito release fedora-git
 
