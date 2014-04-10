@@ -43,4 +43,14 @@ To build a test rpm from the latest git commit in your local repository:
 
 The rpm is written to /tmp/tito. See the output from the above command for
 the exact path. You can then copy the rpm around (e.g., over to your
-undercloud) to test it out.        
+undercloud) to test it out.
+
+Build a source tarball
+----------------------
+If you want to build the source tarball separately you can use:
+
+        tito build --tgz
+
+Note this isn't usually required, as tito does it for you as part of building
+the rpm. However, if you wanted to update the sources in dist-git yourself
+manually, this can be helpful.
