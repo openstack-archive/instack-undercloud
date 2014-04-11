@@ -25,10 +25,9 @@ If you want to force a redownload of the images, delete them first.
 portion of the virtual power ssh key into the virtual power user's
 ~/.ssh/authorized_keys on the virsh host.
 
-1. Run the deploy-overcloud script to actually deploy the overcloud. Note that
-   the variables must be exported so that their values are picked up by
-   deploy-overcloud. If you put them in an rc file that you intend to source,
-   make sure there are exports in that file as well.
+1. Create a deploy-overcloudrc script to set variable values you'll need to deploy 
+the overcloud. Note that the variables must be exported so that their values are
+picked up by instack-deploy-overcloud. 
 
         # CPU: number of cpus on baremetal nodes
         # MEM: amount of ram on baremetal nodes, in MB
