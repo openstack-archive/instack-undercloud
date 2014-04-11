@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.2
+Version:	0.0.3
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,13 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Fri Apr 11 2014 James Slagle <jslagle@redhat.com> 0.0.3-1
+- Install test builds of os-*-config (jslagle@redhat.com)
+- Install mariadb-galera-server instead, it is the default in rdo icehouse
+  (jslagle@redhat.com)
+- added more info to make it clearer where to install undercloud
+  (rbrady@redhat.com)
+
 * Thu Apr 10 2014 James Slagle <jslagle@redhat.com> 0.0.2-1
 - Use mariadb-galera-server (jslagle@redhat.com)
 
