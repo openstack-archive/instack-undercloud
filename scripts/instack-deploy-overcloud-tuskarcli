@@ -51,7 +51,7 @@ done
 
 COMPUTESCALE=${COMPUTESCALE:-1}
 BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
-SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-1}
 
 # create an overcloud with 1 controller and 1 compute node
 tuskar overcloud-create overcloud \
