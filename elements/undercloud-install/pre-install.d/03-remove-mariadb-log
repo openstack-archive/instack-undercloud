@@ -6,5 +6,5 @@ set -eux
 # https://bugzilla.redhat.com/show_bug.cgi?id=1061045
 # Go ahead and install mariadb-server, and remove the logfile with wrong
 # permissions.
-install-packages mariadb-server
+install-packages mariadb-galera-server
 rm -f /var/log/mariadb/mariadb.log
