@@ -10,6 +10,10 @@ completely pre-allocated.
 If you're connecting to the virt host remotely from ssh, you will need to use the -t flag to force pseudo-tty
 allocation or enable notty via a $USER.notty file.
 
+Do not use the root user for executing any instack-undercloud scripts.  Some programs of libguestfs-tools are not
+designed to work with the root user.  All of the instack-undercloud scripts were developed and tested by using a normal
+user with sudo privileges.
+
 Some recommended default environment variables before starting:
 
         # disk size in GB to set for each virtual machine created
