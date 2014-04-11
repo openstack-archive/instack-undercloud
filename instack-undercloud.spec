@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.1
+Version:	0.0.2
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,9 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Thu Apr 10 2014 James Slagle <jslagle@redhat.com> 0.0.2-1
+- Use mariadb-galera-server (jslagle@redhat.com)
+
 * Thu Apr 10 2014 James Slagle <jslagle@redhat.com> 0.0.1-1
 - Update spec to no longer build from git commits (jslagle@redhat.com)
 - Update Building-RPMs.md (james.slagle@gmail.com)
