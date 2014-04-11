@@ -1,3 +1,3 @@
 [globalconfig]
 default_builder = tito.builder.Builder
-default_tagger = tito.tagger.ReleaseTagger
+default_tagger = tito.tagger.VersionTagger
