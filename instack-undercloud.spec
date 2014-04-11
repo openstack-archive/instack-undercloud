@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.4
+Version:	0.0.5
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,9 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Fri Apr 11 2014 James Slagle <jslagle@redhat.com> 0.0.5-1
+- Default SWIFTSTORAGESCALE to 1 (jslagle@redhat.com)
+
 * Fri Apr 11 2014 James Slagle <jslagle@redhat.com> 0.0.4-1
 - Switch to tito VersionTagger (jslagle@redhat.com)
 - added warning against running as root. (rbrady@redhat.com)
