@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eux
+
+install-packages \
+    http://kojipkgs.fedoraproject.org//packages/os-apply-config/0.1.12/5.fc20/noarch/os-apply-config-0.1.12-5.fc20.noarch.rpm \
+    http://kojipkgs.fedoraproject.org//packages/os-refresh-config/0.0.8/3.fc20/noarch/os-refresh-config-0.0.8-3.fc20.noarch.rpm \
+    http://kojipkgs.fedoraproject.org//packages/os-collect-config/0.1.11/5.fc20/noarch/os-collect-config-0.1.11-5.fc20.noarch.rpm
+
