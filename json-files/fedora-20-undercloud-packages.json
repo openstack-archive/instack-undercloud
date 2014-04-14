@@ -28,7 +28,8 @@
       "qpidd",
       "tuskar-config",
       "keystone-1289935",
-      "horizon-test-build"
+      "horizon-test-build",
+      "mariadb-rdo"
     ],
     "hook": [
       "extra-data",
