@@ -8,13 +8,19 @@ tripleo devtest_testenv.sh instackenv.json
 
 sudo virsh undefine --remove-all-storage seed
 
+
+UNDERCLOUD_ROOT_PASSWORD=${UNDERCLOUD_ROOT_PASSWORD:-""}
+UNDERCLOUD_PASSWORD_ARG=
+if [ -n $UNDERCLOUD_ROOT_PASSWORD ]; then
+  UNDERCLOUD_PASSWORD_ARG="--root-password password:$UNDERCLOUD_ROOT_PASSWORD"
+fi
+
 export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
-# root password will be removed before merging to master. this is just testing convenience.
-virt-builder fedora-20 \
+
+virt-builder fedora-20 $UNDERCLOUD_PASSWORD_ARG \
   --size 30G \
   --format qcow2 \
   -o $UNDERCLOUD_VM_NAME.qcow2 \
-  --root-password password:redhat \
   --install net-tools,yum-utils,git \
   --firstboot-command \
     'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd' \
