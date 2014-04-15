@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.5
+Version:	0.0.6
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,22 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Tue Apr 15 2014 James Slagle <jslagle@redhat.com> 0.0.6-1
+- Remove rdo-release-icehouse package so the subsequent install doesn't fail
+  (jslagle@redhat.com)
+- Make enabling the RDO icehouse repo a manual step (jslagle@redhat.com)
+- Remove mariadb log workaround (jslagle@redhat.com)
+- Remove pip install, no longer needed (jslagle@redhat.com)
+- Remove vim-minimal workaround (jslagle@redhat.com)
+- fedora-rdo-icehouse was renamed to fedora-rdo-icehouse-repository in latest
+  openstack-tripleo-image-elements package (jslagle@redhat.com)
+- Update to work with latest openstack-tripleo package (jslagle@redhat.com)
+- Use mariadb-rdo element (jslagle@redhat.com)
+- root password is no longer hard coded (ryan@ryanbrady.org)
+- updated docs to reflect options for instack-virt-setup (rbrady@redhat.com)
+- changed root password to default to random but allow to override
+  (rbrady@redhat.com)
+
 * Fri Apr 11 2014 James Slagle <jslagle@redhat.com> 0.0.5-1
 - Default SWIFTSTORAGESCALE to 1 (jslagle@redhat.com)
 
