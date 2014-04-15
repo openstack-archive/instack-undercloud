@@ -39,6 +39,12 @@ echo $JSON | python -mjson.tool
 
 echo $JSON > $JSONFILE
 
+for i in initramfs kernel; do
+    if glance image-show deploy-ramdisk.$i 2>&1 1>/dev/null; then
+        glance image-delete deploy-ramdisk.$i
+    fi
+done
+
 tripleo setup-baremetal --service-host undercloud --nodes <(jq '.nodes' $JSONFILE)
 
 # Must wait for baremetal nodes to register as nova hypervisors
