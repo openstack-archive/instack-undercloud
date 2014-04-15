@@ -11,7 +11,7 @@ sudo virsh undefine --remove-all-storage seed
 
 UNDERCLOUD_ROOT_PASSWORD=${UNDERCLOUD_ROOT_PASSWORD:-""}
 UNDERCLOUD_PASSWORD_ARG=
-if [ -n $UNDERCLOUD_ROOT_PASSWORD ]; then
+if [ $UNDERCLOUD_ROOT_PASSWORD ]; then
   UNDERCLOUD_PASSWORD_ARG="--root-password password:$UNDERCLOUD_ROOT_PASSWORD"
 fi
 
