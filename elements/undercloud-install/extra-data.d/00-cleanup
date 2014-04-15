@@ -11,4 +11,5 @@ sudo rm -rf \
   /etc/neutron/plugin.ini \
   /opt/stack \
   /mnt/state \
-  /var/lib/heat-cfntools
+  /var/lib/heat-cfntools \
+  /etc/dib*
