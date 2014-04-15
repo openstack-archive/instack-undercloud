@@ -57,7 +57,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
         $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
         neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
         baremetal \
-        fedora-rdo-icehouse \
+        fedora-rdo-icehouse-repository \
         horizon \
         qpidd \
         keystone-1289935 \
@@ -71,7 +71,7 @@ if [ ! -f overcloud-compute.qcow2 ]; then
         -o overcloud-compute \
         $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
         baremetal \
-        dhcp-all-interfaces stackuser fedora-rdo-icehouse \
+        dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         os-star-config-test-build \
         2>&1 | tee dib-overcloud-compute.log
 fi
@@ -82,7 +82,7 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         -o overcloud-cinder-volume \
         $NODE_DIST pip-cache cinder-volume neutron-openvswitch-agent os-collect-config \
         baremetal \
-        dhcp-all-interfaces stackuser fedora-rdo-icehouse \
+        dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         os-star-config-test-build \
         2>&1 | tee dib-overcloud-cinder-volume.log
 fi
@@ -93,7 +93,7 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         -o overcloud-swift-storage \
         $NODE_DIST pip-cache swift-storage neutron-openvswitch-agent os-collect-config \
         baremetal \
-        dhcp-all-interfaces stackuser fedora-rdo-icehouse \
+        dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         os-star-config-test-build \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
