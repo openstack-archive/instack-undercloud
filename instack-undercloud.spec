@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.6
+Version:	0.0.7
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,12 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Tue Apr 15 2014 James Slagle <jslagle@redhat.com> 0.0.7-1
+- Delete initial flavors (jslagle@redhat.com)
+- os-*-config packages now pushed to stable (jslagle@redhat.com)
+- Make PM vars arrays so they can be indexed (jslagle@redhat.com)
+- Load deploy images in instack-prepare-for-overcloud, but delete them before
+  running setup-baremetal in the deploy scripts (jslagle@redhat.com)
 * Tue Apr 15 2014 James Slagle <jslagle@redhat.com> 0.0.6-1
 - Remove rdo-release-icehouse package so the subsequent install doesn't fail
   (jslagle@redhat.com)
