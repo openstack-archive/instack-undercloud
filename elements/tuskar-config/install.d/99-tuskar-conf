@@ -3,7 +3,7 @@
 set -eux
 
 # Need latest python-posix_ipc not yet available in fedora
-yum -y install http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/fedora-20/fedora/python-posix_ipc-0.9.8-1.fc21.x86_64.rpm
+yum -y update http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/fedora-20/fedora/python-posix_ipc-0.9.8-1.fc21.x86_64.rpm
 
 cp $(dirname $0)/../tuskar.conf /etc/tuskar/tuskar.conf
 chown root:root /etc/tuskar/tuskar.conf
