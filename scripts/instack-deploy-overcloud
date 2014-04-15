@@ -15,10 +15,31 @@ MEM=${MEM:-2048}
 DISK=${DISK:-30}
 ARCH=${ARCH:-amd64}
 MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}
-PM_IPS=${PM_IPS:-}
-PM_USERS=${PM_USERS:-}
-PM_PASSWORDS=${PM_PASSWORDS:-}
-tripleo setup-baremetal $CPU $MEM $DISK $ARCH "$MACS" undercloud "$PM_IPS" "$PM_USERS" "$PM_PASSWORDS"
+PM_IPS=( ${PM_IPS:-} )
+PM_USERS=( ${PM_USERS:-} )
+PM_PASSWORDS=( ${PM_PASSWORDS:-} )
+export USE_IRONIC=0
+
+JSONFILE=nodes.json
+rm -f $JSONFILE
+echo '{}' > $JSONFILE
+JSON=$(jq .nodes=[] $JSONFILE)
+count=0
+
+for mac in $MACS; do
+    if [ -n "${PM_IPS:-}" -a -n "${PM_USERS:-}" -a -n "${PM_PASSWORDS:-}" ]; then
+        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$PM_USERS[$count]\", pm_addr:\"$PM_IPS[$count]\", pm_password:\"$PM_PASSWORDS[$count]\"}])" <<< $JSON)
+    else
+        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$USER\", pm_addr:\"ssh_host\", pm_password:\"ssh_key\"}])" <<< $JSON)
+    fi
+    count=$((count + 1))
+done
+
+echo $JSON | python -mjson.tool
+
+echo $JSON > $JSONFILE
+
+tripleo setup-baremetal --service-host undercloud --nodes <(jq '.nodes' $JSONFILE)
 
 # Must wait for baremetal nodes to register as nova hypervisors
 sleep 60
@@ -71,7 +92,7 @@ heat stack-create -f $OVERCLOUD_YAML_PATH \
     -P NeutronDnsmasqOptions="dhcp-option-force=26,1400" \
     overcloud
 
-tripleo wait_for 220 10 stack-ready overcloud
+tripleo wait_for_stack_ready 220 10 overcloud
 
 echo "Overcloud CREATE_COMPLETE"
 
@@ -87,10 +108,17 @@ touch ~/.ssh/known_hosts
 chmod 600 ~/.ssh/known_hosts
 ssh-keygen -R $OVERCLOUD_IP
 
-source $TRIPLEO_ROOT/overcloudrc
 
 export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
+
+OVERCLOUD_ENDPOINT="http://$OVERCLOUD_IP:5000/v2.0"
+NEW_JSON=$(jq '.overcloud.password="'${OVERCLOUD_ADMIN_PASSWORD}'" | .overcloud.endpoint="'${OVERCLOUD_ENDPOINT}'" | .overcloud.endpointhost="'${OVERCLOUD_IP}'"' $JSONFILE)
+
+echo $NEW_JSON > $JSONFILE
+
+export TE_DATAFILE=$JSONFILE
+source $TRIPLEO_ROOT/overcloudrc
 
 tripleo init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
     $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \

@@ -17,6 +17,8 @@ if [ -z "$OS_AUTH_URL" ]; then
     exit 1
 fi
 
+export TE_DATAFILE=nodes.json
+
 source tripleo-overcloud-passwords
 
 export OVERCLOUD_IP=$(nova list | grep notCompute0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
