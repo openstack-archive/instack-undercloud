@@ -58,7 +58,9 @@ Some recommended default environment variables before starting:
    use virt-manager or boxes to visually manage the virtual machines created in the next step, this would be a good time
    to install those tools now.
 
-1. Run script to setup your virtual environment.
+1. Run script to setup your virtual environment.  If you'd like to customize the root password, export an environment
+   variable UNDERCLOUD_ROOT_PASSWORD.  If you prefer to customize the name of the Undercloud virtual machine to
+   something besides instack, export the environment variable UNDERCLOUD_VM_NAME.
 
         export NODE_DISK=30
         instack-virt-setup
