@@ -41,9 +41,12 @@ download_image overcloud-cinder-volume.qcow2
 download_image overcloud-swift-storage.qcow2
 download_image fedora-user.qcow2
 
-load_image deploy-ramdisk.initramfs
-load_image deploy-ramdisk.kernel
 load_image overcloud-control.qcow2
 load_image overcloud-compute.qcow2
 load_image overcloud-cinder-volume.qcow2
 load_image overcloud-swift-storage.qcow2
+
+glance image-create --name bm-deploy-kernel --public \
+    --disk-format aki < deploy-ramdisk.kernel
+glance image-create --name bm-deploy-ramdisk --public \
+    --disk-format ari < deploy-ramdisk.initramfs
