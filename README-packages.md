@@ -12,6 +12,7 @@ virtual machine environment, the stack user in the default instack vm is already
 
 1. Enable the fedora-openstack-m-testing yum repository.
 
+        sudo yum -y install yum-utils
         sudo yum-config-manager --enable fedora-openstack-m-testing
 
 2. Install instack-undercloud
