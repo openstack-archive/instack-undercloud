@@ -5,9 +5,10 @@ The commands in these instructions should be applied to the baremetal machine or
 an undercloud.  It helps when setting up the undercloud to use a user with passwordless sudo enabled.  If you're using a
 virtual machine environment, the stack user in the default instack vm is already configured with passwordless sudo.
 
-1. Enable the openstack-m repository
+1. Enable the RDO icehouse and openstack-m repository
 
         sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm
+        sudo yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
 
 1. Enable the fedora-openstack-m-testing yum repository.
 
