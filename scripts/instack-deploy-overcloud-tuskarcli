@@ -28,7 +28,7 @@ count=0
 
 for mac in $MACS; do
     if [ -n "${PM_IPS:-}" -a -n "${PM_USERS:-}" -a -n "${PM_PASSWORDS:-}" ]; then
-        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$PM_USERS[$count]\", pm_addr:\"$PM_IPS[$count]\", pm_password:\"$PM_PASSWORDS[$count]\"}])" <<< $JSON)
+        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"${PM_USERS[$count]}\", pm_addr:\"${PM_IPS[$count]}\", pm_password:\"${PM_PASSWORDS[$count]}\"}])" <<< $JSON)
     else
         JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$USER\", pm_addr:\"ssh_host\", pm_password:\"ssh_key\"}])" <<< $JSON)
     fi
