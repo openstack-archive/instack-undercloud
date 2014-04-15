@@ -67,7 +67,8 @@ Some recommended default environment variables before starting:
 
    You should now have a vm called instack that you can use for the instack-undercloud installation that contains a minimal
    install of Fedora 20 x86_64. The instack vm contains a user "stack" that uses the password "stack" and is granted
-   password-less sudo privileges.  The root password is "redhat".
+   password-less sudo privileges.  The root password is displayed in the standard output unless you set it using
+   UNDERCLOUD_ROOT_PASSWORD.
 
 1. Get IP Address
 
