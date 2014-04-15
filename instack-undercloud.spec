@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.7
+Version:	0.0.8
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,9 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Tue Apr 15 2014 James Slagle <jslagle@redhat.com> 0.0.8-1
+- Fix array references (jslagle@redhat.com)
+
 * Tue Apr 15 2014 James Slagle <jslagle@redhat.com> 0.0.7-1
 - Delete initial flavors (jslagle@redhat.com)
 - os-*-config packages now pushed to stable (jslagle@redhat.com)
