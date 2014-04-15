@@ -71,4 +71,11 @@ tripleo setup-neutron \
     $NETWORK_CIDR $NETWORK_GATEWAY \
     $METADATA_SERVER $PHYSICAL_NETWORK
 
+# Delete initial flavors
+for flavor in m1.tiny m1.small m1.medium m1.large m1.xlarge; do
+    if nova flavor-show "$flavor" &> /dev/null; then
+        nova flavor-delete "$flavor"
+    fi
+done
+
 touch $OK_FILE
