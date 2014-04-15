@@ -14,10 +14,6 @@ if [ ! -f ~/.ssh/id_rsa ]; then
   ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
 fi
 
-# Workaround for:
-# https://bugzilla.redhat.com/show_bug.cgi?id=1066983
-sudo yum -y update vim-minimal
-
 # Need pip and git (due to pbr) to install instack since this is the source
 # install.
 sudo yum -y install python-pip git
