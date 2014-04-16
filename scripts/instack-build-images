@@ -61,6 +61,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
         horizon \
         qpidd \
         keystone-1289935 \
+        mariadb-rdo \
         2>&1 | tee dib-overcloud-control.log
 fi
 
