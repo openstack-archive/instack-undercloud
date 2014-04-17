@@ -2,6 +2,8 @@
 
 set -eux
 
+IMG_SOURCE_URL=${IMG_SOURCE_URL:-"http://repos.fedorapeople.org/repos/openstack-m/tripleo-images-rdo-icehouse"}
+
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then
     echo "You must source a stackrc file for the Undercloud."
@@ -21,7 +23,7 @@ function download_image {
     local image_name=$1
 
     if [ ! -f $image_name ]; then
-        curl -L -O http://repos.fedorapeople.org/repos/openstack-m/tripleo-images-rdo-icehouse/$image_name
+        curl -L -O $IMG_SOURCE_URL/$image_name
     fi
 }
 
