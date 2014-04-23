@@ -11,9 +11,6 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
-# install t-i-e from rpm
-sudo yum -y install openstack-tripleo-image-elements
-
 export DIB_INSTALLTYPE_nova=package
 export DIB_INSTALLTYPE_heat=package
 export DIB_INSTALLTYPE_keystone=package
