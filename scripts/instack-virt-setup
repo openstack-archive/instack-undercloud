@@ -3,6 +3,7 @@
 set -ex
 
 source /usr/libexec/openstack-tripleo/devtest_variables.sh
+export NODE_ARCH=${NODE_ARCH:-amd64}
 
 tripleo devtest_testenv.sh instackenv.json
 
