@@ -57,7 +57,7 @@ tripleo wait_for 10 5 neutron port-list -f csv -c id --quote none \| grep id
 PORT=$(neutron port-list | grep $PRIVATEIP | cut -d'|' -f2)
 FLOATINGIP=$(neutron floatingip-create ext-net --port-id "${PORT//[[:space:]]/}" | awk '$2=="floating_ip_address" {print $4}')
 
-SECGROUPID=$(nova secgroup-list -f csv --quote none | grep default | head -n 1 | cut -d, -f1)
+SECGROUPID=$(nova secgroup-list | grep default | cut -d ' ' -f2)
 neutron security-group-rule-create $SECGROUPID --protocol icmp \
     --direction ingress --port-range-min 8 || true
 neutron security-group-rule-create $SECGROUPID --protocol tcp \
