@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.9
+Version:	0.0.10
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,15 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Wed Apr 23 2014 James Slagle <jslagle@redhat.com> 0.0.10-1
+- Updated default arch to amd64 (ryan@ryanbrady.org)
+- Use upstream fedora cloud image as fedora-user.qcow2 (jslagle@redhat.com)
+- Fix parsing of security group id (rwsu@redhat.com)
+- stop using Red Hat theme for undercloud horizon (charles.crouch@gmail.com)
+- Changed source of security group info (ryan@ryanbrady.org)
+- add --selinux-relabel option when creating instack image (rwsu@redhat.com)
+- Added override for overcloud image url source (ryan@ryanbrady.org)
+
 * Wed Apr 16 2014 Ben Nemec <bnemec@redhat.com> 0.0.9-1
 - No longer specify --port-range-max for icmp security group rule.
   (jslagle@redhat.com)
