@@ -11,10 +11,6 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
-# openstack-m repo enabled
-sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm || true
-sudo yum -y install yum-utils
-sudo yum-config-manager --enable fedora-openstack-m-testing
 # install t-i-e from rpm
 sudo yum -y install openstack-tripleo-image-elements
 
