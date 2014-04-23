@@ -99,6 +99,6 @@ if [ ! -f fedora-user.qcow2 ]; then
     disk-image-create \
         -a $NODE_ARCH \
         -o fedora-user \
-        fedora \
+        fedora vm \
         2>&1 | tee dib-fedora-user.log
 fi
