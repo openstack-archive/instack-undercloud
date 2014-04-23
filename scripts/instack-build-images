@@ -96,9 +96,6 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
 fi
 
 if [ ! -f fedora-user.qcow2 ]; then
-    disk-image-create \
-        -a $NODE_ARCH \
-        -o fedora-user \
-        fedora vm \
-        2>&1 | tee dib-fedora-user.log
+    # Just copy the already downloaded Fedora cloud image as fedora-user.qcow2
+    cp ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2
 fi
