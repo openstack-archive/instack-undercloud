@@ -23,7 +23,6 @@ virt-builder fedora-20 $UNDERCLOUD_PASSWORD_ARG \
   --format qcow2 \
   -o $UNDERCLOUD_VM_NAME.qcow2 \
   --install net-tools,yum-utils,git \
-  --selinux-relabel \
   --firstboot-command \
     'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd' \
   --firstboot-command \
