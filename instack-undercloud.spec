@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.10
+Version:	0.0.11
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -58,6 +58,11 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Fri Apr 25 2014 James Slagle <jslagle@redhat.com> 0.0.11-1
+- Revert "add --selinux-relabel option when creating instack image"
+  (jslagle@redhat.com)
+- Add stable-interface-names to overcloud image builds (jslagle@redhat.com)
+
 * Wed Apr 23 2014 James Slagle <jslagle@redhat.com> 0.0.10-1
 - Updated default arch to amd64 (ryan@ryanbrady.org)
 - Use upstream fedora cloud image as fedora-user.qcow2 (jslagle@redhat.com)
