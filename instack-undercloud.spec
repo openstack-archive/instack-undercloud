@@ -46,6 +46,8 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 %doc LICENSE
 %doc instack-baremetal.answers.sample
 %doc instack-virt.answers.sample
+%doc deploy-virt-overcloudrc
+%doc deploy-baremetal-overcloudrc
 %{_datadir}/instack-undercloud
 %{_bindir}/instack-install-undercloud
 %{_bindir}/instack-install-undercloud-packages
