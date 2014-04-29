@@ -1,0 +1,18 @@
+#!/bin/bash
+export CPU=1
+export MEM=2048
+export DISK=30
+export ARCH=amd64
+export MACS=""
+export PM_IPS=""
+export PM_USERS=""
+export PM_PASSWORDS=""
+export NeutronPublicInterface=em2
+export OVERCLOUD_LIBVIRT_TYPE=kvm
+export NETWORK_CIDR="10.0.0.0/8"
+export FLOATING_IP_START="172.17.0.45"
+export FLOATING_IP_END="172.17.0.64"
+export FLOATING_IP_CIDR="172.17.0.0/16"
+export COMPUTESCALE=1
+export BLOCKSTORAGESCALE=1
+export SWIFTSTORAGESCALE=1
