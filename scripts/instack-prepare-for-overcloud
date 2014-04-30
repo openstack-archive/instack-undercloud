@@ -30,9 +30,7 @@ function download_image {
 function load_image {
     local image_name=$1
 
-    if ! glance image-show $(basename $image_name .qcow2) 2>&1 1>/dev/null; then
-        tripleo load-image $image_name
-    fi
+    tripleo load-image -d $image_name
 }
 
 download_image deploy-ramdisk.initramfs
@@ -48,7 +46,9 @@ load_image overcloud-compute.qcow2
 load_image overcloud-cinder-volume.qcow2
 load_image overcloud-swift-storage.qcow2
 
+glance image-delete bm-deploy-kernel 2>/dev/null || :
 glance image-create --name bm-deploy-kernel --public \
     --disk-format aki < deploy-ramdisk.kernel
+glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --public \
     --disk-format ari < deploy-ramdisk.initramfs
