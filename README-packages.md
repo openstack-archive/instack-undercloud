@@ -9,7 +9,7 @@ virtual machine environment, the stack user in the default instack vm is already
 
         sudo yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
 
-1. Optional. You can enable the RDO staging repository to get newer packages if available.
+1. **Optional**. You can enable the RDO staging repository to get newer packages if available.
 
         sudo /bin/bash -c "cat >>/etc/yum.repos.d/rdo-staging.repo<<EOF
         [openstack-icehouse-staging]
