@@ -69,6 +69,8 @@ tripleo wait_for 10 10 nova list \| grep ACTIVE
 
 ssh-keygen -R $FLOATINGIP
 tripleo wait_for 30 10 ssh -o BatchMode=yes -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls
+tripleo wait_for 30 10 ssh -o BatchMode=yes -o StrictHostKeyChecking=no -tt fedora@$FLOATINGIP systemctl status cloud-final
+
 
 echo Compute test successful!
 
