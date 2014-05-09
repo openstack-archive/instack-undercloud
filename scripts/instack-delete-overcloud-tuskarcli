@@ -8,7 +8,7 @@ export TUSKAR_URL=http://localhost:8585/
 OVERCLOUD_ID=$(tuskar overcloud-list | grep overcloud | awk '{print $2}')
 tuskar overcloud-delete $OVERCLOUD_ID
 
-SUCCESSFUL_MATCH_OUTPUT="Stack not found: overcloud" tripleo wait_for 6 10 heat stack-show overcloud
+SUCCESSFUL_MATCH_OUTPUT="Stack not found: overcloud" tripleo wait_for 12 10 heat stack-show overcloud
 
 # cleanup the baremetal-nodes
 node_ids=$(nova baremetal-node-list | grep undercloud | awk -F "| " '{ print $2; }')
