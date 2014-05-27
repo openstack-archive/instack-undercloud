@@ -57,6 +57,8 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 %{_bindir}/instack-test-overcloud
 %{_bindir}/instack-build-images
 %{_bindir}/instack-virt-setup
+%{_bindir}/instack-delete-overcloud
+%{_bindir}/instack-delete-overcloud-tuskarcli
 
 
 %changelog
