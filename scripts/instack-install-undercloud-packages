@@ -2,14 +2,13 @@
 
 set -eu
 
+mkdir -p ~/.instack
 LOGFILE=~/.instack/install-undercloud.log
 
 exec > >(tee $LOGFILE)
 exec 2>&1
 
 echo "Running $0"
-
-mkdir -p ~/.instack
 
 # generate ssh authentication keys if they don't exist
 if [ ! -f ~/.ssh/id_rsa ]; then
