@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.12
+Version:	0.0.13
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -62,6 +62,10 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Wed May 28 2014 James Slagle <jslagle@redhat.com> 0.0.13-1
+- Create logfile directory before redirecting output via tee
+  (jslagle@redhat.com)
+
 * Tue May 27 2014 James Slagle <jslagle@redhat.com> 0.0.12-1
 - Package overcloud delete scripts (jslagle@redhat.com)
 - Use updated os-apply-config template path (jslagle@redhat.com)
