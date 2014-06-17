@@ -31,6 +31,10 @@ inside the container directly. In the command below I'm using
 
 Building the instack-virt-setup Docker image
 --------------------------------------------
+There is no reason to build the Docker image yourself if you pulled it
+following the comamnd above. These steps are here just to document the build
+process.
+
 Building the docker image is a multi-step process. There is a Dockerfile to
 help with building the initial image. A container must then be started using
 that image, modified, and then committed to a new final image.
