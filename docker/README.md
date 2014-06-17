@@ -14,10 +14,10 @@ Pull the image from the docker registry.
 
 Run the image. The container must be started with --privileged so that libvirt
 has access to create networks. A host path must also be mounted into the
-container at /var/lib/libvirt/images for the instack vm's to use to write their
-disks to. This is required because Docker containers are currently limited to
-10 GB of disk usage, and this will quickly get used up if the vm disks are
-written inside the container directly. In the command below I'm using
+container at /var/lib/libvirt/images for the instack vm's to use for their
+disks. This is required because Docker containers are currently limited to 10
+GB of disk usage, and this will quickly get used up if the vm disks are written
+inside the container directly. In the command below I'm using
 /storage/docker/lib, but any host path with at least 30 GB free should do.
 
         docker run \
@@ -66,7 +66,10 @@ that image, modified, and then committed to a new final image.
 
 1. Build the initial image
 
-        cd instack-undercloud/docker/instack-virt
+        git clone https://github.com/agroup/instack-undercloud
+        cd instack-undercloud
+        git checkout docker
+        cd docker/instack-virt
         docker build -t instack-virt .
 
 1. Start a container based on that image
@@ -134,4 +137,4 @@ that image, modified, and then committed to a new final image.
 
 1. Commit the container to a new image
 
-        docker commit instack-virt-setup instack-virt
+        docker commit instack-virt instack-virt-setup
