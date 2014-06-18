@@ -81,10 +81,6 @@ assist with building the initial image.
         cp /etc/libvirt/qemu/networks/brbm.xml .
         
 1. Edit instack.xml and get the mac address of the default network interface.
-   Also, change the source file of the disk device to the following
-
-        <source file='/var/lib/libvirt/base-images/instack.qcow2'/>
-        
 
 1. Edit default.xml and add the following line in the <dhcp> stanza. Replace
    the value for mac with the mac address you got in the previous step.
