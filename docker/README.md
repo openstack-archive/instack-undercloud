@@ -43,7 +43,8 @@ come up.
         ssh stack@192.168.122.100
 
 Continue with
-http://openstack.redhat.com/Deploying_an_RDO_Undercloud_with_Instack.
+http://openstack.redhat.com/Deploying_an_RDO_Undercloud_with_Instack. You will
+not need to create an answers file or deployrc file.
 
 
 Building the instack-virt-setup Docker image
@@ -84,7 +85,7 @@ assist with building the initial image.
 
         sed -i '/selinux/d' instack.xml baremetal_*.xml
         
-1. Edit instack.xml and get the mac address of the default network interface.
+1. View instack.xml and get the mac address of the default network interface.
 
 1. Edit default.xml and add the following line in the <dhcp> stanza. Replace
    the value for mac with the mac address you got in the previous step.
