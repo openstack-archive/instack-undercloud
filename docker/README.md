@@ -25,7 +25,7 @@ inside the container directly. In the command below I'm using
             --name instack-virt-setup \
             --privileged \
             --volume /storage/docker/lib:/var/lib/libvirt/images \
-            slagle/instack-virt-setup
+            slagle/instack-virt
         
 
 ssh as root to the container. The initial root pw is also root. You can use
@@ -92,8 +92,9 @@ assist with building the initial image.
 
         <host mac='52:54:00:e1:f3:7e' name='instack' ip='192.168.122.100'/>
 
-1. Build the docker image
+1. Pull the Fedora base image and then build the docker image
 
+        docker pull fedora
         docker build -t instack-virt .
 
 1. Optionally tag and push the image.
