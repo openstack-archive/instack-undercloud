@@ -80,6 +80,10 @@ assist with building the initial image.
         cp /etc/libvirt/qemu/networks/default.xml .
         cp /etc/libvirt/qemu/networks/brbm.xml .
         
+1. Update the vm xml definitions to remove the selinux relabel command
+
+        sed -i '/selinux/d' instack.xml baremetal_*.xml
+        
 1. Edit instack.xml and get the mac address of the default network interface.
 
 1. Edit default.xml and add the following line in the <dhcp> stanza. Replace
