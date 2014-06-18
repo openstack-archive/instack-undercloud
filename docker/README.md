@@ -10,7 +10,7 @@ Running the instack-virt-setup Docker image
 
 Pull the image from the docker registry.
 
-        docker pull slagle/instack-virt-setup
+        docker pull slagle/instack-virt
 
 Run the image. The container must be started with --privileged so that libvirt
 has access to create networks. A host path must also be mounted into the
@@ -49,11 +49,11 @@ http://openstack.redhat.com/Deploying_an_RDO_Undercloud_with_Instack.
 Building the instack-virt-setup Docker image
 --------------------------------------------
 There is no reason to build the Docker image yourself if you pulled it
-following the command above. These steps are here just to document the build
+following the commands above. These steps are here just to document the build
 process.
 
 Building the docker image is a multi-step process. There is a Dockerfile to
-help with building the initial image. 
+assist with building the initial image. 
 
 1. Run through instack-virt-setup on the build host, according to http://openstack.redhat.com/Deploying_RDO_to_a_Virtual_Machine_Environment_using_RDO_via_Instack#Virtual_Host_Setup
 
@@ -83,7 +83,7 @@ help with building the initial image.
 1. Edit instack.xml and get the mac address of the default network interface.
    Also, change the source file of the disk device to the following
 
-      <source file='/var/lib/libvirt/base-images/instack.qcow2'/>
+        <source file='/var/lib/libvirt/base-images/instack.qcow2'/>
         
 
 1. Edit default.xml and add the following line in the <dhcp> stanza. Replace
