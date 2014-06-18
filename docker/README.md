@@ -95,3 +95,5 @@ assist with building the initial image.
 1. Build the docker image
 
         docker build -t instack-virt .
+
+1. Optionally tag and push the image.
