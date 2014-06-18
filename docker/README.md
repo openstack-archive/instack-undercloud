@@ -18,7 +18,7 @@ container at /var/lib/libvirt/images for the instack vm's to use for their
 disks. This is required because Docker containers are currently limited to 10
 GB of disk usage, and this will quickly get used up if the vm disks are written
 inside the container directly. In the command below I'm using
-/storage/docker/lib, but any host path with at least 30 GB free should do.
+/storage/docker/lib, but any host path with at least 50 GB free should do.
 
         docker run \
             -it \
