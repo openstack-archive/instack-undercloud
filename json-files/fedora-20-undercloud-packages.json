@@ -25,7 +25,7 @@
       "neutron-dhcp-agent",
       "undercloud-stack-config",
       "selinux-permissive",
-      "qpidd",
+      "rabbitmq-server",
       "tuskar-config",
       "keystone-1289935",
       "horizon-test-build",
@@ -39,7 +39,6 @@
     ],
     "exclude-element": [
       "dkms",
-      "rabbitmq-server",
       "source-repositories"
     ],
     "blacklist": [

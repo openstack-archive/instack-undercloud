@@ -55,7 +55,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
         baremetal \
         fedora-rdo-icehouse-repository \
         horizon \
-        qpidd \
+        rabbitmq-server \
         keystone-1289935 \
         mariadb-rdo \
 	stable-interface-names \
