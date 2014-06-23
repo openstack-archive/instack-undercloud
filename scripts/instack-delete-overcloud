@@ -3,7 +3,7 @@
 set -eu
 
 # delete the stack
-heat stack-delete overcloud
+heat stack-delete overcloud || true
 
 SUCCESSFUL_MATCH_OUTPUT="Stack not found: overcloud" tripleo wait_for 6 10 heat stack-show overcloud
 
