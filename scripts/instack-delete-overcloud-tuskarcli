@@ -6,7 +6,7 @@ export TUSKAR_URL=http://localhost:8585/
 
 # delete the stack
 OVERCLOUD_ID=$(tuskar overcloud-list | grep overcloud | awk '{print $2}')
-tuskar overcloud-delete $OVERCLOUD_ID
+tuskar overcloud-delete $OVERCLOUD_ID || true
 
 SUCCESSFUL_MATCH_OUTPUT="Stack not found: overcloud" tripleo wait_for 12 10 heat stack-show overcloud
 
