@@ -17,16 +17,30 @@ if [ $UNDERCLOUD_ROOT_PASSWORD ]; then
 fi
 
 export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
+export UNDERCLOUD_OS=${UNDERCLOUD_OS:-"fedora-20"}
 
-virt-builder fedora-20 $UNDERCLOUD_PASSWORD_ARG \
+# We must restore the default label for /etc/resolv.conf, hence the 
+# --firstboot-command that calls restorecon /etc/resolv.conf, see:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1089100
+virt-builder $UNDERCLOUD_OS $UNDERCLOUD_PASSWORD_ARG \
   --size 30G \
   --format qcow2 \
   -o $UNDERCLOUD_VM_NAME.qcow2 \
   --install net-tools,yum-utils,git \
+  --mkdir /home/stack/.ssh \
+  --upload ~/.ssh/id_rsa_virt_power:/home/stack/.ssh/id_rsa_virt_power \
+  --upload ~/.ssh/id_rsa_virt_power.pub:/home/stack/.ssh/id_rsa_virt_power.pub \
+  --run-command \
+    'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd;
+     echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack;
+     chmod 0700 /home/stack/.ssh;
+     chmod 0600 /home/stack/.ssh/id_rsa_virt_power /home/stack/.ssh/id_rsa_virt_power.pub;
+     cp /etc/skel/.* /home/stack/;
+     chown -R stack:stack /home/stack' \
   --firstboot-command \
-    'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd' \
-  --firstboot-command \
-    'echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack'
+    'restorecon /etc/resolv.conf' \
+  --selinux-relabel
+
 
 sudo cp $UNDERCLOUD_VM_NAME.qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2
 

@@ -37,7 +37,7 @@ VIRTUAL_POWER_HOST=192.168.122.1
 # added to the ~/.ssh/authorized_keys file for the virtual power user.
 # You can generate this key with a command like:
 # ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
-SSH_KEY=/home/stack/virtual-power-key
+SSH_KEY=/home/stack/.ssh/id_rsa_virt_power
 
 ### MASQUERADE_NETWORK ###
 # Network that will be masqueraded for external access if required.
