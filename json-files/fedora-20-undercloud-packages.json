@@ -29,7 +29,8 @@
       "tuskar-config",
       "keystone-1289935",
       "horizon-test-build",
-      "mariadb-rdo"
+      "mariadb-rdo",
+      "os-refresh-config-reboot"
     ],
     "hook": [
       "extra-data",

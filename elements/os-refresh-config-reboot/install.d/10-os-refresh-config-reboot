@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -eux
+
+cp $(dirname $0)../os-refresh-config /etc/cron.d/os-refresh-config
