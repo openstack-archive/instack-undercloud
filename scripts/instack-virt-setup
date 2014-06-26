@@ -9,6 +9,9 @@ tripleo devtest_testenv.sh instackenv.json
 
 sudo virsh undefine --remove-all-storage seed
 
+MACS=$(for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; done)
+cp /usr/share/doc/instack-undercloud/deploy-virt-overcloudrc /tmp/deploy-virt-overcloudrc
+sed -i "s/MACS=\"\"/MACS=\"$MACS\"/" /tmp/deploy-virt-overcloudrc
 
 UNDERCLOUD_ROOT_PASSWORD=${UNDERCLOUD_ROOT_PASSWORD:-""}
 UNDERCLOUD_PASSWORD_ARG=
@@ -30,6 +33,8 @@ virt-builder $UNDERCLOUD_OS $UNDERCLOUD_PASSWORD_ARG \
   --mkdir /home/stack/.ssh \
   --upload ~/.ssh/id_rsa_virt_power:/home/stack/.ssh/id_rsa_virt_power \
   --upload ~/.ssh/id_rsa_virt_power.pub:/home/stack/.ssh/id_rsa_virt_power.pub \
+  --upload /tmp/deploy-virt-overcloudrc:/home/stack/deploy-virt-overcloudrc \
+  --upload /usr/share/doc/instack-undercloud/instack-virt.answers.sample:/home/stack/instack.answers \
   --run-command \
     'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd;
      echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack;
@@ -40,7 +45,6 @@ virt-builder $UNDERCLOUD_OS $UNDERCLOUD_PASSWORD_ARG \
   --firstboot-command \
     'restorecon /etc/resolv.conf' \
   --selinux-relabel
-
 
 sudo cp $UNDERCLOUD_VM_NAME.qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2
 
