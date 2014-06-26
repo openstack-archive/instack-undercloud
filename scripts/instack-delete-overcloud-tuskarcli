@@ -17,7 +17,4 @@ for id in $node_ids; do
     nova baremetal-node-delete $id
 done
 
-glance image-delete bm-deploy-kernel || true
-glance image-delete bm-deploy-ramdisk || true
-
 nova flavor-delete baremetal || true
