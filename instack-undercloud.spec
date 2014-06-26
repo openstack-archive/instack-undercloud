@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.13
+Version:	0.0.14
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -62,6 +62,15 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Thu Jun 26 2014 James Slagle <jslagle@redhat.com> 0.0.14-1
+- Add element to run os-refresh-config on reboot (jslagle@redhat.com)
+- Copy the answers and deployrc file into the instack vm (jslagle@redhat.com)
+- Fix delete scripts (rbrady@redhat.com)
+- Use the devtest_testenv.sh generated id_rsa_virt_power ssh key as the virtual
+  power ssh key. (jslagle@redhat.com)
+- always do baremetal clean up (charles.crouch@gmail.com)
+- Switch to rabbitmq-server from qpidd (rwsu@redhat.com)
+
 * Wed May 28 2014 James Slagle <jslagle@redhat.com> 0.0.13-1
 - Create logfile directory before redirecting output via tee
   (jslagle@redhat.com)
