@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.15
+Version:	0.0.16
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -62,6 +62,11 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Tue Jul 01 2014 James Slagle <jslagle@redhat.com> 0.0.16-1
+- Add os-refresh-config-reboot to overcloud images as well (jslagle@redhat.com)
+- Temporary SELinux changes until new packages are released (rwsu@redhat.com)
+- Update comment about virtual power key (jslagle@redhat.com)
+
 * Tue Jul 01 2014 James Slagle <jslagle@redhat.com> 0.0.15-1
 - Build images with SELinux enabled (rwsu@redhat.com)
 - Switch back to localhost from LOCAL_IP (rwsu@redhat.com)
