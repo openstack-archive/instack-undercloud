@@ -61,6 +61,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
         keystone-1289935 \
         mariadb-rdo \
         stable-interface-names \
+        os-refresh-config-reboot \
         2>&1 | tee dib-overcloud-control.log
 fi
 
@@ -73,6 +74,7 @@ if [ ! -f overcloud-compute.qcow2 ]; then
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         stable-interface-names \
+        os-refresh-config-reboot \
         2>&1 | tee dib-overcloud-compute.log
 fi
 
@@ -85,6 +87,7 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         stable-interface-names \
+        os-refresh-config-reboot \
         2>&1 | tee dib-overcloud-cinder-volume.log
 fi
 
@@ -98,6 +101,7 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         stable-interface-names \
+        os-refresh-config-reboot \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
 
