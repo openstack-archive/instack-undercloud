@@ -1,0 +1,4 @@
+#!/bin/bash
+set -eux
+
+sudo yum -y install https://kojipkgs.fedoraproject.org//packages/selinux-policy/3.12.1/175.fc20/noarch/selinux-policy-3.12.1-175.fc20.noarch.rpm https://kojipkgs.fedoraproject.org//packages/selinux-policy/3.12.1/175.fc20/noarch/selinux-policy-targeted-3.12.1-175.fc20.noarch.rpm

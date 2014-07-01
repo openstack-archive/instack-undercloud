@@ -52,6 +52,8 @@ if [ ! -f overcloud-control.qcow2 ]; then
         -o overcloud-control \
         $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
         neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
+	swift-package-updates \
+	selinux-package-updates \
         baremetal \
         fedora-rdo-icehouse-repository \
         horizon \
@@ -67,6 +69,7 @@ if [ ! -f overcloud-compute.qcow2 ]; then
         -a $NODE_ARCH \
         -o overcloud-compute \
         $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
+	selinux-package-updates \
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
 	stable-interface-names \
@@ -78,6 +81,7 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         -a $NODE_ARCH \
         -o overcloud-cinder-volume \
         $NODE_DIST pip-cache cinder-volume neutron-openvswitch-agent os-collect-config \
+	selinux-package-updates \
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
 	stable-interface-names \
@@ -89,6 +93,8 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         -a $NODE_ARCH \
         -o overcloud-swift-storage \
         $NODE_DIST pip-cache swift-storage neutron-openvswitch-agent os-collect-config \
+	swift-package-updates \
+	selinux-package-updates \
         baremetal \
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
 	stable-interface-names \
