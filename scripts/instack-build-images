@@ -8,7 +8,7 @@ set -eux
 export TMP_DIR=${TMP_DIR:-/var/tmp}
 
 export NODE_ARCH=${NODE_ARCH:-amd64}
-export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
+export NODE_DIST=${NODE_DIST:-"fedora"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
 export DIB_INSTALLTYPE_nova=package

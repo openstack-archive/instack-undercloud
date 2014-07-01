@@ -7,7 +7,7 @@
   "local-ipv4": "{{LOCAL_IP}}",
   "keystone": {
     "host": "127.0.0.1",
-    "db": "mysql://keystone:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/keystone"
+    "db": "mysql://keystone:{{UNDERCLOUD_DB_PASSWORD}}@localhost/keystone"
   },
   "rabbit": {
     "host": "127.0.0.1",
@@ -18,7 +18,7 @@
   "glance": {
     "backend": "file",
     "host": "127.0.0.1",
-    "db": "mysql://glance:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/glance",
+    "db": "mysql://glance:{{UNDERCLOUD_DB_PASSWORD}}@localhost/glance",
     "service-password": "{{UNDERCLOUD_GLANCE_PASSWORD}}",
     "notifier-strategy": "noop",
     "log-file": "''"
@@ -26,7 +26,7 @@
   "nova": {
     "compute_hostname": "undercloud",
     "host": "127.0.0.1",
-    "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/nova",
+    "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova",
     "compute_driver": "baremetal.driver.BareMetalDriver",
     "tuning": {
         "ram_allocation_ratio": "1.0",
@@ -34,7 +34,7 @@
     },
     "baremetal": {
       "arch": "amd64",
-      "db": "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/nova_bm",
+      "db": "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova_bm",
       "power_manager": "{{POWER_DRIVER}}",
       "pxe_deploy_timeout": "2400",
       "use_file_injection": "False",
@@ -54,13 +54,13 @@
     "masquerade_networks": ["{{MASQUERADE_NETWORK}}"]
   },
   "cinder": {
-    "db": "mysql://cinder:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/cinder",
+    "db": "mysql://cinder:{{UNDERCLOUD_DB_PASSWORD}}@localhost/cinder",
     "volume_size_mb": "5000",
     "service-password": "{{UNDERCLOUD_CINDER_PASSWORD}}"
   },
   "neutron": {
     "host": "127.0.0.1",
-    "ovs_db": "mysql://neutron:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/ovs_neutron?charset=utf8",
+    "ovs_db": "mysql://neutron:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ovs_neutron?charset=utf8",
     "ovs": {
       "bridge_mappings": "ctlplane:br-ctlplane",
       "dnsmasq_range": ["192.0.2.4", "192.0.2.4"],
@@ -78,7 +78,7 @@
     "network_gateway": "{{NETWORK_GATEWAY}}"
   },
   "heat": {
-    "db": "mysql://heat:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/heat",
+    "db": "mysql://heat:{{UNDERCLOUD_DB_PASSWORD}}@localhost/heat",
     "auth_encryption_key": "unset___________",
     "watch_server_url": "http://{{LOCAL_IP}}:8003",
     "waitcondition_server_url": "http://{{LOCAL_IP}}:8000/v1/waitcondition",
@@ -91,7 +91,7 @@
     "secret_key": "unset___________"
   },
   "tuskar": {
-    "db": "mysql://tuskar:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/tuskar?charset=utf8",
+    "db": "mysql://tuskar:{{UNDERCLOUD_DB_PASSWORD}}@localhost/tuskar?charset=utf8",
     "heat_keystone": {
       "username": "admin",
       "password": "unset",

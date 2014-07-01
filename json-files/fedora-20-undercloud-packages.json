@@ -24,7 +24,6 @@
       "os-collect-config",
       "neutron-dhcp-agent",
       "undercloud-stack-config",
-      "selinux-permissive",
       "rabbitmq-server",
       "tuskar-config",
       "keystone-1289935",
