@@ -34,9 +34,9 @@ VIRTUAL_POWER_HOST=192.168.122.1
 # When POWER_DRIVER is set to the VirtualPowerManager, the ssh key to use to
 # ssh to the virsh host.  Unused if POWER_DRIVER is IPMI.
 # This should be a path to an ssh private key. The public key portion must be
-# added to the ~/.ssh/authorized_keys file for the virtual power user.
-# You can generate this key with a command like:
-# ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
+# added to the ~/.ssh/authorized_keys file for the virtual power user on the
+# virt host. If instack-virt-setup was used, this key already exists and has
+# already been copied to the virt host.
 SSH_KEY=/home/stack/.ssh/id_rsa_virt_power
 
 ### MASQUERADE_NETWORK ###
