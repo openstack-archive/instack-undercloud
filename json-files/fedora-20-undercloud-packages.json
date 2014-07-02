@@ -29,8 +29,7 @@
       "keystone-1289935",
       "horizon-test-build",
       "mariadb-rdo",
-      "os-refresh-config-reboot",
-      "selinux-package-updates"
+      "os-refresh-config-reboot"
     ],
     "hook": [
       "extra-data",
