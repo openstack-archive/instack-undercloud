@@ -11,30 +11,6 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
 
-export DIB_INSTALLTYPE_nova=package
-export DIB_INSTALLTYPE_heat=package
-export DIB_INSTALLTYPE_keystone=package
-export DIB_INSTALLTYPE_neutron=package
-export DIB_INSTALLTYPE_glance=package
-export DIB_INSTALLTYPE_swift=package
-export DIB_INSTALLTYPE_cinder=package
-export DIB_INSTALLTYPE_horizon=package
-export DIB_INSTALLTYPE_python_cinderclient=package
-export DIB_INSTALLTYPE_python_glanceclient=package
-export DIB_INSTALLTYPE_python_heatclient=package
-export DIB_INSTALLTYPE_python_keystoneclient=package
-export DIB_INSTALLTYPE_python_neutronclient=package
-export DIB_INSTALLTYPE_python_novaclient=package
-export DIB_INSTALLTYPE_python_swiftclient=package
-export DIB_INSTALLTYPE_python_ceilometerclient=package
-export DIB_INSTALLTYPE_python_ironicclient=package
-
-export DIB_INSTALLTYPE_os_collect_config=package
-export DIB_INSTALLTYPE_os_refresh_config=package
-export DIB_INSTALLTYPE_os_apply_config=package
-
-export DIB_INSTALLTYPE_get_pip_py=package
-
 export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud
 
 if [ ! -f deploy-ramdisk.initramfs -o \
@@ -43,6 +19,7 @@ if [ ! -f deploy-ramdisk.initramfs -o \
         -a $NODE_ARCH \
         -o deploy-ramdisk \
         $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
+        undercloud-package-install \
         2>&1 | tee dib-deploy.log
 fi
 
@@ -62,6 +39,7 @@ if [ ! -f overcloud-control.qcow2 ]; then
         mariadb-rdo \
         stable-interface-names \
         os-refresh-config-reboot \
+        undercloud-package-install \
         2>&1 | tee dib-overcloud-control.log
 fi
 
@@ -75,6 +53,7 @@ if [ ! -f overcloud-compute.qcow2 ]; then
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         stable-interface-names \
         os-refresh-config-reboot \
+        undercloud-package-install \
         2>&1 | tee dib-overcloud-compute.log
 fi
 
@@ -88,6 +67,7 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         stable-interface-names \
         os-refresh-config-reboot \
+        undercloud-package-install \
         2>&1 | tee dib-overcloud-cinder-volume.log
 fi
 
@@ -102,6 +82,7 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
         stable-interface-names \
         os-refresh-config-reboot \
+        undercloud-package-install \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
 

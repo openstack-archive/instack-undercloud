@@ -18,6 +18,7 @@
     "element": [
       "base",
       "undercloud-install",
+      "undercloud-package-install",
       "fedora",
       "boot-stack",
       "nova-baremetal",
