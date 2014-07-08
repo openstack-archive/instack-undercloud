@@ -4,7 +4,6 @@
     "element": [
       "base",
       "dib-run-parts",
-      "undercloud-operating-system",
       "fedora-distro"
     ],
     "hook": [
