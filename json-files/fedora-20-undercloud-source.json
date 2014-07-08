@@ -1,0 +1,61 @@
+[
+  {
+    "name": "Initialization",
+    "element": [
+      "base",
+      "dib-run-parts",
+      "undercloud-operating-system",
+      "fedora-distro"
+    ],
+    "hook": [
+      "extra-data",
+      "root",
+      "pre-install"
+    ],
+    "blacklist": [
+      "01-ccache"
+    ]
+  },
+  {
+    "name": "Installation",
+    "element": [
+      "base",
+      "undercloud-install",
+      "fedora",
+      "fedora-distro",
+      "boot-stack",
+      "nova-ironic",
+      "os-collect-config",
+      "neutron-dhcp-agent",
+      "undercloud-stack-config",
+      "rabbitmq-server",
+      "horizon-test-build",
+      "mariadb-rdo",
+      "os-refresh-config-reboot",
+      "common-venv"
+    ],
+    "hook": [
+      "extra-data",
+      "pre-install",
+      "install",
+      "post-install"
+    ],
+    "exclude-element": [
+      "dkms"
+    ],
+    "blacklist": [
+      "10-cloud-init",
+      "50-store-build-settings",
+      "99-dkms",
+      "99-up-to-date",
+      "01-yum-keepcache",
+      "15-remove-grub",
+      "51-ironicclient",
+      "05-fstab-rootfs-label",
+      "15-fedora-remove-grub",
+      "51-ironicclient",
+      "05-fstab-rootfs-label",
+      "02-lsb"
+    ]
+  }
+]
