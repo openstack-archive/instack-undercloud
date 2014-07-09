@@ -97,5 +97,9 @@
       "password": "unset",
       "tenant_name": "admin"
     }
+  },
+  "bootstrap_host": {
+    "bootstrap_nodeid": "undercloud",
+    "nodeid": "undercloud"
   }
 }
