@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eux
+
+mkdir -p /opt/stack/selinux-policy
+
+# This policy fixes
+# https://bugs.launchpad.net/tripleo/+bug/1339395
+cp $(dirname $0)/../mysql_socket.pp /opt/stack/selinux-policy
+cp $(dirname $0)/../mysql_socket.te /opt/stack/selinux-policy

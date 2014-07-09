@@ -1,0 +1,11 @@
+
+module mypol 1.0;
+
+require {
+	type tram_port_t;
+	type mysqld_t;
+	class tcp_socket name_bind;
+}
+
+#============= mysqld_t ==============
+allow mysqld_t tram_port_t:tcp_socket name_bind;
