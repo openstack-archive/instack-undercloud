@@ -54,4 +54,9 @@ pushd $INSTACK_ROOT/instack
 sudo pip install -e .
 popd
 
+# openstack-tripleo still required so we can generate passwords in
+# instack-install-undercloud-packages
+sudo yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
+sudo yum install -y openstack-tripleo
+
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
