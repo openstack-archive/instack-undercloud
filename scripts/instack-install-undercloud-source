@@ -46,11 +46,23 @@ if [ ! -d $INSTACK_ROOT/instack ]; then
     git clone https://github.com/agroup/instack
 fi
 
+if [ ! -d $INSTACK_ROOT/os-cloud-config ]; then
+    git clone https://git.openstack.org/openstack/os-cloud-config
+fi
+
+if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
+    git clone https://git.openstack.org/openstack/tripleo-incubator
+fi
+
 pushd $INSTACK_ROOT/diskimage-builder
 sudo pip install -e .
 popd 
 
 pushd $INSTACK_ROOT/instack
+sudo pip install -e .
+popd
+
+pushd $INSTACK_ROOT/os-cloud-config
 sudo pip install -e .
 popd
 
