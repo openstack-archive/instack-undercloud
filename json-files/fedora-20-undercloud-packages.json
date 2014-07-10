@@ -30,7 +30,8 @@
       "keystone-1289935",
       "horizon-test-build",
       "mariadb-rdo",
-      "os-refresh-config-reboot"
+      "os-refresh-config-reboot",
+      "undercloud-post-config-package"
     ],
     "hook": [
       "extra-data",
