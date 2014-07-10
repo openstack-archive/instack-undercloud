@@ -98,3 +98,8 @@ UNDERCLOUD_NOVA_PASSWORD=
 # Ironic service password
 # If left unset, one will be automatically generated
 UNDERCLOUD_IRONIC_PASSWORD=
+
+### Tuskar password ###
+# Tuskar service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_TUSKAR_PASSWORD=
