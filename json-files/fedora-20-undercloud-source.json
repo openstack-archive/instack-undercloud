@@ -32,7 +32,8 @@
       "mariadb-rdo",
       "os-refresh-config-reboot",
       "common-venv",
-      "selinux-policy-updates"
+      "selinux-policy-updates",
+      "set-instack-root"
     ],
     "hook": [
       "extra-data",
