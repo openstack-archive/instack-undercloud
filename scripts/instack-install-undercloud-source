@@ -13,10 +13,58 @@ sudo yum -y install git python-pip
 git config --global user.email "instack@example.com"
 git config --global user.name "instack"
 
+export LKG=${LKG:-0}
+
+if [ "$LKG" = "1" ]; then
+    # These are set manually, since they're not part of source-repositories
+    export DIB_REPOREF_tripleo_image_elements=bc71c4dc77a62492426b7960ed966241904d1cfb
+    export DIB_REPOREF_diskimage_builder=e93d3651148360e22e6f4e1dc820be497509d3eb
+
+    # To generate these, run:
+    # set-source-vars -m /etc/dib-manifests/dib-manifest-git-instack
+    # after a successful installation.
+    export DIB_REPOREF_glance=4829deeae1941a65c6deb5776ccd624e0ed5641c
+    export DIB_REPOLOCATION_glance=https://git.openstack.org/openstack/glance.git
+    export DIB_REPOREF_heat=a7dd2bb0e47ce3b5be0d71428ea598b2dc6177a1
+    export DIB_REPOLOCATION_heat=https://git.openstack.org/openstack/heat.git
+    export DIB_REPOREF_keystone=fac022a55074ebf6bc6356e47cbbb88dc4e55d04
+    export DIB_REPOLOCATION_keystone=https://git.openstack.org/openstack/keystone.git
+    export DIB_REPOREF_neutron=1cf3b80549821ed41ef51257a954ab9ce73c8f93
+    export DIB_REPOLOCATION_neutron=https://git.openstack.org/openstack/neutron.git
+    export DIB_REPOREF_nova=2429f31e0a7387e8296b43efa3cb3435cb98ec47
+    export DIB_REPOLOCATION_nova=https://git.openstack.org/openstack/nova.git
+    export DIB_REPOREF_novnc=9b731d3a5811cce05001e1d8fbb0d53e2859c86b
+    export DIB_REPOLOCATION_novnc=https://github.com/kanaka/noVNC.git
+    export DIB_REPOREF_python_ceilometerclient=7f3be27367550a9974f880d306d7aa1571b5160b
+    export DIB_REPOLOCATION_python_ceilometerclient=https://git.openstack.org/openstack/python-ceilometerclient.git
+    export DIB_REPOREF_python_cinderclient=b4906c855fe86af6ac8f469ae6e76adddffe6586
+    export DIB_REPOLOCATION_python_cinderclient=https://git.openstack.org/openstack/python-cinderclient.git
+    export DIB_REPOREF_python_glanceclient=d613adc434e93c24d7c3bb34849d2aed1710e0d5
+    export DIB_REPOLOCATION_python_glanceclient=https://git.openstack.org/openstack/python-glanceclient.git
+    export DIB_REPOREF_python_heatclient=520a82428c3117340735887c9b8b1099a4b70dbb
+    export DIB_REPOLOCATION_python_heatclient=https://git.openstack.org/openstack/python-heatclient.git
+    export DIB_REPOREF_python_ironicclient=5dd8add1cd04d08d680702a76d22607dec11cdc7
+    export DIB_REPOLOCATION_python_ironicclient=https://git.openstack.org/openstack/python-ironicclient.git
+    export DIB_REPOREF_python_keystoneclient=cceba6a7e0025e82bb530b74a1975d42fae28ea3
+    export DIB_REPOLOCATION_python_keystoneclient=https://git.openstack.org/openstack/python-keystoneclient.git
+    export DIB_REPOREF_python_neutronclient=3a25ff3b3d35df38e00fcad4c12e3df06d69985a
+    export DIB_REPOLOCATION_python_neutronclient=https://git.openstack.org/openstack/python-neutronclient.git
+    export DIB_REPOREF_python_novaclient=39d1d0156b3ecd9314d6c08c848e353fa10bb1d5
+    export DIB_REPOLOCATION_python_novaclient=https://git.openstack.org/openstack/python-novaclient.git
+    export DIB_REPOREF_python_swiftclient=74f921f2851864a87620edc8259b7e387a826816
+    export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
+fi
+
 if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     git clone https://git.openstack.org/openstack/tripleo-image-elements
     
     pushd tripleo-image-elements
+
+    if [ "$LKG" = "1" ]; then
+        git fetch origin $DIB_REPOREF_tripleo_image_elements
+        git reset --hard FETCH_HEAD
+    fi
+
     # https://review.openstack.org/#/c/101784/5
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/84/101784/5 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/101117/6
@@ -32,6 +80,12 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder/elements ]; then
     git clone https://git.openstack.org/openstack/diskimage-builder
 
     pushd diskimage-builder
+
+    if [ "$LKG" = "1" ]; then
+        git fetch origin $DIB_REPOREF_diskimage_builder
+        git reset --hard FETCH_HEAD
+    fi
+
     # https://review.openstack.org/#/c/105543/
     git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/43/105543/1 && git cherry-pick FETCH_HEAD
     popd
