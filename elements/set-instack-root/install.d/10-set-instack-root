@@ -2,5 +2,5 @@
 
 set -eux
 
-mkdir -p /opt/stack/os-refresh-config/environment.d
+mkdir -p /opt/stack/os-config-refresh/environment.d
 echo export INSTACK_ROOT=$INSTACK_ROOT > /opt/stack/os-config-refresh/environment.d/00-instack-root.bash
