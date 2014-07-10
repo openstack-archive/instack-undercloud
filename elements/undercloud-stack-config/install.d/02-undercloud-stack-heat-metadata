@@ -2,6 +2,7 @@
 
 
 import os
+import subprocess
 
 import pystache
 
@@ -31,7 +32,7 @@ context = {
     'UNDERCLOUD_GLANCE_PASSWORD': os.environ.get('UNDERCLOUD_GLANCE_PASSWORD', 'unset'),
     'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
     'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
-    'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
+    'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset')
 }
 
 if "SSH_KEY" in os.environ:
@@ -45,3 +46,5 @@ cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
 os.makedirs(os.path.dirname(cfn_path))
 with open(cfn_path, 'w') as f:
     f.write(config_json)
+
+subprocess.check_call(['generate-keystone-pki', '-s', '--heatenv', cfn_path])
