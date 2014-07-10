@@ -11,14 +11,7 @@ fi
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
-# Add scripts directory from tripleo-incubator to the path.
-if [ ! -e /etc/profile.d/tripleo-incubator-scripts.sh ]; then
-    echo export PATH=\$PATH:/opt/stack/tripleo-incubator/scripts/ >> \
-        /etc/profile.d/tripleo-incubator-scripts.sh
-fi
-
-# Make sure we have the latest $PATH set.
-source /etc/profile.d/tripleo-incubator-scripts.sh
+export PATH=$PATH:$INSTACK_ROOT/tripleo-incubator/scripts
 
 if [ ! -f /root/.ssh/authorized_keys ]; then
     sudo mkdir -p /root/.ssh
@@ -40,22 +33,24 @@ fi
 
 # Ensure keystone is up before continuing on.
 # Waits for up to 2 minutes.
-tripleo wait_for 12 10 service $KEYSTONE_SERVICE status
+wait_for 12 10 service $KEYSTONE_SERVICE status
 
 # Because keystone just still isn't up yet...
 sleep 20
 
 export UNDERCLOUD_IP=$(os-apply-config --key local-ipv4 --type netaddress)
 
-tripleo init-keystone -p $UNDERCLOUD_ADMIN_PASSWORD $UNDERCLOUD_ADMIN_TOKEN \
-    $UNDERCLOUD_IP admin@example.com root@$UNDERCLOUD_IP
+init-keystone -o $UNDERCLOUD_IP -t $UNDERCLOUD_ADMIN_TOKEN \
+    -e admin@example.com -p $UNDERCLOUD_ADMIN_PASSWORD -u root
 
-tripleo setup-endpoints \
-    $UNDERCLOUD_IP \
-    --glance-password $UNDERCLOUD_GLANCE_PASSWORD \
-    --heat-password $UNDERCLOUD_HEAT_PASSWORD \
-    --neutron-password $UNDERCLOUD_NEUTRON_PASSWORD \
+# Create service endpoints and optionally include Ceilometer for UI support
+ENDPOINT_LIST="--glance-password $UNDERCLOUD_GLANCE_PASSWORD
+    --heat-password $UNDERCLOUD_HEAT_PASSWORD
+    --neutron-password $UNDERCLOUD_NEUTRON_PASSWORD
     --nova-password $UNDERCLOUD_NOVA_PASSWORD
+    --tuskar-password $UNDERCLOUD_TUSKAR_PASSWORD"
+    
+setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
 
 keystone role-create --name heat_stack_user
 
@@ -66,7 +61,7 @@ NETWORK_GATEWAY=$(os-apply-config --key neutron.network_gateway --type netaddres
 METADATA_SERVER=$UNDERCLOUD_IP
 PHYSICAL_NETWORK=ctlplane
 
-tripleo setup-neutron \
+setup-neutron \
     $DHCP_START $DHCP_END \
     $NETWORK_CIDR $NETWORK_GATEWAY \
     $METADATA_SERVER $PHYSICAL_NETWORK
