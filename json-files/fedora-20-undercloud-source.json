@@ -33,7 +33,8 @@
       "os-refresh-config-reboot",
       "common-venv",
       "selinux-policy-updates",
-      "set-instack-root"
+      "set-instack-root",
+      "undercloud-post-config-source"
     ],
     "hook": [
       "extra-data",
