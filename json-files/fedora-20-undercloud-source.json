@@ -32,8 +32,7 @@
       "mariadb-rdo",
       "os-refresh-config-reboot",
       "common-venv",
-      "selinux-policy-updates",
-      "undercloud-post-config-source"
+      "selinux-policy-updates"
     ],
     "hook": [
       "extra-data",

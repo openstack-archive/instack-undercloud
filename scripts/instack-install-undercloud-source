@@ -62,6 +62,8 @@ pushd $INSTACK_ROOT/instack
 sudo pip install -e .
 popd
 
+# Needed to compile os-cloud-config
+sudo yum install -y libffi-devel gcc python-devel openssl-devel libxml2-devel libxslt-devel
 pushd $INSTACK_ROOT/os-cloud-config
 sudo pip install -e .
 popd
