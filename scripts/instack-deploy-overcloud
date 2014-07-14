@@ -19,6 +19,7 @@ PM_IPS=( ${PM_IPS:-} )
 PM_USERS=( ${PM_USERS:-} )
 PM_PASSWORDS=( ${PM_PASSWORDS:-} )
 export USE_IRONIC=0
+export ROOT_DISK=${ROOT_DISK:-10}
 
 JSONFILE=nodes.json
 rm -f $JSONFILE
@@ -50,7 +51,7 @@ tripleo setup-baremetal --service-host undercloud --nodes <(jq '.nodes' $JSONFIL
 # Must wait for baremetal nodes to register as nova hypervisors
 sleep 60
 
-tripleo setup-overcloud-passwords -o
+tripleo setup-overcloud-passwords -o tripleo-overcloud-passwords
 source tripleo-overcloud-passwords
 
 # Define the interface that will be bridged onto the Neutron defined
@@ -77,25 +78,54 @@ if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
         /usr/share/openstack-tripleo-heat-templates/block-storage.yaml \
         > overcloud.yaml
     OVERCLOUD_YAML_PATH=overcloud.yaml
-else
-    sudo make -C /opt/stack/tripleo-heat-templates overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
-    OVERCLOUD_YAML_PATH=/opt/stack/tripleo-heat-templates/overcloud.yaml
-fi
 
-heat stack-create -f $OVERCLOUD_YAML_PATH \
-    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
     -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P GlanceLogFile=\"''\" \
     -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
     -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+    -P NeutronDnsmasqOptions=\"dhcp-option-force=26,1400\" \
     -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
-    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
     -P NeutronPublicInterface=$NeutronPublicInterface \
-    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
-    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
-    -P GlanceLogFile="''" \
-    -P NeutronDnsmasqOptions="dhcp-option-force=26,1400" \
+    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    "}
+
+else
+    make -C $INSTACK_ROOT/tripleo-heat-templates overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
+    OVERCLOUD_YAML_PATH=$INSTACK_ROOT/tripleo-heat-templates/overcloud.yaml
+
+    NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
+
+    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
+    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+    -P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
+    -P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
+    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P CloudName=overcloud \
+    -P GlanceLogFile=\"''\" \
+    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
+    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+    -P NeutronControlPlaneID=$NeutronControlPlaneID \
+    -P NeutronDnsmasqOptions=\"dhcp-option-force=26,1400\" \
+    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
+    -P NeutronPublicInterface=$NeutronPublicInterface \
+    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    "}
+
+fi
+
+
+heat stack-create -f $OVERCLOUD_YAML_PATH \
+    $OVERCLOUD_PARAMETERS \
     overcloud
 
 tripleo wait_for_stack_ready 220 10 overcloud
