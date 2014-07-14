@@ -49,4 +49,7 @@ os.makedirs(os.path.dirname(cfn_path))
 with open(cfn_path, 'w') as f:
     f.write(config_json)
 
+# For future reference, we could also generate this separately and combine the
+# cfn-init-data with the generated keystone data with:
+# jq -s '.[0].keystone=(.[0].keystone + .[1].keystone) | .[0]' cfn.json key.json 
 subprocess.check_call(['generate-keystone-pki', '-s', '--heatenv', cfn_path])
