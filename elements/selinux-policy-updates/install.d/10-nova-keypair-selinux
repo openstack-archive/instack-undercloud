@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eux
+
+mkdir -p /opt/stack/selinux-policy
+
+# Adds policy that corrects the following AVC when tripleo user-config is
+# run:
+# type=AVC msg=audit(1405348330.447:4702350): avc:  denied  { open } for pid=3710 comm="ssh-keygen" path="/tmp/tmpdrEO0d/temp.pub" dev="tmpfs" ino=90378049 scontext=system_u:system_r:ssh_keygen_t:s0 tcontext=system_u:object_r:init_tmp_t:s0 tclass=file
+cp $(dirname $0)/../nova_keypair.pp /opt/stack/selinux-policy
+cp $(dirname $0)/../nova_keypair.te /opt/stack/selinux-policy
