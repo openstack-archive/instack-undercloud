@@ -99,9 +99,6 @@
       "tenant_name": "admin"
     }
   },
-  "ironic": {
-    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
-  },
   "bootstrap_host": {
     "bootstrap_nodeid": "undercloud",
     "nodeid": "undercloud"
