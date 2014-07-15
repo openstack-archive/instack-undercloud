@@ -1,0 +1,16 @@
+
+module keepalive 1.0;
+
+require {
+	type kernel_t;
+	type initrc_var_run_t;
+	type keepalived_t;
+	class system module_request;
+	class file { read getattr open };
+}
+
+#============= keepalived_t ==============
+allow keepalived_t initrc_var_run_t:file { read getattr open };
+
+#!!!! This avc can be allowed using the boolean 'domain_kernel_load_modules'
+allow keepalived_t kernel_t:system module_request;

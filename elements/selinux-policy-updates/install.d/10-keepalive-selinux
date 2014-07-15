@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eux
+
+mkdir -p /opt/stack/selinux-policy
+
+# Adds policy that corrects the following AVCs:
+# type=AVC msg=audit(1405377839.782:18): avc:  denied  { module_request } for pid=384 comm="keepalived" kmod="net-pf-16-proto-16-family-IPVS" scontext=system_u:system_r:keepalived_t:s0 tcontext=system_u:system_r:kernel_t:s0 tclass=system
+# type=AVC msg=audit(1405378057.097:268): avc:  denied  { read } for  pid=3814 comm="keepalived" name="hosts" dev="sda3" ino=476 scontext=system_u:system_r:keepalived_t:s0 tcontext=system_u:object_r:initrc_var_run_t:s0 tclass=file
+# type=AVC msg=audit(1405378057.097:268): avc:  denied  { open } for  pid=3814 comm="keepalived" path="/etc/hosts" dev="sda3" ino=476 scontext=system_u:system_r:keepalived_t:s0 tcontext=system_u:object_r:initrc_var_run_t:s0 tclass=file
+# type=AVC msg=audit(1405378057.098:269): avc:  denied  { getattr } for  pid=3813 comm="keepalived" path="/etc/hosts" dev="sda3" ino=476 scontext=system_u:system_r:keepalived_t:s0 tcontext=system_u:object_r:initrc_var_run_t:s0 tclass=file
+cp $(dirname $0)/../keepalive.pp /opt/stack/selinux-policy
+cp $(dirname $0)/../keepalive.te /opt/stack/selinux-policy
