@@ -24,10 +24,6 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
         git reset --hard FETCH_HEAD
     fi
 
-    # https://review.openstack.org/#/c/101784/5
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/84/101784/5 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/101117/6
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/17/101117/6 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/91704/11/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/91704/12 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/102687/3
