@@ -8,7 +8,7 @@ export LKG=${LKG:-0}
 
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
-    export DIB_REPOREF_tripleo_image_elements=bc71c4dc77a62492426b7960ed966241904d1cfb
+    export DIB_REPOREF_tripleo_image_elements=701bf0e912c4fdd4cf6970cfbd2491856c43ef99
     export DIB_REPOREF_tripleo_heat_templates=2c982451e6e0ff6a9537cc56324ba6d0d4986712
     export DIB_REPOREF_diskimage_builder=e93d3651148360e22e6f4e1dc820be497509d3eb
     export DIB_REPOREF_os_cloud_config=5411ba9102744700dc8b418496728ee46c82e7c3
@@ -55,6 +55,7 @@ $INSTACK_ROOT/diskimage-builder/elements/"}
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"
 baremetal \
+base \
 boot-stack \
 ceilometer-agent-central \
 ceilometer-agent-notification \
@@ -69,17 +70,17 @@ haproxy \
 horizon \
 hosts \
 keepalived \
-mariadb \
+mariadb-rdo \
 neutron-network-node \
 ntp \
 os-collect-config \
-os-refresh-config-reboot \
 pip-cache \
 rabbitmq-server \
-stable-interface-names \
+selinux-permissive \
 stackuser \
 swift-proxy \
 swift-storage \
+use-ephemeral
 "}
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
@@ -92,6 +93,7 @@ nova-kvm \
 os-collect-config \
 os-refresh-config-reboot \
 pip-cache \
+selinux-permissive \
 stable-interface-names \
 stackuser
 "}
