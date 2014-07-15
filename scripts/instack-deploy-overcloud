@@ -65,6 +65,9 @@ COMPUTESCALE=${COMPUTESCALE:-1}
 BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
 SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-1}
 
+
+
+
 if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     tripleo-heat-merge \
         --included-template-dir /usr/share/openstack-tripleo-heat-templates \
@@ -95,6 +98,8 @@ if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
     "}
 
+    HEAT_ENVIRONMENT=""
+
 else
     make -C $INSTACK_ROOT/tripleo-heat-templates overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
     OVERCLOUD_YAML_PATH=$INSTACK_ROOT/tripleo-heat-templates/overcloud.yaml
@@ -121,11 +126,20 @@ else
     -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
     "}
 
+
+    HEAT_ENV=${HEAT_ENV:-"${INSTACK_ROOT}/overcloud-env.json"}
+    ENV_JSON='{"parameters":{}}'
+    jq . > "${HEAT_ENV}" <<< $ENV_JSON
+    chmod 0600 "${HEAT_ENV}"
+    generate-keystone-pki --heatenv $HEAT_ENV
+    HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
+
 fi
 
 
 heat stack-create -f $OVERCLOUD_YAML_PATH \
     $OVERCLOUD_PARAMETERS \
+    $HEAT_ENVIRONMENT \
     overcloud
 
 tripleo wait_for_stack_ready 220 10 overcloud
@@ -135,20 +149,19 @@ echo "Overcloud CREATE_COMPLETE"
 if [ -d /etc/tripleo ]; then
     TRIPLEO_ROOT=/etc/tripleo
 else
-    TRIPLEO_ROOT=/opt/stack/tripleo-incubator
+    TRIPLEO_ROOT=$INSTACK_ROOT/tripleo-incubator
 fi
 
-export OVERCLOUD_IP=$(nova list | grep notCompute0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
+export OVERCLOUD_IP=$(nova list | grep controller0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
 
 touch ~/.ssh/known_hosts
 chmod 600 ~/.ssh/known_hosts
 ssh-keygen -R $OVERCLOUD_IP
 
-
 export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
-OVERCLOUD_ENDPOINT="http://$OVERCLOUD_IP:5000/v2.0"
+OVERCLOUD_ENDPOINT="http://$OVERCLOUD_IP:5000/v2.0/"
 NEW_JSON=$(jq '.overcloud.password="'${OVERCLOUD_ADMIN_PASSWORD}'" | .overcloud.endpoint="'${OVERCLOUD_ENDPOINT}'" | .overcloud.endpointhost="'${OVERCLOUD_IP}'"' $JSONFILE)
 
 echo $NEW_JSON > $JSONFILE
@@ -156,15 +169,32 @@ echo $NEW_JSON > $JSONFILE
 export TE_DATAFILE=$JSONFILE
 source $TRIPLEO_ROOT/overcloudrc
 
-tripleo init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
-    $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
-    ${SSLBASE:+--ssl $PUBLIC_API_URL}
-tripleo setup-endpoints $OVERCLOUD_IP --cinder-password $OVERCLOUD_CINDER_PASSWORD \
+if [ -z "$INSTACK_ROOT" ]; then
+    tripleo init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
+        $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
+        ${SSLBASE:+--ssl $PUBLIC_API_URL}
+
+    REGISTER_SERVICE_OPTS=
+else
+    init-keystone -o $OVERCLOUD_IP -t $OVERCLOUD_ADMIN_TOKEN \
+        -e admin.example.com -p $OVERCLOUD_ADMIN_PASSWORD -u heat-admin \
+        ${SSLBASE:+-s $PUBLIC_API_URL}
+
+    # REGISTER_SERVICE_OPTS="--ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD "
+    REGISTER_SERVICE_OPTS=""
+
+    keystone role-create --name=swiftoperator
+    keystone role-create --name=ResellerAdmin
+fi
+
+tripleo setup-endpoints $OVERCLOUD_IP \
+    --cinder-password $OVERCLOUD_CINDER_PASSWORD \
     --glance-password $OVERCLOUD_GLANCE_PASSWORD \
     --heat-password $OVERCLOUD_HEAT_PASSWORD \
     --neutron-password $OVERCLOUD_NEUTRON_PASSWORD \
     --nova-password $OVERCLOUD_NOVA_PASSWORD \
     --swift-password $OVERCLOUD_SWIFT_PASSWORD \
+    $REGISTER_SERVICE_OPTS \
     ${SSLBASE:+--ssl $PUBLIC_API_URL}
 keystone role-create --name heat_stack_user
 # setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
