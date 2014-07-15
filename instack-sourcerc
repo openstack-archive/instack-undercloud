@@ -10,50 +10,52 @@ if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
     export DIB_REPOREF_tripleo_image_elements=701bf0e912c4fdd4cf6970cfbd2491856c43ef99
     export DIB_REPOREF_tripleo_heat_templates=2c982451e6e0ff6a9537cc56324ba6d0d4986712
-    export DIB_REPOREF_diskimage_builder=e93d3651148360e22e6f4e1dc820be497509d3eb
-    export DIB_REPOREF_os_cloud_config=5411ba9102744700dc8b418496728ee46c82e7c3
+    export DIB_REPOREF_diskimage_builder=c9bcce2030a93f65dda37e270fb84e142fbab1a5
+    export DIB_REPOREF_os_cloud_config=7b984349fe3552270691c6b5882559b005fb42a4
+    export DIB_REPOREF_tripleo_incubator=b3a9732afc0480fd43fb1fa713e83b35427f2c70
 
     # To generate these, run:
     # set-source-vars -m /etc/dib-manifests/dib-manifest-git-instack
     # after a successful installation.
-    export DIB_REPOREF_glance=4829deeae1941a65c6deb5776ccd624e0ed5641c
+    export DIB_REPOREF_glance=56625d9fab2554eabe993bb4b4cb45c6bf555f70
     export DIB_REPOLOCATION_glance=https://git.openstack.org/openstack/glance.git
-    export DIB_REPOREF_heat=a7dd2bb0e47ce3b5be0d71428ea598b2dc6177a1
+    export DIB_REPOREF_heat=f1b8cfd54e6f8683e8cd79de15dcac8bd885a85e
     export DIB_REPOLOCATION_heat=https://git.openstack.org/openstack/heat.git
-    export DIB_REPOREF_keystone=fac022a55074ebf6bc6356e47cbbb88dc4e55d04
+    export DIB_REPOREF_keystone=bbfd58a6c190607f7063d15a3e2836e40806ef57
     export DIB_REPOLOCATION_keystone=https://git.openstack.org/openstack/keystone.git
-    export DIB_REPOREF_neutron=1cf3b80549821ed41ef51257a954ab9ce73c8f93
+    export DIB_REPOREF_neutron=2d4b75b420f39f9572034b914c34be80a4c74eb1
     export DIB_REPOLOCATION_neutron=https://git.openstack.org/openstack/neutron.git
-    export DIB_REPOREF_nova=2429f31e0a7387e8296b43efa3cb3435cb98ec47
+    export DIB_REPOREF_nova=37a8ea9894bc77c62163044ffddafb463d2623a4
     export DIB_REPOLOCATION_nova=https://git.openstack.org/openstack/nova.git
     export DIB_REPOREF_novnc=9b731d3a5811cce05001e1d8fbb0d53e2859c86b
     export DIB_REPOLOCATION_novnc=https://github.com/kanaka/noVNC.git
-    export DIB_REPOREF_python_ceilometerclient=7f3be27367550a9974f880d306d7aa1571b5160b
+    export DIB_REPOREF_python_ceilometerclient=5c8a85e3861c0e90ef63325956ca809edca5719a
     export DIB_REPOLOCATION_python_ceilometerclient=https://git.openstack.org/openstack/python-ceilometerclient.git
-    export DIB_REPOREF_python_cinderclient=b4906c855fe86af6ac8f469ae6e76adddffe6586
+    export DIB_REPOREF_python_cinderclient=da4117f71c36c2e80eb9590d407b87003adf6679
     export DIB_REPOLOCATION_python_cinderclient=https://git.openstack.org/openstack/python-cinderclient.git
-    export DIB_REPOREF_python_glanceclient=d613adc434e93c24d7c3bb34849d2aed1710e0d5
+    export DIB_REPOREF_python_glanceclient=dbb242b776908ca50ed8557ebfe7cfcd879366c8
     export DIB_REPOLOCATION_python_glanceclient=https://git.openstack.org/openstack/python-glanceclient.git
-    export DIB_REPOREF_python_heatclient=520a82428c3117340735887c9b8b1099a4b70dbb
+    export DIB_REPOREF_python_heatclient=47232fa9b011831e54e8b161d1a2da4b1ea7cd2b
     export DIB_REPOLOCATION_python_heatclient=https://git.openstack.org/openstack/python-heatclient.git
-    export DIB_REPOREF_python_ironicclient=5dd8add1cd04d08d680702a76d22607dec11cdc7
+    export DIB_REPOREF_python_ironicclient=d7218d83a2d93a3a5610bc329a271891983700ae
     export DIB_REPOLOCATION_python_ironicclient=https://git.openstack.org/openstack/python-ironicclient.git
-    export DIB_REPOREF_python_keystoneclient=cceba6a7e0025e82bb530b74a1975d42fae28ea3
+    export DIB_REPOREF_python_keystoneclient=9fc3a0fd102993f9124978a2d47804f438cb55a1
     export DIB_REPOLOCATION_python_keystoneclient=https://git.openstack.org/openstack/python-keystoneclient.git
-    export DIB_REPOREF_python_neutronclient=3a25ff3b3d35df38e00fcad4c12e3df06d69985a
+    export DIB_REPOREF_python_neutronclient=2b3cf686d6451cfcd9d3fccee2a428751f1cee4a
     export DIB_REPOLOCATION_python_neutronclient=https://git.openstack.org/openstack/python-neutronclient.git
-    export DIB_REPOREF_python_novaclient=39d1d0156b3ecd9314d6c08c848e353fa10bb1d5
+    export DIB_REPOREF_python_novaclient=deef71af93f67901d191b569b972581219f5723c
     export DIB_REPOLOCATION_python_novaclient=https://git.openstack.org/openstack/python-novaclient.git
-    export DIB_REPOREF_python_swiftclient=74f921f2851864a87620edc8259b7e387a826816
+    export DIB_REPOREF_python_swiftclient=d5a45fcd2d92c1328d35c54e09712c1152f1af19
     export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
+
 fi
 
-export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+export ELEMENTS_PATH="\
 $INSTACK_ROOT/instack-undercloud/elements:\
 $INSTACK_ROOT/tripleo-image-elements/elements/:\
-$INSTACK_ROOT/diskimage-builder/elements/"}
+$INSTACK_ROOT/diskimage-builder/elements/"
 
-export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"
+export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="\
 baremetal \
 base \
 boot-stack \
@@ -77,13 +79,14 @@ os-collect-config \
 pip-cache \
 rabbitmq-server \
 selinux-permissive \
+stable-interface-names \
 stackuser \
 swift-proxy \
 swift-storage \
-use-ephemeral
-"}
+use-ephemeral \
+"
 
-export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
+export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS="\
 baremetal \
 dhcp-all-interfaces \
 fedora-rdo-icehouse-repository \
@@ -96,9 +99,9 @@ pip-cache \
 selinux-permissive \
 stable-interface-names \
 stackuser
-"}
+"
 
-export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
+export OVERCLOUD_CINDER_DIB_EXTRA_ARGS="\
 baremetal \
 cinder-volume \
 common-venv \
@@ -109,9 +112,9 @@ os-refresh-config-reboot \
 pip-cache \
 stable-interface-names \
 stackuser \
-"}
+"
 
-export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS=${OVERCLOUD_SWIFT_DIB_EXTRA_ARGS:-"\
+export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS="\
 baremetal \
 common-venv \
 dhcp-all-interfaces \
@@ -122,4 +125,4 @@ pip-cache \
 stable-interface-names \
 stackuser \
 swift-storage \
-"}
+"
