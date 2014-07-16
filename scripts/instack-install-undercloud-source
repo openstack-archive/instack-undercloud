@@ -108,6 +108,9 @@ popd
 # tar is required if we want to run diskimage-builder
 sudo yum install -y tar
 
+# needed for semanage
+sudo yum install -y policycoreutils-python
+
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
 # Reset ownership of cache directory
