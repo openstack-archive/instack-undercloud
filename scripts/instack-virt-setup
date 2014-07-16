@@ -2,7 +2,18 @@
 
 set -ex
 
-source /usr/libexec/openstack-tripleo/devtest_variables.sh
+if [ -z "$INSTACK_ROOT" ]; then
+    DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
+    RCFILE=/usr/share/doc/instack-undercloud/deploy-virt-overcloudrc
+    ANSWERSFILE=/usr/share/doc/instack-undercloud/instack-virt.answers.sample
+else
+    DEVTEST_VARIABLES=$INSTACK_ROOT/tripleo-incubator/scripts/devtest_variables.sh
+    RCFILE=$INSTACK_ROOT/instack-undercloud/deploy-virt-overcloudrc
+    ANSWERSFILE=$INSTACK_ROOT/instack-undercloud/instack-virt.answers.sample
+fi
+
+source $DEVTEST_VARIABLES
+
 export NODE_ARCH=${NODE_ARCH:-amd64}
 
 tripleo devtest_testenv.sh instackenv.json
@@ -10,7 +21,7 @@ tripleo devtest_testenv.sh instackenv.json
 sudo virsh undefine --remove-all-storage seed
 
 MACS=$(for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; done)
-cp /usr/share/doc/instack-undercloud/deploy-virt-overcloudrc /tmp/deploy-virt-overcloudrc
+cp $RCFILE /tmp/deploy-virt-overcloudrc
 sed -i "s/MACS=\"\"/MACS=\"$MACS\"/" /tmp/deploy-virt-overcloudrc
 
 UNDERCLOUD_ROOT_PASSWORD=${UNDERCLOUD_ROOT_PASSWORD:-""}
@@ -34,7 +45,7 @@ virt-builder $UNDERCLOUD_OS $UNDERCLOUD_PASSWORD_ARG \
   --upload ~/.ssh/id_rsa_virt_power:/home/stack/.ssh/id_rsa_virt_power \
   --upload ~/.ssh/id_rsa_virt_power.pub:/home/stack/.ssh/id_rsa_virt_power.pub \
   --upload /tmp/deploy-virt-overcloudrc:/home/stack/deploy-overcloudrc \
-  --upload /usr/share/doc/instack-undercloud/instack-virt.answers.sample:/home/stack/instack.answers \
+  --upload $ANSWERSFILE:/home/stack/instack.answers \
   --run-command \
     'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd;
      echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack;
