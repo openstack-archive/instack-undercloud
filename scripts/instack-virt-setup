@@ -12,6 +12,7 @@ else
     ANSWERSFILE=$INSTACK_ROOT/instack-undercloud/instack-virt.answers.sample
     export TRIPLEO_ROOT=$INSTACK_ROOT
     export NODE_CNT=4
+    export NODE_MEM=3072
 fi
 
 source $DEVTEST_VARIABLES
