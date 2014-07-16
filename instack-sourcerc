@@ -72,7 +72,7 @@ haproxy \
 horizon \
 hosts \
 keepalived \
-mariadb-rdo \
+mariadb-rpm \
 neutron-network-node \
 ntp \
 os-collect-config \
