@@ -29,7 +29,7 @@
       "undercloud-stack-config",
       "rabbitmq-server",
       "horizon-test-build",
-      "mariadb-rdo",
+      "mariadb-rpm",
       "os-refresh-config-reboot",
       "common-venv",
       "set-instack-root",
