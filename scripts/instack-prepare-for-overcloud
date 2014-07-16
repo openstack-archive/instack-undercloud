@@ -29,7 +29,7 @@ function download_image {
     # Allow the download to fail, in case initrd/vmlinuz is not available,
     # will fall back to old behavior of extraction via
     # disk-image-get-kernel
-    if [ "$image_name" =~ "overcloud" ]; then
+    if [[ "$image_name" =~ "overcloud" ]]; then
         for f in vmlinuz initrd; do
             local file_name=$(basename -s .qcow2 $image_name).$f
             if [ ! -f $file_name ]; then
