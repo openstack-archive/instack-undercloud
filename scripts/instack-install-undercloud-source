@@ -111,6 +111,9 @@ sudo yum install -y tar
 # needed for semanage
 sudo yum install -y policycoreutils-python
 
+# ensure latest policy
+sudo yum install -y selinux-policy
+
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
 # Reset ownership of cache directory
