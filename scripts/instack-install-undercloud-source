@@ -30,8 +30,12 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/87/102687/3 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/99242
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/42/99242/7 && git cherry-pick FETCH_HEAD
+    # https://review.openstack.org/#/c/106909
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/09/106909/3 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107232
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/32/107232/1 && git cherry-pick FETCH_HEAD
+    # https://review.openstack.org/#/c/106908/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/106908/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107234
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/34/107234/1 && git cherry-pick FETCH_HEAD
     popd
