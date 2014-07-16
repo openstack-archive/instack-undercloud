@@ -101,3 +101,7 @@ popd
 sudo yum install -y tar
 
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
+
+# Reset ownership of cache directory
+# This is needed in order for instack-build-images to make changes to the cache
+sudo -E chown -R $USER: $HOME/.cache/image-create
