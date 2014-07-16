@@ -10,6 +10,8 @@ else
     DEVTEST_VARIABLES=$INSTACK_ROOT/tripleo-incubator/scripts/devtest_variables.sh
     RCFILE=$INSTACK_ROOT/instack-undercloud/deploy-virt-overcloudrc
     ANSWERSFILE=$INSTACK_ROOT/instack-undercloud/instack-virt.answers.sample
+    export TRIPLEO_ROOT=$INSTACK_ROOT
+    export NODE_CNT=4
 fi
 
 source $DEVTEST_VARIABLES
