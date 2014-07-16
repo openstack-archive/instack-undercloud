@@ -14,13 +14,17 @@ instack-undercloud via source
         # cp instack-undercloud/instack-virt.answers.sample ~/instack.answers
         # Perform any answer file edits
 
-3. Run script to install undercloud from source. The script will produce a lot of output on
-   the sceen. It also logs to ~/.instack/install-undercloud.log. You should see
-   `install-undercloud Complete!` at the end of a successful run. Optionally,
-   export LKG=1 to use the last known good git commits instead of master.
+3. Source instack-sourcerc and run script to install the undercloud from
+   source. The script will produce a lot of output on the sceen. It also logs to
+   ~/.instack/install-undercloud.log. You should see `install-undercloud
+   Complete!` at the end of a successful run. 
+   
+   Optionally, export LKG=1 to use the last known good git commits instead of
+   master.
 
         # Optionally use LKG:
         # export LKG=1
+        source instack-undercloud/instack-sourcerc
         instack-install-undercloud-source
 
 4. Once the install script has run to completion, you should take note to secure and save the files
