@@ -87,40 +87,52 @@ use-ephemeral \
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS="\
 baremetal \
+base \
+common-venv \
 dhcp-all-interfaces \
-fedora-rdo-icehouse-repository \
+hosts \
 neutron-openvswitch-agent \
 nova-compute \
 nova-kvm \
+ntp \
 os-collect-config \
-os-refresh-config-reboot \
 pip-cache \
+pypi-openstack \
 stable-interface-names \
-stackuser
+stackuser \
+use-ephemeral
 "
 
 export OVERCLOUD_CINDER_DIB_EXTRA_ARGS="\
 baremetal \
+base \
 cinder-volume \
 common-venv \
 dhcp-all-interfaces \
+hosts \
 neutron-openvswitch-agent \
+ntp \
 os-collect-config \
-os-refresh-config-reboot \
 pip-cache \
+pypi-openstack \
 stable-interface-names \
 stackuser \
+use-ephemeral \
 "
 
 export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS="\
 baremetal \
+base \
 common-venv \
 dhcp-all-interfaces \
+hosts \
 neutron-openvswitch-agent \
+ntp \
 os-collect-config \
-os-refresh-config-reboot \
 pip-cache \
+pypi-openstack \
 stable-interface-names \
 stackuser \
 swift-storage \
+use-ephemeral \
 "
