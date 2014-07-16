@@ -28,7 +28,6 @@
       "neutron-dhcp-agent",
       "undercloud-stack-config",
       "rabbitmq-server",
-      "horizon-test-build",
       "mariadb-rpm",
       "os-refresh-config-reboot",
       "common-venv",
