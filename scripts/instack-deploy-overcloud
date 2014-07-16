@@ -113,11 +113,10 @@ else
     -P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
     -P CloudName=overcloud \
-    -P GlanceLogFile=\"''\" \
     -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
     -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
     -P NeutronControlPlaneID=$NeutronControlPlaneID \
-    -P NeutronDnsmasqOptions=\"dhcp-option-force=26,1400\" \
+    -P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
     -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
     -P NeutronPublicInterface=$NeutronPublicInterface \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
