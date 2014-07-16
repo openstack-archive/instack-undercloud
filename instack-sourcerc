@@ -78,7 +78,6 @@ ntp \
 os-collect-config \
 pip-cache \
 rabbitmq-server \
-selinux-permissive \
 stable-interface-names \
 stackuser \
 swift-proxy \
@@ -96,7 +95,6 @@ nova-kvm \
 os-collect-config \
 os-refresh-config-reboot \
 pip-cache \
-selinux-permissive \
 stable-interface-names \
 stackuser
 "
