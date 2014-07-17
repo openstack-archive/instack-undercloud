@@ -7,9 +7,5 @@ mkdir -p /opt/stack/selinux-policy
 # Adds policy that corrects the following AVC when neutron-dhcp-agent tries to
 # start:
 # type=AVC msg=audit(1405364263.636:55476): avc:  denied  { mounton } for pid=2967 comm="ip" path="/" dev="dm-0" ino=2 scontext=system_u:system_r:ifconfig_t:s0 tcontext=system_u:object_r:root_t:s0 tclass=dir
-# and:
-# type=AVC msg=audit(1405003967.738:15767): avc:  denied  { mounton } for pid=5944 comm="ip" path="/run/netns" dev="tmpfs" ino=110627 scontext=system_u:system_r:ifconfig_t:s0 tcontext=system_u:object_r:ifconfig_var_run_t:s0 tclass=dir
 cp $(dirname $0)/../neutron_ip.pp /opt/stack/selinux-policy
 cp $(dirname $0)/../neutron_ip.te /opt/stack/selinux-policy
-cp $(dirname $0)/../neutron_ip_tmpfs.pp /opt/stack/selinux-policy
-cp $(dirname $0)/../neutron_ip_tmpfs.te /opt/stack/selinux-policy

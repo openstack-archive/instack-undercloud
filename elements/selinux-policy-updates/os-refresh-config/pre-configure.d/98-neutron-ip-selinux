@@ -3,4 +3,3 @@
 set -eux
 
 semodule -i /opt/stack/selinux-policy/neutron_ip.pp
-semodule -i /opt/stack/selinux-policy/neutron_ip_tmpfs.pp
