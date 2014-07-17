@@ -86,10 +86,30 @@ fi
 
 if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
     git clone https://git.openstack.org/openstack/tripleo-incubator
+
+    pushd tripleo-incubator
+
+    if [ "$LKG" = "1" ]; then
+        git fetch origin $DIB_REPOREF_tripleo_incubator
+        git reset --hard FETCH_HEAD
+    fi
+
+    popd
+
 fi
 
 if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
     git clone https://git.openstack.org/openstack/tripleo-heat-templates
+
+    pushd tripleo-heat-templates
+
+    if [ "$LKG" = "1" ]; then
+        git fetch origin $DIB_REPOREF_tripleo_heat_templates
+        git reset --hard FETCH_HEAD
+    fi
+
+    popd
+
 fi
 
 pushd $INSTACK_ROOT/diskimage-builder
@@ -121,6 +141,11 @@ $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 # This is needed in order for instack-build-images to make changes to the cache
 sudo -E chown -R $USER: $HOME/.cache/image-create
 
+# A couple of fixups...need to debug these.
+# fixes neutron-dhcp-agent and neutron-openvswitch-agent tracebacks from
+# rootwrap about missing Fitlers section
 sudo rm -f /opt/stack/venvs/openstack/etc/neutron/rootwrap.d/rootwrap.d
+# Fixes pxe boot failures for overcloud nodes
+sudo ip addr del 192.0.2.1/24 dev eth1 || true
 
 echo $0 Complete!
