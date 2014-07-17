@@ -8,7 +8,8 @@ export ELEMENTS_PATH="$INSTACK_ROOT/tripleo-image-elements/elements:$INSTACK_ROO
 
 export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-source.json
 
-sudo yum -y install git python-pip
+sudo yum -y install git python-pip ccache
+source /etc/profile.d/ccache.sh
 
 git config --global user.email "instack@example.com"
 git config --global user.name "instack"
