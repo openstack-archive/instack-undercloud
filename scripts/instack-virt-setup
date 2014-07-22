@@ -52,6 +52,7 @@ virt-builder $UNDERCLOUD_OS $UNDERCLOUD_PASSWORD_ARG \
   --run-command \
     'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd;
      echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack;
+     chmod 0755 /home/stack;
      chmod 0700 /home/stack/.ssh;
      chmod 0600 /home/stack/.ssh/id_rsa_virt_power /home/stack/.ssh/id_rsa_virt_power.pub;
      cp /etc/skel/.* /home/stack/;
