@@ -122,6 +122,8 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
     git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/60/107760/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107761/
     git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/61/107761/1 && git cherry-pick FETCH_HEAD
+    # https://review.openstack.org/#/c/108850/
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/50/108850/1 && git cherry-pick FETCH_HEAD
 
     popd
 
