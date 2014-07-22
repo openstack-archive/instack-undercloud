@@ -116,6 +116,8 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git reset --hard FETCH_HEAD
     fi
 
+    # https://review.openstack.org/#/c/107759/
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/59/107759/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107760/
     git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/60/107760/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107761/
