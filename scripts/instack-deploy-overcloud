@@ -112,6 +112,7 @@ else
     -P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
     -P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P CinderISCSIHelper=lioadm \
     -P CloudName=overcloud \
     -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
     -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
