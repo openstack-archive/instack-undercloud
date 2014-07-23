@@ -55,6 +55,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     # https://review.openstack.org/#/c/107041/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/41/107041/1 && git cherry-pick FETCH_HEAD
 
+    ## Swift
+    #
+    # https://review.openstack.org/#/c/109090/
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/90/109090/1 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
