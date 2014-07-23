@@ -26,6 +26,7 @@ fi
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
 pip-cache boot-stack cinder-api cinder-volume os-collect-config \
 neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
+cinder-lio \
 swift-package-updates \
 selinux-package-updates \
 baremetal \
