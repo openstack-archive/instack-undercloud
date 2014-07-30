@@ -49,6 +49,11 @@
     "metadata-proxy": "false",
     "service-password": "{{UNDERCLOUD_NOVA_PASSWORD}}"
   },
+  "ironic": {
+    "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
+    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}",
+    "virtual_power_ssh_key": "{{SSH_KEY}}"
+  },
   "bootstack": {
     "public_interface_ip": "{{LOCAL_IP}}/24",
     "masquerade_networks": ["{{MASQUERADE_NETWORK}}"]

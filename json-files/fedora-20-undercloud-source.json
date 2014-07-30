@@ -23,7 +23,7 @@
       "fedora",
       "fedora-distro",
       "boot-stack",
-      "nova-baremetal",
+      "nova-ironic",
       "os-collect-config",
       "neutron-dhcp-agent",
       "undercloud-stack-config",
