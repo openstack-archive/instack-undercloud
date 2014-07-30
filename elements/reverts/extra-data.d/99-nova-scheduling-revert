@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+# https://review.openstack.org/#/c/107511/
+pushd /opt/stack/nova
+git revert --no-edit 963ad71af4750e28745b6de262da11816b403801 || true
+git reset --hard HEAD
+popd

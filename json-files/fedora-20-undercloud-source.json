@@ -33,6 +33,7 @@
       "common-venv",
       "set-instack-root",
       "undercloud-post-config-source",
+      "reverts",
       "selinux-policy-updates"
     ],
     "hook": [
@@ -51,12 +52,10 @@
       "99-up-to-date",
       "01-yum-keepcache",
       "15-remove-grub",
-      "51-ironicclient",
       "05-fstab-rootfs-label",
       "15-fedora-remove-grub",
-      "51-ironicclient",
-      "05-fstab-rootfs-label",
-      "00-load-selinux-policy"
+      "00-load-selinux-policy",
+      "00-install-and-load-selinux-policy"
     ]
   }
 ]
