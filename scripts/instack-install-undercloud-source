@@ -23,28 +23,36 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_tripleo_image_elements
         git reset --hard FETCH_HEAD
+
+        ## SELinux
+        #
+        # https://review.openstack.org/#/c/91704
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/91704/12 && git cherry-pick FETCH_HEAD
+        # https://review.openstack.org/#/c/99242
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/42/99242/7 && git cherry-pick FETCH_HEAD
+        # https://review.openstack.org/#/c/106908/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/106908/1 && git cherry-pick FETCH_HEAD
+
+        ## Cinder
+        #
+        # https://review.openstack.org/#/c/107041/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/41/107041/1 && git cherry-pick FETCH_HEAD
     fi
 
     ## SELinux
     #
-    # https://review.openstack.org/#/c/91704
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/91704/12 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/99242
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/42/99242/7 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/106909
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/09/106909/3 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/09/106909/5 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107232
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/32/107232/1 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/106908/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/106908/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107234
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/34/107234/1 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/34/107234/3 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107233/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/33/107233/1 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/33/107233/2 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107447/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/47/107447/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/107448/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/48/107448/1 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/48/107448/2 && git cherry-pick FETCH_HEAD
 
     ## Cinder
     #
@@ -52,18 +60,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/62/106562/1 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/106229/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/29/106229/1 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/107041/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/41/107041/1 && git cherry-pick FETCH_HEAD
-
-    ## Swift
-    #
-    # https://review.openstack.org/#/c/109090/
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/90/109090/1 && git cherry-pick FETCH_HEAD
 
     popd
 fi
 
-if [ ! -d $INSTACK_ROOT/diskimage-builder/elements ]; then
+if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
     git clone https://git.openstack.org/openstack/diskimage-builder
 
     pushd diskimage-builder
@@ -73,13 +74,11 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder/elements ]; then
         git reset --hard FETCH_HEAD
     fi
 
-    # https://review.openstack.org/#/c/105543/
-    git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/43/105543/1 && git cherry-pick FETCH_HEAD
     popd
 fi
 
 
-if [ ! -d $INSTACK_ROOT/instack-undercloud/elements ]; then
+if [ ! -d $INSTACK_ROOT/instack-undercloud ]; then
     git clone https://github.com/agroup/instack-undercloud
 fi
 
@@ -123,16 +122,24 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_tripleo_heat_templates
         git reset --hard FETCH_HEAD
+
+        ## Cinder
+        #
+        # https://review.openstack.org/#/c/107759/
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/59/107759/1 && git cherry-pick FETCH_HEAD
+        # https://review.openstack.org/#/c/107760/
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/60/107760/1 && git cherry-pick FETCH_HEAD
     fi
 
-    # https://review.openstack.org/#/c/107759/
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/59/107759/1 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/107760/
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/60/107760/1 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/107761/
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/61/107761/1 && git cherry-pick FETCH_HEAD
+    ## Cinder
+    #
     # https://review.openstack.org/#/c/108850/
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/50/108850/1 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/50/108850/2 && git cherry-pick FETCH_HEAD
+
+    ## Swift
+    #
+    # https://review.openstack.org/#/c/109090/
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/90/109090/1 && git cherry-pick FETCH_HEAD
 
     popd
 
