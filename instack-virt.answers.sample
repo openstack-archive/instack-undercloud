@@ -12,24 +12,6 @@ LOCAL_IP=192.0.2.1
 # LOCAL_INTERFACE will be assigned the address from LOCAL_IP
 LOCAL_INTERFACE=eth1
 
-### POWER_DRIVER ###
-# OpenStack Nova Baremetal power driver to use for powering on/off Overcloud
-# instances. Use IPMI for baremetal. For virsh based virtualization, you can
-# use:
-# POWER_DRIVER=nova.virt.baremetal.ipmi.IPMI
-POWER_DRIVER=nova.virt.baremetal.virtual_power_driver.VirtualPowerManager
-
-### VIRTUAL_POWER_USER ###
-# When POWER_DRIVER is set to the VirtualPowerManager, the user to use to
-# connect to VIRTUAL_POWER_HOST. Unused if POWER_DRIVER is IPMI.  This is
-# a user on your virsh host.
-VIRTUAL_POWER_USER=stack
-
-### VIRTUAL_POWER_HOST ###
-# When POWER_DRIVER is set to the VirtualPowerManager, the virsh host to use
-# for Overcloud instances. Unused if POWER_DRIVER is IPMI.
-VIRTUAL_POWER_HOST=192.168.122.1
-
 ### SSH_KEY ###
 # When POWER_DRIVER is set to the VirtualPowerManager, the ssh key to use to
 # ssh to the virsh host.  Unused if POWER_DRIVER is IPMI.

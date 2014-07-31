@@ -15,22 +15,14 @@ MEM=${MEM:-2048}
 DISK=${DISK:-30}
 ARCH=${ARCH:-amd64}
 MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}
-SSH_PM_USER=${SSH_PM_USER:-$USER}
-SSH_PM_HOST=${SSH_PM_HOST:-"192.168.122.1"}
+VIRTUAL_POWER_USER=${VIRTUAL_POWER_USER:-$USER}
+VIRTUAL_POWER_HOST=${VIRTUAL_POWER_HOST:-"192.168.122.1"}
+SSH_KEY=
 PM_IPS=( ${PM_IPS:-} )
 PM_USERS=( ${PM_USERS:-} )
 PM_PASSWORDS=( ${PM_PASSWORDS:-} )
 export USE_IRONIC=1
 export ROOT_DISK=${ROOT_DISK:-10}
-
-SSH_KEY=${SSH_KEY:-""}
-
-if [ -z "$SSH_KEY" ]; then
-    echo \$SSH_KEY must be set.
-    exit 1
-fi
-
-SSH_PM_KEY=$(cat $SSH_KEY)
 
 JSONFILE=nodes.json
 rm -f $JSONFILE
@@ -42,7 +34,11 @@ for mac in $MACS; do
     if [ -n "${PM_IPS:-}" -a -n "${PM_USERS:-}" -a -n "${PM_PASSWORDS:-}" ]; then
         JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$PM_USERS[$count]\", pm_addr:\"$PM_IPS[$count]\", pm_password:\"$PM_PASSWORDS[$count]\", pm_type:\"ipmi\"}])" <<< $JSON)
     else
-        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$SSH_PM_USER\", pm_addr:\"$SSH_PM_HOST\", pm_password:\"$SSH_PM_KEY\", pm_type:\"pxe_ssh\"}])" <<< $JSON)
+        if [ ! -f "$SSH_KEY" ]; then
+            echo \$SSH_KEY must be the full file path to the virtual power key
+            exit 1
+        fi
+        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$VIRTUAL_POWER_USER\", pm_addr:\"$VIRTUAL_POWER_HOST\", pm_password:\"$(cat $SSH_KEY)\", pm_type:\"pxe_ssh\"}])" <<< $JSON)
     fi
     count=$((count + 1))
 done

@@ -12,13 +12,6 @@ LOCAL_IP=172.17.0.1
 # LOCAL_INTERFACE will be assigned the address from LOCAL_IP
 LOCAL_INTERFACE=em2
 
-### POWER_DRIVER ###
-# OpenStack Nova Baremetal power driver to use for powering on/off Overcloud
-# instances. Use IPMI for baremetal. For virsh based virtualization, you can
-# use:
-# POWER_DRIVER=nova.virt.baremetal.virtual_power_driver.VirtualPowerManager
-POWER_DRIVER=nova.virt.baremetal.ipmi.IPMI
-
 ### MASQUERADE_NETWORK ###
 # Network that will be masqueraded for external access if required.
 MASQUERADE_NETWORK=172.17.0.0/16
