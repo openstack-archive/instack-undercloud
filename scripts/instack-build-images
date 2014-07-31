@@ -9,19 +9,13 @@ export TMP_DIR=${TMP_DIR:-/var/tmp}
 
 export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora"}
-export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
+export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-baremetal}
+export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
 
-if [ ! -f deploy-ramdisk.initramfs -o \
-     ! -f deploy-ramdisk.kernel ]; then
-    ramdisk-image-create \
-        -a $NODE_ARCH \
-        -o deploy-ramdisk \
-        $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
-        undercloud-package-install \
-        2>&1 | tee dib-deploy.log
-fi
+export DEPLOY_DIB_EXTRA_ARGS=${DEPLOY_DIB_EXTRA_ARGS:-"\
+undercloud-package-install"}
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
 pip-cache boot-stack cinder-api cinder-volume os-collect-config \
@@ -85,6 +79,18 @@ stable-interface-names \
 os-refresh-config-reboot \
 undercloud-package-install \
 "}
+
+if [ ! -f $DEPLOY_NAME.initramfs -o \
+     ! -f $DEPLOY_NAME.kernel ]; then
+    ramdisk-image-create \
+        -a $NODE_ARCH \
+        -o $DEPLOY_NAME \
+        $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
+        $DEPLOY_DIB_EXTRA_ARGS \
+        2>&1 | tee dib-deploy.log
+fi
+
+exit 0
 
 if [ ! -f overcloud-control.qcow2 ]; then
     disk-image-create \
