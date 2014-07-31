@@ -90,8 +90,6 @@ if [ ! -f $DEPLOY_NAME.initramfs -o \
         2>&1 | tee dib-deploy.log
 fi
 
-exit 0
-
 if [ ! -f overcloud-control.qcow2 ]; then
     disk-image-create \
         -a $NODE_ARCH \
