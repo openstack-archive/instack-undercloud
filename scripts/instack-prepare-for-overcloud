@@ -62,7 +62,7 @@ load_image overcloud-swift-storage.qcow2
 
 glance image-delete bm-deploy-kernel 2>/dev/null || :
 glance image-create --name bm-deploy-kernel --public \
-    --disk-format aki < deploy-ramdisk.kernel
+    --disk-format aki < $DEPLOY_NAME.kernel
 glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --public \
-    --disk-format ari < deploy-ramdisk.initramfs
+    --disk-format ari < $DEPLOY_NAME.initramfs
