@@ -9,44 +9,48 @@ export RUN_INSTACK=${RUN_INSTACK:-1}
 
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
-    export DIB_REPOREF_tripleo_image_elements=c304a061124d98456d80edf4fe887bec257e373f
-    export DIB_REPOREF_tripleo_heat_templates=2c982451e6e0ff6a9537cc56324ba6d0d4986712
-    export DIB_REPOREF_diskimage_builder=6f7af6f5a202f8b4008f6f5b0c7a4e737bb9ff65
-    export DIB_REPOREF_os_cloud_config=7b984349fe3552270691c6b5882559b005fb42a4
-    export DIB_REPOREF_tripleo_incubator=b6caa77a930005c9df5b188ea1513320df387713
+    export DIB_REPOREF_tripleo_image_elements=ba17d18d7bb6f041c02fa50d6cdf7d6fed3ef6b5
+    export DIB_REPOREF_tripleo_heat_templates=dc3733049cc0214645d92596f359c9b348567301
+    export DIB_REPOREF_diskimage_builder=f303b6546c6ef7f5bf3229dd8f935aae5fe01215
+    export DIB_REPOREF_os_cloud_config=a5da76099011ffa4a8baa59af6b37b692e4b267b
+    export DIB_REPOREF_tripleo_incubator=eb6dbe29d874f93957a13426d5b04218a04060cb
 
     # To generate these, run:
-    # set-source-vars -m /etc/dib-manifests/dib-manifest-git-instack
+    # tripleo set-source-vars -m /etc/dib-manifests/dib-manifest-git-instack
     # after a successful installation.
-    export DIB_REPOREF_glance=36818b4a6ef2b319a137e56578f86ca2ed8b774c
+    export DIB_REPOREF_eventlet=04dba9a34fb6706b680052097f9e39d905a831d0
+    export DIB_REPOLOCATION_eventlet=https://github.com/jan-g/eventlet.git
+    export DIB_REPOREF_glance=ca4e2a1f264147148b70f1694e47dafbff8a741b
     export DIB_REPOLOCATION_glance=https://git.openstack.org/openstack/glance.git
-    export DIB_REPOREF_heat=ce65e9bdb23d81b9379cdbbea88af10c89e63536
+    export DIB_REPOREF_heat=78b68ba0da5d6ad71397538e484fb7565333129b
     export DIB_REPOLOCATION_heat=https://git.openstack.org/openstack/heat.git
-    export DIB_REPOREF_keystone=fdc643bd2f0bfe094f4945f1cbe26f211b957b10
+    export DIB_REPOREF_ironic=9fe09164cb4f152f324cb7e20892d0496bb6a67c
+    export DIB_REPOLOCATION_ironic=https://git.openstack.org/openstack/ironic
+    export DIB_REPOREF_keystone=a617408a7ba441b46fc618a86501adbcaa403dd9
     export DIB_REPOLOCATION_keystone=https://git.openstack.org/openstack/keystone.git
-    export DIB_REPOREF_neutron=a1736689e1789ec32ac1d4873dff5d33c86ff9b8
+    export DIB_REPOREF_neutron=f32c0ebe68f0ad27ac7a9717ef3f6e3406f953a1
     export DIB_REPOLOCATION_neutron=https://git.openstack.org/openstack/neutron.git
-    export DIB_REPOREF_nova=288c650dbc4d404e44ca0d188484da14ba008dc1
+    export DIB_REPOREF_nova=e6015ce523ff260a91547d3e56684797c93217bd
     export DIB_REPOLOCATION_nova=https://git.openstack.org/openstack/nova.git
     export DIB_REPOREF_novnc=9b731d3a5811cce05001e1d8fbb0d53e2859c86b
     export DIB_REPOLOCATION_novnc=https://github.com/kanaka/noVNC.git
-    export DIB_REPOREF_python_ceilometerclient=5c8a85e3861c0e90ef63325956ca809edca5719a
+    export DIB_REPOREF_python_ceilometerclient=092eb6643161747186ba4d0947a847af45e3d546
     export DIB_REPOLOCATION_python_ceilometerclient=https://git.openstack.org/openstack/python-ceilometerclient.git
-    export DIB_REPOREF_python_cinderclient=0c4010e7fbc9939905e8647afbe1358c384dc658
+    export DIB_REPOREF_python_cinderclient=6823b184041fc3f73db0e0772772c7f4c1600d20
     export DIB_REPOLOCATION_python_cinderclient=https://git.openstack.org/openstack/python-cinderclient.git
-    export DIB_REPOREF_python_glanceclient=f75a81000e1060d608c624ff8e3287e8c99a5123
+    export DIB_REPOREF_python_glanceclient=68c1d1fbc614d11b95f2fd6da26fd669e40f4186
     export DIB_REPOLOCATION_python_glanceclient=https://git.openstack.org/openstack/python-glanceclient.git
-    export DIB_REPOREF_python_heatclient=47232fa9b011831e54e8b161d1a2da4b1ea7cd2b
+    export DIB_REPOREF_python_heatclient=3985302f6753161fe27f212f564ec43eeb863adc
     export DIB_REPOLOCATION_python_heatclient=https://git.openstack.org/openstack/python-heatclient.git
-    export DIB_REPOREF_python_ironicclient=28340b7af8bfaa250e5a282b1a5d03b080deaa21
+    export DIB_REPOREF_python_ironicclient=2081cc8665727a914246d13f6f89b70fd94a3ab7
     export DIB_REPOLOCATION_python_ironicclient=https://git.openstack.org/openstack/python-ironicclient.git
-    export DIB_REPOREF_python_keystoneclient=5daafe1d3b74e8d540925e991d8f60f263034e28
+    export DIB_REPOREF_python_keystoneclient=a5f0e3c53ca9013ab124cc33accc5a06266dc72c
     export DIB_REPOLOCATION_python_keystoneclient=https://git.openstack.org/openstack/python-keystoneclient.git
-    export DIB_REPOREF_python_neutronclient=2b3cf686d6451cfcd9d3fccee2a428751f1cee4a
+    export DIB_REPOREF_python_neutronclient=abc54a00b01ea305a9c58a379463edf62d0557ca
     export DIB_REPOLOCATION_python_neutronclient=https://git.openstack.org/openstack/python-neutronclient.git
-    export DIB_REPOREF_python_novaclient=e551cb0a34351db6b76c2f119205c28bcd802b62
+    export DIB_REPOREF_python_novaclient=aae7ca2f9bf772c2aded2670a61f10b7a674e71e
     export DIB_REPOLOCATION_python_novaclient=https://git.openstack.org/openstack/python-novaclient.git
-    export DIB_REPOREF_python_swiftclient=d5a45fcd2d92c1328d35c54e09712c1152f1af19
+    export DIB_REPOREF_python_swiftclient=fd1594937d777c0047051ae470e2de5523522171
     export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
 
 
