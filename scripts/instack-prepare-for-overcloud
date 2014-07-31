@@ -4,6 +4,8 @@ set -eux
 
 IMG_SOURCE_URL=${IMG_SOURCE_URL:-"http://repos.fedorapeople.org/repos/openstack-m/tripleo-images-rdo-icehouse"}
 
+export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
+
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then
     echo "You must source a stackrc file for the Undercloud."
@@ -45,8 +47,8 @@ function load_image {
     tripleo load-image -d $image_name
 }
 
-download_image deploy-ramdisk.initramfs
-download_image deploy-ramdisk.kernel
+download_image $DEPLOY_NAME.initramfs
+download_image $DEPLOY_NAME.kernel
 download_image overcloud-control.qcow2
 download_image overcloud-compute.qcow2
 download_image overcloud-cinder-volume.qcow2
