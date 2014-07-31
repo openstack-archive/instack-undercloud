@@ -8,10 +8,10 @@ heat stack-delete overcloud || true
 SUCCESSFUL_MATCH_OUTPUT="Stack not found: overcloud" tripleo wait_for 6 10 heat stack-show overcloud
 
 # cleanup the baremetal-nodes
-node_ids=$(nova baremetal-node-list | grep undercloud | awk -F "| " '{ print $2; }')
+node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
 
 for id in $node_ids; do
-    nova baremetal-node-delete $id
+    ironic node-delete $id
 done
 
 nova flavor-delete baremetal || true
