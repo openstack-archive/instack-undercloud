@@ -18,6 +18,8 @@
   "glance": {
     "backend": "file",
     "host": "127.0.0.1",
+    "protocol": "http",
+    "port": "9292",
     "db": "mysql://glance:{{UNDERCLOUD_DB_PASSWORD}}@localhost/glance",
     "service-password": "{{UNDERCLOUD_GLANCE_PASSWORD}}",
     "notifier-strategy": "noop",
@@ -27,24 +29,12 @@
     "compute_hostname": "undercloud",
     "host": "127.0.0.1",
     "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova",
-    "compute_driver": "baremetal.driver.BareMetalDriver",
+    "baremetal": {},
+    "compute_driver": "ironic.nova.virt.ironic.driver.IronicDriver",
+    "compute_manager": "ironic.nova.compute.manager.ClusteredComputeManager",
     "tuning": {
         "ram_allocation_ratio": "1.0",
         "reserved_host_memory_mb": "0"
-    },
-    "baremetal": {
-      "arch": "amd64",
-      "db": "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova_bm",
-      "power_manager": "{{POWER_DRIVER}}",
-      "pxe_deploy_timeout": "2400",
-      "use_file_injection": "False",
-      "virtual_power": {
-        "user": "{{VIRTUAL_POWER_USER}}",
-        "ssh_key": "{{SSH_KEY}}",
-        "key": "/opt/stack/boot-stack/virtual-power-key",
-        "ssh_host": "{{VIRTUAL_POWER_HOST}}",
-        "type": "virsh"
-      }
     },
     "metadata-proxy": "false",
     "service-password": "{{UNDERCLOUD_NOVA_PASSWORD}}"
