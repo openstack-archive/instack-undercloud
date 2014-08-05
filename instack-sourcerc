@@ -94,6 +94,7 @@ stackuser \
 swift-proxy \
 swift-storage \
 use-ephemeral \
+selinux-policy-updates
 "
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS="\
