@@ -1,9 +1,0 @@
-#!/bin/bash
-set -eux
-
-sudo yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-swift/1.13.1/4.fc21/noarch/openstack-swift-1.13.1-4.fc21.noarch.rpm
-sudo yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-swift/1.13.1/4.fc21/noarch/openstack-swift-account-1.13.1-4.fc21.noarch.rpm
-sudo yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-swift/1.13.1/4.fc21/noarch/openstack-swift-container-1.13.1-4.fc21.noarch.rpm
-sudo yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-swift/1.13.1/4.fc21/noarch/openstack-swift-doc-1.13.1-4.fc21.noarch.rpm
-sudo yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-swift/1.13.1/4.fc21/noarch/openstack-swift-object-1.13.1-4.fc21.noarch.rpm
-sudo yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-swift/1.13.1/4.fc21/noarch/openstack-swift-proxy-1.13.1-4.fc21.noarch.rpm
