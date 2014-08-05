@@ -131,6 +131,8 @@ else
     -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
     -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
     -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
+    -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
     "}
 
 
