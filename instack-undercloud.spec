@@ -19,6 +19,8 @@ Requires:	openstack-tuskar-ui
 Requires:	redhat-lsb-core
 Requires:	policycoreutils-python
 
+Requires:	selinux-policy>=3.12.1-179
+
 
 %description
 instack-undercloud is a collection of installation tools to install an
