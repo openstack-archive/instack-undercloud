@@ -54,5 +54,5 @@ tripleo configure-vm \
     --seed \
     --libvirt-nic-driver virtio \
     --arch x86_64 \
-    --memory 2097152 \
+    --memory 3145728 \
     --cpus 1
