@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	1.0.1
+Version:	1.0.2
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -64,6 +64,9 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.2-1
+- Require at least the needed version of selinux-policy (jslagle@redhat.com)
+
 * Tue Aug 05 2014 James Slagle <jslagle@redhat.com> 1.0.1-1
 - Remove selinux-package-updates and swift-package-updates elements, as these
   packages have been pushed live. (jslagle@redhat.com)
