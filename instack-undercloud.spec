@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	1.0.3
+Version:	1.0.4
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -64,6 +64,9 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.4-1
+- Bump instack vm memory to 3GB (jslagle@redhat.com)
+
 * Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.3-1
 - Fix spacing in Requires (jslagle@redhat.com)
 
