@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	1.0.0
+Version:	1.0.4
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -18,6 +18,8 @@ Requires:	openstack-tuskar
 Requires:	openstack-tuskar-ui
 Requires:	redhat-lsb-core
 Requires:	policycoreutils-python
+
+Requires:	selinux-policy >= 3.12.1-179
 
 
 %description
@@ -72,6 +74,19 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.4-1
+- Bump instack vm memory to 3GB (jslagle@redhat.com)
+
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.3-1
+- Fix spacing in Requires (jslagle@redhat.com)
+
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.2-1
+- Require at least the needed version of selinux-policy (jslagle@redhat.com)
+
+* Tue Aug 05 2014 James Slagle <jslagle@redhat.com> 1.0.1-1
+- Remove selinux-package-updates and swift-package-updates elements, as these
+  packages have been pushed live. (jslagle@redhat.com)
+
 * Mon Jul 07 2014 James Slagle <jslagle@redhat.com> 1.0.0-1
 - Upload the deployrc file to deploy-overcloudrc since that is the file that CI
   always uses. (jslagle@redhat.com)

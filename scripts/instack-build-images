@@ -20,10 +20,8 @@ undercloud-package-install"}
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
 pip-cache boot-stack cinder-api cinder-volume os-collect-config \
 neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
-cinder-lio \
-swift-package-updates \
-selinux-package-updates \
 baremetal \
+cinder-lio \
 fedora-rdo-icehouse-repository \
 horizon \
 rabbitmq-server \
@@ -39,7 +37,6 @@ nova-compute \
 nova-kvm \
 neutron-openvswitch-agent \
 os-collect-config \
-selinux-package-updates \
 baremetal \
 dhcp-all-interfaces \
 stackuser \
@@ -51,11 +48,10 @@ undercloud-package-install"}
 export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
 pip-cache \
 cinder-volume \
-cinder-lio \
 neutron-openvswitch-agent \
 os-collect-config \
-selinux-package-updates \
 baremetal \
+cinder-lio \
 dhcp-all-interfaces \
 stackuser \
 fedora-rdo-icehouse-repository \
@@ -69,8 +65,6 @@ pip-cache \
 swift-storage \
 neutron-openvswitch-agent \
 os-collect-config \
-swift-package-updates \
-selinux-package-updates \
 baremetal \
 dhcp-all-interfaces \
 stackuser \
@@ -122,7 +116,7 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
         -a $NODE_ARCH \
         -o overcloud-swift-storage \
         $NODE_DIST \
-        $OVERCLOUD_SWIFT_DIB_EXTRA_ARGS
+        $OVERCLOUD_SWIFT_DIB_EXTRA_ARGS \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
 
