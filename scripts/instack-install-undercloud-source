@@ -68,7 +68,7 @@ if [ ! -d $INSTACK_ROOT/os-cloud-config ]; then
     # Reset to before requirements.txt update from
     # https://review.openstack.org/#/c/106589/
     # Not yet sure why this is failing to install.
-    get reset --hard 4a03e6b129c91a7269b6103a1f85fd011ec92c91
+    git reset --hard 4a03e6b129c91a7269b6103a1f85fd011ec92c91
 
     popd
 
