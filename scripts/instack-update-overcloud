@@ -1,0 +1,119 @@
+#!/bin/bash
+
+set -eux
+
+OS_AUTH_URL=${OS_AUTH_URL:-""}
+if [ -z "$OS_AUTH_URL" ]; then
+    echo "You must source a stackrc file for the Undercloud."
+    exit 1
+fi
+
+# setup-baremetal requires this to be set
+export TRIPLEO_ROOT=.
+CPU=${CPU:-1}
+MEM=${MEM:-2048}
+DISK=${DISK:-30}
+ARCH=${ARCH:-amd64}
+MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}
+VIRTUAL_POWER_USER=${VIRTUAL_POWER_USER:-$USER}
+VIRTUAL_POWER_HOST=${VIRTUAL_POWER_HOST:-"192.168.122.1"}
+SSH_KEY=${SSH_KEY:-""}
+PM_IPS=( ${PM_IPS:-} )
+PM_USERS=( ${PM_USERS:-} )
+PM_PASSWORDS=( ${PM_PASSWORDS:-} )
+export USE_IRONIC=1
+export ROOT_DISK=${ROOT_DISK:-10}
+
+source tripleo-overcloud-passwords
+
+# Define the interface that will be bridged onto the Neutron defined
+# network.
+NeutronPublicInterface=${NeutronPublicInterface:-eth0}
+# Define the overcloud libvirt type for virtualization. kvm for
+# baremetal, qemu for an overcloud running in vm's.
+OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
+
+COMPUTESCALE=${COMPUTESCALE:-1}
+BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
+SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-1}
+
+if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
+    tripleo-heat-merge \
+        --included-template-dir /usr/share/openstack-tripleo-heat-templates \
+        --scale NovaCompute=$COMPUTESCALE \
+        --scale BlockStorage=$BLOCKSTORAGESCALE \
+        --scale SwiftStorage=$SWIFTSTORAGESCALE \
+        /usr/share/openstack-tripleo-heat-templates/overcloud-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/swift-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/swift-storage-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/ssl-source.yaml \
+        /usr/share/openstack-tripleo-heat-templates/block-storage.yaml \
+        > overcloud.yaml
+    OVERCLOUD_YAML_PATH=overcloud.yaml
+
+    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
+    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P GlanceLogFile=\"''\" \
+    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
+    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+    -P NeutronDnsmasqOptions=\"dhcp-option-force=26,1400\" \
+    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
+    -P NeutronPublicInterface=$NeutronPublicInterface \
+    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    "}
+
+    HEAT_ENVIRONMENT=""
+
+else
+    make -C $INSTACK_ROOT/tripleo-heat-templates overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
+    OVERCLOUD_YAML_PATH=$INSTACK_ROOT/tripleo-heat-templates/overcloud.yaml
+
+    NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
+
+    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
+    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+    -P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
+    -P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
+    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P CinderISCSIHelper=lioadm \
+    -P CloudName=overcloud \
+    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
+    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+    -P NeutronControlPlaneID=$NeutronControlPlaneID \
+    -P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
+    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
+    -P NeutronPublicInterface=$NeutronPublicInterface \
+    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
+    -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
+    "}
+
+
+    HEAT_ENV=${HEAT_ENV:-"${INSTACK_ROOT}/overcloud-env.json"}
+    ENV_JSON='{"parameters":{}}'
+    jq . > "${HEAT_ENV}" <<< $ENV_JSON
+    chmod 0600 "${HEAT_ENV}"
+    generate-keystone-pki --heatenv $HEAT_ENV
+    HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
+
+fi
+
+
+heat stack-update -f $OVERCLOUD_YAML_PATH \
+    $OVERCLOUD_PARAMETERS \
+    $HEAT_ENVIRONMENT \
+    overcloud
+
+tripleo wait_for_stack_ready 220 10 overcloud
+
+echo "Overcloud UPDATE_COMPLETE"
+echo "Overcloud Updated."
