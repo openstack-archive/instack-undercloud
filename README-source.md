@@ -18,7 +18,6 @@ instack-undercloud via source
 
          mkdir instack
          cd instack
-         export TRIPLEO_ROOT=/home/stack/instack
          git clone https://github.com/agroup/instack-undercloud
          git clone https://git.openstack.org/openstack/tripleo-incubator
 
