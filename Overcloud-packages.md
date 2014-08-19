@@ -19,6 +19,8 @@ script itself.
 re-downloading images if they already exist in the current working directory.
 If you want to force a redownload of the images, delete them first.
 
+        source tripleo-undercloud-passwords
+        source stackrc
         instack-prepare-for-overcloud
 
 
