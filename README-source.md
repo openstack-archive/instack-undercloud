@@ -30,14 +30,13 @@ instack-undercloud via source
 
 
 1. Verify membership in the libvirtd group
-2. 
+
          # verify you are in the libvirtd group
          id | grep libvirtd
          # if not, start a new shell to pick it up
          sudo su - stack
          cd instack
          source instack-undercloud/instack-sourcerc
-         source tripleo-incubator/scripts/devtest_variables.sh
 
 
 1. Create the virtual environment.
