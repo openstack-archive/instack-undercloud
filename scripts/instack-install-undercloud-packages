@@ -53,6 +53,9 @@ sudo -E instack \
   -p $ELEMENTS_PATH \
   -j $JSONFILE
 
-sudo os-refresh-config
+RUN_ORC=${RUN_ORC:-"1"}
+if [ "$RUN_ORC" = "1" ]; then
+    sudo os-refresh-config
+fi
 
 echo "$0 complete!"
