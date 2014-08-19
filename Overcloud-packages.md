@@ -23,11 +23,7 @@ If you want to force a redownload of the images, delete them first.
 
 
 1. Edit the deploy-overcloudrc script to set the scaling variable values used to deploy
-the overcloud. 
-
-   ####Scaling
-   To scale the Compute, Block Storage or Swift Storage nodes, you can
-   set the values to to the number of nodes deployed for each role type. You must deploy
+the overcloud. Set the values to to the number of nodes deployed for each role type. You must deploy
    at least 1 Compute node, but do not need to deploy any block storage or object storage nodes.
    
 
@@ -35,7 +31,7 @@ the overcloud.
         BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
         SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
 
-1. Deploy the overcloud using provided heat templates or use the tuskar cli. Run one of the following examples.
+1. Deploy the overcloud using heat:
 
         # heat
         instack-deploy-overcloud
