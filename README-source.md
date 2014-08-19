@@ -5,34 +5,36 @@ instack-undercloud via source
    have password-less sudo enabled. This step is NOT optional, you must create an
    additional user. Do not run the rest of the steps as root.
 
-     sudo useradd stack
-     sudo passwd stack  # specify a password
-     echo "stack ALL=(root) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/stack
-     sudo chmod 0440 /etc/sudoers.d/stack
-     sudo su - stack
+         sudo useradd stack
+         sudo passwd stack  # specify a password
+         echo "stack ALL=(root) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/stack
+         sudo chmod 0440 /etc/sudoers.d/stack
+         sudo su - stack
 
 1. Create initial directory for instack, and clone the needed repositories.
 
-    mkdir instack
-    cd instack
-    export TRIPLEO_ROOT=/home/stack/instack
-    git clone https://github.com/agroup/instack-undercloud
-    git clone https://git.openstack.org/openstack/tripleo-incubator
+
+         mkdir instack
+         cd instack
+         export TRIPLEO_ROOT=/home/stack/instack
+         git clone https://github.com/agroup/instack-undercloud
+         git clone https://git.openstack.org/openstack/tripleo-incubator
+
 
 1. Complete the initial setup.
 
-    source instack-undercloud/instack-sourcerc
-    source tripleo-incubator/scripts/devtest_variables.sh
-    tripleo install-dependencies
-    tripleo set-usergroup-membership
+         source instack-undercloud/instack-sourcerc
+         source tripleo-incubator/scripts/devtest_variables.sh
+         tripleo install-dependencies
+         tripleo set-usergroup-membership
 
 1. Create the virtual environment.
 
-    instack-virt-setup
+         instack-virt-setup
 
 1. Start instack vm.
 
-    virsh start instack
+         virsh start instack
 
 1. ssh as the stack user (password is stack) to the instack vm
 
