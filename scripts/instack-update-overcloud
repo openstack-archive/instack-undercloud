@@ -99,10 +99,6 @@ else
 
 
     HEAT_ENV=${HEAT_ENV:-"${INSTACK_ROOT}/overcloud-env.json"}
-    ENV_JSON='{"parameters":{}}'
-    jq . > "${HEAT_ENV}" <<< $ENV_JSON
-    chmod 0600 "${HEAT_ENV}"
-    generate-keystone-pki --heatenv $HEAT_ENV
     HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
 
 fi
