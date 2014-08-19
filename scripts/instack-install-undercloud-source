@@ -33,6 +33,9 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     ## ml2_conf.ini
     git fetch https://slagle@review.openstack.org/openstack/tripleo-image-elements refs/changes/13/92913/4 && git cherry-pick FETCH_HEAD
 
+    ## hosts
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/34/115134/2 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
