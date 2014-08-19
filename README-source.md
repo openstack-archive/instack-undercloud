@@ -27,6 +27,11 @@ instack-undercloud via source
          source tripleo-incubator/scripts/devtest_variables.sh
          tripleo install-dependencies
          tripleo set-usergroup-membership
+         
+         # verify you are in the libvirtd group
+         id | grep libvirtd
+         # if not, start a new shell to pick it up
+         sudo su - stack
 
 1. Create the virtual environment.
 
