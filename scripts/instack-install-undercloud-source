@@ -23,15 +23,13 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_tripleo_image_elements
         git reset --hard FETCH_HEAD
+
+        ## Cinder
+        #
+        # https://review.openstack.org/#/c/106562/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/62/106562/1 && git cherry-pick FETCH_HEAD
+
     fi
-
-    ## Cinder
-    #
-    # https://review.openstack.org/#/c/106562/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/62/106562/1 && git cherry-pick FETCH_HEAD
-
-    ## ml2_conf.ini
-    git fetch https://slagle@review.openstack.org/openstack/tripleo-image-elements refs/changes/13/92913/4 && git cherry-pick FETCH_HEAD
 
     popd
 fi
