@@ -23,6 +23,7 @@ instack-undercloud via source
 
 1. Complete the initial setup.
 
+         cd $TRIPLEO_ROOT
          source instack-undercloud/instack-sourcerc
          source tripleo-incubator/scripts/devtest_variables.sh
          tripleo install-dependencies
