@@ -10,7 +10,7 @@ environment variables. The variables you can set are documented below before
 the calls to the script. For their default values, see the deploy-overcloud
 script itself.
 
-1. You must source the contents of `/root/stackrc` into your shell before running the 
+1. You must source the contents of `tripleo-undercloud-passwords` and `stackrc` into your shell before running the 
    instack-* scripts that interact with the undercloud and overcloud. In order to do that
    you can copy that file to a more convenient location or use sudo to cat the file and copy/paste
    the lines into your shell environment.
@@ -21,36 +21,18 @@ If you want to force a redownload of the images, delete them first.
 
         instack-prepare-for-overcloud
 
-1. If you're testing an all VM setup, make sure you have copied the public key
-portion of the virtual power ssh key into the virtual power user's
-~/.ssh/authorized_keys on the virsh host.
 
-1. Create a deploy-overcloudrc script to set variable values you'll need to deploy 
-the overcloud. Note that the variables must be exported so that their values are
-picked up by instack-deploy-overcloud. 
-
-        # CPU: number of cpus on baremetal nodes
-        # MEM: amount of ram on baremetal nodes, in MB
-        # DISK: amount of disk on baremetal nodes, in GB
-        # ARCH: architecture of baremetal nodes, amd64 or i386
-        # MACS: list of MAC addresses of baremetal nodes
-        # PM_IPS: list of Power Management IP addresses
-        # PM_USERS: list of Power Management Users
-        # PM_PASSWORDS: list of Power Management Passwords
-        # NeutronPublicInterface: Overcloud management interface name
-        # OVERCLOUD_LIBVIRT_TYPE: Overcloud libvirt type, qemu or kvm
-        # NETWORK_CIDR: neutron network cidr
-        # FLOATING_IP_START: floating ip allocation start
-        # FLOATING_IP_END: floating ip allocation end
-        # FLOATING_IP_CIDR: floating ip network cidr
+1. Edit the deploy-overcloudrc script to set the scaling variable values used to deploy
+the overcloud. 
 
    ####Scaling
    To scale the Compute, Block Storage or Swift Storage nodes, you can
-   override the default values from the deploy-overcloud scripts in your
-   rc file.  The defaults for those scripts are:
+   set the values to to the number of nodes deployed for each role type. You must deploy
+   at least 1 Compute node, but do not need to deploy any block storage or object storage nodes.
+   
 
         COMPUTESCALE=${COMPUTESCALE:-1}
-        BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
+        BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
         SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
 
 1. Deploy the overcloud using provided heat templates or use the tuskar cli. Run one of the following examples.
@@ -58,9 +40,6 @@ picked up by instack-deploy-overcloud.
         # heat
         instack-deploy-overcloud
 
-
-        #tuskar
-        instack-deploy-tuskar-cli
 
 1. Run the test-overcloud script to launch a Fedora image on the overcloud and
 wait until it pings successfully
