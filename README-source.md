@@ -10,6 +10,8 @@ instack-undercloud via source
          echo "stack ALL=(root) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/stack
          sudo chmod 0440 /etc/sudoers.d/stack
          sudo su - stack
+         echo 'export LIBVIRT_DEFAULT_URI="qemu:///system"' >> ~/.bashrc
+         source ~/.bashrc
 
 1. Create initial directory for instack, and clone the needed repositories.
 
@@ -24,7 +26,6 @@ instack-undercloud via source
 1. Complete the initial setup.
 
          source instack-undercloud/instack-sourcerc
-         source tripleo-incubator/scripts/devtest_variables.sh
          tripleo install-dependencies
          tripleo set-usergroup-membership
 
