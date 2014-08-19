@@ -30,7 +30,7 @@ instack-undercloud via source
          
          # verify you are in the libvirtd group
          id | grep libvirtd
-         # if not, start a new shell to pick it up
+         # if not, start a new shell to pick it up, then re-run all of this step
          sudo su - stack
 
 1. Create the virtual environment.
