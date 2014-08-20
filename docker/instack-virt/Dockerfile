@@ -38,6 +38,12 @@ COPY default.xml /etc/libvirt/qemu/networks/default.xml
 COPY brbm.xml /etc/libvirt/qemu/networks/brbm.xml
 COPY instack.qcow2 /var/lib/libvirt/base-images/instack.qcow2
 
+RUN mkdir -p /home/stack/.ssh
+COPY id_rsa_virt_power.pub /home/stack/.ssh/authorized_keys
+RUN chown -R stack: /home/stack; \
+    chmod 0700 /home/stack/.ssh; \
+    chmod 0600 /home/stack/.ssh/authorized_keys
+
 COPY start.sh /start.sh
 RUN chmod 0755 /start.sh
 CMD /start.sh
