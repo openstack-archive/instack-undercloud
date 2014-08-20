@@ -45,6 +45,20 @@ Running the instack-virt-setup Docker image
 
         ssh stack@192.168.122.100
 
+1. You must wait for the run of os-collect-config to complete. It should
+   complete in < 5 minutes. Use the following command to check for completion.
+
+        sudo journalctl -u os-collect-config --full -f | grep "Completed phase migration"
+
+1. Once os-collect-config has comleted, you can source the necessary files and
+   verify the images are already loaded in glance. Note that you must source
+   the 3 files below anytime you want to use the OpenStack clients. The paths
+   are relative to /home/stack.
+
+        source instack-undercloud/instack-sourcerc
+        source tripleo-undercloud-passwords
+        source stackrc
+        glance image-list
 
 Building the instack-virt-setup Docker image
 --------------------------------------------
@@ -55,7 +69,9 @@ process.
 Building the docker image is a multi-step process. There is a Dockerfile to
 assist with building the initial image. 
 
-1. Run through instack-virt-setup on the build host, according to http://openstack.redhat.com/Deploying_RDO_to_a_Virtual_Machine_Environment_using_RDO_via_Instack#Virtual_Host_Setup
+1. Run through instack-virt-setup on the build host, start the instack vm,
+   install the undercloud, load the images into glance. shutdown the instack
+   vm.
 
 1. After the instack vm is started, ssh to the vm and create the answers file
    and deploy-virt-overcloudrc underneath /home/stack. Be sure to populate
