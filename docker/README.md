@@ -8,42 +8,42 @@ running instack-virt-setup in a reuseable Docker container.
 Running the instack-virt-setup Docker image
 -------------------------------------------
 
-Pull the image from the docker registry.
+1. Pull the image from the docker registry.
 
         docker pull slagle/instack-virt
 
-Run the image. The container must be started with --privileged so that libvirt
-has access to create networks. A host path must also be mounted into the
-container at /var/lib/libvirt/images for the instack vm's to use for their
-disks. This is required because Docker containers are currently limited to 10
-GB of disk usage, and this will quickly get used up if the vm disks are written
-inside the container directly. In the command below I'm using
-/storage/docker/lib, but any host path with at least 50 GB free should do.
+1. Create a directory on your docker host to mount into the container for
+   storage. This directory should have at least 30GB free.
+
+        mkdir -p /storage/docker/lib/instack-virt-environment
+
+1. Start the container. The container must be started with --privileged so that libvirt
+   has access to create networks. The host path created in the previous step is
+   also mounted into the container at /var/lib/libvirt/images for the instack vm's
+   to use for their disks. 
 
         docker run \
             -it \
-            --name instack-virt-setup \
+            --name instack-virt-environment \
             --privileged \
-            --volume /storage/docker/lib:/var/lib/libvirt/images \
+            --volume /storage/docker/lib/instack-virt-environment:/var/lib/libvirt/images \
             slagle/instack-virt
-        
 
-ssh as stack to the container. The initial stack password is also stack. You can use
-docker inspect to get the IP address of the container.
+1. Look up the IP address of the container
 
-Start the instack vm
+        docker inspect instack-virt-environment | grep IPAddress
+
+1. ssh as stack to the container's IP address. The initial stack password is also stack.
+
+1. Start the instack vm
 
         virsh start instack
 
-The IP address of the instack vm will be 192.168.122.100.  ssh as the stack
-user (initial password is stack) to the vm. It may take a minute or 2 for it to
-come up.
+   The IP address of the instack vm will be 192.168.122.100.  ssh as the stack
+   user (initial password is stack) to the vm. It may take a minute or 2 for it to
+   come up.
 
         ssh stack@192.168.122.100
-
-Continue with
-http://openstack.redhat.com/Deploying_an_RDO_Undercloud_with_Instack. You will
-not need to create an answers file or deployrc file.
 
 
 Building the instack-virt-setup Docker image
@@ -84,6 +84,7 @@ assist with building the initial image.
         cp /etc/libvirt/qemu/instack.xml .
         cp /etc/libvirt/qemu/networks/default.xml .
         cp /etc/libvirt/qemu/networks/brbm.xml .
+        cp /home/stack/.ssh/id_rsa_virt_power* .
 
 1. Update the vm xml definitions to remove the selinux relabel command
 
