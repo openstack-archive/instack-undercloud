@@ -10,6 +10,7 @@ export RUN_INSTACK=${RUN_INSTACK:-1}
 export TRIPLEO_OS_DISTRO=fedora
 export TRIPLEO_OS_FAMILY=redhat
 export TE_DATAFILE=instack.json
+export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-source/
 
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
