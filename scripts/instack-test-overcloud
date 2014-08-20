@@ -77,6 +77,8 @@ echo Compute test successful!
 if [ $BLOCKSTORAGESCALE -gt 0 ]; then
     CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
 
+    tripleo wait_for 10 3 cinder list \| grep available
+
     nova volume-attach demo $CINDER_VOLUME_ID
 
     tripleo wait_for 30 10 ssh -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls /dev/vdb
