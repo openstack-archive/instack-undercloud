@@ -65,6 +65,8 @@ assist with building the initial image.
 
 1. Poweroff the instack vm.
 
+1. Run the rest of the commands here as root
+
 1. Clone this git repository, switch to the docker branch, and cd to the docker
    build directory.
 
@@ -75,16 +77,15 @@ assist with building the initial image.
 
 1. Copy needed files from the build host into the build directory.
 
-        sudo cp /var/lib/libvirt/images/instack.qcow2 .
-        sudo cp /etc/libvirt/qemu/baremetal_0.xml .
-        sudo cp /etc/libvirt/qemu/baremetal_1.xml .
-        sudo cp /etc/libvirt/qemu/baremetal_2.xml .
-        sudo cp /etc/libvirt/qemu/baremetal_3.xml .
-        sudo cp /etc/libvirt/qemu/instack.xml .
-        sudo cp /etc/libvirt/qemu/networks/default.xml .
-        sudo cp /etc/libvirt/qemu/networks/brbm.xml .
-        sudo chown -R $USER: .
-        
+        cp /var/lib/libvirt/images/instack.qcow2 .
+        cp /etc/libvirt/qemu/baremetal_0.xml .
+        cp /etc/libvirt/qemu/baremetal_1.xml .
+        cp /etc/libvirt/qemu/baremetal_2.xml .
+        cp /etc/libvirt/qemu/baremetal_3.xml .
+        cp /etc/libvirt/qemu/instack.xml .
+        cp /etc/libvirt/qemu/networks/default.xml .
+        cp /etc/libvirt/qemu/networks/brbm.xml .
+
 1. Update the vm xml definitions to remove the selinux relabel command
 
         sed -i '/selinux/d' instack.xml baremetal_*.xml
@@ -96,6 +97,11 @@ assist with building the initial image.
 
         <host mac='52:54:00:e1:f3:7e' name='instack' ip='192.168.122.100'/>
 
+1. Sparsify instack.qcow2
+
+        virt-sparsify instack.qcow2 instack.qcow2.new
+        mv instack.qcow2.new instack.qcow2
+        
 1. Pull the Fedora base image and then build the docker image
 
         docker pull fedora
