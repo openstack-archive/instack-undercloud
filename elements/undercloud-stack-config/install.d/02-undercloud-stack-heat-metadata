@@ -2,6 +2,7 @@
 
 
 import os
+import subprocess
 
 import pystache
 
@@ -18,9 +19,6 @@ context = {
     'DNSMASQ_START': os.environ.get('DNSMASQ_START', '192.0.2.4'),
     'DNSMASQ_END': os.environ.get('DNSMASQ_END', '192.0.2.4'),
     'MASQUERADE_NETWORK': os.environ.get('MASQUERADE_NETWORK', '192.0.2.0/24'),
-    'POWER_DRIVER': os.environ.get('POWER_DRIVER', 'nova.virt.baremetal.ipmi.IPMI'),
-    'VIRTUAL_POWER_USER': os.environ.get('VIRTUAL_POWER_USER', 'stack'),
-    'VIRTUAL_POWER_HOST': os.environ.get('VIRTUAL_POWER_HOST', '192.168.122.1'),
     'DHCP_START': os.environ.get('DHCP_START', '192.0.2.5'),
     'DHCP_END': os.environ.get('DHCP_END', '192.0.2.24'),
     'NETWORK_CIDR': os.environ.get('NETWORK_CIDR', '192.0.2.0/24'),
@@ -32,6 +30,8 @@ context = {
     'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
     'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
     'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
+    'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
+    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset')
 }
 
 if "SSH_KEY" in os.environ:
@@ -45,3 +45,8 @@ cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
 os.makedirs(os.path.dirname(cfn_path))
 with open(cfn_path, 'w') as f:
     f.write(config_json)
+
+# For future reference, we could also generate this separately and combine the
+# cfn-init-data with the generated keystone data with:
+# jq -s '.[0].keystone=(.[0].keystone + .[1].keystone) | .[0]' cfn.json key.json 
+subprocess.check_call(['generate-keystone-pki', '-s', '--heatenv', cfn_path])

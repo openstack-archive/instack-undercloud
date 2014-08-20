@@ -12,4 +12,5 @@ sudo rm -rf \
   /opt/stack \
   /mnt/state \
   /var/lib/heat-cfntools \
-  /etc/dib*
+  /etc/dib* \
+  /usr/local/bin/*

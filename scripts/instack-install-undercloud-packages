@@ -10,6 +10,12 @@ exec 2>&1
 
 echo "Running $0"
 
+export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json}
+
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/diskimage-builder/elements/ \
+                                       /usr/share/tripleo-image-elements/ \
+                                       /usr/share/instack-undercloud/"}
+
 # generate ssh authentication keys if they don't exist
 if [ ! -f ~/.ssh/id_rsa ]; then
   echo "Generating an ssh key..."
@@ -41,13 +47,15 @@ export UNDERCLOUD_HEAT_PASSWORD=${UNDERCLOUD_HEAT_PASSWORD:-$(tripleo os-make-pa
 export UNDERCLOUD_NEUTRON_PASSWORD=${UNDERCLOUD_NEUTRON_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_NOVA_PASSWORD=${UNDERCLOUD_NOVA_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_IRONIC_PASSWORD=${UNDERCLOUD_IRONIC_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-make-password)}
 
 sudo -E instack \
-  -p /usr/share/diskimage-builder/elements/ \
-     /usr/share/tripleo-image-elements/ \
-     /usr/share/instack-undercloud/ \
-  -j /usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json
+  -p $ELEMENTS_PATH \
+  -j $JSONFILE
 
-sudo os-refresh-config
+RUN_ORC=${RUN_ORC:-"1"}
+if [ "$RUN_ORC" = "1" ]; then
+    sudo os-refresh-config
+fi
 
 echo "$0 complete!"

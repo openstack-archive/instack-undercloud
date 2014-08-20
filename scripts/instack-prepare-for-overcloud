@@ -4,6 +4,8 @@ set -eux
 
 IMG_SOURCE_URL=${IMG_SOURCE_URL:-"http://repos.fedorapeople.org/repos/openstack-m/tripleo-images-rdo-icehouse"}
 
+export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
+
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then
     echo "You must source a stackrc file for the Undercloud."
@@ -25,6 +27,18 @@ function download_image {
     if [ ! -f $image_name ]; then
         curl -L -O $IMG_SOURCE_URL/$image_name
     fi
+
+    # Allow the download to fail, in case initrd/vmlinuz is not available,
+    # will fall back to old behavior of extraction via
+    # disk-image-get-kernel
+    if [[ "$image_name" =~ "overcloud" ]]; then
+        for f in vmlinuz initrd; do
+            local file_name=$(basename -s .qcow2 $image_name).$f
+            if [ ! -f $file_name ]; then
+                curl -L -O $IMG_SOURCE_URL/$file_name || true
+            fi
+        done
+    fi
 }
 
 function load_image {
@@ -33,8 +47,8 @@ function load_image {
     tripleo load-image -d $image_name
 }
 
-download_image deploy-ramdisk.initramfs
-download_image deploy-ramdisk.kernel
+download_image $DEPLOY_NAME.initramfs
+download_image $DEPLOY_NAME.kernel
 download_image overcloud-control.qcow2
 download_image overcloud-compute.qcow2
 download_image overcloud-cinder-volume.qcow2
@@ -48,7 +62,7 @@ load_image overcloud-swift-storage.qcow2
 
 glance image-delete bm-deploy-kernel 2>/dev/null || :
 glance image-create --name bm-deploy-kernel --public \
-    --disk-format aki < deploy-ramdisk.kernel
+    --disk-format aki < $DEPLOY_NAME.kernel
 glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --public \
-    --disk-format ari < deploy-ramdisk.initramfs
+    --disk-format ari < $DEPLOY_NAME.initramfs

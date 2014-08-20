@@ -24,41 +24,6 @@ PM_PASSWORDS=( ${PM_PASSWORDS:-} )
 export USE_IRONIC=1
 export ROOT_DISK=${ROOT_DISK:-10}
 
-JSONFILE=nodes.json
-rm -f $JSONFILE
-echo '{}' > $JSONFILE
-JSON=$(jq .nodes=[] $JSONFILE)
-count=0
-
-for mac in $MACS; do
-    if [ -n "${PM_IPS:-}" -a -n "${PM_USERS:-}" -a -n "${PM_PASSWORDS:-}" ]; then
-        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$PM_USERS[$count]\", pm_addr:\"$PM_IPS[$count]\", pm_password:\"$PM_PASSWORDS[$count]\", pm_type:\"ipmi\"}])" <<< $JSON)
-    else
-        if [ ! -f "$SSH_KEY" ]; then
-            echo \$SSH_KEY must be the full file path to the virtual power key
-            exit 1
-        fi
-        JSON=$(jq ".nodes=(.nodes + [{mac:[\"$mac\"], cpu:\"$CPU\", memory:\"$MEM\", disk:\"$DISK\", arch:\"$ARCH\", pm_user:\"$VIRTUAL_POWER_USER\", pm_addr:\"$VIRTUAL_POWER_HOST\", pm_password:\"$(cat $SSH_KEY)\", pm_type:\"pxe_ssh\"}])" <<< $JSON)
-    fi
-    count=$((count + 1))
-done
-
-echo $JSON | python -mjson.tool
-
-echo $JSON > $JSONFILE
-
-for i in ramdisk kernel; do
-    if glance image-show bm-deploy-$i 2>&1 1>/dev/null; then
-        glance image-delete bm-deploy-$i
-    fi
-done
-
-tripleo setup-baremetal --service-host undercloud --nodes <(jq '.nodes' $JSONFILE)
-
-# Must wait for baremetal nodes to register as nova hypervisors
-sleep 60
-
-tripleo setup-overcloud-passwords -o tripleo-overcloud-passwords
 source tripleo-overcloud-passwords
 
 # Define the interface that will be bridged onto the Neutron defined
@@ -71,9 +36,6 @@ OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 COMPUTESCALE=${COMPUTESCALE:-1}
 BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
 SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-1}
-
-
-
 
 if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     tripleo-heat-merge \
@@ -137,83 +99,17 @@ else
 
 
     HEAT_ENV=${HEAT_ENV:-"${INSTACK_ROOT}/overcloud-env.json"}
-    ENV_JSON='{"parameters":{}}'
-    jq . > "${HEAT_ENV}" <<< $ENV_JSON
-    chmod 0600 "${HEAT_ENV}"
-    generate-keystone-pki --heatenv $HEAT_ENV
     HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
 
 fi
 
 
-heat stack-create -f $OVERCLOUD_YAML_PATH \
+heat stack-update -f $OVERCLOUD_YAML_PATH \
     $OVERCLOUD_PARAMETERS \
     $HEAT_ENVIRONMENT \
     overcloud
 
 tripleo wait_for_stack_ready 220 10 overcloud
 
-echo "Overcloud CREATE_COMPLETE"
-
-if [ -d /etc/tripleo ]; then
-    TRIPLEO_ROOT=/etc/tripleo
-else
-    TRIPLEO_ROOT=$INSTACK_ROOT/tripleo-incubator
-fi
-
-export OVERCLOUD_IP=$(nova list | grep controller0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
-
-touch ~/.ssh/known_hosts
-chmod 600 ~/.ssh/known_hosts
-ssh-keygen -R $OVERCLOUD_IP
-
-export no_proxy=${no_proxy:-""}
-export no_proxy=$no_proxy,$OVERCLOUD_IP
-
-OVERCLOUD_ENDPOINT="http://$OVERCLOUD_IP:5000/v2.0/"
-NEW_JSON=$(jq '.overcloud.password="'${OVERCLOUD_ADMIN_PASSWORD}'" | .overcloud.endpoint="'${OVERCLOUD_ENDPOINT}'" | .overcloud.endpointhost="'${OVERCLOUD_IP}'"' $JSONFILE)
-
-echo $NEW_JSON > $JSONFILE
-
-export TE_DATAFILE=$JSONFILE
-source $TRIPLEO_ROOT/overcloudrc
-
-if [ -z "$INSTACK_ROOT" ]; then
-    tripleo init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
-        $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
-        ${SSLBASE:+--ssl $PUBLIC_API_URL}
-
-    REGISTER_SERVICE_OPTS=
-else
-    init-keystone -o $OVERCLOUD_IP -t $OVERCLOUD_ADMIN_TOKEN \
-        -e admin.example.com -p $OVERCLOUD_ADMIN_PASSWORD -u heat-admin \
-        ${SSLBASE:+-s $PUBLIC_API_URL}
-
-    # REGISTER_SERVICE_OPTS="--ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD "
-    REGISTER_SERVICE_OPTS=""
-
-    keystone role-create --name=swiftoperator
-    keystone role-create --name=ResellerAdmin
-fi
-
-tripleo setup-endpoints $OVERCLOUD_IP \
-    --cinder-password $OVERCLOUD_CINDER_PASSWORD \
-    --glance-password $OVERCLOUD_GLANCE_PASSWORD \
-    --heat-password $OVERCLOUD_HEAT_PASSWORD \
-    --neutron-password $OVERCLOUD_NEUTRON_PASSWORD \
-    --nova-password $OVERCLOUD_NOVA_PASSWORD \
-    --swift-password $OVERCLOUD_SWIFT_PASSWORD \
-    $REGISTER_SERVICE_OPTS \
-    ${SSLBASE:+--ssl $PUBLIC_API_URL}
-keystone role-create --name heat_stack_user
-# setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
-NETWORK_CIDR=${NETWORK_CIDR:-"10.0.0.0/8"}
-FLOATING_IP_START=${FLOATING_IP_START:-"172.17.0.45"}
-FLOATING_IP_END=${FLOATING_IP_END:-"172.17.0.64"}
-FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"172.17.0.0/16"}
-tripleo setup-neutron "" "" $NETWORK_CIDR "" "" "" $FLOATING_IP_START $FLOATING_IP_END $FLOATING_IP_CIDR
-
-nova flavor-delete m1.tiny
-nova flavor-create m1.tiny 1 512 2 1
-
-echo "Overcloud Deployed"
+echo "Overcloud UPDATE_COMPLETE"
+echo "Overcloud Updated."

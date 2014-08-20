@@ -8,7 +8,7 @@ SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
 if [ -d /etc/tripleo ]; then
     TRIPLEO_ROOT=/etc/tripleo
 else
-    TRIPLEO_ROOT=/opt/stack/tripleo-incubator
+    TRIPLEO_ROOT=$INSTACK_ROOT/tripleo-incubator
 fi
 
 OS_AUTH_URL=${OS_AUTH_URL:-""}
@@ -21,7 +21,7 @@ export TE_DATAFILE=nodes.json
 
 source tripleo-overcloud-passwords
 
-export OVERCLOUD_IP=$(nova list | grep notCompute0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
+export OVERCLOUD_IP=$(nova list | grep controller0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
 
 source $TRIPLEO_ROOT/overcloudrc
 

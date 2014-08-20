@@ -1,5 +1,5 @@
 Name:		instack-undercloud
-Version:	0.0.13
+Version:	1.0.4
 Release:	1%{?dist}
 Summary:	Installation tools to install an undercloud via instack
 
@@ -19,6 +19,8 @@ Requires:	openstack-tuskar-ui
 Requires:	redhat-lsb-core
 Requires:	policycoreutils-python
 
+Requires:	selinux-policy >= 3.12.1-179
+
 
 %description
 instack-undercloud is a collection of installation tools to install an
@@ -36,7 +38,17 @@ install -d -m 755 %{buildroot}/%{_datadir}/%{name}
 cp -ar elements/* %{buildroot}/%{_datadir}/%{name}
 # scripts
 install -d -m 755 %{buildroot}/%{_bindir}
-cp -ar scripts/* %{buildroot}/%{_bindir}
+cp scripts/instack-build-images %{buildroot}/%{_bindir}
+cp scripts/instack-delete-overcloud %{buildroot}/%{_bindir}
+cp scripts/instack-delete-overcloud-tuskarcli %{buildroot}/%{_bindir}
+cp scripts/instack-deploy-overcloud %{buildroot}/%{_bindir}
+cp scripts/instack-deploy-overcloud-tuskarcli %{buildroot}/%{_bindir}
+cp scripts/instack-install-undercloud %{buildroot}/%{_bindir}
+cp scripts/instack-install-undercloud-packages %{buildroot}/%{_bindir}
+cp scripts/instack-install-undercloud-source %{buildroot}/%{_bindir}
+cp scripts/instack-prepare-for-overcloud %{buildroot}/%{_bindir}
+cp scripts/instack-test-overcloud %{buildroot}/%{_bindir}
+cp scripts/instack-virt-setup %{buildroot}/%{_bindir}
 # json files
 cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
@@ -62,6 +74,45 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %changelog
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.4-1
+- Bump instack vm memory to 3GB (jslagle@redhat.com)
+
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.3-1
+- Fix spacing in Requires (jslagle@redhat.com)
+
+* Wed Aug 06 2014 James Slagle <jslagle@redhat.com> 1.0.2-1
+- Require at least the needed version of selinux-policy (jslagle@redhat.com)
+
+* Tue Aug 05 2014 James Slagle <jslagle@redhat.com> 1.0.1-1
+- Remove selinux-package-updates and swift-package-updates elements, as these
+  packages have been pushed live. (jslagle@redhat.com)
+
+* Mon Jul 07 2014 James Slagle <jslagle@redhat.com> 1.0.0-1
+- Upload the deployrc file to deploy-overcloudrc since that is the file that CI
+  always uses. (jslagle@redhat.com)
+- Don't install koji builds on the undercloud, these will be handled by the CI
+  config.yml (jslagle@redhat.com)
+
+* Tue Jul 01 2014 James Slagle <jslagle@redhat.com> 0.0.16-1
+- Add os-refresh-config-reboot to overcloud images as well (jslagle@redhat.com)
+- Temporary SELinux changes until new packages are released (rwsu@redhat.com)
+- Update comment about virtual power key (jslagle@redhat.com)
+
+* Tue Jul 01 2014 James Slagle <jslagle@redhat.com> 0.0.15-1
+- Build images with SELinux enabled (rwsu@redhat.com)
+- Switch back to localhost from LOCAL_IP (rwsu@redhat.com)
+- Remove selinux-permissive element (rwsu@redhat.com)
+- Remove 00-setenforce-0 file to enable SELinux (rwsu@redhat.com)
+
+* Thu Jun 26 2014 James Slagle <jslagle@redhat.com> 0.0.14-1
+- Add element to run os-refresh-config on reboot (jslagle@redhat.com)
+- Copy the answers and deployrc file into the instack vm (jslagle@redhat.com)
+- Fix delete scripts (rbrady@redhat.com)
+- Use the devtest_testenv.sh generated id_rsa_virt_power ssh key as the virtual
+  power ssh key. (jslagle@redhat.com)
+- always do baremetal clean up (charles.crouch@gmail.com)
+- Switch to rabbitmq-server from qpidd (rwsu@redhat.com)
+
 * Wed May 28 2014 James Slagle <jslagle@redhat.com> 0.0.13-1
 - Create logfile directory before redirecting output via tee
   (jslagle@redhat.com)

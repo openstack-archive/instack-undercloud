@@ -12,32 +12,14 @@ LOCAL_IP=192.0.2.1
 # LOCAL_INTERFACE will be assigned the address from LOCAL_IP
 LOCAL_INTERFACE=eth1
 
-### POWER_DRIVER ###
-# OpenStack Nova Baremetal power driver to use for powering on/off Overcloud
-# instances. Use IPMI for baremetal. For virsh based virtualization, you can
-# use:
-# POWER_DRIVER=nova.virt.baremetal.ipmi.IPMI
-POWER_DRIVER=nova.virt.baremetal.virtual_power_driver.VirtualPowerManager
-
-### VIRTUAL_POWER_USER ###
-# When POWER_DRIVER is set to the VirtualPowerManager, the user to use to
-# connect to VIRTUAL_POWER_HOST. Unused if POWER_DRIVER is IPMI.  This is
-# a user on your virsh host.
-VIRTUAL_POWER_USER=stack
-
-### VIRTUAL_POWER_HOST ###
-# When POWER_DRIVER is set to the VirtualPowerManager, the virsh host to use
-# for Overcloud instances. Unused if POWER_DRIVER is IPMI.
-VIRTUAL_POWER_HOST=192.168.122.1
-
 ### SSH_KEY ###
 # When POWER_DRIVER is set to the VirtualPowerManager, the ssh key to use to
 # ssh to the virsh host.  Unused if POWER_DRIVER is IPMI.
 # This should be a path to an ssh private key. The public key portion must be
-# added to the ~/.ssh/authorized_keys file for the virtual power user.
-# You can generate this key with a command like:
-# ssh-keygen -t rsa -N '' -C virtual-power-key -f virtual-power-key
-SSH_KEY=/home/stack/virtual-power-key
+# added to the ~/.ssh/authorized_keys file for the virtual power user on the
+# virt host. If instack-virt-setup was used, this key already exists and has
+# already been copied to the virt host.
+SSH_KEY=/home/stack/.ssh/id_rsa_virt_power
 
 ### MASQUERADE_NETWORK ###
 # Network that will be masqueraded for external access if required.
@@ -98,3 +80,8 @@ UNDERCLOUD_NOVA_PASSWORD=
 # Ironic service password
 # If left unset, one will be automatically generated
 UNDERCLOUD_IRONIC_PASSWORD=
+
+### Tuskar password ###
+# Tuskar service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_TUSKAR_PASSWORD=

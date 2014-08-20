@@ -8,41 +8,79 @@ set -eux
 export TMP_DIR=${TMP_DIR:-/var/tmp}
 
 export NODE_ARCH=${NODE_ARCH:-amd64}
-export NODE_DIST=${NODE_DIST:-"fedora selinux-permissive"}
-export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy}
+export NODE_DIST=${NODE_DIST:-"fedora"}
+export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-baremetal}
+export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
 
-export DIB_INSTALLTYPE_nova=package
-export DIB_INSTALLTYPE_heat=package
-export DIB_INSTALLTYPE_keystone=package
-export DIB_INSTALLTYPE_neutron=package
-export DIB_INSTALLTYPE_glance=package
-export DIB_INSTALLTYPE_swift=package
-export DIB_INSTALLTYPE_cinder=package
-export DIB_INSTALLTYPE_horizon=package
-export DIB_INSTALLTYPE_python_cinderclient=package
-export DIB_INSTALLTYPE_python_glanceclient=package
-export DIB_INSTALLTYPE_python_heatclient=package
-export DIB_INSTALLTYPE_python_keystoneclient=package
-export DIB_INSTALLTYPE_python_neutronclient=package
-export DIB_INSTALLTYPE_python_novaclient=package
-export DIB_INSTALLTYPE_python_swiftclient=package
-export DIB_INSTALLTYPE_python_ceilometerclient=package
-export DIB_INSTALLTYPE_python_ironicclient=package
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
 
-export DIB_INSTALLTYPE_os_collect_config=package
-export DIB_INSTALLTYPE_os_refresh_config=package
-export DIB_INSTALLTYPE_os_apply_config=package
+export DEPLOY_DIB_EXTRA_ARGS=${DEPLOY_DIB_EXTRA_ARGS:-"\
+undercloud-package-install"}
 
-export DIB_INSTALLTYPE_get_pip_py=package
+export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
+pip-cache boot-stack cinder-api cinder-volume os-collect-config \
+neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
+baremetal \
+cinder-lio \
+fedora-rdo-icehouse-repository \
+horizon \
+rabbitmq-server \
+keystone-1289935 \
+mariadb-rdo \
+stable-interface-names \
+os-refresh-config-reboot \
+undercloud-package-install"}
 
-export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/instack-undercloud
+export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
+pip-cache \
+nova-compute \
+nova-kvm \
+neutron-openvswitch-agent \
+os-collect-config \
+baremetal \
+dhcp-all-interfaces \
+stackuser \
+fedora-rdo-icehouse-repository \
+stable-interface-names \
+os-refresh-config-reboot \
+undercloud-package-install"}
 
-if [ ! -f deploy-ramdisk.initramfs -o \
-     ! -f deploy-ramdisk.kernel ]; then
+export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
+pip-cache \
+cinder-volume \
+neutron-openvswitch-agent \
+os-collect-config \
+baremetal \
+cinder-lio \
+dhcp-all-interfaces \
+stackuser \
+fedora-rdo-icehouse-repository \
+stable-interface-names \
+os-refresh-config-reboot \
+undercloud-package-install \
+"}
+
+export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS=${OVERCLOUD_SWIFT_DIB_EXTRA_ARGS:-"\
+pip-cache \
+swift-storage \
+neutron-openvswitch-agent \
+os-collect-config \
+baremetal \
+dhcp-all-interfaces \
+stackuser \
+fedora-rdo-icehouse-repository \
+stable-interface-names \
+os-refresh-config-reboot \
+undercloud-package-install \
+"}
+
+if [ ! -f $DEPLOY_NAME.initramfs -o \
+     ! -f $DEPLOY_NAME.kernel ]; then
     ramdisk-image-create \
         -a $NODE_ARCH \
-        -o deploy-ramdisk \
+        -o $DEPLOY_NAME \
         $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
+        $DEPLOY_DIB_EXTRA_ARGS \
         2>&1 | tee dib-deploy.log
 fi
 
@@ -50,15 +88,8 @@ if [ ! -f overcloud-control.qcow2 ]; then
     disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-control \
-        $NODE_DIST pip-cache boot-stack cinder-api cinder-volume os-collect-config \
-        neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
-        baremetal \
-        fedora-rdo-icehouse-repository \
-        horizon \
-        qpidd \
-        keystone-1289935 \
-        mariadb-rdo \
-	stable-interface-names \
+        $NODE_DIST \
+        $OVERCLOUD_CONTROL_DIB_EXTRA_ARGS \
         2>&1 | tee dib-overcloud-control.log
 fi
 
@@ -66,10 +97,8 @@ if [ ! -f overcloud-compute.qcow2 ]; then
     disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-compute \
-        $NODE_DIST pip-cache nova-compute nova-kvm neutron-openvswitch-agent os-collect-config \
-        baremetal \
-        dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
-	stable-interface-names \
+        $NODE_DIST  \
+        $OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS \
         2>&1 | tee dib-overcloud-compute.log
 fi
 
@@ -77,10 +106,8 @@ if [ ! -f overcloud-cinder-volume.qcow2 ]; then
     disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-cinder-volume \
-        $NODE_DIST pip-cache cinder-volume neutron-openvswitch-agent os-collect-config \
-        baremetal \
-        dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
-	stable-interface-names \
+        $NODE_DIST \
+        $OVERCLOUD_CINDER_DIB_EXTRA_ARGS \
         2>&1 | tee dib-overcloud-cinder-volume.log
 fi
 
@@ -88,10 +115,8 @@ if [ ! -f overcloud-swift-storage.qcow2 ]; then
     disk-image-create \
         -a $NODE_ARCH \
         -o overcloud-swift-storage \
-        $NODE_DIST pip-cache swift-storage neutron-openvswitch-agent os-collect-config \
-        baremetal \
-        dhcp-all-interfaces stackuser fedora-rdo-icehouse-repository \
-	stable-interface-names \
+        $NODE_DIST \
+        $OVERCLOUD_SWIFT_DIB_EXTRA_ARGS \
         2>&1 | tee dib-overcloud-swift-storage.log
 fi
 

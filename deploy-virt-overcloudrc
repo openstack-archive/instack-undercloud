@@ -9,7 +9,26 @@ export NETWORK_CIDR=10.0.0.0/8
 export FLOATING_IP_START=192.0.2.45
 export FLOATING_IP_END=192.0.2.64
 export FLOATING_IP_CIDR=192.0.2.0/24
+export NEUTRON_NETWORK_TYPE=gre
+export NEUTRON_TUNNEL_TYPES=gre
 export MACS=""
 export COMPUTESCALE=1
 export BLOCKSTORAGESCALE=1
 export SWIFTSTORAGESCALE=1
+
+### VIRTUAL_POWER_USER ###
+# The user to use to connect to VIRTUAL_POWER_HOST.
+# This is a user on your virsh host.
+export VIRTUAL_POWER_USER=stack
+
+### VIRTUAL_POWER_HOST ###
+# The virsh host to use for Overcloud instances.
+export VIRTUAL_POWER_HOST=192.168.122.1
+
+### SSH_KEY ###
+# The ssh key to use to ssh to the virsh host.  This should be a path to an ssh
+# private key. The public key portion must be added to the
+# ~/.ssh/authorized_keys file for the virtual power user on the virt host. If
+# instack-virt-setup was used, this key already exists and has already been
+# copied to the virt host.
+export SSH_KEY=/home/stack/.ssh/id_rsa_virt_power

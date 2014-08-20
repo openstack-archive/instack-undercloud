@@ -7,17 +7,20 @@
   "local-ipv4": "{{LOCAL_IP}}",
   "keystone": {
     "host": "127.0.0.1",
-    "db": "mysql://keystone:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/keystone"
+    "db": "mysql://keystone:{{UNDERCLOUD_DB_PASSWORD}}@localhost/keystone"
   },
-  "qpid": {
+  "rabbit": {
     "host": "127.0.0.1",
     "password": "guest",
-    "username": "guest"
+    "username": "guest",
+    "cookie": "changeme"
   },
   "glance": {
     "backend": "file",
     "host": "127.0.0.1",
-    "db": "mysql://glance:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/glance",
+    "protocol": "http",
+    "port": "9292",
+    "db": "mysql://glance:{{UNDERCLOUD_DB_PASSWORD}}@localhost/glance",
     "service-password": "{{UNDERCLOUD_GLANCE_PASSWORD}}",
     "notifier-strategy": "noop",
     "log-file": "''"
@@ -25,41 +28,34 @@
   "nova": {
     "compute_hostname": "undercloud",
     "host": "127.0.0.1",
-    "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/nova",
-    "compute_driver": "baremetal.driver.BareMetalDriver",
+    "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova",
+    "baremetal": {},
+    "compute_driver": "ironic.nova.virt.ironic.driver.IronicDriver",
+    "compute_manager": "ironic.nova.compute.manager.ClusteredComputeManager",
     "tuning": {
         "ram_allocation_ratio": "1.0",
         "reserved_host_memory_mb": "0"
     },
-    "baremetal": {
-      "arch": "amd64",
-      "db": "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/nova_bm",
-      "power_manager": "{{POWER_DRIVER}}",
-      "pxe_deploy_timeout": "2400",
-      "use_file_injection": "False",
-      "virtual_power": {
-        "user": "{{VIRTUAL_POWER_USER}}",
-        "ssh_key": "{{SSH_KEY}}",
-        "key": "/opt/stack/boot-stack/virtual-power-key",
-        "ssh_host": "{{VIRTUAL_POWER_HOST}}",
-        "type": "virsh"
-      }
-    },
     "metadata-proxy": "false",
     "service-password": "{{UNDERCLOUD_NOVA_PASSWORD}}"
+  },
+  "ironic": {
+    "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
+    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}",
+    "virtual_power_ssh_key": "{{SSH_KEY}}"
   },
   "bootstack": {
     "public_interface_ip": "{{LOCAL_IP}}/24",
     "masquerade_networks": ["{{MASQUERADE_NETWORK}}"]
   },
   "cinder": {
-    "db": "mysql://cinder:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/cinder",
+    "db": "mysql://cinder:{{UNDERCLOUD_DB_PASSWORD}}@localhost/cinder",
     "volume_size_mb": "5000",
     "service-password": "{{UNDERCLOUD_CINDER_PASSWORD}}"
   },
   "neutron": {
     "host": "127.0.0.1",
-    "ovs_db": "mysql://neutron:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/ovs_neutron?charset=utf8",
+    "ovs_db": "mysql://neutron:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ovs_neutron?charset=utf8",
     "ovs": {
       "bridge_mappings": "ctlplane:br-ctlplane",
       "dnsmasq_range": ["192.0.2.4", "192.0.2.4"],
@@ -77,7 +73,7 @@
     "network_gateway": "{{NETWORK_GATEWAY}}"
   },
   "heat": {
-    "db": "mysql://heat:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/heat",
+    "db": "mysql://heat:{{UNDERCLOUD_DB_PASSWORD}}@localhost/heat",
     "auth_encryption_key": "unset___________",
     "watch_server_url": "http://{{LOCAL_IP}}:8003",
     "waitcondition_server_url": "http://{{LOCAL_IP}}:8000/v1/waitcondition",
@@ -90,11 +86,16 @@
     "secret_key": "unset___________"
   },
   "tuskar": {
-    "db": "mysql://tuskar:{{UNDERCLOUD_DB_PASSWORD}}@{{LOCAL_IP}}/tuskar?charset=utf8",
+    "service-password": "{{UNDERCLOUD_TUSKAR_PASSWORD}}",
+    "db": "mysql://tuskar:{{UNDERCLOUD_DB_PASSWORD}}@localhost/tuskar?charset=utf8",
     "heat_keystone": {
       "username": "admin",
       "password": "unset",
       "tenant_name": "admin"
     }
+  },
+  "bootstrap_host": {
+    "bootstrap_nodeid": "undercloud",
+    "nodeid": "undercloud"
   }
 }
