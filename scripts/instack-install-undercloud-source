@@ -31,6 +31,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
 
     fi
 
+    ## maraidb autostart
+    #
+    # https://review.openstack.org/#/c/113943
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/43/113943/1 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
