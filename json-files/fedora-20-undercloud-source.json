@@ -33,7 +33,6 @@
       "common-venv",
       "set-instack-root",
       "undercloud-post-config-source",
-      "reverts",
       "selinux-policy-updates"
     ],
     "hook": [
