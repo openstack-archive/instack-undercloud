@@ -28,12 +28,11 @@ inside the container directly. In the command below I'm using
             slagle/instack-virt
         
 
-ssh as root to the container. The initial root pw is also root. You can use
+ssh as stack to the container. The initial stack password is also stack. You can use
 docker inspect to get the IP address of the container.
 
-Switch to the stack user and start the instack vm
+Start the instack vm
 
-        su - stack
         virsh start instack
 
 The IP address of the instack vm will be 192.168.122.100.  ssh as the stack
