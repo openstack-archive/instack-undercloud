@@ -76,7 +76,10 @@ assist with building the initial image.
 1. Copy needed files from the build host into the build directory.
 
         sudo cp /var/lib/libvirt/images/instack.qcow2 .
-        sudo cp /etc/libvirt/qemu/baremetal_* .
+        sudo cp /etc/libvirt/qemu/baremetal_0 .
+        sudo cp /etc/libvirt/qemu/baremetal_1 .
+        sudo cp /etc/libvirt/qemu/baremetal_2 .
+        sudo cp /etc/libvirt/qemu/baremetal_3 .
         sudo cp /etc/libvirt/qemu/instack.xml .
         sudo cp /etc/libvirt/qemu/networks/default.xml .
         sudo cp /etc/libvirt/qemu/networks/brbm.xml .
