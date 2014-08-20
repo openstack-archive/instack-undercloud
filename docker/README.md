@@ -75,11 +75,11 @@ assist with building the initial image.
 
 1. Copy needed files from the build host into the build directory.
 
-        cp /var/lib/libvirt/images/instack.qcow2 .
-        cp /etc/libvirt/qemu/baremetal_* .
-        cp /etc/libvirt/qemu/instack.xml .
-        cp /etc/libvirt/qemu/networks/default.xml .
-        cp /etc/libvirt/qemu/networks/brbm.xml .
+        sudo cp /var/lib/libvirt/images/instack.qcow2 .
+        sudo cp /etc/libvirt/qemu/baremetal_* .
+        sudo cp /etc/libvirt/qemu/instack.xml .
+        sudo cp /etc/libvirt/qemu/networks/default.xml .
+        sudo cp /etc/libvirt/qemu/networks/brbm.xml .
         
 1. Update the vm xml definitions to remove the selinux relabel command
 
