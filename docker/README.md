@@ -91,7 +91,7 @@ assist with building the initial image.
         
 1. View instack.xml and get the mac address of the default network interface.
 
-1. Edit default.xml and add the following line in the <dhcp> stanza. Replace
+1. Edit default.xml and add the following line in the `<dhcp>` stanza. Replace
    the value for mac with the mac address you got in the previous step.
 
         <host mac='52:54:00:e1:f3:7e' name='instack' ip='192.168.122.100'/>
