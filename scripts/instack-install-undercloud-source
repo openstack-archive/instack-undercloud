@@ -146,7 +146,8 @@ $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
-sudo -E chown -R $USER: $HOME/.cache/image-create
+# $USER is not always set in a live cd building enviroment, so use || true
+sudo -E chown -R $USER: $HOME/.cache/image-create || true
 
 # A couple of fixups...need to debug these.
 # fixes neutron-dhcp-agent and neutron-openvswitch-agent tracebacks from
