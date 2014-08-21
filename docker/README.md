@@ -8,13 +8,23 @@ running instack-virt-setup in a reuseable Docker container.
 Running the instack-virt-setup Docker image
 -------------------------------------------
 
+1. Pre-requisites.
+
+        # Run these commands as root
+        yum install docker-io qemu-kvm
+        modprobe kvm
+        modprobe openvswitch
+        systemctl start docker
+
 1. Pull the image from the docker registry.
 
+        # Run these commands as root
         docker pull slagle/instack-virt
 
 1. Create a directory on your docker host to mount into the container for
    storage. This directory should have at least 30GB free.
 
+        # Run these commands as root
         mkdir -p /storage/docker/lib/instack-virt-environment
 
 1. Start the container. The container must be started with --privileged so that libvirt
@@ -22,6 +32,8 @@ Running the instack-virt-setup Docker image
    also mounted into the container at /var/lib/libvirt/images for the instack vm's
    to use for their disks. 
 
+        # Run these commands as root
+        setenforce 0
         docker run \
             -it \
             --name instack-virt-environment \
@@ -31,6 +43,7 @@ Running the instack-virt-setup Docker image
 
 1. Look up the IP address of the container
 
+        # Run these commands as root
         docker inspect instack-virt-environment | grep IPAddress
 
 1. ssh as stack to the container's IP address. The initial stack password is also stack.
