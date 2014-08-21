@@ -44,24 +44,24 @@ Running the instack-virt-setup Docker image
             --volume /storage/docker/lib/instack-virt-environment:/var/lib/libvirt/images \
             slagle/instack-virt
 
-1. Look up the IP address of the container
+1. Open a new termainl and look up the IP address of the container
 
         # Run these commands as root
         docker inspect instack-virt-environment | grep IPAddress
 
 1. ssh as stack to the container's IP address. The initial stack password is also stack.
 
-1. Start the instack vm
+1. Once ssh'd into the container, start the instack vm
 
         virsh start instack
 
    The IP address of the instack vm will be 192.168.122.100.  ssh as the stack
-   user (initial password is stack) to the vm. It may take a minute or 2 for it to
+   user (initial password is stack) to the instack vm. It may take a minute or 2 for it to
    come up.
 
         ssh stack@192.168.122.100
 
-1. You must wait for the run of os-collect-config to complete. It should
+1. Once ssh'd to the instack vm, you must wait for the run of os-collect-config to complete. It should
    complete in < 5 minutes. Use the following command to check for completion.
 
         sudo journalctl -u os-collect-config --full -f | grep "Completed phase migration"
