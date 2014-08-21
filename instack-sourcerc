@@ -12,6 +12,9 @@ export TRIPLEO_OS_FAMILY=redhat
 export TE_DATAFILE=instack.json
 export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-source/
 
+export USE_DELOREAN=${USE_DELOREAN:-0}
+export DELOREAN_REPO=http://209.132.178.33/repos/c9/76/c9768bb07e4e5d0f42c9db15ea8c0f3343354167/delorean.repo
+
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
     export DIB_REPOREF_tripleo_image_elements=0c154b64381e0d16d6c61195c5927d1ee91b9329
