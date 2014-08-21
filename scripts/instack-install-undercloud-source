@@ -67,6 +67,10 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
         git fetch origin $DIB_REPOREF_diskimage_builder
         git reset --hard FETCH_HEAD
 
+        ## novnc package mapping
+        #
+        # https://review.openstack.org/#/c/114949/
+        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/49/114949/1 && git cherry-pick FETCH_HEAD
         ## ironic package mapping
         #
         # https://review.openstack.org/#/c/115793/
