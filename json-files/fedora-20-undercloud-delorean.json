@@ -10,7 +10,7 @@
       "extra-data",
       "root",
       "pre-install",
-      "undercloud-package-installs"
+      "undercloud-package-install"
     ],
     "blacklist": [
       "01-ccache"
@@ -35,7 +35,7 @@
       "set-instack-root",
       "undercloud-post-config-source",
       "selinux-policy-updates",
-      "undercloud-package-installs"
+      "undercloud-package-install"
     ],
     "hook": [
       "extra-data",
