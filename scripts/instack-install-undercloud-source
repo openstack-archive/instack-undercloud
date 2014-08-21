@@ -41,6 +41,20 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     # https://review.openstack.org/#/c/113943
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/43/113943/1 && git cherry-pick FETCH_HEAD
 
+    ## ironic package install support
+    #
+    # https://review.openstack.org/#/c/115788/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/88/115788/1 && git cherry-pick FETCH_HEAD
+    #
+    # https://review.openstack.org/#/c/115789/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/89/115789/2 && git cherry-pick FETCH_HEAD
+    #
+    # https://review.openstack.org/#/c/115790/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/90/115790/2 && git cherry-pick FETCH_HEAD
+    #
+    # https://review.openstack.org/#/c/115791/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/91/115791/2 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
@@ -52,6 +66,12 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_diskimage_builder
         git reset --hard FETCH_HEAD
+
+        ## ironic package mapping
+        #
+        # https://review.openstack.org/#/c/115793/
+        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/93/115793/1 && git cherry-pick FETCH_HEAD
+
     fi
 
     popd
