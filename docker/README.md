@@ -19,6 +19,9 @@ Running the instack-virt-setup Docker image
 1. Pull the image from the docker registry.
 
         # Run these commands as root
+        # Note that this is about an 8GB download as it contains a fully
+        # installed undercloud with all the overcloud images already loaded into
+        # glance.
         docker pull slagle/instack-virt
 
 1. Create a directory on your docker host to mount into the container for
