@@ -57,6 +57,6 @@ subprocess.check_call(['generate-keystone-pki', '-s', '--heatenv', cfn_path])
 # Make the json pretty again
 tmpfile = tempfile.mkstemp()[1]
 outfile = open(tmpfile, 'w')
-subprocess.check_call(['jq', '-s', '.', cfn_path], stdout=outfile)
+subprocess.check_call(['jq', '.', cfn_path], stdout=outfile)
 outfile.close()
 shutil.move(tmpfile, cfn_path)
