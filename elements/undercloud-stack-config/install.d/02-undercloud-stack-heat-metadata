@@ -3,6 +3,7 @@
 
 import os
 import subprocess
+import tempfile
 
 import pystache
 
@@ -42,7 +43,8 @@ with open(template) as f:
     config_json = renderer.render(f.read(), context)
 
 cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
-os.makedirs(os.path.dirname(cfn_path))
+if not os.path.exists(os.path.dirname(cfn_path)):
+    os.makedirs(os.path.dirname(cfn_path))
 with open(cfn_path, 'w') as f:
     f.write(config_json)
 
@@ -50,3 +52,10 @@ with open(cfn_path, 'w') as f:
 # cfn-init-data with the generated keystone data with:
 # jq -s '.[0].keystone=(.[0].keystone + .[1].keystone) | .[0]' cfn.json key.json 
 subprocess.check_call(['generate-keystone-pki', '-s', '--heatenv', cfn_path])
+
+# Make the json pretty again
+tmpfile = tempfile.mkstemp()[1]
+outfile = open(tmpfile, 'w')
+subprocess.check_call(['jq', '-s', '.', cfn_path], stdout=outfile)
+outfile.close()
+os.rename(tmpfile, cfn_path)
