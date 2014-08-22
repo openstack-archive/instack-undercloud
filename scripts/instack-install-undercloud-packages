@@ -16,12 +16,6 @@ export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/diskimage-builder/elements/ \
                                        /usr/share/tripleo-image-elements/ \
                                        /usr/share/instack-undercloud/"}
 
-# generate ssh authentication keys if they don't exist
-if [ ! -f ~/.ssh/id_rsa ]; then
-  echo "Generating an ssh key..."
-  ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
-fi
-
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
