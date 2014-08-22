@@ -31,3 +31,4 @@ if [ -z "$INSTACK_ROOT" ]; then
     sudo -E /usr/share/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata    
 else
     sudo -E $INSTACK_ROOT/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata
+fi
