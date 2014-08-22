@@ -1,0 +1,33 @@
+#!/bin/bash
+
+echo "Sourcing answers file from instack.answers..."
+source ~/instack.answers
+
+export LOCAL_IP
+export DNSMASQ_START
+export DNSMASQ_END
+export LOCAL_INTERFACE
+export MASQUERADE_NETWORK
+export POWER_DRIVER
+export VIRTUAL_POWER_USER
+export VIRTUAL_POWER_HOST
+export DHCP_START
+export DHCP_END
+export NETWORK_CIDR
+export NETWORK_GATEWAY
+export SSH_KEY
+
+export UNDERCLOUD_DB_PASSWORD=${UNDERCLOUD_DB_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_ADMIN_TOKEN=${UNDERCLOUD_ADMIN_TOKEN:-$(tripleo os-make-password)}
+export UNDERCLOUD_ADMIN_PASSWORD=${UNDERCLOUD_ADMIN_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_GLANCE_PASSWORD=${UNDERCLOUD_GLANCE_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_HEAT_PASSWORD=${UNDERCLOUD_HEAT_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_NEUTRON_PASSWORD=${UNDERCLOUD_NEUTRON_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_NOVA_PASSWORD=${UNDERCLOUD_NOVA_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_IRONIC_PASSWORD=${UNDERCLOUD_IRONIC_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-make-password)}
+
+if [ -z "$INSTACK_ROOT" ]; then
+    sudo -E /usr/share/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata    
+else
+    sudo -E $INSTACK_ROOT/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata
