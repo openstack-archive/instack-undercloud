@@ -2,6 +2,7 @@
 
 
 import os
+import shutil
 import subprocess
 import tempfile
 
@@ -58,4 +59,4 @@ tmpfile = tempfile.mkstemp()[1]
 outfile = open(tmpfile, 'w')
 subprocess.check_call(['jq', '-s', '.', cfn_path], stdout=outfile)
 outfile.close()
-os.rename(tmpfile, cfn_path)
+shutil.move(tmpfile, cfn_path)
