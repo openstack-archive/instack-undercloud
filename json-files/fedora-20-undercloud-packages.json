@@ -21,6 +21,7 @@
       "undercloud-package-install",
       "fedora",
       "boot-stack",
+      "horizon",
       "nova-baremetal",
       "os-collect-config",
       "neutron-dhcp-agent",
