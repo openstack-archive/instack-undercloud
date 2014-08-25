@@ -25,6 +25,7 @@
       "boot-stack",
       "nova-ironic",
       "os-collect-config",
+      "horizon",
       "neutron-dhcp-agent",
       "undercloud-stack-config",
       "rabbitmq-server",
