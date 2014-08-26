@@ -41,6 +41,7 @@ instack-undercloud via source
 
 1. Create the virtual environment.
 
+         sudo yum -y install libguestfs-tools
          instack-virt-setup
 
 1. Start instack vm.
