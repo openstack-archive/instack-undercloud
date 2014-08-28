@@ -1,0 +1,169 @@
+# Minimal Disk Image
+#
+sshpw --username=root --plaintext hoover
+# Firewall configuration
+firewall --enabled
+# Use network installation
+url --url="http://dl.fedoraproject.org/pub/fedora/linux/releases/20/Everything/x86_64/os/"
+repo --name=updates --baseurl="http://dl.fedoraproject.org/pub/fedora/linux/updates/20/x86_64/" 
+
+
+# Root password
+rootpw --plaintext removethispw
+# Network information
+network  --bootproto=dhcp --onboot=on --activate
+# System authorization information
+auth --useshadow --enablemd5
+# System keyboard
+keyboard --xlayouts=us --vckeymap=us
+# System language
+lang en_US.UTF-8
+# SELinux configuration
+selinux --permissive
+# Installation logging level
+logging --level=info
+# Shutdown after installation
+shutdown
+# System timezone
+timezone  US/Eastern
+# System bootloader configuration
+bootloader --location=mbr
+# Clear the Master Boot Record
+zerombr
+# Partition clearing information
+clearpart --all
+# Disk partitioning information
+part / --fstype="ext4" --size=4000
+part swap --size=1000
+
+xconfig --startxonboot
+
+%post
+
+useradd stack
+usermod -G wheel -a stack
+passwd -d stack > /dev/null
+
+# Remove root password
+passwd -d root > /dev/null
+
+# fstab from the install won't match anything. remove it and let dracut
+# handle mounting.
+cat /dev/null > /etc/fstab
+
+# This is a huge file and things work ok without it
+rm -f /usr/share/icons/HighContrast/icon-theme.cache
+
+# create /etc/sysconfig/desktop (needed for installation)
+
+cat > /etc/sysconfig/desktop <<EOF
+PREFERRED=/usr/bin/startxfce4
+DISPLAYMANAGER=/usr/sbin/lightdm
+EOF
+
+# deactivate xfconf-migration (#683161)
+rm -f /etc/xdg/autostart/xfconf-migration-4.6.desktop || :
+
+# set up lightdm autologin
+sed -i 's/^#autologin-user=.*/autologin-user=stack/' /etc/lightdm/lightdm.conf
+sed -i 's/^#autologin-user-timeout=.*/autologin-user-timeout=0/' /etc/lightdm/lightdm.conf
+#sed -i 's/^#show-language-selector=.*/show-language-selector=true/' /etc/lightdm/lightdm-gtk-greeter.conf
+
+# set Xfce as default session, otherwise login will fail
+sed -i 's/^#user-session=.*/user-session=xfce/' /etc/lightdm/lightdm.conf
+
+# Show harddisk install on the desktop
+mkdir /home/stack/Desktop
+cp /usr/share/applications/liveinst.desktop /home/stack/Desktop
+sed -i -e 's/NoDisplay=true/NoDisplay=false/' /home/stack/Desktop/liveinst.desktop
+mkdir -p  /home/stack/.config/autostart
+ln -s /home/stack/Desktop/liveinst.desktop /home/stack/.config/autostart
+
+# and mark it as executable (new Xfce security feature)
+chmod +x /home/stack/Desktop/liveinst.desktop
+
+# deactivate xfce4-panel first-run dialog (#693569)
+mkdir -p /home/stack/.config/xfce4/xfconf/xfce-perchannel-xml
+cp /etc/xdg/xfce4/panel/default.xml /home/stack/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
+
+pushd /home/stack
+
+ssh-keygen -t rsa -N "" -f /home/stack/virtual-power-key
+
+yum -y install git
+git clone https://github.com/agroup/instack-undercloud
+cp instack-undercloud/instack-baremetal.answers.sample /home/stack/instack.answers
+# instack-install-undercloud-packages sources ~/instack.answers, and during the
+# %chroot phase, apparently ~ evaluates to /tmp. So, we need to copy the
+# answers file there as well.
+cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
+
+export RUN_ORC=0
+export LKG=1
+source instack-undercloud/instack-sourcerc
+instack-undercloud/scripts/instack-install-undercloud-source
+
+cat << EOF >> /etc/fstab
+tmpfs /mnt tmpfs rw 0 0
+EOF
+
+# Clean up answers file
+rm -f ~/instack.answers
+
+cp /root/tripleo-undercloud-passwords /home/stack/
+cp /root/stackrc /home/stack
+
+popd
+
+# this goes at the end after all other changes. 
+chown -R stack:stack /home/stack
+restorecon -R /home/stack
+
+# Always force the source install
+echo "source /home/stack/instack-undercloud/instack-sourcerc" >> /home/stack/.bashrc
+
+# disable os-collect-config
+rm -f /etc/systemd/system/multi-user.target.wants/os-collect-config.service
+
+# need to reinstall anaconda
+yum -y install anaconda
+
+%end
+
+%packages
+@core
+kernel
+memtest86+
+grub2-efi
+grub2
+shim
+syslinux
+
+anaconda
+git
+firefox
+ucs-miscfixed-fonts
+bitmap-fixed-fonts
+@virtualization
+
+@xfce-desktop
+# @xfce-apps
+# @xfce-extra-plugins
+# @xfce-media
+# @xfce-office
+
+@base-x
+# @guest-desktop-agents
+# @standard
+@input-methods
+@hardware-support
+
+
+# unlock default keyring. FIXME: Should probably be done in comps
+gnome-keyring-pam
+
+-dracut-config-rescue
+
+-dnf
+
+%end

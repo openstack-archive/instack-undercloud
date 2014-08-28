@@ -1,5 +1,7 @@
 #!/bin/bash
 
+xfce4-terminal --geometry 800x600 -x vi /home/stack/instack.answers
+
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
@@ -32,3 +34,8 @@ if [ -z "$INSTACK_ROOT" ]; then
 else
     sudo -E $INSTACK_ROOT/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata
 fi
+
+echo ****************************************************************
+echo * Now run sudo -E os-refresh-config to apply the configuration
+echo * and start the Undercloud.
+echo ****************************************************************
