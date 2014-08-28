@@ -19,7 +19,7 @@ keyboard --xlayouts=us --vckeymap=us
 # System language
 lang en_US.UTF-8
 # SELinux configuration
-selinux --permissive
+selinux --enforcing
 # Installation logging level
 logging --level=info
 # Shutdown after installation
