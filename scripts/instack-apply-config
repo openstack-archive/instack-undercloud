@@ -1,6 +1,6 @@
 #!/bin/bash
 
-xfce4-terminal --geometry 800x600 -x vi /home/stack/instack.answers
+vi /home/stack/instack.answers
 
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
