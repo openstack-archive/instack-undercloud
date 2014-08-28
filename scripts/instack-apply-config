@@ -42,7 +42,7 @@ echo "****************************************************************"
 echo "Type 'yes' to proceed:"
 read PROCEED
 if [ "$PROCEED" = "yes" ]; then
-    sudo -E os-refresh-config
+    sudo -E os-collect-config --one-time --force
 fi
 
 sudo cp /root/stackrc ~
