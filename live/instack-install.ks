@@ -1,4 +1,15 @@
-%post --chroot
+# Network information
+network  --bootproto=dhcp --onboot=on --activate
+# System authorization information
+auth --useshadow --enablemd5
+# System keyboard
+keyboard --xlayouts=us --vckeymap=us
+# System language
+lang en_US.UTF-8
+# System timezone
+timezone  US/Eastern
+
+%post --nochroot
 
 rm -f /mnt/sysimage/home/stack/Desktop/liveinst.desktop
 rm -f /mnt/sysimage/home/stack/.config/autostart/liveinst.desktop

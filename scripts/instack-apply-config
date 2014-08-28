@@ -35,7 +35,17 @@ else
     sudo -E $INSTACK_ROOT/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata
 fi
 
-echo ****************************************************************
-echo * Now run sudo -E os-refresh-config to apply the configuration
-echo * and start the Undercloud.
-echo ****************************************************************
+echo "****************************************************************"
+echo "* Now ready to apply the configuration and start the Undercloud."
+echo "****************************************************************"
+
+echo "Type 'yes' to proceed:"
+read PROCEED
+if [ "$PROCEED" = "yes" ]; then
+    sudo -E os-refresh-config
+fi
+
+
+echo "****************************************************************"
+echo " Undercloud configuration complete.                             "
+echo "****************************************************************"

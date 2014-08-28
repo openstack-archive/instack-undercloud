@@ -76,6 +76,8 @@ sed -i 's/^#user-session=.*/user-session=xfce/' /etc/lightdm/lightdm.conf
 mkdir /home/stack/Desktop
 cp /usr/share/applications/liveinst.desktop /home/stack/Desktop
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /home/stack/Desktop/liveinst.desktop
+sed -i -e 's/Exec=\/usr\/bin\/liveinst/\0 --kickstart \/home\/stack\/instack-undercloud\/live\/instack-install.ks/' /home/stack/Desktop/liveinst.desktop
+sed -i -e 's/Terminal=false/Terminal=true/' /home/stack/Desktop/liveinst.desktop
 mkdir -p  /home/stack/.config/autostart
 ln -s /home/stack/Desktop/liveinst.desktop /home/stack/.config/autostart
 
