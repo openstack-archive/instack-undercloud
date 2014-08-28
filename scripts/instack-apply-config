@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vi /home/stack/instack.answers
+vi ~/instack.answers
 
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
@@ -45,6 +45,8 @@ if [ "$PROCEED" = "yes" ]; then
     sudo -E os-refresh-config
 fi
 
+sudo cp /root/stackrc ~
+sudo cp /root/tripleo-undercloud-passwords ~
 
 echo "****************************************************************"
 echo " Undercloud configuration complete.                             "
