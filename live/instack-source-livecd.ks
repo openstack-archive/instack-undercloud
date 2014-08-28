@@ -4,8 +4,8 @@ sshpw --username=root --plaintext hoover
 # Firewall configuration
 firewall --enabled
 # Use network installation
-url --url="http://dl.fedoraproject.org/pub/fedora/linux/releases/20/Everything/x86_64/os/"
-repo --name=updates --baseurl="http://dl.fedoraproject.org/pub/fedora/linux/updates/20/x86_64/" 
+url --url="http://mirror.pnl.gov/fedora/linux/releases/20/Everything/x86_64/os/"
+repo --name=updates --baseurl="http://mirror.pnl.gov/fedora/linux/updates/20/x86_64/" 
 
 
 # Root password
@@ -39,6 +39,10 @@ part swap --size=1000
 xconfig --startxonboot
 
 %post
+
+# Update everything
+yum clean all
+yum -y update
 
 useradd stack
 usermod -G wheel -a stack
@@ -146,7 +150,7 @@ git
 firefox
 ucs-miscfixed-fonts
 bitmap-fixed-fonts
-@virtualization
+#@virtualization
 
 @xfce-desktop
 # @xfce-apps
@@ -167,5 +171,14 @@ gnome-keyring-pam
 -dracut-config-rescue
 
 -dnf
+
+# Try to get around the broken dep during the instack install around
+# glibc-devel, adding packages manually here.
+libffi-devel
+gcc
+python-devel
+openssl-devel
+libxml2-devel
+libxslt-devel
 
 %end
