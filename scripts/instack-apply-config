@@ -46,7 +46,7 @@ echo "Type 'yes' to proceed:"
 read PROCEED
 if [ "$PROCEED" = "yes" ]; then
     rm -f /home/stack/.config/autostart/instack.desktop
-    sudo -E os-collect-config --one-time --force
+    sudo os-collect-config --one-time --force
 fi
 
 sudo cp /root/stackrc ~
