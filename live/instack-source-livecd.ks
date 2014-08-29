@@ -45,7 +45,7 @@ yum -y update
 
 useradd stack
 usermod -G wheel -a stack
-passwd -d stack > /dev/null
+echo stack | passwd stack --stdin
 
 # Remove root password
 passwd -d root > /dev/null
