@@ -191,8 +191,6 @@ sudo -E chown -R $USER: $HOME/.cache/image-create || true
 # fixes neutron-dhcp-agent and neutron-openvswitch-agent tracebacks from
 # rootwrap about missing Fitlers section
 sudo rm -f /opt/stack/venvs/openstack/etc/neutron/rootwrap.d/rootwrap.d
-# Fixes pxe boot failures for overcloud nodes
-sudo ip addr del 192.0.2.1/24 dev eth1 || true
 
 # Fix up os-collect-config config file
 # https://review.openstack.org/#/c/117757/
