@@ -115,9 +115,6 @@ EOF
 # Clean up answers file
 rm -f ~/instack.answers
 
-cp /root/tripleo-undercloud-passwords /home/stack/
-cp /root/stackrc /home/stack
-
 popd
 
 # this goes at the end after all other changes. 
@@ -132,6 +129,14 @@ rm -f /etc/systemd/system/multi-user.target.wants/os-collect-config.service
 
 # need to reinstall anaconda
 yum -y install anaconda
+# firewalld is installed back by anaconda, so we must totally disable it.
+rm '/etc/systemd/system/basic.target.wants/firewalld.service'
+rm '/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service'
+
+# Disable NetworkManager as well
+rm '/etc/systemd/system/dbus-org.freedesktop.NetworkManager.service'
+rm '/etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service'
+rm '/etc/systemd/system/multi-user.target.wants/NetworkManager.service'
 
 %end
 
