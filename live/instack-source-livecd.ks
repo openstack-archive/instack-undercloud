@@ -98,11 +98,11 @@ ssh-keygen -t rsa -N "" -f /home/stack/virtual-power-key
 yum -y install git
 git clone https://github.com/agroup/instack-undercloud
 cp instack-undercloud/instack-baremetal.answers.sample /home/stack/instack.answers
+cp instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
 # instack-install-undercloud-packages sources ~/instack.answers, and during the
 # %chroot phase, apparently ~ evaluates to /tmp. So, we need to copy the
 # answers file there as well.
 cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
-cp instack-undercloud/deploy-virt-overcloudrc ~/deploy-overcloudrc
 
 export RUN_ORC=0
 export LKG=1
