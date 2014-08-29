@@ -134,11 +134,6 @@ yum -y install anaconda
 rm '/etc/systemd/system/basic.target.wants/firewalld.service'
 rm '/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service'
 
-# Disable NetworkManager as well
-rm '/etc/systemd/system/dbus-org.freedesktop.NetworkManager.service'
-rm '/etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service'
-rm '/etc/systemd/system/multi-user.target.wants/NetworkManager.service'
-
 %end
 
 %packages

@@ -14,6 +14,11 @@ timezone  US/Eastern
 rm -f /mnt/sysimage/home/stack/Desktop/liveinst.desktop
 rm -f /mnt/sysimage/home/stack/.config/autostart/liveinst.desktop
 
+# Disable NetworkManager as well
+# rm -f '/mnt/sysimage/etc/systemd/system/dbus-org.freedesktop.NetworkManager.service'
+# rm -f '/mnt/sysimage/etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service'
+# rm -f '/mnt/sysimage/etc/systemd/system/multi-user.target.wants/NetworkManager.service'
+
 cat << EOF >> /mnt/sysimage/home/stack/.config/autostart/instack.desktop
 [Desktop Entry]
 Encoding=UTF-8
