@@ -19,6 +19,11 @@ rm -f /mnt/sysimage/home/stack/.config/autostart/liveinst.desktop
 # rm -f '/mnt/sysimage/etc/systemd/system/dbus-org.freedesktop.nm-dispatcher.service'
 # rm -f '/mnt/sysimage/etc/systemd/system/multi-user.target.wants/NetworkManager.service'
 
+# firewalld is installed back by anaconda, so we must totally disable it.
+rm -f '/mnt/sysimage/etc/systemd/system/basic.target.wants/firewalld.service'
+rm -f '/mnt/sysimage/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service'
+
+
 cat << EOF >> /mnt/sysimage/home/stack/.config/autostart/instack.desktop
 [Desktop Entry]
 Encoding=UTF-8
