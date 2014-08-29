@@ -1,6 +1,5 @@
 # Minimal Disk Image
 #
-sshpw --username=root --plaintext hoover
 # Firewall configuration
 firewall --enabled
 # Use network installation
