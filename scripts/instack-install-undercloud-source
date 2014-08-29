@@ -182,16 +182,6 @@ fi
 
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
-# Reset ownership of cache directory
-# This is needed in order for instack-build-images to make changes to the cache
-# $USER is not always set in a live cd building enviroment, so use || true
-sudo -E chown -R $USER: $HOME/.cache/image-create || true
-
-# A couple of fixups...need to debug these.
-# fixes neutron-dhcp-agent and neutron-openvswitch-agent tracebacks from
-# rootwrap about missing Fitlers section
-sudo rm -f /opt/stack/venvs/openstack/etc/neutron/rootwrap.d/rootwrap.d
-
 # Fix up os-collect-config config file
 # https://review.openstack.org/#/c/117757/
 # Run only the heat_local collector when first booting
@@ -200,5 +190,10 @@ cat > /etc/os-collect-config.conf <<EOF
 command=os-refresh-config
 collectors=heat_local
 EOF
+
+# Reset ownership of cache directory
+# This is needed in order for instack-build-images to make changes to the cache
+# $USER is not always set in a live cd building enviroment, so use || true
+sudo -E chown -R $USER: $HOME/.cache/image-create || true
 
 echo $0 Complete!
