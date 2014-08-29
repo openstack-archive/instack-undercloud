@@ -194,4 +194,13 @@ sudo rm -f /opt/stack/venvs/openstack/etc/neutron/rootwrap.d/rootwrap.d
 # Fixes pxe boot failures for overcloud nodes
 sudo ip addr del 192.0.2.1/24 dev eth1 || true
 
+# Fix up os-collect-config config file
+# https://review.openstack.org/#/c/117757/
+# Run only the heat_local collector when first booting
+cat > /etc/os-collect-config.conf <<EOF
+[DEFAULT]
+command=os-refresh-config
+collectors=heat_local
+EOF
+
 echo $0 Complete!

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -eu
+set -o pipefail
+
 vi ~/instack.answers
 
 echo "Sourcing answers file from instack.answers..."
