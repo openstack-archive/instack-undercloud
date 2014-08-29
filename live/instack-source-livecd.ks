@@ -102,6 +102,7 @@ cp instack-undercloud/instack-baremetal.answers.sample /home/stack/instack.answe
 # %chroot phase, apparently ~ evaluates to /tmp. So, we need to copy the
 # answers file there as well.
 cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
+cp instack-undercloud/deploy-virt-overcloudrc ~/deploy-overcloudrc
 
 export RUN_ORC=0
 export LKG=1
