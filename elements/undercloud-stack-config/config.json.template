@@ -94,6 +94,13 @@
       "tenant_name": "admin"
     }
   },
+  "ceilometer": {
+    "service-password": "{{UNDERCLOUD_CEILOMETER_PASSWORD}}",
+    "db": "mysql://ceilometer:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ceilometer?charset=utf8",
+    "metering_secret": "unset",
+    "snmpd_readonly_user_name: "ro_snmp_user",
+    "snmpd_readonly_user_password: "{{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}"
+  },
   "bootstrap_host": {
     "bootstrap_nodeid": "undercloud",
     "nodeid": "undercloud"

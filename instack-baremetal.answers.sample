@@ -76,3 +76,13 @@ UNDERCLOUD_IRONIC_PASSWORD=
 # Tuskar service password
 # If left unset, one will be automatically generated
 UNDERCLOUD_TUSKAR_PASSWORD=
+
+### Ceilometer password ###
+# Ceilometer service password
+# If left unset, one will be automatically generated
+UNDERCLOUD_CEILOMETER_PASSWORD=
+
+### Ceilometer snmpd password ###
+# Ceilometer snmpd password
+# If left unset, one will be automatically generated
+UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD=

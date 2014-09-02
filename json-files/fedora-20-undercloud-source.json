@@ -34,7 +34,12 @@
       "common-venv",
       "set-instack-root",
       "undercloud-post-config-source",
-      "selinux-policy-updates"
+      "selinux-policy-updates",
+      "ceilometer-collector",
+      "ceilometer-api",
+      "ceilometer-agent-central",
+      "ceilometer-agent-notification",
+      "ceilometer-undercloud-config"
     ],
     "hook": [
       "extra-data",

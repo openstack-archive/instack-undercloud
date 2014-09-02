@@ -133,6 +133,7 @@ else
     -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
     -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
     -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
+    -P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
     "}
 
 
