@@ -61,6 +61,9 @@ setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
 
 keystone role-create --name heat_stack_user
 
+# Needed by ceilometer user in register-endpoint
+keystone role-create --name=ResellerAdmin
+
 DHCP_START=$(os-apply-config --key neutron.dhcp_start --type netaddress)
 DHCP_END=$(os-apply-config --key neutron.dhcp_end --type netaddress)
 NETWORK_CIDR=$(os-apply-config --key neutron.network_cidr --type raw)
