@@ -104,5 +104,18 @@
   "bootstrap_host": {
     "bootstrap_nodeid": "undercloud",
     "nodeid": "undercloud"
+  },
+  "corosync": {
+    "mcastport": "5577",
+    "bindnetaddr": "{{LOCAL_IP}}",
+    "nodes": [
+      { "ip": "{{LOCAL_IP}}" }
+    ]
+  },
+  "pacemaker": {
+    "stonith_enabled": "false",
+    "recheck_interval": "5",
+    "quorum_policy": "ignore"
   }
+
 }
