@@ -62,7 +62,7 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     ## Horizon
     #
     # https://review.openstack.org/#/c/116756/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/56/116756/1 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/56/116756/2 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/116877/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/77/116877/2 && git cherry-pick FETCH_HEAD
 
