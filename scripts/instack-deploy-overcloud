@@ -61,6 +61,10 @@ sleep 60
 tripleo setup-overcloud-passwords -o tripleo-overcloud-passwords
 source tripleo-overcloud-passwords
 
+# Undercloud passwords must all be sourced into this script since we make use
+# of $UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD below
+source tripleo-undercloud-passwords
+
 # Define the interface that will be bridged onto the Neutron defined
 # network.
 NeutronPublicInterface=${NeutronPublicInterface:-eth0}
