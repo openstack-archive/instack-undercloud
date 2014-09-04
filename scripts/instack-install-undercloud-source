@@ -28,16 +28,6 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_tripleo_image_elements
         git reset --hard FETCH_HEAD
-
-        ## Cinder
-        #
-        # https://review.openstack.org/#/c/106562/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/62/106562/1 && git cherry-pick FETCH_HEAD
-
-        ## Horizon
-        #
-        # https://review.openstack.org/#/c/116721
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/21/116721/2 && git cherry-pick FETCH_HEAD
     fi
 
     ## mariadb autostart
@@ -77,15 +67,6 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_diskimage_builder
         git reset --hard FETCH_HEAD
-
-        ## novnc package mapping
-        #
-        # https://review.openstack.org/#/c/114949/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/49/114949/1 && git cherry-pick FETCH_HEAD
-        ## ironic package mapping
-        #
-        # https://review.openstack.org/#/c/115793/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/93/115793/1 && git cherry-pick FETCH_HEAD
     fi
 
     ## element-manifest

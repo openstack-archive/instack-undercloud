@@ -211,7 +211,7 @@ tripleo setup-endpoints $OVERCLOUD_IP \
     $REGISTER_SERVICE_OPTS \
     ${SSLBASE:+--ssl $PUBLIC_API_URL}
 keystone role-create --name heat_stack_user
-# setup-neutron "" "" 10.0.0.0/8 "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
+# setup-neutron "" "" 10.0.0.0/8 "" "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
 NETWORK_CIDR=${NETWORK_CIDR:-"10.0.0.0/8"}
 FLOATING_IP_START=${FLOATING_IP_START:-"172.17.0.45"}
 FLOATING_IP_END=${FLOATING_IP_END:-"172.17.0.64"}
