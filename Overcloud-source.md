@@ -21,6 +21,7 @@ If you want to force a redownload of the images, delete them first.
 
         source tripleo-undercloud-passwords
         source stackrc
+        source instack-undercloud/instack-sourcerc
         instack-prepare-for-overcloud
 
 
@@ -29,6 +30,7 @@ the overcloud. Set the values to to the number of nodes deployed for each role t
    at least 1 Compute node, but do not need to deploy any block storage or object storage nodes.
    
 
+        source deploy-overcloudrc
         COMPUTESCALE=${COMPUTESCALE:-1}
         BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
         SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
