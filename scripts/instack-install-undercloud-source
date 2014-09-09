@@ -11,6 +11,22 @@ export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud
 if [ "$USE_DELOREAN" = "1" ]; then
     sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
     export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-delorean.json
+
+    # Enable the repository for Juno on team.virt.bos.redhat.com, we need this
+    # to pick up the dependencies under fedora/ for newer packages.
+    sudo /bin/bash -c "\
+cat <<EOF > /etc/yum.repos.d/team-virt.repo
+[team-virt]
+name=team-virt
+baseurl=http://team.virt.bos.redhat.com/openstack/openstack-juno/fedora-20/
+enabled=1
+gpgcheck=0
+EOF
+"
+
+    # No update for python-paramiko yet, so update it via pip.
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
+    sudo install -U paramiko
 fi
 
 sudo yum -y install git python-pip ccache
