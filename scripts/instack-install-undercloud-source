@@ -180,6 +180,10 @@ if [ "$USE_DELOREAN" -eq 1 ]; then
     # No update for python-paramiko yet, so update it via pip.
     # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
     sudo pip install -U paramiko
+
+    # We also need newer eventlet. This is already packaged upstream in Juno,
+    # so no need to file a bug on this one.
+    sudo pip install -U eventlet
 fi
 
 # Fix up os-collect-config config file
