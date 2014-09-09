@@ -184,6 +184,16 @@ if [ "$USE_DELOREAN" -eq 1 ]; then
     # We also need newer eventlet. This is already packaged upstream in Juno,
     # so no need to file a bug on this one.
     sudo pip install -U eventlet
+
+    # This has been fixed in Delorean, just need to wait for a new Ironic build.
+    sudo /bin/bash -c "
+cat > /etc/sudoers.d/ironic <<EOF
+Defaults:ironic !requiretty
+
+ironic ALL = (root) NOPASSWD: /usr/bin/ironic-rootwrap /etc/ironic/rootwrap.conf *
+EOF
+"
+
 fi
 
 # Fix up os-collect-config config file
