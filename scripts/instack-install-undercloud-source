@@ -26,14 +26,14 @@ EOF
 
 fi
 
+sudo yum -y install git python-pip ccache
+
 source /etc/profile.d/ccache.sh
 
 mkdir -p $PIP_DOWNLOAD_CACHE
 
 git config --global user.email "instack@example.com"
 git config --global user.name "instack"
-
-sudo yum -y install git python-pip ccache
 
 if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     git clone https://git.openstack.org/openstack/tripleo-image-elements
