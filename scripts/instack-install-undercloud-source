@@ -26,7 +26,7 @@ EOF
 
     # No update for python-paramiko yet, so update it via pip.
     # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
-    sudo install -U paramiko
+    sudo pip install -U paramiko
 fi
 
 sudo yum -y install git python-pip ccache
