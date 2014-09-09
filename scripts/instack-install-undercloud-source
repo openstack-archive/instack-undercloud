@@ -187,13 +187,13 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
+$INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
+
 if [ "$USE_DELOREAN" -eq 1 ]; then
     # No update for python-paramiko yet, so update it via pip.
     # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
     sudo pip install -U paramiko
 fi
-
-$INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
 # Fix up os-collect-config config file
 # https://review.openstack.org/#/c/117757/
