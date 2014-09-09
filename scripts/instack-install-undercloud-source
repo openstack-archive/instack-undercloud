@@ -8,8 +8,6 @@ export ELEMENTS_PATH="$INSTACK_ROOT/tripleo-image-elements/elements:$INSTACK_ROO
 
 export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-source.json
 
-sudo yum -y install git python-pip ccache
-
 if [ "$USE_DELOREAN" = "1" ]; then
     sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
     export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-delorean.json
@@ -26,16 +24,16 @@ gpgcheck=0
 EOF
 "
 
-    # No update for python-paramiko yet, so update it via pip.
-    # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
-    sudo pip install -U paramiko
 fi
 
 source /etc/profile.d/ccache.sh
 
+mkdir -p $PIP_DOWNLOAD_CACHE
+
 git config --global user.email "instack@example.com"
 git config --global user.name "instack"
 
+sudo yum -y install git python-pip ccache
 
 if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     git clone https://git.openstack.org/openstack/tripleo-image-elements
@@ -187,6 +185,12 @@ sudo yum install -y selinux-policy
 if [ "$RUN_INSTACK" -eq 0 ]; then
     echo "Exiting without running instack."
     exit 0
+fi
+
+if [ "$USE_DELOREAN" -eq 1 ]; then
+    # No update for python-paramiko yet, so update it via pip.
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
+    sudo pip install -U paramiko
 fi
 
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
