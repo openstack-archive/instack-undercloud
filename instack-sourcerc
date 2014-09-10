@@ -175,3 +175,8 @@ stackuser \
 swift-storage \
 use-ephemeral \
 "
+
+if [ "$DELOREAN" = "1" ]; then
+    export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install"
+fi
