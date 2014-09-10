@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+install-packages net-tools yum-utils git
+
+mkdir -p /home/stack/.ssh
+cp /tmp/in_target.d/id_rsa_virt_power /home/stack/.ssh/id_rsa_virt_power
+cp /tmp/in_target.d/id_rsa_virt_power.pub /home/stack/.ssh/id_rsa_virt_power.pub
+cp /tmp/in_target.d/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
+cp /tmp/in_target.d/instack.answers /home/stack/instack.answers
+
+chown -R stack:stack /home/stack

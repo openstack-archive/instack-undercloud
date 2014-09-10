@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+file_list="/home/stack/.ssh/id_rsa_virt_power
+/home/stack/.ssh/id_rsa_virt_power.pub
+/tmp/deploy-virt-overcloudrc
+/tmp/instack.answers"
+for f in $file_list; do
+    cp "$f" "$TMP_HOOKS_PATH"
+done
