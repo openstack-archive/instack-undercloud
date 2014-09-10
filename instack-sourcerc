@@ -178,5 +178,5 @@ use-ephemeral \
 
 if [ "$DELOREAN" = "1" ]; then
     export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install"
 fi
