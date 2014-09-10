@@ -194,7 +194,11 @@ ironic ALL = (root) NOPASSWD: /usr/bin/ironic-rootwrap /etc/ironic/rootwrap.conf
 EOF
 "
 
+    # Need to restart ironic conductor to pick up the new code
+    sudo systemctl restart openstack-ironic-conductor
+
 fi
+
 
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
