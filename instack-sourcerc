@@ -5,14 +5,16 @@ export TRIPLEO_ROOT=$INSTACK_ROOT
 
 export PATH=$PATH:$INSTACK_ROOT/instack-undercloud:$INSTACK_ROOT/instack-undercloud/scripts:$INSTACK_ROOT/diskimage-builder/bin
 
-export LKG=${LKG:-0}
 export RUN_INSTACK=${RUN_INSTACK:-1}
 export TRIPLEO_OS_DISTRO=fedora
 export TRIPLEO_OS_FAMILY=redhat
 export TE_DATAFILE=instack.json
 export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-source/
 
-export USE_DELOREAN=${USE_DELOREAN:-0}
+# Using delorean packages is the default
+export USE_DELOREAN=${USE_DELOREAN:-1}
+# Using LKG is the default
+export LKG=1
 
 
 if [ "$LKG" = "1" ]; then
