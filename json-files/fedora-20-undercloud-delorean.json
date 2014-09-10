@@ -4,13 +4,13 @@
     "element": [
       "base",
       "dib-run-parts",
-      "fedora-distro"
+      "fedora-distro",
+      "undercloud-package-install"
     ],
     "hook": [
       "extra-data",
       "root",
-      "pre-install",
-      "undercloud-package-install"
+      "pre-install"
     ],
     "blacklist": [
       "01-ccache"
@@ -26,6 +26,7 @@
       "boot-stack",
       "nova-ironic",
       "os-collect-config",
+      "horizon",
       "neutron-dhcp-agent",
       "undercloud-stack-config",
       "rabbitmq-server",
@@ -35,7 +36,12 @@
       "set-instack-root",
       "undercloud-post-config-source",
       "selinux-policy-updates",
-      "undercloud-package-install"
+      "undercloud-package-install",
+      "ceilometer-collector",
+      "ceilometer-api",
+      "ceilometer-agent-central",
+      "ceilometer-agent-notification",
+      "ceilometer-undercloud-config"
     ],
     "hook": [
       "extra-data",
