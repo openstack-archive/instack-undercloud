@@ -54,4 +54,23 @@ if [ "$RUN_ORC" = "1" ]; then
     sudo os-refresh-config
 fi
 
-echo "$0 complete!"
+export COMPLETION_MESSAGE=${COMPLETION_MESSAGE:-"\
+#############################################################################
+install-undercloud complete.
+
+The file containing this installation's passwords is at
+/root/tripleo-undercloud-passwords.
+
+There is also a stackrc file at /root/stackrc.
+
+These files are needed to interact with the OpenStack services, and should be
+secured. For convenience, they can be copied to the current directory:
+
+sudo cp /root/tripleo-undercloud-passwords .
+sudo cp /root/stackrc .
+sudo chmod 0600 tripleo-undercloud-passwords
+sudo chmod 0600 stackrc
+
+#############################################################################"}
+
+echo "$COMPLETION_MESSAGE"

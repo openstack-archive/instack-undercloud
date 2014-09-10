@@ -16,6 +16,24 @@ export DELOREAN=${DELOREAN:-1}
 # Using LKG is the default
 export LKG=1
 
+export COMPLETION_MESSAGE="\
+#############################################################################
+install-undercloud complete.
+
+The file containing this installation's passwords is at
+/root/tripleo-undercloud-passwords.
+
+There is also a stackrc file at /root/stackrc.
+
+These files are needed to interact with the OpenStack services, and should be
+secured. For convenience, they can be copied to the current directory:
+
+sudo cp /root/tripleo-undercloud-passwords .
+sudo cp /root/stackrc .
+sudo chmod 0600 tripleo-undercloud-passwords
+sudo chmod 0600 stackrc
+
+#############################################################################"
 
 if [ "$LKG" = "1" ]; then
     export DELOREAN_REPO=http://209.132.178.33/repos/64/77/64777f2fe3a2329674bbfaa0fb102bd2a420c529/delorean.repo

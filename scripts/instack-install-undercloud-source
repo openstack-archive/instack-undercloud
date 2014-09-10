@@ -201,4 +201,4 @@ fi
 # $USER is not always set in a live cd building enviroment, so use || true
 sudo -E chown -R $USER: $HOME/.cache/image-create || true
 
-echo $0 Complete!
+echo "$COMPLETION_MESSAGE"
