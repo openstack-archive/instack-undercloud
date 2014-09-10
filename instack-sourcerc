@@ -30,8 +30,8 @@ secured. For convenience, they can be copied to the current directory:
 
 sudo cp /root/tripleo-undercloud-passwords .
 sudo cp /root/stackrc .
-sudo chmod 0600 tripleo-undercloud-passwords
-sudo chmod 0600 stackrc
+sudo chmod 0640 tripleo-undercloud-passwords
+sudo chmod 0640 stackrc
 
 #############################################################################"
 
