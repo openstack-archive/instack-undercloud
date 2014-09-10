@@ -12,7 +12,7 @@ export TE_DATAFILE=instack.json
 export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-source/
 
 # Using delorean packages is the default
-export USE_DELOREAN=${USE_DELOREAN:-1}
+export DELOREAN=${DELOREAN:-1}
 # Using LKG is the default
 export LKG=1
 
