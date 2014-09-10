@@ -55,8 +55,6 @@ instack-undercloud via source
    ~/.instack/install-undercloud.log. You should see `install-undercloud
    Complete!` at the end of a successful run. 
    
-        # Set $LKG to use the last known good working commits
-        export LKG=1
         git clone https://github.com/agroup/instack-undercloud
         source instack-undercloud/instack-sourcerc
         instack-install-undercloud-source
