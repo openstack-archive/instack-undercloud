@@ -196,16 +196,6 @@ EOF
 
 fi
 
-# Fix up os-collect-config config file
-# https://review.openstack.org/#/c/117757/
-# Run only the heat_local collector when first booting
-sudo /bin/bash -c "cat > /etc/os-collect-config.conf <<EOF
-[DEFAULT]
-command=os-refresh-config
-collectors=heat_local
-EOF
-"
-
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
 # $USER is not always set in a live cd building enviroment, so use || true
