@@ -38,10 +38,6 @@ context = {
     'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset')
 }
 
-if "SSH_KEY" in os.environ:
-    ssh_key_contents = open(os.environ["SSH_KEY"]).read().replace("\n", "\\n")
-    context["SSH_KEY"] = ssh_key_contents
-
 with open(template) as f:
     config_json = renderer.render(f.read(), context)
 

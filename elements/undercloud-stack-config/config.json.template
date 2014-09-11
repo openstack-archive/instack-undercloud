@@ -41,8 +41,7 @@
   },
   "ironic": {
     "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
-    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}",
-    "virtual_power_ssh_key": "{{SSH_KEY}}"
+    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
   },
   "bootstack": {
     "public_interface_ip": "{{LOCAL_IP}}/24",

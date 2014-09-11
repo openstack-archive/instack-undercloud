@@ -12,15 +12,6 @@ LOCAL_IP=192.0.2.1
 # LOCAL_INTERFACE will be assigned the address from LOCAL_IP
 LOCAL_INTERFACE=eth1
 
-### SSH_KEY ###
-# When POWER_DRIVER is set to the VirtualPowerManager, the ssh key to use to
-# ssh to the virsh host.  Unused if POWER_DRIVER is IPMI.
-# This should be a path to an ssh private key. The public key portion must be
-# added to the ~/.ssh/authorized_keys file for the virtual power user on the
-# virt host. If instack-virt-setup was used, this key already exists and has
-# already been copied to the virt host.
-SSH_KEY=/home/stack/.ssh/id_rsa_virt_power
-
 ### MASQUERADE_NETWORK ###
 # Network that will be masqueraded for external access if required.
 MASQUERADE_NETWORK=192.0.2.0/24
