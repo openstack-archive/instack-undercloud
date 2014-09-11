@@ -19,6 +19,7 @@ export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/diskimage-builder/elements/ \
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
+export DEPLOYMENT_MODE
 export LOCAL_IP
 export DNSMASQ_START
 export DNSMASQ_END
@@ -31,7 +32,6 @@ export DHCP_START
 export DHCP_END
 export NETWORK_CIDR
 export NETWORK_GATEWAY
-export SSH_KEY
 
 export UNDERCLOUD_DB_PASSWORD=${UNDERCLOUD_DB_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_ADMIN_TOKEN=${UNDERCLOUD_ADMIN_TOKEN:-$(tripleo os-make-password)}

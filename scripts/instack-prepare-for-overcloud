@@ -66,3 +66,18 @@ glance image-create --name bm-deploy-kernel --public \
 glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --public \
     --disk-format ari < $DEPLOY_NAME.initramfs
+
+DEPLOYMENT_MODE=${DEPLOYMENT_MODE:-"poc"}
+if [ "$DEPLOYMENT_MODE" = "poc" ]; then
+    if ! nova flavor-show baremetal 2>&1 1>/dev/null; then
+        nova flavor-create baremetal auto 3072 30 1
+
+        deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
+        deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
+
+        nova flavor-key baremetal set \
+            "cpu_arch"="amd64" \
+            "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
+            "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
+    fi
+fi

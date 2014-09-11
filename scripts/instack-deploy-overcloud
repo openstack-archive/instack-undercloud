@@ -47,13 +47,7 @@ echo $JSON | python -mjson.tool
 
 echo $JSON > $JSONFILE
 
-for i in ramdisk kernel; do
-    if glance image-show bm-deploy-$i 2>&1 1>/dev/null; then
-        glance image-delete bm-deploy-$i
-    fi
-done
-
-tripleo setup-baremetal --service-host undercloud --nodes <(jq '.nodes' $JSONFILE)
+register-nodes --service-host undercloud --nodes <(jq '.nodes' $JSONFILE)
 
 # Must wait for baremetal nodes to register as nova hypervisors
 sleep 60

@@ -37,7 +37,22 @@
         "reserved_host_memory_mb": "0"
     },
     "metadata-proxy": "false",
-    "service-password": "{{UNDERCLOUD_NOVA_PASSWORD}}"
+    "service-password": "{{UNDERCLOUD_NOVA_PASSWORD}}",
+    "config": [
+        {"section": "DEFAULT",
+         "values": [
+            {"option": "scheduler_use_baremetal_filters",
+             "value": "{{SCHEDULER_USE_BAREMETAL_FILTERS}}"
+            },
+            {"option": "scheduler_default_filters",
+             "value": "{{SCHEDULER_DEFAULT_FILTERS}}"
+            },
+            {"option": "baremetal_scheduler_default_filters",
+             "value": "{{BAREMETAL_SCHEDULER_DEFAULT_FILTERS}}"
+            }
+         ]
+       }
+    ]
   },
   "ironic": {
     "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",

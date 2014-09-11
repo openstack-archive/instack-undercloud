@@ -16,6 +16,31 @@ template = os.path.join(os.path.dirname(__file__),
 
 
 context = { 
+    'DEPLOYMENT_MODE': os.environ.get('DEPLOYMENT_MODE', 'poc'),
+    'SCHEDULER_DEFAULT_FILTERS':
+        os.environ.get('SCHEDULER_DEFAULT_FILTERS',
+                       'RetryFilter,'
+                       'AvailabilityZoneFilter,'
+                       'RamFilter,'
+                       'DiskFilter,'
+                       'CoreFilter,'
+                       'ComputeFilter,'
+                       'ComputeCapabilitiesFilter,'
+                       'ImagePropertiesFilter,'
+                       'ServerGroupAntiAffinityFilter,'
+                       'ServerGroupAffinityFilter'),
+    'BAREMETAL_SCHEDULER_DEFAULT_FILTERS':
+        os.environ.get('BAREMETAL_SCHEDULER_DEFAULT_FILTERS',
+                       'RetryFilter,'
+                       'AvailabilityZoneFilter,'
+                       'ComputeFilter,'
+                       'ComputeCapabilitiesFilter,'
+                       'ImagePropertiesFilter,'
+                       'ExactRamFilter,'
+                       'ExactDiskFilter,'
+                       'ExactCoreFilter,'
+                       'ServerGroupAntiAffinityFilter,'
+                       'ServerGroupAffinityFilter'),
     'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
     'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
     'DNSMASQ_START': os.environ.get('DNSMASQ_START', '192.0.2.4'),
@@ -37,6 +62,11 @@ context = {
     'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
     'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset')
 }
+
+if context['DEPLOYMENT_MODE'] == 'scale':
+    context['SCHEDULER_USE_BAREMETAL_FILTERS'] = 'True'
+else:
+    context['SCHEDULER_USE_BAREMETAL_FILTERS'] = 'False'
 
 with open(template) as f:
     config_json = renderer.render(f.read(), context)

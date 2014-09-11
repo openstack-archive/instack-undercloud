@@ -1,5 +1,12 @@
 # instack answers file
 
+### DEPLOYMENT_MODE ###
+# Deployment mode to setup on this Undercloud.
+# Choices are poc and scale:
+# poc will allow deployment of a single role to heterogenous hardware
+# scale will allow deployment of a single role only to homogenous hardware.
+DEPLOYMENT_MODE=poc
+
 ### LOCAL_IP ###
 # IP address to assign to the interface on the Undercloud that will
 # be handling the PXE boots and DHCP for Overcloud instances.
