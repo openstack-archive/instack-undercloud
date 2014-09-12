@@ -45,7 +45,7 @@ if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
     export DIB_REPOREF_tripleo_image_elements=00957cad1395dff0d750eaeaf089d26b08df9712
     export DIB_REPOREF_tripleo_heat_templates=b2e3a746d4b40b9db5462d1b001ffa25c895acb9
-    export DIB_REPOREF_diskimage_builder=3bff0ab543e5b900c7a97c38d52a8fda9e8d4031
+    export DIB_REPOREF_diskimage_builder=60fdfb26dccc919ef7e3cbaa14657c3c8c7ebc5c
     export DIB_REPOREF_os_cloud_config=4a03e6b129c91a7269b6103a1f85fd011ec92c91
     export DIB_REPOREF_tripleo_incubator=e3d474c49dd91aede1e7d39d85b84d5c826ebb86
 

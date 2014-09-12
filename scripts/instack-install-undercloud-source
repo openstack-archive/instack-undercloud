@@ -79,12 +79,6 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_diskimage_builder
         git reset --hard FETCH_HEAD
-
-        ## element-manifest
-        #
-        # https://review.openstack.org/#/c/118461/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/61/118461/2 && git cherry-pick FETCH_HEAD
-
     fi
 
     ## manifests environment.d ordering
