@@ -39,14 +39,11 @@ instack-undercloud via source
          source instack-undercloud/instack-sourcerc
 
 
-1. Create the virtual environment.
+1. Create the virtual environment. When the script has completed successfully,
+it will output the instack vm's IP address. Use this IP address in the next
+step.
 
-         sudo yum -y install libguestfs-tools
          instack-virt-setup
-
-1. Start instack vm.
-
-         virsh start instack
 
 1. ssh as the stack user (password is stack) to the instack vm
 
