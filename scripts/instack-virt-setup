@@ -72,3 +72,14 @@ tripleo configure-vm \
     --arch x86_64 \
     --memory 3145728 \
     --cpus 1
+
+virsh start instack
+
+while true; do
+    IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac instack) | awk '{print $3;}')
+    if [ -n "$IP" ]; then
+        echo "instack vm IP address is $IP"
+        break
+    fi
+    sleep 3
+done
