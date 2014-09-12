@@ -20,6 +20,7 @@ echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
 export DEPLOYMENT_MODE
+export IMAGE_PATH
 export LOCAL_IP
 export DNSMASQ_START
 export DNSMASQ_END

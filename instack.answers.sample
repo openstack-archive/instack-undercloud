@@ -7,6 +7,12 @@
 # scale will allow deployment of a single role only to homogenous hardware.
 DEPLOYMENT_MODE=poc
 
+### IMAGE_PATH ###
+# Local file path to the downloaded images.
+# The path should be a directory readable by the current user that contains
+# the full set of downloaded images.
+IMAGE_PATH=.
+
 ### LOCAL_IP ###
 # IP address to assign to the interface on the Undercloud that will
 # be handling the PXE boots and DHCP for Overcloud instances.
