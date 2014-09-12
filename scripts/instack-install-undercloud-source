@@ -62,6 +62,12 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     # https://review.openstack.org/#/c/116877/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/77/116877/2 && git cherry-pick FETCH_HEAD
 
+
+    ## Ceilometer package install support
+    #
+    # https://review.openstack.org/#/c/121048/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/48/121048/3 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
