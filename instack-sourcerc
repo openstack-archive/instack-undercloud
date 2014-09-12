@@ -14,7 +14,7 @@ export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-so
 # Using delorean packages is the default
 export DELOREAN=${DELOREAN:-1}
 # Using LKG is the default
-export LKG=1
+export LKG=${LKG:-1}
 
 export COMPLETION_MESSAGE="\
 #############################################################################

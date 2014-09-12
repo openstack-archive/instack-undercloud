@@ -1,34 +1,28 @@
 Overcloud image building
 ========================
     
-1. Enable the RDO icehouse repository
+1. Create initial directory for instack, and clone the needed repositories.
 
-        sudo yum install -y http://rdo.fedorapeople.org/openstack-icehouse/rdo-release-icehouse.rpm
 
-1. You can either pull instack-undercloud related RPM's from the openstack-m testing repository or the RDO staging repository for now. Decide which one you want, and enable it via the comamnds shown below.
+         mkdir instack
+         cd instack
+         git clone https://github.com/agroup/instack-undercloud
 
-    For openstack-m:
-    
-        sudo yum -y install http://repos.fedorapeople.org/repos/openstack-m/openstack-m/openstack-m-release-icehouse-2.noarch.rpm
-        sudo yum -y install yum-utils
-        sudo yum-config-manager --enable fedora-openstack-m-testing
+1. Setup needed checkouts. If you don't want to use Delorean packages, or the
+last known good commits (use latest from trunk), then set those environment
+variables to 0. Exporting RUN_INSTACK=0 will create the initial
+checkouts. Note however that some pip dependencies will still be installed on
+the machine.
 
-    For RDO staging:
-    
-        sudo /bin/bash -c "cat >>/etc/yum.repos.d/rdo-staging.repo<<EOF
-        [openstack-icehouse-staging]
-        name=OpenStack Icehouse Staging Repository
-        baseurl=http://team.virt.bos.redhat.com/openstack/openstack-icehouse/fedora-20/
-        enabled=1
-        skip_if_unavailable=0
-        gpgcheck=0
-        EOF
-        "
+        # If you don't want to use Delorean...
+        # export DELOREAN=0
+        # If you don't want to use the last known good commits...
+        # export LKG=0
 
-2. Install instack-undercloud
+        source instack-undercloud/instack-sourcerc
+        export RUN_INSTACK=0
+        instack-install-undercloud-source
 
-        sudo yum -y install instack-undercloud
-
-2. Run script to build images
+2. Run script to build images.
 
         instack-build-images
