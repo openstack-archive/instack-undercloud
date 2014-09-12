@@ -50,6 +50,10 @@ instack-undercloud via source
 
 1. ssh as the stack user (password is stack) to the instack vm
 
+        # to get the IP address of the instack vm:
+        cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac instack) | awk '{print $3;}'
+
+
 1. Clone instack-undercloud, source instack-sourcerc, and run script to install the undercloud from
    source. The script will produce a lot of output on the sceen. It also logs to
    ~/.instack/install-undercloud.log. You should see `install-undercloud
