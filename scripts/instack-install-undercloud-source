@@ -81,6 +81,16 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
 
     fi
 
+    ## manifests environment.d ordering
+    #
+    # https://review.openstack.org/#/c/120956/
+    git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/56/120956/1 && git cherry-pick FETCH_HEAD
+
+    ## restore yum.conf
+    #
+    # https://review.openstack.org/#/c/120952/
+    git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/52/120952/1 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
