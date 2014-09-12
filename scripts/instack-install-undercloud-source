@@ -155,7 +155,7 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
     ## vxlan
     #
     # https://review.openstack.org/#/c/111868
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/68/111868/4 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/68/111868/8 && git cherry-pick FETCH_HEAD
 
     popd
 
