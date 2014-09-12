@@ -190,6 +190,13 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
+if [ "$DELOREAN" -eq 1 ]; then
+    # oslo.serialization is a dep of ceilometer but it is not packaged anywhere
+    # yet. This must happen before we run instack since it's needed by
+    # ceilometer db-sync which happens during os-refresh-config.
+    sudo pip install -U oslo.serialization
+fi
+
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
 if [ "$DELOREAN" -eq 1 ]; then
