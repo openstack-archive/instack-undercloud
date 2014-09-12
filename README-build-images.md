@@ -23,6 +23,9 @@ the machine.
         export RUN_INSTACK=0
         instack-install-undercloud-source
 
-2. Run script to build images.
+2. Run script to build images. This will create any Overcloud images and
+deployment images that don't already exist in the current directory. If you
+only need to rebuild a single image, make sure the other images already exist
+in the current directory.
 
         instack-build-images
