@@ -3,10 +3,17 @@
 set -eu
 set -o pipefail
 
-file_list="/home/stack/.ssh/id_rsa_virt_power
-/home/stack/.ssh/id_rsa_virt_power.pub
+ANSWERSFILE=${ANSWERSFILE:-""}
+
+if [ -z "$ANSWERSFILE" ]; then
+    echo "\$ANSWERSFILE should be defined."
+    exit 1
+fi
+
+file_list="$HOME/.ssh/id_rsa_virt_power
+$HOME/.ssh/id_rsa_virt_power.pub
 /tmp/deploy-virt-overcloudrc
-/tmp/instack.answers"
+$ANSWERSFILE"
 for f in $file_list; do
     cp "$f" "$TMP_HOOKS_PATH"
 done

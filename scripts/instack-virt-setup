@@ -6,6 +6,7 @@ if [ -z "$INSTACK_ROOT" ]; then
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
     RCFILE=/usr/share/doc/instack-undercloud/deploy-virt-overcloudrc
     ANSWERSFILE=/usr/share/doc/instack-undercloud/instack.answers.sample
+    export ELEMENTS_PATH=/usr/share//tripleo-image-elements:/usr/share/diskimage-builder/elements
 else
     DEVTEST_VARIABLES=$INSTACK_ROOT/tripleo-incubator/scripts/devtest_variables.sh
     RCFILE=$INSTACK_ROOT/instack-undercloud/deploy-virt-overcloudrc
@@ -13,6 +14,18 @@ else
     export TRIPLEO_ROOT=$INSTACK_ROOT
     export NODE_CNT=4
     export NODE_MEM=3072
+
+    if [ ! -d "$INSTACK_ROOT/diskimage-builder" ]; then
+        git clone https://git.openstack.org/openstack/diskimage-builder
+        export PATH="$PATH:$INSTACK_ROOT/diskimage-builder/bin/"
+    fi
+
+    if [ ! -d "$INSTACK_ROOT/tripleo-image-elements" ]; then
+        git clone https://git.openstack.org/openstack/tripleo-image-elements
+    fi
+
+    export ELEMENTS_PATH=$INSTACK_ROOT/tripleo-image-elements/elements:$INSTACK_ROOT/instack-undercloud/elements
+
 fi
 
 source $DEVTEST_VARIABLES
@@ -39,30 +52,12 @@ export UNDERCLOUD_OS=${UNDERCLOUD_OS:-"fedora-20"}
 export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
 
 if [ "$UNDERCLOUD_INSTALL" = "1" ]; then
-    # We must restore the default label for /etc/resolv.conf, hence the 
-    # --firstboot-command that calls restorecon /etc/resolv.conf, see:
-    # https://bugzilla.redhat.com/show_bug.cgi?id=1089100
-    virt-builder $UNDERCLOUD_OS $UNDERCLOUD_PASSWORD_ARG \
-      --size 30G \
-      --format qcow2 \
-      -o $UNDERCLOUD_VM_NAME.qcow2 \
-      --install net-tools,yum-utils,git \
-      --mkdir /home/stack/.ssh \
-      --upload ~/.ssh/id_rsa_virt_power:/home/stack/.ssh/id_rsa_virt_power \
-      --upload ~/.ssh/id_rsa_virt_power.pub:/home/stack/.ssh/id_rsa_virt_power.pub \
-      --upload /tmp/deploy-virt-overcloudrc:/home/stack/deploy-overcloudrc \
-      --upload $ANSWERSFILE:/home/stack/instack.answers \
-      --run-command \
-        'useradd -m -G wheel -p "" stack ; echo "stack:stack" | chpasswd;
-         echo "stack ALL=(root) NOPASSWD:ALL" >> /etc/sudoers.d/stack ; chmod 0440 /etc/sudoers.d/stack;
-         chmod 0755 /home/stack;
-         chmod 0700 /home/stack/.ssh;
-         chmod 0600 /home/stack/.ssh/id_rsa_virt_power /home/stack/.ssh/id_rsa_virt_power.pub;
-         cp /etc/skel/.* /home/stack/;
-         chown -R stack:stack /home/stack' \
-      --firstboot-command \
-        'restorecon /etc/resolv.conf' \
-      --selinux-relabel
+
+    disk-image-create \
+        --image-size 30 \
+        -a amd64 \
+        fedora instack-vm \
+        -o instack.qcow2
 
     sudo cp $UNDERCLOUD_VM_NAME.qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2
 else
