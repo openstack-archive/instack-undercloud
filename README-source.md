@@ -47,6 +47,11 @@ step.
 
 1. ssh as the stack user (password is stack) to the instack vm
 
+1. Download all the files from http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-source/
+   to /home/stack. If you already have them downloaded, use rsync/scp/whatever
+   to copy them over to the instack vm. The images will be uploaded to glance
+   at the end of the install.
+
 1. Clone instack-undercloud, source instack-sourcerc, and run script to install the undercloud from
    source. The script will produce a lot of output on the sceen. It also logs to
    ~/.instack/install-undercloud.log. You should see `install-undercloud
