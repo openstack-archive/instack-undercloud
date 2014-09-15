@@ -1,6 +1,7 @@
 {
   "OpenStack::Heat::Stack": {
   },
+  "deployment-mode": "{{DEPLOYMENT_MODE}}",
   "admin-password": "{{UNDERCLOUD_ADMIN_PASSWORD}}",
   "admin-token": "{{UNDERCLOUD_ADMIN_TOKEN}}",
   "db-password": "{{UNDERCLOUD_DB_PASSWORD}}",
