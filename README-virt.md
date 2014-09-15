@@ -20,7 +20,7 @@ Some recommended default environment variables before starting:
         export NODE_DISK=30
 
         # memory in MB allocated for each virtual machine created
-        export NODE_MEM=2048
+        export NODE_MEM=3072
 
         # Operating system distribution to set for each virtual machine created
         export NODE_DIST=fedora
