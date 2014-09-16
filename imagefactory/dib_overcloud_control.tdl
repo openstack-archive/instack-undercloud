@@ -15,11 +15,11 @@ export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
 disk-image-create \
 	--no-tmpfs \
 	-a $NODE_ARCH \
-	-o /mnt/overcloud-compute \
+	-o /mnt/overcloud-control \
 	$NODE_DIST  \
-	$OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS \
+	$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS \
 	$DIB_COMMON_ELEMENTS
 </command>
-<command name="tar">tar cf /mnt/overcloud-compute.tar /mnt/overcloud-compute.qcow2 /mnt/overcloud-compute.vmlinuz /mnt/overcloud-compute.initrd</command>
+<command name="tar">tar cf /mnt/overcloud-control.tar /mnt/overcloud-control.qcow2 /mnt/overcloud-control.vmlinuz /mnt/overcloud-control.initrd</command>
 </commands>
 </template>

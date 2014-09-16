@@ -15,11 +15,11 @@ export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
 disk-image-create \
 	--no-tmpfs \
 	-a $NODE_ARCH \
-	-o /mnt/overcloud-compute \
+	-o /mnt/overcloud-cinder-volume \
 	$NODE_DIST  \
-	$OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS \
+	$OVERCLOUD_CINDER_DIB_EXTRA_ARGS \
 	$DIB_COMMON_ELEMENTS
 </command>
-<command name="tar">tar cf /mnt/overcloud-compute.tar /mnt/overcloud-compute.qcow2 /mnt/overcloud-compute.vmlinuz /mnt/overcloud-compute.initrd</command>
+<command name="tar">tar cf /mnt/overcloud-cinder-volume.tar /mnt/overcloud-cinder-volume.qcow2 /mnt/overcloud-cinder-volume.vmlinuz /mnt/overcloud-cinder-volume.initrd</command>
 </commands>
 </template>

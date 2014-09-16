@@ -15,11 +15,11 @@ export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
 disk-image-create \
 	--no-tmpfs \
 	-a $NODE_ARCH \
-	-o /mnt/overcloud-compute \
+	-o /mnt/overcloud-swift-storage \
 	$NODE_DIST  \
-	$OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS \
+	$OVERCLOUD_SWIFT_DIB_EXTRA_ARGS \
 	$DIB_COMMON_ELEMENTS
 </command>
-<command name="tar">tar cf /mnt/overcloud-compute.tar /mnt/overcloud-compute.qcow2 /mnt/overcloud-compute.vmlinuz /mnt/overcloud-compute.initrd</command>
+<command name="tar">tar cf /mnt/overcloud-swift-storage.tar /mnt/overcloud-swift-storage.qcow2 /mnt/overcloud-swift-storage.vmlinuz /mnt/overcloud-swift-storage.initrd</command>
 </commands>
 </template>
