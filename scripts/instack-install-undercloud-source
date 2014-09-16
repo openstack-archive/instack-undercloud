@@ -6,7 +6,7 @@ export INSTACK_ROOT=${INSTACK_ROOT:-$(pwd)}
 
 export ELEMENTS_PATH="$INSTACK_ROOT/tripleo-image-elements/elements:$INSTACK_ROOT/diskimage-builder/elements:$INSTACK_ROOT/instack-undercloud/elements" 
 
-export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-source.json
+export JSONFILE=${JSONFILE:-$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-source.json}
 
 if [ "$DELOREAN" = "1" ]; then
     sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
