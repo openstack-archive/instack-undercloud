@@ -13,4 +13,3 @@ cp /tmp/in_target.d/instack.answers.sample /home/stack/instack.answers
 
 chown -R stack:stack /home/stack
 
-echo "instack" > /etc/hostname
