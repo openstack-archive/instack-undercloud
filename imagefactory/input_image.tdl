@@ -1,0 +1,12 @@
+<template>
+  <name>f20-jeos</name>
+  <os>
+    <name>Fedora</name>
+    <version>20</version>
+    <arch>x86_64</arch>
+    <install type='url'>
+      <url>http://download.eng.brq.redhat.com/pub/fedora/releases/20/Fedora/x86_64/os/</url>
+    </install>
+  </os>
+  <description>Fedora 20 JEOS Image</description>
+</template>
