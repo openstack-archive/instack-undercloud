@@ -9,7 +9,7 @@
     </install>
   </os>
   <disk>
-    <size>20</size>
+    <size>40</size>
   </disk>
   <description>Fedora 20 JEOS Image</description>
 </template>

@@ -7,6 +7,7 @@
    <command name="localimage">export DIB_LOCAL_IMAGE=/mnt/input_image.qcow2
 set -eux
 source /root/instack-undercloud/instack-sourcerc
+export TMP_DIR=${TMP_DIR:-/var/tmp}
 export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora"}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
