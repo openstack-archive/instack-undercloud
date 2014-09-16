@@ -42,3 +42,11 @@ overcloud-swift-storage:
 		--file-parameter utility_customizations dib_overcloud_swift_storage.tdl \
 		--parameter results_location "/overcloud-swift-storage.tar" indirection
 
+deploy-ramdisk-ironic:
+	imagefactory --debug \
+		target_image \
+		--id $(INPUT_IMAGE_ID) \
+		--parameter utility_image $(UTILITY_IMAGE_ID) \
+		--file-parameter utility_customizations dib_deploy_ramdisk_ironic.tdl \
+		--parameter results_location "/deploy-ramdisk-ironic.tar" indirection
+
