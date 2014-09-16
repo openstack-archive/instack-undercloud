@@ -103,6 +103,7 @@ export DEPLOY_IMAGE_ELEMENT=deploy-ironic
 export DEPLOY_NAME=deploy-ramdisk-ironic
 
 export DEPLOY_DIB_EXTRA_ARGS=""
+export DISCOVERY_DIB_EXTRA_ARGS=""
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="\
 baremetal \

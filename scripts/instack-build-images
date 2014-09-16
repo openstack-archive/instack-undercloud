@@ -11,6 +11,8 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora"}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-baremetal}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
+export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
+export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
 
@@ -83,6 +85,17 @@ if [ ! -f $DEPLOY_NAME.initramfs -o \
         $DEPLOY_DIB_EXTRA_ARGS \
         $DIB_COMMON_ELEMENTS \
         2>&1 | tee dib-deploy.log
+fi
+
+if [ ! -f $DISCOVERY_NAME.initramfs -o \
+     ! -f $DISCOVERY_NAME.kernel ]; then
+    ramdisk-image-create \
+        -a $NODE_ARCH \
+        -o $DISCOVERY_NAME \
+        $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
+        $DISCOVERY_DIB_EXTRA_ARGS \
+        $DIB_COMMON_ELEMENTS \
+        2>&1 | tee dib-discovery.log
 fi
 
 if [ ! -f overcloud-control.qcow2 ]; then
