@@ -68,6 +68,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     # https://review.openstack.org/#/c/121048/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/48/121048/4 && git cherry-pick FETCH_HEAD
 
+    ## tuskar-ui element
+    #
+    # https://review.openstack.org/#/c/121205/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/05/121205/3 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
