@@ -18,12 +18,6 @@ else
     if [ ! -d "$INSTACK_ROOT/diskimage-builder" ]; then
         git clone https://git.openstack.org/openstack/diskimage-builder
         export PATH="$PATH:$INSTACK_ROOT/diskimage-builder/bin/"
-        pushd diskimage-builder
-        ## restore yum.conf
-        #
-        # https://review.openstack.org/#/c/120952/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/52/120952/1 && git cherry-pick FETCH_HEAD
-        popd
     fi
 
     if [ ! -d "$INSTACK_ROOT/tripleo-image-elements" ]; then
