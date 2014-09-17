@@ -75,7 +75,7 @@ tripleo configure-vm \
     --memory 3145728 \
     --cpus 1
 
-virsh start instack
+virsh start $UNDERCLOUD_VM_NAME
 
 while true; do
     IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac instack) | awk '{print $3;}')
