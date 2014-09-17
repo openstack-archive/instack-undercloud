@@ -220,6 +220,12 @@ EOF
 
 fi
 
+if [ "$LKG" -eq 1 ]; then
+    # Heat's requirements for LKG cause issues
+    sudo /opt/stack/venvs/openstack/bin/pip install -U "sqlalchemy-migrate!=0.9.2"
+    sudo systemctl restart heat-engine
+fi
+
 
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
