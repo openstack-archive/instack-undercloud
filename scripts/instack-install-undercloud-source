@@ -229,6 +229,10 @@ EOF
         https://kojipkgs.fedoraproject.org//packages/python-pymemcache/1.2.5/2.fc22/noarch/python-pymemcache-1.2.5-2.fc22.noarch.rpm
     sudo systemctl restart openstack-ceilometer-central
 
+    # ceilometer requires an api_paste.ini
+    # not yet fixed in Delorean, fixed in dist-git
+    sudo curl -o /etc/ceilometer/api_paste.ini http://git.openstack.org/cgit/openstack/ceilometer/plain/etc/ceilometer/api_paste.ini
+    sudo systemctl restart openstack-ceilometer-api
 fi
 
 
