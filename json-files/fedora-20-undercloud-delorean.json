@@ -43,7 +43,8 @@
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
       "ceilometer-delorean",
-      "tuskar-ui"
+      "tuskar-ui",
+      "glance-wsme"
     ],
     "hook": [
       "extra-data",
