@@ -49,6 +49,10 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOREF_os_cloud_config=4a03e6b129c91a7269b6103a1f85fd011ec92c91
     export DIB_REPOREF_tripleo_incubator=e3d474c49dd91aede1e7d39d85b84d5c826ebb86
 
+    # This is set manually since swift is not part of the undercloud
+    export DIB_REPOREF_swift=4dc718e8c3bd2a8bbe1f2d7a98ad03421a70217f
+    export DIB_REPOLOCATION_swift=https://git.openstack.org/openstack/swift.git
+
     # To generate these, run:
     # tripleo set-source-vars -m /etc/dib-manifests/dib-manifest-git-instack
     # after a successful installation.
@@ -70,8 +74,6 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOLOCATION_neutron=https://git.openstack.org/openstack/neutron.git
     export DIB_REPOREF_nova=1dcdfd1d2b05418fea101877d53ab9daa610552d
     export DIB_REPOLOCATION_nova=https://git.openstack.org/openstack/nova.git
-    export DIB_REPOREF_swift=4dc718e8c3bd2a8bbe1f2d7a98ad03421a70217f
-    export DIB_REPOLOCATION_swift=https://git.openstack.org/openstack/swift.git
     export DIB_REPOREF_novnc=960752ea5308ea5aacd5a350b2ad45dcf999a608
     export DIB_REPOLOCATION_novnc=https://github.com/kanaka/noVNC.git
     export DIB_REPOREF_python_ceilometerclient=4cef2bf39a377759e22042609abb35aaad2da2b4
@@ -92,7 +94,6 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOLOCATION_python_novaclient=https://git.openstack.org/openstack/python-novaclient.git
     export DIB_REPOREF_python_swiftclient=d13441d26244cc0947b85287d3fba298cb532c9a
     export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
-
 
 fi
 
