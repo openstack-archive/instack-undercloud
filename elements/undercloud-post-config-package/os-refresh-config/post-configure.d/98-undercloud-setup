@@ -78,4 +78,7 @@ for flavor in m1.tiny m1.small m1.medium m1.large m1.xlarge; do
     fi
 done
 
+# Disable nova quotas
+nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin | awk '$2=="id" {print $4}')
+
 touch $OK_FILE
