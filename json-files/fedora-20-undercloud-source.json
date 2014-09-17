@@ -39,7 +39,8 @@
       "ceilometer-api",
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
-      "ceilometer-undercloud-config"
+      "ceilometer-undercloud-config",
+      "tuskar-ui"
     ],
     "hook": [
       "extra-data",
