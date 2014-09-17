@@ -41,26 +41,26 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
         # https://review.openstack.org/#/c/116756/
         git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/56/116756/2 && git cherry-pick FETCH_HEAD
 
+        ## ironic package install support
+        #
+        # https://review.openstack.org/#/c/115788/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/88/115788/2 && git cherry-pick FETCH_HEAD
+        #
+        # https://review.openstack.org/#/c/115789/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/89/115789/3 && git cherry-pick FETCH_HEAD
+        #
+        # https://review.openstack.org/#/c/115790/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/90/115790/4 && git cherry-pick FETCH_HEAD
+        #
+        # https://review.openstack.org/#/c/115791/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/91/115791/4 && git cherry-pick FETCH_HEAD
+
+        ## Horizon
+        #
+        # https://review.openstack.org/#/c/116877/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/77/116877/2 && git cherry-pick FETCH_HEAD
+
     fi
-
-    ## ironic package install support
-    #
-    # https://review.openstack.org/#/c/115788/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/88/115788/2 && git cherry-pick FETCH_HEAD
-    #
-    # https://review.openstack.org/#/c/115789/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/89/115789/3 && git cherry-pick FETCH_HEAD
-    #
-    # https://review.openstack.org/#/c/115790/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/90/115790/4 && git cherry-pick FETCH_HEAD
-    #
-    # https://review.openstack.org/#/c/115791/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/91/115791/4 && git cherry-pick FETCH_HEAD
-
-    ## Horizon
-    #
-    # https://review.openstack.org/#/c/116877/
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/77/116877/2 && git cherry-pick FETCH_HEAD
 
 
     ## Ceilometer package install support
