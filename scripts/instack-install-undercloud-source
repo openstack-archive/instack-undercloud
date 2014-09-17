@@ -90,13 +90,12 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
         # https://review.openstack.org/#/c/120952/
         git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/52/120952/1 && git cherry-pick FETCH_HEAD
 
+        ## ceilometer service mappings
+        #
+        # https://review.openstack.org/#/c/121097/
+        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/97/121097/1 && git cherry-pick FETCH_HEAD
 
     fi
-
-    ## ceilometer service mappings
-    #
-    # https://review.openstack.org/#/c/121097/
-    git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/97/121097/1 && git cherry-pick FETCH_HEAD
 
     popd
 fi
