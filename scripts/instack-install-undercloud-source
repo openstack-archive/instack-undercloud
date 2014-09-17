@@ -191,13 +191,6 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
-if [ "$DELOREAN" -eq 1 ]; then
-    # oslo.serialization is a dep of ceilometer but it is not packaged anywhere
-    # yet. This must happen before we run instack since it's needed by
-    # ceilometer db-sync which happens during os-refresh-config.
-    sudo pip install -U oslo.serialization
-fi
-
 $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 
 if [ "$DELOREAN" -eq 1 ]; then
@@ -221,18 +214,6 @@ EOF
     # Need to restart ironic conductor to pick up the new code
     sudo systemctl restart openstack-ironic-conductor
 
-    # ceilometer requires python-tooz.
-    # ceilometer b3 not yet rebuilt for rdo stage, so this Requires is not
-    # in the spec.
-    sudo yum -y install \
-        https://kojipkgs.fedoraproject.org//packages/python-tooz/0.3/1.fc22/noarch/python-tooz-0.3-1.fc22.noarch.rpm \
-        https://kojipkgs.fedoraproject.org//packages/python-pymemcache/1.2.5/2.fc22/noarch/python-pymemcache-1.2.5-2.fc22.noarch.rpm
-    sudo systemctl restart openstack-ceilometer-central
-
-    # ceilometer requires an api_paste.ini
-    # not yet fixed in Delorean, fixed in dist-git
-    sudo curl -o /etc/ceilometer/api_paste.ini http://git.openstack.org/cgit/openstack/ceilometer/plain/etc/ceilometer/api_paste.ini
-    sudo systemctl restart openstack-ceilometer-api
 fi
 
 

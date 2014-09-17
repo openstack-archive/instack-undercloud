@@ -199,5 +199,5 @@ if [ "$DELOREAN" = "1" ]; then
     export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install"
 
     # Delorean is patched but there isn't a new build yet.
-    export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS glance-wsme"
+    export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS glance-wsme ceilometer-delorean"
 fi

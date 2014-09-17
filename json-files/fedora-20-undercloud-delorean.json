@@ -41,7 +41,8 @@
       "ceilometer-api",
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
-      "ceilometer-undercloud-config"
+      "ceilometer-undercloud-config",
+      "ceilometer-delorean"
     ],
     "hook": [
       "extra-data",
