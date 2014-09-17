@@ -42,7 +42,8 @@
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
-      "ceilometer-delorean"
+      "ceilometer-delorean",
+      "tuskar-ui"
     ],
     "hook": [
       "extra-data",

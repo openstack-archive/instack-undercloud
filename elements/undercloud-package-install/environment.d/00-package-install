@@ -11,7 +11,7 @@ export DIB_INSTALLTYPE_glance=package
 export DIB_INSTALLTYPE_swift=package
 export DIB_INSTALLTYPE_cinder=package
 export DIB_INSTALLTYPE_ironic=package
-export DIB_INSTALLTYPE_horizon=package
+export DIB_INSTALLTYPE_horizon=source
 export DIB_INSTALLTYPE_ceilometer=package
 
 # Use packages for the clients
