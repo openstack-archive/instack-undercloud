@@ -59,6 +59,8 @@ export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
 
 if [ "$UNDERCLOUD_INSTALL" = "1" ]; then
 
+    cp $ANSWERSFILE /tmp/instack.answers
+
     disk-image-create \
         --image-size 30 \
         -a amd64 \
