@@ -38,7 +38,8 @@ source $DEVTEST_VARIABLES
 export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_MEM=${NODE_MEM:-3072}
 
-tripleo devtest_testenv.sh instackenv.json
+export TE_DATAFILE=instackenv.json
+tripleo devtest_testenv.sh $TE_DATAFILE
 
 sudo virsh undefine --remove-all-storage seed
 

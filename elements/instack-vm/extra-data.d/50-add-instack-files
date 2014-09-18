@@ -13,7 +13,8 @@ fi
 file_list="$HOME/.ssh/id_rsa_virt_power
 $HOME/.ssh/id_rsa_virt_power.pub
 /tmp/deploy-virt-overcloudrc
-$ANSWERSFILE"
+$ANSWERSFILE
+$TE_DATAFILE"
 for f in $file_list; do
     cp "$f" "$TMP_HOOKS_PATH"
 done
