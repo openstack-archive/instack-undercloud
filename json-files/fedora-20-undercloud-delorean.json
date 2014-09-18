@@ -44,8 +44,7 @@
       "ceilometer-undercloud-config",
       "ceilometer-delorean",
       "tuskar-ui",
-      "glance-wsme",
-      "dib-run-parts-update"
+      "glance-wsme"
     ],
     "hook": [
       "extra-data",
