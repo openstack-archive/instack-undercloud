@@ -3,4 +3,4 @@
 set -eux
 set -o pipefail
 
-rpm -Uvh https://kojipkgs.fedoraproject.org//packages/dib-utils/0.0.6/2.fc21/noarch/dib-utils-0.0.6-2.fc21.noarch.rpm
+yum -y install https://kojipkgs.fedoraproject.org//packages/dib-utils/0.0.6/3.fc21/noarch/dib-utils-0.0.6-3.fc21.noarch.rpm
