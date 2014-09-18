@@ -3,4 +3,5 @@
 set -eux
 set -o pipefail
 
+install-package python-pip
 pip install glance_store
