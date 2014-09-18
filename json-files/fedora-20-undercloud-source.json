@@ -40,7 +40,8 @@
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
-      "tuskar-ui"
+      "tuskar-ui",
+      "dib-run-parts-update"
     ],
     "hook": [
       "extra-data",
