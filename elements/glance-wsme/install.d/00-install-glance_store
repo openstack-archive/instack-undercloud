@@ -3,5 +3,4 @@
 set -eux
 set -o pipefail
 
-install-packages python-pip
-pip install glance_store
+yum -y install https://kojipkgs.fedoraproject.org//packages/python-glance-store/0.1.8/1.fc22/noarch/python-glance-store-0.1.8-1.fc22.noarch.rpm
