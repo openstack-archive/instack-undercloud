@@ -30,38 +30,7 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_tripleo_image_elements
         git reset --hard FETCH_HEAD
-
-        ## mariadb autostart
-        #
-        # https://review.openstack.org/#/c/113943
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/43/113943/1 && git cherry-pick FETCH_HEAD
-
-        ## Horizon
-        #
-        # https://review.openstack.org/#/c/116756/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/56/116756/2 && git cherry-pick FETCH_HEAD
-
-        ## ironic package install support
-        #
-        # https://review.openstack.org/#/c/115788/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/88/115788/2 && git cherry-pick FETCH_HEAD
-        #
-        # https://review.openstack.org/#/c/115789/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/89/115789/3 && git cherry-pick FETCH_HEAD
-        #
-        # https://review.openstack.org/#/c/115790/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/90/115790/4 && git cherry-pick FETCH_HEAD
-        #
-        # https://review.openstack.org/#/c/115791/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/91/115791/4 && git cherry-pick FETCH_HEAD
-
-        ## Horizon
-        #
-        # https://review.openstack.org/#/c/116877/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/77/116877/2 && git cherry-pick FETCH_HEAD
-
     fi
-
 
     ## Ceilometer package install support
     #
@@ -84,22 +53,6 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_diskimage_builder
         git reset --hard FETCH_HEAD
-
-        ## manifests environment.d ordering
-        #
-        # https://review.openstack.org/#/c/120956/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/56/120956/1 && git cherry-pick FETCH_HEAD
-
-        ## restore yum.conf
-        #
-        # https://review.openstack.org/#/c/120952/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/52/120952/1 && git cherry-pick FETCH_HEAD
-
-        ## ceilometer service mappings
-        #
-        # https://review.openstack.org/#/c/121097/
-        git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/97/121097/1 && git cherry-pick FETCH_HEAD
-
     fi
 
     popd
@@ -155,12 +108,6 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
     if [ "$LKG" = "1" ]; then
         git fetch origin $DIB_REPOREF_tripleo_heat_templates
         git reset --hard FETCH_HEAD
-
-        ## vxlan
-        #
-        # https://review.openstack.org/#/c/111868
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/68/111868/9 && git cherry-pick FETCH_HEAD
-
     fi
 
     popd
