@@ -58,6 +58,16 @@ if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
     popd
 fi
 
+if [ ! -d "$INSTACK_ROOT/dib-utils" ]; then
+    git clone https://git.openstack.org/openstack/dib-utils
+
+    pushd $INSTACK_ROOT/dib-utils
+    # environment.d sort fix, plus other fixes
+    git fetch https://review.openstack.org/openstack/dib-utils refs/changes/12/122412/2 && git cherry-pick FETCH_HEAD
+    popd
+
+fi
+
 
 if [ ! -d $INSTACK_ROOT/instack-undercloud ]; then
     git clone https://github.com/agroup/instack-undercloud
@@ -113,6 +123,10 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
     popd
 
 fi
+
+pushd $INSTACK_ROOT/dib-utils
+sudo pip install -U .
+popd 
 
 pushd $INSTACK_ROOT/diskimage-builder
 sudo pip install -U .
