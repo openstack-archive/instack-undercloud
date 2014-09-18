@@ -20,6 +20,6 @@ ramdisk-image-create \
     $DISCOVERY_DIB_EXTRA_ARGS \
     $DIB_COMMON_ELEMENTS
 </command>
-<command name="tar">tar cf /mnt/discovery-ramdisk.tar /mnt/discovery-ramdisk.initramfs /mnt/discovery-ramdisk.kernel</command>
+<command name="tar">tar cf /mnt/discovery-ironic.tar /mnt/discovery-ironic.initramfs /mnt/discovery-ironic.kernel</command>
 </commands>
 </template>
