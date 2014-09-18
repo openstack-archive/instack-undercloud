@@ -11,9 +11,6 @@ fi
 # setup-baremetal requires this to be set
 export TRIPLEO_ROOT=.
 export NODES_JSON=${NODES_JSON:-"instackenv.json"}
-PM_IPS=( ${PM_IPS:-} )
-PM_USERS=( ${PM_USERS:-} )
-PM_PASSWORDS=( ${PM_PASSWORDS:-} )
 export USE_IRONIC=1
 export ROOT_DISK=${ROOT_DISK:-10}
 
@@ -140,11 +137,11 @@ export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
 OVERCLOUD_ENDPOINT="http://$OVERCLOUD_IP:5000/v2.0/"
-NEW_JSON=$(jq '.overcloud.password="'${OVERCLOUD_ADMIN_PASSWORD}'" | .overcloud.endpoint="'${OVERCLOUD_ENDPOINT}'" | .overcloud.endpointhost="'${OVERCLOUD_IP}'"' $JSONFILE)
+NEW_JSON=$(jq '.overcloud.password="'${OVERCLOUD_ADMIN_PASSWORD}'" | .overcloud.endpoint="'${OVERCLOUD_ENDPOINT}'" | .overcloud.endpointhost="'${OVERCLOUD_IP}'"' $NODES_JSON)
 
-echo $NEW_JSON > $JSONFILE
+echo $NEW_JSON > $NODES_JSON
 
-export TE_DATAFILE=$JSONFILE
+export TE_DATAFILE=$NODES_JSON
 source $TRIPLEO_ROOT/overcloudrc
 
 if [ -z "$INSTACK_ROOT" ]; then
