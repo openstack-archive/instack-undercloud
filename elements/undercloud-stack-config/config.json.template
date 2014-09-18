@@ -31,8 +31,9 @@
     "host": "127.0.0.1",
     "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova",
     "baremetal": {},
-    "compute_driver": "ironic.nova.virt.ironic.driver.IronicDriver",
+    "compute_driver": "nova.virt.ironic.driver.IronicDriver",
     "compute_manager": "ironic.nova.compute.manager.ClusteredComputeManager",
+    "scheduler_host_manager": "nova.scheduler.ironic_host_manager.IronicHostManager",
     "tuning": {
         "ram_allocation_ratio": "1.0",
         "reserved_host_memory_mb": "0"
