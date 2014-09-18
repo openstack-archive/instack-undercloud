@@ -43,6 +43,7 @@ popd
 
 %packages
 @core
+qemu-img
 # diskimage-builder
 # instack-undercloud
 git
