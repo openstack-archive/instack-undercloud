@@ -8,7 +8,7 @@ input-image:
 		--file-parameter install_script \
 		input_image.ks input_image.tdl
 
-overcloud-images: overcloud-control overcloud-compute overcloud-cinder-volume overcloud-swift-storage
+overcloud-images: overcloud-control overcloud-compute overcloud-cinder-volume overcloud-swift-storage deploy-ramdisk-ironic discovery-ramdisk
 	
 overcloud-control:
 	imagefactory --debug \
