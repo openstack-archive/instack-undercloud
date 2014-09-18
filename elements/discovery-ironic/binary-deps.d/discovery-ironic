@@ -1,6 +1,6 @@
 busybox
 curl
-fdisk
 dmidecode
-lscpu
+fdisk
 ipmitool
+lscpu
