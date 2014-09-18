@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# Build an IPTables chain which will filter out any dhcp requests from 'known'
+# MAC addresses (known to ironic/already registered).`
+#
+# The way we get a list of MAC addresses depends on if we are in a virt or
+# baremetal environment:
+#
+# In the baremetal case, Ironic will create a new node entry without
+# populating (amongst most other fields) the MAC address for an associated
+# port. Thus all MAC addresses reported by 'ironic port-list' can be added to
+# the iptables chain with 'DROP'.
+#
+# For the VM case we expect Ironic to set a MAC address for newly enrolled
+# but not yet discovered nodes (for matching returned data). In this case, we
+# cannot use the MAC addresses given by 'ironic port-list' as these will
+# include the yet undiscovered node MACs. Thus we must get a list of all
+# nodes that have 'maintenance' set to False (is the case for
+# known/discovered machines) and then blacklist only their MACs, which
+# requires a potentially large number of API calls (1/node).
+
+set -e
+
+INTERFACE=br-ctlplane
+source ~/stackrc
+CHAIN=DISCOVERY_DHCP
+NEW_CHAIN=NEW_$CHAIN
+VIRT_ENV=false
+# TODO(marios): need better way to check if this is VM or baremetal
+if [ -e /home/stack/.ssh/id_rsa_virt_power ]; then
+    VIRT_ENV=true
+fi
+
+function get_node_list() {
+    node_list=`ironic node-list --maintenance False | awk '/ .*-.* /{print $2}'`
+}
+
+function get_macs() {
+    macs=()
+    if [ "$VIRT_ENV" = true ]; then
+        get_node_list
+        for node in $node_list ; do
+            node_macs=`ironic node-port-list $node | awk '/..:..:..:/{print $4}'`
+            for mac in $node_macs ; do
+                macs+=("$mac")
+            done
+        done
+    else
+        macs=`ironic port-list | awk '/..:..:..:/{print $4}'`
+    fi
+}
+
+function delete_chain() {
+    sudo iptables -F $1 || true
+    sudo iptables -X $1 || true
+}
+
+function create_add_macs_to_chain() {
+    sudo iptables -N $NEW_CHAIN
+    for mac in "${macs[@]}"; do
+        sudo iptables -A $NEW_CHAIN -m mac --mac-source $mac -j DROP
+    done
+    # everything else (port 67,udp) through
+    sudo iptables -A $NEW_CHAIN -j ACCEPT
+}
+
+function install_new_chain() {
+    sudo iptables -I INPUT -i $INTERFACE -p udp --dport 67 -j $NEW_CHAIN
+    sudo iptables -D INPUT -i $INTERFACE -p udp --dport 67 -j $CHAIN || true
+    delete_chain $CHAIN
+    sudo iptables -E $NEW_CHAIN $CHAIN
+}
+
+get_macs
+delete_chain $NEW_CHAIN
+create_add_macs_to_chain
+# first run, won't exist
+sudo iptables -N $CHAIN || true
+install_new_chain

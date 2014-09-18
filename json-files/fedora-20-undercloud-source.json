@@ -41,7 +41,8 @@
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
       "tuskar-ui",
-      "dib-run-parts-update"
+      "dib-run-parts-update",
+      "discovery-dhcp"
     ],
     "hook": [
       "extra-data",
