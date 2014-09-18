@@ -17,7 +17,8 @@ export ROOT_DISK=${ROOT_DISK:-10}
 register-nodes --service-host undercloud --nodes <(jq '.nodes' $NODES_JSON)
 
 # Must wait for baremetal nodes to register as nova hypervisors
-tripleo wait_for 180 1 tripleo wait_for_hypervisor_stats
+expected_nodes=$(jq ".nodes | length" $NODES_JSON)
+tripleo wait_for 180 1 tripleo wait_for_hypervisor_stats $expected_nodes
 
 tripleo setup-overcloud-passwords -o tripleo-overcloud-passwords
 source tripleo-overcloud-passwords
