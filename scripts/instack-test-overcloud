@@ -17,7 +17,8 @@ if [ -z "$OS_AUTH_URL" ]; then
     exit 1
 fi
 
-export TE_DATAFILE=nodes.json
+export NODES_JSON=${NODES_JSON:-"instackenv.json"}
+export TE_DATAFILE=$NODES_JSON
 
 source tripleo-overcloud-passwords
 
