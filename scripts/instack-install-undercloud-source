@@ -179,6 +179,9 @@ EOF
     # Need to restart ironic conductor to pick up the new code
     sudo systemctl restart openstack-ironic-conductor
 
+    # python-swiftclient requires python-futures
+    sudo yum -y install python-futures
+
 fi
 
 if [ "$LKG" -eq 1 -a "$DELOREAN" -eq "0" ]; then
