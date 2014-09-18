@@ -20,6 +20,11 @@ else
         export PATH="$PATH:$INSTACK_ROOT/diskimage-builder/bin/"
     fi
 
+    if [ ! -d "$INSTACK_ROOT/dib-utils" ]; then
+        git clone https://git.openstack.org/openstack/dib-utils
+        export PATH="$PATH:$INSTACK_ROOT/dib-utils/bin/"
+    fi
+
     if [ ! -d "$INSTACK_ROOT/tripleo-image-elements" ]; then
         git clone https://git.openstack.org/openstack/tripleo-image-elements
     fi
