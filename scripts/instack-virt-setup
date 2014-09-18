@@ -25,7 +25,7 @@ else
 
         pushd $INSTACK_ROOT/dib-utils
         # environment.d sort fix, plus other fixes
-        git fetch https://review.openstack.org/openstack/dib-utils refs/changes/12/122412/2 && git cherry-pick FETCH_HEAD
+        git fetch https://review.openstack.org/openstack/dib-utils refs/changes/12/122412/2 && git cherry-pick FETCH_HEAD || true
         popd
 
         export PATH="$PATH:$INSTACK_ROOT/dib-utils/bin/"
