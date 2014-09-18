@@ -34,7 +34,7 @@ sudo cp /root/stackrc .
 #############################################################################"
 
 if [ "$LKG" = "1" ]; then
-    export DELOREAN_REPO=http://209.132.178.33/repos/64/77/64777f2fe3a2329674bbfaa0fb102bd2a420c529/delorean.repo
+    export DELOREAN_REPO=http://209.132.178.33/repos/b7/26/b7261e39cbeb96e22e804e1de83e8f629c248a61/delorean.repo
 else
     export DELOREAN_REPO=http://209.132.178.33/repos/current/delorean.repo
 fi
@@ -197,8 +197,8 @@ use-ephemeral \
 
 if [ "$DELOREAN" = "1" ]; then
     export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install dib-run-parts-update"
 
     # Delorean is patched but there isn't a new build yet.
-    export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS glance-wsme ceilometer-delorean"
+    export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS glance-wsme ceilometer-delorean dib-run-parts-update"
 fi

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+sudo $TMP_MOUNT_PATH/usr/bin/rpm -ivh https://kojipkgs.fedoraproject.org//packages/dib-utils/0.0.6/2.fc21/noarch/dib-utils-0.0.6-2.fc21.noarch.rpm
