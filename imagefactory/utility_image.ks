@@ -43,7 +43,7 @@ popd
 
 %packages
 @core
-diskimage-builder
+# diskimage-builder
 # instack-undercloud
 git
 %end
