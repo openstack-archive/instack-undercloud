@@ -167,7 +167,6 @@ cinder-volume \
 common-venv \
 dhcp-all-interfaces \
 hosts \
-neutron-openvswitch-agent \
 ntp \
 os-collect-config \
 pip-cache \
@@ -184,7 +183,6 @@ base \
 common-venv \
 dhcp-all-interfaces \
 hosts \
-neutron-openvswitch-agent \
 ntp \
 os-collect-config \
 pip-cache \
