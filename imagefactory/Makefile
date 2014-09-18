@@ -55,3 +55,12 @@ deploy-ramdisk-ironic:
 		--parameter results_location "/deploy-ramdisk-ironic.tar" indirection
 	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
+discovery-ramdisk:
+	imagefactory --debug \
+		target_image \
+		--id $(INPUT_IMAGE_ID) \
+		--parameter utility_image $(UTILITY_IMAGE_ID) \
+		--file-parameter utility_customizations dib_discovery_ramdisk.tdl \
+		--parameter results_location "/discovery-ramdisk.tar" indirection
+	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+
