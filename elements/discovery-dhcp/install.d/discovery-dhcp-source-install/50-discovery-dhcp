@@ -9,6 +9,7 @@ set -eux
 
 install-packages dnsmasq dnsmasq-utils
 # make sure tftpboot is labelled correctly
+mkdir -p /tftpboot
 restorecon -R /tftpboot
 cat > /lib/systemd/system/discovery-dhcp-dnsmasq.service << eof
 [Unit]
