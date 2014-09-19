@@ -15,7 +15,7 @@ export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 ramdisk-image-create \
     -a $NODE_ARCH \
-    -o $DISCOVERY_NAME \
+    -o /mnt/$DISCOVERY_NAME \
     $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
     $DISCOVERY_DIB_EXTRA_ARGS \
     $DIB_COMMON_ELEMENTS
