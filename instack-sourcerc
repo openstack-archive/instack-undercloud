@@ -108,6 +108,9 @@ export DEPLOY_NAME=deploy-ramdisk-ironic
 export DEPLOY_DIB_EXTRA_ARGS=""
 export DISCOVERY_DIB_EXTRA_ARGS=""
 
+export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
+export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS element-manifest"
+
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="\
 baremetal \
 base \
@@ -195,7 +198,6 @@ use-ephemeral \
 "
 
 if [ "$DELOREAN" = "1" ]; then
-    export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
     export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install dib-run-parts-update"
 
     # Delorean is patched but there isn't a new build yet.
