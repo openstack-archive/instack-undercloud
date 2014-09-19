@@ -42,6 +42,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     # https://review.openstack.org/#/c/121205/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/05/121205/3 && git cherry-pick FETCH_HEAD
 
+    ## swift-storage missing /mnt/state/var/log
+    #
+    # https://review.openstack.org/#/c/122800/
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/00/122800/2 && git cherry-pick FETCH_HEAD
+
     popd
 fi
 
@@ -105,6 +110,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
         git fetch origin $DIB_REPOREF_tripleo_incubator
         git reset --hard FETCH_HEAD
     fi
+
+    ## wait_for_hypervisor_stats
+    #
+    # https://review.openstack.org/#/c/122846/
+    git fetch https://review.openstack.org/openstack/tripleo-incubator refs/changes/46/122846/1 && git cherry-pick FETCH_HEAD
 
     popd
 
