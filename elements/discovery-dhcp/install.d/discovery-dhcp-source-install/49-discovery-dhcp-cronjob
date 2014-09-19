@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ue
 
-install -m 0755 -o root -g root $(dirname $0)/../../bin/discovery-mac-filter /usr/local/bin/discovery-mac-filter
+install -m 0755 -o root -g root $(dirname $0)/../bin/discovery-mac-filter /usr/local/bin/discovery-mac-filter
 cat > /etc/cron.d/discovery-mac-filter <<EOF
 
 # Ensure we don't answer BOOTP for bare metal nodes that are already known and
