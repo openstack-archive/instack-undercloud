@@ -40,8 +40,11 @@ COMPUTESCALE=${COMPUTESCALE:-1}
 BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
 SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-1}
 
-
-
+# Default flavor parameters
+export OVERCLOUD_CONTROL_FLAVOR=${OVERCLOUD_CONTROL_FLAVOR:-"baremetal"}
+export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal"}
+export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal"}
+export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal"}
 
 if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     tripleo-heat-merge \
@@ -102,6 +105,10 @@ else
     -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
     -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
     -P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
+    -P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
+    -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
+    -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
+    -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
     "}
 
 
