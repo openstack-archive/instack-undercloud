@@ -192,7 +192,7 @@ EOF
 "
 
     # Need to restart ironic conductor to pick up the new code
-    sudo systemctl restart openstack-ironic-conductor
+    sudo systemctl restart openstack-ironic-conductor || true
 
     # python-swiftclient requires python-futures
     sudo yum -y install python-futures
