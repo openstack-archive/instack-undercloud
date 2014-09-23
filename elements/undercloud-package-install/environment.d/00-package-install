@@ -18,12 +18,17 @@ export DIB_INSTALLTYPE_ceilometer=package
 # they make use of each other's venv's.
 # python-ironicclient also must be from source
 # novnc from source as well.
-export DIB_INSTALLTYPE_ironic=source
-export DIB_REPOLOCATION_ironic=https://review.openstack.org/openstack/ironic
-export DIB_REPOREF_ironic=refs/changes/31/110031/30
-export DIB_INSTALLTYPE_nova=source
-export DIB_INSTALLTYPE_python_ironicclient=source
-export DIB_INSTALLTYPE_novnc=source
+# export DIB_INSTALLTYPE_ironic=source
+# export DIB_REPOLOCATION_ironic=https://review.openstack.org/openstack/ironic
+# export DIB_REPOREF_ironic=refs/changes/31/110031/30
+# export DIB_INSTALLTYPE_nova=source
+# export DIB_INSTALLTYPE_python_ironicclient=source
+# export DIB_INSTALLTYPE_novnc=source
+
+export DIB_INSTALLTYPE_ironic=package
+export DIB_INSTALLTYPE_nova=package
+export DIB_INSTALLTYPE_python_ironicclient=package
+export DIB_INSTALLTYPE_novnc=package
 
 # Use packages for the clients
 export DIB_INSTALLTYPE_python_cinderclient=package
