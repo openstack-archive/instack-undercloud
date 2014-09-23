@@ -47,7 +47,8 @@
       "glance-wsme",
       "dib-run-parts-update",
       "discovery-dhcp",
-      "element-manifest"
+      "element-manifest",
+      "tuskar"
     ],
     "hook": [
       "extra-data",
