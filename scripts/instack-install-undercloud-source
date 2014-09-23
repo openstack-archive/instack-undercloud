@@ -132,10 +132,10 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
 
     pushd tripleo-heat-templates
 
-    if [ "$LKG" = "1" ]; then
-        git fetch origin $DIB_REPOREF_tripleo_heat_templates
-        git reset --hard FETCH_HEAD
-    fi
+    # if [ "$LKG" = "1" ]; then
+        # git fetch origin $DIB_REPOREF_tripleo_heat_templates
+        # git reset --hard FETCH_HEAD
+    # fi
 
     # Create an unpatched copy for non-Tuskar testing
     cp -r $INSTACK_ROOT/tripleo-heat-templates $INSTACK_ROOT/tripleo-heat-templates-instack
@@ -147,9 +147,7 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
 
     popd
 
-    # Create link to templates for Tuskar
-    sudo mkdir -p /opt/stack
-    sudo ln -s /home/stack/tripleo-heat-templates /opt/stack/tripleo-heat-templates
+    export DIB_REPOLOCATION_tripleo_heat_templates=$INSTACK_ROOT/tripleo-heat-templates
 
 fi
 
