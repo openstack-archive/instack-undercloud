@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -eux
+
+TFTP_ROOT=${TFTP_ROOT:-/tftpboot}
+IRONIC_DRIVER=${IRONIC_DRIVER:-pxe_ipmitool}
+
+OS_AUTH_URL=${OS_AUTH_URL:-""}
+if [ -z "$OS_AUTH_URL" ]; then
+    echo "You must source a stackrc file for the Undercloud."
+    exit 1
+fi
+
+if [ -z "$IRONIC_URL" ]; then
+    echo "IRONIC_URL is not set to Ironic host and port."
+    exit 1
+fi
+
+CALLBACK="$IRONIC_URL/v1/drivers/$IRONIC_DRIVER/vendor_passthru/continue_discovery"
+
+mkdir -p "$TFTP_ROOT"
+
+glance image-download --file "$TFTP_ROOT/discovery.kernel" discovery.kernel
+glance image-download --file "$TFTP_ROOT/discovery.ramdisk" discovery.ramdisk
+
+mkdir -p "$TFTP_ROOT/pxelinux.cfg"
+
+cat > "$TFTP_ROOT/pxelinux.cfg/default" <<EOF
+default discover
+
+label discover
+kernel discovery.kernel
+append initrd=discovery.ramdisk ironic_callback_url=$CALLBACK
+ipappend 3
+EOF
