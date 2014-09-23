@@ -52,8 +52,20 @@ sudo -E instack \
 
 RUN_ORC=${RUN_ORC:-"1"}
 if [ "$RUN_ORC" = "1" ]; then
-    sudo -E os-refresh-config
+    sudo os-refresh-config
 fi
+
+# generate ssh authentication keys if they don't exist
+if [ ! -f ~/.ssh/id_rsa ]; then
+  ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
+fi
+
+command $(sudo cat /root/stackrc | xargs)
+
+if ! nova keypair-show default 2>&1 1>/dev/null; then
+	tripleo user-config
+fi
+
 
 export COMPLETION_MESSAGE=${COMPLETION_MESSAGE:-"\
 #############################################################################
