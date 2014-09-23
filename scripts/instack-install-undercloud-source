@@ -130,6 +130,9 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git reset --hard FETCH_HEAD
     fi
 
+    # Create an unpatched copy for non-Tuskar testing
+    cp -r $INSTACK_ROOT/tripleo-heat-templates $INSTACK_ROOT/tripleo-heat-templates-instack
+
     ## No merge.py for the overcloud
     #
     # https://review.openstack.org/#/c/123100
@@ -216,5 +219,8 @@ fi
 # This is needed in order for instack-build-images to make changes to the cache
 # $USER is not always set in a live cd building enviroment, so use || true
 sudo -E chown -R $USER: $HOME/.cache/image-create || true
+
+# Create link to templates for Tuskar
+sudo ln -s /home/stack/tripleo-heat-templates /opt/stack/tripleo-heat-templates
 
 echo "$COMPLETION_MESSAGE"

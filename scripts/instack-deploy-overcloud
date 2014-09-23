@@ -80,8 +80,8 @@ if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
     HEAT_ENVIRONMENT=""
 
 else
-    make -C $INSTACK_ROOT/tripleo-heat-templates overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
-    OVERCLOUD_YAML_PATH=$INSTACK_ROOT/tripleo-heat-templates/overcloud.yaml
+    make -C $INSTACK_ROOT/tripleo-heat-templates-instack overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
+    OVERCLOUD_YAML_PATH=$INSTACK_ROOT/tripleo-heat-templates-instack/overcloud.yaml
 
     NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
