@@ -41,11 +41,18 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     #
     # https://review.openstack.org/#/c/121205/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/05/121205/3 && git cherry-pick FETCH_HEAD
+    # https://review.openstack.org/#/c/123503
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/03/123503/3 && git cherry-pick FETCH_HEAD
 
     ## swift-storage missing /mnt/state/var/log
     #
     # https://review.openstack.org/#/c/122800/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/00/122800/2 && git cherry-pick FETCH_HEAD
+
+    ## tuskar element
+    #
+    # https://review.openstack.org/#/c/122183
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/83/122183/4 && git cherry-pick FETCH_HEAD
 
     popd
 fi
