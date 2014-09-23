@@ -86,4 +86,7 @@ done
 # Disable nova quotas
 nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin | awk '$2=="id" {print $4}')
 
+# Using the source checkout path for now.
+/home/stack/instack-undercloud/scripts/instack-prepare-for-overcloud
+
 touch $OK_FILE

@@ -52,11 +52,8 @@ sudo -E instack \
 
 RUN_ORC=${RUN_ORC:-"1"}
 if [ "$RUN_ORC" = "1" ]; then
-    sudo os-refresh-config
+    sudo -E os-refresh-config
 fi
-
-command $(sudo cat /root/stackrc | xargs)
-instack-prepare-for-overcloud
 
 export COMPLETION_MESSAGE=${COMPLETION_MESSAGE:-"\
 #############################################################################

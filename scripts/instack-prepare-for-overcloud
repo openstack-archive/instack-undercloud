@@ -7,6 +7,9 @@ IMAGE_PATH=${IMAGE_PATH:-"."}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
+export INSTACK_ROOT=${INSTACK_ROOT:-$(pwd)}
+source $INSTACK_ROOT/instack-undercloud/instack-sourcerc
+
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then
     echo "You must source a stackrc file for the Undercloud."
