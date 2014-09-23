@@ -147,6 +147,24 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
 
     popd
 
+    # Create link to templates for Tuskar
+    sudo mkdir -p /opt/stack
+    sudo ln -s /home/stack/tripleo-heat-templates /opt/stack/tripleo-heat-templates
+
+fi
+
+if [ ! -d $INSTACK_ROOT/tuskar-ui ]; then
+
+    git clone https://git.openstack.org/openstack/tuskar-ui
+    pushd tuskar-ui
+    # https://review.openstack.org/#/c/123337/
+    git fetch https://review.openstack.org/openstack/tuskar-ui refs/changes/37/123337/3 && git cherry-pick FETCH_HEAD
+    # https://review.openstack.org/#/c/123529/
+    git fetch https://review.openstack.org/openstack/tuskar-ui refs/changes/29/123529/9 && git cherry-pick FETCH_HEAD   
+    popd
+
+    export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
+
 fi
 
 pushd $INSTACK_ROOT/dib-utils
@@ -227,7 +245,5 @@ fi
 # $USER is not always set in a live cd building enviroment, so use || true
 sudo -E chown -R $USER: $HOME/.cache/image-create || true
 
-# Create link to templates for Tuskar
-sudo ln -s /home/stack/tripleo-heat-templates /opt/stack/tripleo-heat-templates
 
 echo "$COMPLETION_MESSAGE"

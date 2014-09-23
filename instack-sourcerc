@@ -92,8 +92,6 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOLOCATION_python_novaclient=https://git.openstack.org/openstack/python-novaclient.git
     export DIB_REPOREF_python_swiftclient=45465c70e31764167b43fe342c38231a3e0b825c
     export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
-    export DIB_REPOREF_tuskar_ui=f357bacf3fe53a3d59eef7f3b0abc57a935cc0bb
-    export DIB_REPOLOCATION_tuskar_ui=https://git.openstack.org/openstack/tuskar-ui
 
 fi
 
