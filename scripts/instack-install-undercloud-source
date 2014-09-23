@@ -130,6 +130,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git reset --hard FETCH_HEAD
     fi
 
+    ## No merge.py for the overcloud
+    #
+    # https://review.openstack.org/#/c/123100
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/1 && git cherry-pick FETCH_HEAD
+
     popd
 
 fi
