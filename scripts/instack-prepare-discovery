@@ -21,8 +21,8 @@ CALLBACK="$IRONIC_URL/v1/drivers/$IRONIC_DRIVER/vendor_passthru/continue_discove
 
 mkdir -p "$TFTP_ROOT"
 
-glance image-download --file "$TFTP_ROOT/discovery.kernel" discovery.kernel
-glance image-download --file "$TFTP_ROOT/discovery.ramdisk" discovery.ramdisk
+glance image-download --file "$TFTP_ROOT/discovery.kernel" discovery-kernel
+glance image-download --file "$TFTP_ROOT/discovery.ramdisk" discovery-ramdisk
 
 mkdir -p "$TFTP_ROOT/pxelinux.cfg"
 
