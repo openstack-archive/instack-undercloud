@@ -32,6 +32,7 @@ source tripleo-undercloud-passwords
 # Define the interface that will be bridged onto the Neutron defined
 # network.
 NeutronPublicInterface=${NeutronPublicInterface:-eth0}
+NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 # Define the overcloud libvirt type for virtualization. kvm for
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
