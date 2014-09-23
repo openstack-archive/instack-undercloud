@@ -11,8 +11,9 @@ if [ -z "$OS_AUTH_URL" ]; then
     exit 1
 fi
 
+IRONIC_URL=${IRONIC_URL:-$(keystone endpoint-get --service baremetal | awk '/publicURL/ { print $4 } ')}
 if [ -z "$IRONIC_URL" ]; then
-    echo "IRONIC_URL is not set to Ironic host and port."
+    echo "IRONIC_URL is not set and cannot get URL from keystone."
     exit 1
 fi
 
