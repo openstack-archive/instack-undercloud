@@ -202,9 +202,9 @@ $INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
 if [ "$DELOREAN" -eq 1 ]; then
 
     sudo yum -y install \
-        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-api-2014.0923-1.noarch.rpm \
-        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-common-2014.0923-1.noarch.rpm \
-        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-conductor-2014.0923-1.noarch.rpm
+        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-api-2014.0923-2.noarch.rpm \
+        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-common-2014.0923-2.noarch.rpm \
+        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-conductor-2014.0923-2.noarch.rpm
 
     # No update for python-paramiko yet, so update it via pip.
     # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
