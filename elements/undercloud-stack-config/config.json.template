@@ -59,6 +59,17 @@
   "ironic": {
     "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
     "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
+    "config" : [ {
+      "values": [
+         { "option": "discovery_enabled",
+           "value": "true"
+         },
+         { "option": "discovery_allow_search_by_mac",
+           "value": "true"
+         }
+      ],
+      "section": "pxe"
+    } ]
   },
   "bootstack": {
     "public_interface_ip": "{{LOCAL_IP}}/24",
