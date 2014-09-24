@@ -58,7 +58,7 @@
   },
   "ironic": {
     "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
-    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
+    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}",
     "config" : [ {
       "values": [
          { "option": "discovery_enabled",
