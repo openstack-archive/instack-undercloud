@@ -17,6 +17,7 @@ if [ -z "$IRONIC_URL" ]; then
     exit 1
 fi
 
+IRONIC_URL=${IRONIC_URL%/}
 CALLBACK="$IRONIC_URL/v1/drivers/$IRONIC_DRIVER/vendor_passthru/continue_discovery"
 
 mkdir -p "$TFTP_ROOT"
