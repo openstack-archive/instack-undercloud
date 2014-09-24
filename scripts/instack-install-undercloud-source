@@ -42,7 +42,7 @@ if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
     # https://review.openstack.org/#/c/121205/
     git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/05/121205/3 && git cherry-pick FETCH_HEAD
     # https://review.openstack.org/#/c/123503
-    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/03/123503/3 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/03/123503/4 && git cherry-pick FETCH_HEAD
 
     ## swift-storage missing /mnt/state/var/log
     #
