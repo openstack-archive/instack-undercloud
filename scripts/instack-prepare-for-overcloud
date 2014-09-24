@@ -71,7 +71,7 @@ if [ "$DEPLOYMENT_MODE" = "poc" ]; then
         deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
 
         nova flavor-key baremetal set \
-            "cpu_arch"="amd64" \
+            "cpu_arch"="x86_64" \
             "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
             "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
     fi

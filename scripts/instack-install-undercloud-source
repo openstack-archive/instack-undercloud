@@ -125,6 +125,11 @@ if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
     # https://review.openstack.org/#/c/122846/
     git fetch https://review.openstack.org/openstack/tripleo-incubator refs/changes/46/122846/1 && git cherry-pick FETCH_HEAD
 
+    ## create-nodes x86_64 support
+    #
+    # https://review.openstack.org/#/c/123803/
+    git fetch https://review.openstack.org/openstack/tripleo-incubator refs/changes/03/123803/1 && git cherry-pick FETCH_HEAD
+
     popd
 
 fi

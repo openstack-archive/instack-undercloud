@@ -41,7 +41,7 @@ fi
 
 source $DEVTEST_VARIABLES
 
-export NODE_ARCH=${NODE_ARCH:-amd64}
+export NODE_ARCH=${NODE_ARCH:-x86_64}
 export NODE_MEM=${NODE_MEM:-3072}
 
 export TE_DATAFILE=instackenv.json
