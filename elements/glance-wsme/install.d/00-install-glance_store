@@ -3,4 +3,6 @@
 set -eux
 set -o pipefail
 
-yum -y install https://kojipkgs.fedoraproject.org//packages/python-glance-store/0.1.8/1.fc22/noarch/python-glance-store-0.1.8-1.fc22.noarch.rpm
+PACKAGE=https://kojipkgs.fedoraproject.org//packages/python-glance-store/0.1.8/1.fc22/noarch/python-glance-store-0.1.8-1.fc22.noarch.rpm
+
+yum -y install $PACKAGE || yum -y update $PACKAGE

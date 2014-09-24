@@ -3,4 +3,6 @@
 set -eux
 set -o pipefail
 
-yum -y install https://kojipkgs.fedoraproject.org//packages/dib-utils/0.0.6/3.fc21/noarch/dib-utils-0.0.6-3.fc21.noarch.rpm
+PACKAGE=https://kojipkgs.fedoraproject.org//packages/dib-utils/0.0.6/3.fc21/noarch/dib-utils-0.0.6-3.fc21.noarch.rpm
+
+yum -y install $PACKAGE || yum -y update $PACKAGE
