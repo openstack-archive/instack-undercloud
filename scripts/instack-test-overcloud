@@ -64,7 +64,9 @@ neutron security-group-rule-create $SECGROUPID --protocol icmp \
 neutron security-group-rule-create $SECGROUPID --protocol tcp \
     --direction ingress --port-range-min 22 --port-range-max 22 || true
 
-tripleo wait_for 30 10 ping -c 1 $FLOATINGIP
+# Must use sudo when calling ping
+# See https://bugzilla.redhat.com/show_bug.cgi?id=1144149
+tripleo wait_for 30 10 sudo -E ping -c 1 $FLOATINGIP
 
 tripleo wait_for 10 10 nova list \| grep ACTIVE
 
