@@ -20,10 +20,11 @@ export DEPLOY_DIB_EXTRA_ARGS=${DEPLOY_DIB_EXTRA_ARGS:-"\
 undercloud-package-install"}
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
-pip-cache boot-stack cinder-api cinder-volume os-collect-config \
+pip-cache boot-stack cinder-api os-collect-config \
 neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
 baremetal \
 cinder-lio \
+cinder-volume-nfs \
 fedora-rdo-icehouse-repository \
 horizon \
 rabbitmq-server \
@@ -38,6 +39,7 @@ pip-cache \
 nova-compute \
 nova-kvm \
 neutron-openvswitch-agent \
+nfs-utils \
 os-collect-config \
 baremetal \
 dhcp-all-interfaces \
@@ -49,11 +51,11 @@ undercloud-package-install"}
 
 export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
 pip-cache \
-cinder-volume \
 neutron-openvswitch-agent \
 os-collect-config \
 baremetal \
 cinder-lio \
+cinder-volume-nfs \
 dhcp-all-interfaces \
 stackuser \
 fedora-rdo-icehouse-repository \
