@@ -57,7 +57,7 @@ if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
         /usr/share/openstack-tripleo-heat-templates/swift-source.yaml \
         /usr/share/openstack-tripleo-heat-templates/swift-storage-source.yaml \
         /usr/share/openstack-tripleo-heat-templates/ssl-source.yaml \
-        /usr/share/openstack-tripleo-heat-templates/block-storage.yaml \
+        /usr/share/openstack-tripleo-heat-templates/block-storage.yaml ${EXTRA_MERGE_TEMPLATES:-} \
         > overcloud.yaml
     OVERCLOUD_YAML_PATH=overcloud.yaml
 
