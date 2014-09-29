@@ -118,7 +118,7 @@ ceilometer-api \
 ceilometer-collector \
 cinder-api \
 cinder-lio \
-cinder-volume \
+cinder-volume-nfs \
 common-venv \
 dhcp-all-interfaces \
 haproxy \
@@ -149,6 +149,7 @@ hosts \
 neutron-openvswitch-agent \
 nova-compute \
 nova-kvm \
+nfs-utils \
 ntp \
 os-collect-config \
 pip-cache \
@@ -163,7 +164,7 @@ export OVERCLOUD_CINDER_DIB_EXTRA_ARGS="\
 baremetal \
 base \
 cinder-lio \
-cinder-volume \
+cinder-volume-nfs \
 common-venv \
 dhcp-all-interfaces \
 hosts \
