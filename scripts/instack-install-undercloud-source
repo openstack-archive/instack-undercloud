@@ -111,10 +111,12 @@ if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
 
     pushd tripleo-heat-templates
 
-    ## No merge.py for the overcloud
+    ## Compute and controller templates without merge.py + Add converted version of block and object storage
     #
     # https://review.openstack.org/#/c/123100
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/2 && git cherry-pick FETCH_HEAD
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/4 && git cherry-pick FETCH_HEAD
+    # https://review.openstack.org/#/c/123713/
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/4 && git cherry-pick FETCH_HEAD
 
     popd
 
