@@ -162,8 +162,6 @@ if [ ! -d $INSTACK_ROOT/tuskar-ui ]; then
 
     git clone https://git.openstack.org/openstack/tuskar-ui
     pushd tuskar-ui
-    # https://review.openstack.org/#/c/123529/
-    git fetch https://review.openstack.org/openstack/tuskar-ui refs/changes/29/123529/11 && git cherry-pick FETCH_HEAD
     popd
 
     export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
