@@ -52,7 +52,7 @@ sudo -E instack \
 
 RUN_ORC=${RUN_ORC:-"1"}
 if [ "$RUN_ORC" = "1" ]; then
-    sudo os-refresh-config
+    sudo IMAGE_PATH=$IMAGE_PATH os-refresh-config
 fi
 
 # generate ssh authentication keys if they don't exist

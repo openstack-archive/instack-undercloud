@@ -144,5 +144,4 @@
     "recheck_interval": "5",
     "quorum_policy": "ignore"
   }
-
 }

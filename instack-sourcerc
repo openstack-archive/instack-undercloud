@@ -1,6 +1,11 @@
 #!/bin/bash
 
 export INSTACK_ROOT=${INSTACK_ROOT:-$(pwd)}
+if [ "$INSTACK_ROOT" = "/usr/share" ]; then
+    export INSTACK_TRIPLEO_SOURCE=${INSTACK_TRIPLEO_SOURCE:-"0"}
+else
+    export INSTACK_TRIPLEO_SOURCE=${INSTACK_TRIPLEO_SOURCE:-"1"}
+fi
 export TRIPLEO_ROOT=$INSTACK_ROOT
 
 export PATH=$PATH:$INSTACK_ROOT/instack-undercloud:$INSTACK_ROOT/instack-undercloud/scripts:$INSTACK_ROOT/diskimage-builder/bin
@@ -15,6 +20,13 @@ export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-so
 export DELOREAN=${DELOREAN:-1}
 # Using LKG is the default
 export LKG=${LKG:-1}
+
+if [ "$DELOREAN" = "1" ]; then
+    export JSONFILE=${JSONFILE:-$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-delorean.json}
+else
+    export JSONFILE=${JSONFILE:-$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-source.json}
+fi
+
 
 export COMPLETION_MESSAGE="\
 #############################################################################
@@ -44,9 +56,9 @@ export PIP_DOWNLOAD_CACHE=~/.cache/pip
 
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
-    export DIB_REPOREF_tripleo_image_elements=5fea32ff79220fce2eb808d9b119832a98ace626
-    export DIB_REPOREF_diskimage_builder=dbc60e8942ca700cd673a115a6d327af8ee41483
-    export DIB_REPOREF_os_cloud_config=4a03e6b129c91a7269b6103a1f85fd011ec92c91
+    export DIB_REPOREF_tripleo_image_elements=37e136e0670d0606ae36026f6dd0e46b14943a46
+    export DIB_REPOREF_diskimage_builder=de60893ccd78b35731828081e0aaa053676cbfed
+    export DIB_REPOREF_os_cloud_config=a2b5ec4d4d0f22dd58454023324d1245ecdeece7
     export DIB_REPOREF_tripleo_incubator=c3fb309727671130a32b4c19de48ec22c8530aa1
 
     # This is set manually since swift is not part of the undercloud
@@ -94,10 +106,10 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
 fi
 
-export ELEMENTS_PATH="\
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
 $INSTACK_ROOT/instack-undercloud/elements:\
 $INSTACK_ROOT/tripleo-image-elements/elements/:\
-$INSTACK_ROOT/diskimage-builder/elements/"
+$INSTACK_ROOT/diskimage-builder/elements"}
 
 export DEPLOY_IMAGE_ELEMENT=deploy-ironic
 export DEPLOY_NAME=deploy-ramdisk-ironic

@@ -14,7 +14,7 @@ sudo ip addr del 192.0.2.1/24 dev eth1 || true
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
-export PATH=$PATH:$INSTACK_ROOT/tripleo-incubator/scripts
+export PATH=$PATH:$INSTACK_ROOT/instack-undercloud/scripts
 
 if [ ! -f /root/.ssh/authorized_keys ]; then
     sudo mkdir -p /root/.ssh
@@ -36,7 +36,7 @@ fi
 
 # Ensure keystone is up before continuing on.
 # Waits for up to 2 minutes.
-wait_for 12 10 service $KEYSTONE_SERVICE status
+tripleo wait_for 12 10 service $KEYSTONE_SERVICE status
 
 # Because keystone just still isn't up yet...
 sleep 20
@@ -61,7 +61,7 @@ REGISTER_SERVICE_OPTS=
 keystone role-create --name=ResellerAdmin
 
 # TODO: this needs to be switched over to use os-cloud-config's setup-endpoints
-setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
+tripleo setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
 
 keystone role-create --name heat_stack_user
 
@@ -72,10 +72,21 @@ NETWORK_GATEWAY=$(os-apply-config --key neutron.network_gateway --type netaddres
 METADATA_SERVER=$UNDERCLOUD_IP
 PHYSICAL_NETWORK=ctlplane
 
-setup-neutron \
-    $DHCP_START $DHCP_END \
-    $NETWORK_CIDR $NETWORK_GATEWAY \
-    $METADATA_SERVER $PHYSICAL_NETWORK
+NETWORK_JSON=$(mktemp)
+jq "." <<EOF > $NETWORK_JSON
+{
+    "physical": {
+        "gateway": "$NETWORK_GATEWAY",
+        "metadata_server": "$UNDERCLOUD_IP",
+        "cidr": "$NETWORK_CIDR",
+        "allocation_start": "$DHCP_START",
+        "allocation_end": "$DHCP_END",
+        "name": "$PHYSICAL_NETWORK"
+    }
+}
+EOF
+setup-neutron -n $NETWORK_JSON
+rm $NETWORK_JSON
 
 # Delete initial flavors
 for flavor in m1.tiny m1.small m1.medium m1.large m1.xlarge; do
@@ -88,8 +99,8 @@ done
 nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin | awk '$2=="id" {print $4}')
 
 # Using the source checkout path for now.
-sudo -u stack /home/stack/instack-undercloud/scripts/instack-prepare-for-overcloud
-sudo rm -rf /home/stack/.novaclient
-/home/stack/instack-undercloud/scripts/instack-prepare-discovery
+instack-prepare-for-overcloud
+rm -rf $HOME/.novaclient
+instack-prepare-discovery
 
 touch $OK_FILE

@@ -13,7 +13,7 @@ sudo pip install -U oslo.serialization
 # in the spec.
 sudo yum -y install \
     https://kojipkgs.fedoraproject.org//packages/python-tooz/0.3/1.fc22/noarch/python-tooz-0.3-1.fc22.noarch.rpm \
-    https://kojipkgs.fedoraproject.org//packages/python-pymemcache/1.2.5/2.fc22/noarch/python-pymemcache-1.2.5-2.fc22.noarch.rpm
+    https://kojipkgs.fedoraproject.org//packages/python-pymemcache/1.2.5/2.fc22/noarch/python-pymemcache-1.2.5-2.fc22.noarch.rpm || true
 
 # ceilometer requires an api_paste.ini
 # not yet fixed in Delorean, fixed in dist-git

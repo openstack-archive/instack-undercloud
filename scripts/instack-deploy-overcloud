@@ -37,6 +37,7 @@ NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 
+CONTROLSCALE=${CONTROLSCALE:-1}
 COMPUTESCALE=${COMPUTESCALE:-1}
 BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-1}
 SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-1}
@@ -47,83 +48,59 @@ export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal"}
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal"}
 
-if [ -d /usr/share/openstack-tripleo-heat-templates ]; then
-    tripleo-heat-merge \
-        --included-template-dir /usr/share/openstack-tripleo-heat-templates \
-        --scale NovaCompute=$COMPUTESCALE \
-        --scale BlockStorage=$BLOCKSTORAGESCALE \
-        --scale SwiftStorage=$SWIFTSTORAGESCALE \
-        /usr/share/openstack-tripleo-heat-templates/overcloud-source.yaml \
-        /usr/share/openstack-tripleo-heat-templates/swift-source.yaml \
-        /usr/share/openstack-tripleo-heat-templates/swift-storage-source.yaml \
-        /usr/share/openstack-tripleo-heat-templates/ssl-source.yaml \
-        /usr/share/openstack-tripleo-heat-templates/block-storage.yaml ${EXTRA_MERGE_TEMPLATES:-} \
-        > overcloud.yaml
-    OVERCLOUD_YAML_PATH=overcloud.yaml
+OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud.yaml"
+RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-resource-registry.yaml"
 
-    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
-    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
-    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
-    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
-    -P GlanceLogFile=\"''\" \
-    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
-    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
-    -P NeutronDnsmasqOptions=\"dhcp-option-force=26,1400\" \
-    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
-    -P NeutronPublicInterface=$NeutronPublicInterface \
-    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
-    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
-    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
-    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
-    "}
+NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
-    HEAT_ENVIRONMENT=""
+export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
+-P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+-P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+-P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
+-P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
+-P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+-P CinderISCSIHelper=lioadm \
+-P CloudName=overcloud \
+-P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
+-P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+-P NeutronControlPlaneID=$NeutronControlPlaneID \
+-P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
+-P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
+-P NeutronPublicInterface=$NeutronPublicInterface \
+-P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+-P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+-P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+-P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+-P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
+-P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
+-P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
+"}
 
-else
-    make -C $INSTACK_ROOT/tripleo-heat-templates-instack overcloud.yaml COMPUTESCALE=$COMPUTESCALE BLOCKSTORAGESCALE=$BLOCKSTORAGESCALE SWIFTSTORAGESCALE=$SWIFTSTORAGESCALE
-    OVERCLOUD_YAML_PATH=$INSTACK_ROOT/tripleo-heat-templates-instack/overcloud.yaml
+# -P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
+# -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
+# -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
+# -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
 
-    NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
-
-    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
-    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
-    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
-    -P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
-    -P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
-    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
-    -P CinderISCSIHelper=lioadm \
-    -P CloudName=overcloud \
-    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
-    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
-    -P NeutronControlPlaneID=$NeutronControlPlaneID \
-    -P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
-    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
-    -P NeutronPublicInterface=$NeutronPublicInterface \
-    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
-    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
-    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
-    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
-    -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
-    -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
-    -P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
-    -P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
-    -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
-    -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
-    -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
-    "}
+HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
+ENV_JSON='{"parameters":{}}'
 
 
-    HEAT_ENV=${HEAT_ENV:-"${INSTACK_ROOT}/overcloud-env.json"}
-    ENV_JSON='{"parameters":{}}'
-    jq . > "${HEAT_ENV}" <<< $ENV_JSON
-    chmod 0600 "${HEAT_ENV}"
-    generate-keystone-pki --heatenv $HEAT_ENV
-    HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
+RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
+ENV_JSON=$(jq '.parameters = .parameters + {
+    "ControllerCount": '${CONTROLSCALE}',
+    "ComputeCount": '${COMPUTESCALE}',
+    "BlockStorageCount": '${BLOCKSTORAGESCALE}',
+    "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
+  }' <<< $ENV_JSON)
 
-fi
+jq . > "${HEAT_ENV}" <<< $ENV_JSON
+chmod 0600 "${HEAT_ENV}"
+generate-keystone-pki --heatenv $HEAT_ENV
+HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
 
 
 heat stack-create -f $OVERCLOUD_YAML_PATH \
+    $RESOURCE_REGISTRY \
     $OVERCLOUD_PARAMETERS \
     $HEAT_ENVIRONMENT \
     overcloud
@@ -155,23 +132,15 @@ echo $NEW_JSON > $NODES_JSON
 export TE_DATAFILE=$NODES_JSON
 source $TRIPLEO_ROOT/overcloudrc
 
-if [ -z "$INSTACK_ROOT" ]; then
-    tripleo init-keystone -p $OVERCLOUD_ADMIN_PASSWORD $OVERCLOUD_ADMIN_TOKEN \
-        $OVERCLOUD_IP admin@example.com heat-admin@$OVERCLOUD_IP \
-        ${SSLBASE:+--ssl $PUBLIC_API_URL}
+init-keystone -o $OVERCLOUD_IP -t $OVERCLOUD_ADMIN_TOKEN \
+-e admin.example.com -p $OVERCLOUD_ADMIN_PASSWORD -u heat-admin \
+${SSLBASE:+-s $PUBLIC_API_URL}
 
-    REGISTER_SERVICE_OPTS=
-else
-    init-keystone -o $OVERCLOUD_IP -t $OVERCLOUD_ADMIN_TOKEN \
-        -e admin.example.com -p $OVERCLOUD_ADMIN_PASSWORD -u heat-admin \
-        ${SSLBASE:+-s $PUBLIC_API_URL}
+# REGISTER_SERVICE_OPTS="--ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD "
+REGISTER_SERVICE_OPTS=""
 
-    # REGISTER_SERVICE_OPTS="--ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD "
-    REGISTER_SERVICE_OPTS=""
-
-    keystone role-create --name=swiftoperator
-    keystone role-create --name=ResellerAdmin
-fi
+keystone role-create --name=swiftoperator
+keystone role-create --name=ResellerAdmin
 
 tripleo setup-endpoints $OVERCLOUD_IP \
     --cinder-password $OVERCLOUD_CINDER_PASSWORD \
@@ -188,7 +157,29 @@ NETWORK_CIDR=${NETWORK_CIDR:-"10.0.0.0/8"}
 FLOATING_IP_START=${FLOATING_IP_START:-"172.17.0.45"}
 FLOATING_IP_END=${FLOATING_IP_END:-"172.17.0.64"}
 FLOATING_IP_CIDR=${FLOATING_IP_CIDR:-"172.17.0.0/16"}
-tripleo setup-neutron "" "" $NETWORK_CIDR "" "" "" "" $FLOATING_IP_START $FLOATING_IP_END $FLOATING_IP_CIDR
+OVERCLOUD_NAMESERVER="8.8.8.8"
+BM_NETWORK_GATEWAY="192.0.2.1"
+
+jq "." <<EOF > $NETWORK_JSON
+{
+    "float": {
+        "cidr": "$NETWORK_CIDR",
+        "name": "default-net",
+        "nameserver": "$OVERCLOUD_NAMESERVER"
+    },
+    "external": {
+        "name": "ext-net",
+        "cidr": "$FLOATING_IP_CIDR",
+        "allocation_start": "$FLOATING_IP_START",
+        "allocation_end": "$FLOATING_IP_END",
+        "gateway": "$BM_NETWORK_GATEWAY"
+    }
+}
+EOF
+
+setup-neutron -n $NETWORK_JSON
+rm $NETWORK_JSON
+
 
 nova flavor-delete m1.tiny
 nova flavor-create m1.tiny 1 512 2 1

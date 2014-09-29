@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cat > /opt/stack/os-config-refresh/environment.d/10-tuskar-role-directory <<EOF
+export TUSKAR_ROLE_DIRECTORY=$TUSKAR_ROLE_DIRECTORY
+EOF

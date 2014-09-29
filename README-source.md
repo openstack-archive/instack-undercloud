@@ -15,7 +15,6 @@ instack-undercloud via source
 
 1. Create initial directory for instack, and clone the needed repositories.
 
-
          mkdir instack
          cd instack
          git clone https://github.com/agroup/instack-undercloud

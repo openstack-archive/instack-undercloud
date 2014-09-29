@@ -14,8 +14,7 @@ Requires:	instack
 Requires:	openstack-tripleo
 Requires:	openstack-tripleo-heat-templates
 Requires:	openstack-tripleo-image-elements
-Requires:	openstack-tuskar
-Requires:	openstack-tuskar-ui
+Requires:	os-cloud-config
 Requires:	redhat-lsb-core
 Requires:	policycoreutils-python
 
@@ -49,19 +48,22 @@ cp scripts/instack-install-undercloud-source %{buildroot}/%{_bindir}
 cp scripts/instack-prepare-for-overcloud %{buildroot}/%{_bindir}
 cp scripts/instack-test-overcloud %{buildroot}/%{_bindir}
 cp scripts/instack-virt-setup %{buildroot}/%{_bindir}
+cp scripts/instack-prepare-discovery %{buildroot}/%{_bindir}
 # json files
 cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
+# sourcerc
+cp instack-sourcerc %{buildroot}/%{_datadir}/instack-undercloud
 
 
 %files
 %doc README.md
 %doc LICENSE
-%doc instack-baremetal.answers.sample
-%doc instack-virt.answers.sample
+%doc instack.answers.sample
 %doc deploy-virt-overcloudrc
 %doc deploy-baremetal-overcloudrc
 %{_datadir}/instack-undercloud
 %{_bindir}/instack-install-undercloud
+%{_bindir}/instack-install-undercloud-source
 %{_bindir}/instack-install-undercloud-packages
 %{_bindir}/instack-prepare-for-overcloud
 %{_bindir}/instack-deploy-overcloud
@@ -69,6 +71,7 @@ cp -ar json-files %{buildroot}/%{_datadir}/instack-undercloud
 %{_bindir}/instack-test-overcloud
 %{_bindir}/instack-build-images
 %{_bindir}/instack-virt-setup
+%{_bindir}/instack-prepare-discovery
 %{_bindir}/instack-delete-overcloud
 %{_bindir}/instack-delete-overcloud-tuskarcli
 

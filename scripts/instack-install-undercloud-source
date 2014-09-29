@@ -2,17 +2,21 @@
 
 set -eux
 
-export INSTACK_ROOT=${INSTACK_ROOT:-$(pwd)}
+export INSTACK_ROOT=${INSTACK_ROOT:-"/usr/share"}
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+/usr/share/tripleo-image-elements:\
+/usr/share/diskimage-builder/elements:\
+/usr/share/instack-undercloud"}
+export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-delorean.json}
 
-export ELEMENTS_PATH="$INSTACK_ROOT/tripleo-image-elements/elements:$INSTACK_ROOT/diskimage-builder/elements:$INSTACK_ROOT/instack-undercloud/elements"
-
-export JSONFILE=${JSONFILE:-$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-source.json}
+source "$INSTACK_ROOT"/instack-undercloud/instack-sourcerc
 
 if [ "$DELOREAN" = "1" ]; then
     sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
     sudo curl -o /etc/yum.repos.d/delorean-alt.repo $DELOREAN_REPO_ALT
     sudo sed -i "s/delorean/delorean-alt/g" /etc/yum.repos.d/delorean-alt.repo
-    export JSONFILE=$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-delorean.json
+    sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean.repo"
+    sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean-alt.repo"
 fi
 
 sudo yum -y install git python-pip ccache
@@ -24,127 +28,138 @@ mkdir -p $PIP_DOWNLOAD_CACHE
 git config --global user.email "instack@example.com"
 git config --global user.name "instack"
 
-if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
-    git clone https://git.openstack.org/openstack/tripleo-image-elements
+function do_tripleo_source_installs {
+    if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
+        git clone https://git.openstack.org/openstack/tripleo-image-elements
 
-    pushd tripleo-image-elements
+        pushd tripleo-image-elements
 
-    if [ "$LKG" = "1" ]; then
-        git fetch origin $DIB_REPOREF_tripleo_image_elements
-        git reset --hard FETCH_HEAD
+        if [ "$LKG" = "1" ]; then
+            git fetch origin $DIB_REPOREF_tripleo_image_elements
+            git reset --hard FETCH_HEAD
+        fi
+
+        popd
     fi
 
-    popd
-fi
+    if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
+        git clone https://git.openstack.org/openstack/diskimage-builder
 
-if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
-    git clone https://git.openstack.org/openstack/diskimage-builder
+        pushd diskimage-builder
 
-    pushd diskimage-builder
+        if [ "$LKG" = "1" ]; then
+            git fetch origin $DIB_REPOREF_diskimage_builder
+            git reset --hard FETCH_HEAD
+        fi
 
-    if [ "$LKG" = "1" ]; then
-        git fetch origin $DIB_REPOREF_diskimage_builder
-        git reset --hard FETCH_HEAD
+        popd
     fi
 
-    popd
-fi
-
-if [ ! -d "$INSTACK_ROOT/dib-utils" ]; then
-    git clone https://git.openstack.org/openstack/dib-utils
-fi
-
-
-if [ ! -d $INSTACK_ROOT/instack-undercloud ]; then
-    git clone https://github.com/agroup/instack-undercloud
-fi
-
-if [ ! -d $INSTACK_ROOT/instack ]; then
-    git clone https://github.com/agroup/instack
-fi
-
-if [ ! -d $INSTACK_ROOT/os-cloud-config ]; then
-    git clone https://git.openstack.org/openstack/os-cloud-config
-
-    pushd os-cloud-config
-
-    if [ "$LKG" = "1" ]; then
-        git fetch origin $DIB_REPOREF_os_cloud_config
-        git reset --hard FETCH_HEAD
+    if [ ! -d "$INSTACK_ROOT/dib-utils" ]; then
+        git clone https://git.openstack.org/openstack/dib-utils
     fi
 
-    # Reset to before requirements.txt update from
-    # https://review.openstack.org/#/c/106589/
-    # Not yet sure why this is failing to install.
-    git reset --hard 4a03e6b129c91a7269b6103a1f85fd011ec92c91
 
-    popd
-
-fi
-
-
-if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
-    git clone https://git.openstack.org/openstack/tripleo-incubator
-
-    pushd tripleo-incubator
-
-    if [ "$LKG" = "1" ]; then
-        git fetch origin $DIB_REPOREF_tripleo_incubator
-        git reset --hard FETCH_HEAD
+    if [ ! -d $INSTACK_ROOT/instack-undercloud ]; then
+        git clone https://github.com/agroup/instack-undercloud
     fi
 
+    if [ ! -d $INSTACK_ROOT/instack ]; then
+        git clone https://github.com/agroup/instack
+    fi
+
+    if [ ! -d $INSTACK_ROOT/os-cloud-config ]; then
+        git clone https://git.openstack.org/openstack/os-cloud-config
+
+        pushd os-cloud-config
+
+        if [ "$LKG" = "1" ]; then
+            git fetch origin $DIB_REPOREF_os_cloud_config
+            git reset --hard FETCH_HEAD
+        fi
+
+        popd
+
+    fi
+
+
+    if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
+        git clone https://git.openstack.org/openstack/tripleo-incubator
+
+        pushd tripleo-incubator
+
+        if [ "$LKG" = "1" ]; then
+            git fetch origin $DIB_REPOREF_tripleo_incubator
+            git reset --hard FETCH_HEAD
+        fi
+
+        popd
+
+    fi
+
+    if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
+        git clone https://git.openstack.org/openstack/tripleo-heat-templates
+
+        pushd tripleo-heat-templates
+        ## Compute and controller templates without merge.py + Add converted version of block and object storage
+        #
+        # https://review.openstack.org/#/c/123100
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/4 && git cherry-pick FETCH_HEAD
+        # https://review.openstack.org/#/c/123713/
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/4 && git cherry-pick FETCH_HEAD
+        popd
+
+    fi
+
+    # Create a useful symlink for openstack-tripleo-heat-templates
+    # This simplifies the source vs package installs a bit so we can just use one path
+    ln -f -s $INSTACK_ROOT/tripleo-heat-templates $INSTACK_ROOT/openstack-tripleo-heat-templates
+
+    export DIB_REPOLOCATION_tripleo_heat_templates=$INSTACK_ROOT/tripleo-heat-templates
+    export DIB_INSTALLTYPE_tripleo_heat_templates=source
+    export TUSKAR_ROLE_DIRECTORY=/opt/stack/tripleo-heat-templates
+
+    pushd $INSTACK_ROOT/dib-utils
+    sudo pip install -U .
     popd
 
-fi
-
-if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
-    git clone https://git.openstack.org/openstack/tripleo-heat-templates
-
-    # Create an unpatched copy for non-Tuskar testing
-    cp -r $INSTACK_ROOT/tripleo-heat-templates $INSTACK_ROOT/tripleo-heat-templates-instack
-
-    pushd tripleo-heat-templates
-
-    ## Compute and controller templates without merge.py + Add converted version of block and object storage
-    #
-    # https://review.openstack.org/#/c/123100
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/4 && git cherry-pick FETCH_HEAD
-    # https://review.openstack.org/#/c/123713/
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/4 && git cherry-pick FETCH_HEAD
-
+    pushd $INSTACK_ROOT/diskimage-builder
+    sudo pip install -U .
     popd
 
-fi
+    pushd $INSTACK_ROOT/instack
+    sudo pip install -e .
+    popd
 
-export DIB_REPOLOCATION_tripleo_heat_templates=$INSTACK_ROOT/tripleo-heat-templates
+    # Needed to compile os-cloud-config
+    sudo yum install -y libffi-devel gcc python-devel openssl-devel libxml2-devel libxslt-devel
+    pushd $INSTACK_ROOT/os-cloud-config
+    sudo pip install -e .
+    popd
+
+    # Must uninstall cmd2 otherwise, the package install will fail later on
+    sudo pip uninstall -y cmd2
+
+}
 
 if [ ! -d $INSTACK_ROOT/tuskar-ui ]; then
 
-    git clone https://git.openstack.org/openstack/tuskar-ui
-    export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
+    sudo git clone https://git.openstack.org/openstack/tuskar-ui $INSTACK_ROOT/tuskar-ui
 
 fi
 
 export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
 
-pushd $INSTACK_ROOT/dib-utils
-sudo pip install -U .
-popd
-
-pushd $INSTACK_ROOT/diskimage-builder
-sudo pip install -U .
-popd
-
-pushd $INSTACK_ROOT/instack
-sudo pip install -e .
-popd
-
-# Needed to compile os-cloud-config
-sudo yum install -y libffi-devel gcc python-devel openssl-devel libxml2-devel libxslt-devel
-pushd $INSTACK_ROOT/os-cloud-config
-sudo pip install -e .
-popd
-
+if [ "$INSTACK_TRIPLEO_SOURCE" = "1" ]; then
+    do_tripleo_source_installs
+else
+    # Need to update to newer tripleo packages until we get more recent releases
+    sudo yum -y update openstack-tripleo-image-elements
+    sudo yum -y update diskimage-builder
+    # Make sure we don't end up with older oslo config from Fedora 20.
+    sudo yum -y update python-oslo-config
+    export TUSKAR_ROLE_DIRECTORY=/usr/share/openstack-tripleo-heat-templates
+fi
 
 # tar is required if we want to run diskimage-builder
 sudo yum install -y tar
@@ -160,7 +175,7 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
-$INSTACK_ROOT/instack-undercloud/scripts/instack-install-undercloud-packages
+instack-install-undercloud-packages
 
 if [ "$DELOREAN" -eq 1 ]; then
 
@@ -200,11 +215,9 @@ if [ "$LKG" -eq 1 -a "$DELOREAN" -eq "0" ]; then
     sudo systemctl restart heat-engine
 fi
 
-
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
 # $USER is not always set in a live cd building enviroment, so use || true
 sudo -E chown -R $USER: $HOME/.cache/image-create || true
-
 
 echo "$COMPLETION_MESSAGE"

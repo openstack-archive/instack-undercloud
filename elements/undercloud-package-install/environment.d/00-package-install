@@ -11,26 +11,10 @@ export DIB_INSTALLTYPE_swift=package
 export DIB_INSTALLTYPE_cinder=package
 export DIB_INSTALLTYPE_horizon=source
 export DIB_INSTALLTYPE_ceilometer=package
-
-# We are installing ironic from source so we can easily apply the discovery
-# patch for now.
-# Nova must also be installed from source when installing ironic from source as
-# they make use of each other's venv's.
-# python-ironicclient also must be from source
-# novnc from source as well.
-# export DIB_INSTALLTYPE_ironic=source
-# export DIB_REPOLOCATION_ironic=https://review.openstack.org/openstack/ironic
-# export DIB_REPOREF_ironic=refs/changes/31/110031/30
-# export DIB_INSTALLTYPE_nova=source
-# export DIB_INSTALLTYPE_python_ironicclient=source
-# export DIB_INSTALLTYPE_novnc=source
-
 export DIB_INSTALLTYPE_ironic=package
 export DIB_INSTALLTYPE_nova=package
-export DIB_INSTALLTYPE_python_ironicclient=package
-export DIB_INSTALLTYPE_novnc=package
 
-# Use packages for the clients
+# Clients
 export DIB_INSTALLTYPE_python_cinderclient=package
 export DIB_INSTALLTYPE_python_glanceclient=package
 export DIB_INSTALLTYPE_python_heatclient=package
@@ -39,11 +23,18 @@ export DIB_INSTALLTYPE_python_neutronclient=package
 export DIB_INSTALLTYPE_python_novaclient=package
 export DIB_INSTALLTYPE_python_swiftclient=package
 export DIB_INSTALLTYPE_python_ceilometerclient=package
+export DIB_INSTALLTYPE_python_ironicclient=package
 
 # os-*-config
 export DIB_INSTALLTYPE_os_collect_config=package
 export DIB_INSTALLTYPE_os_refresh_config=package
 export DIB_INSTALLTYPE_os_apply_config=package
 
+# TripleO
+# Make the setting for tripleo-heat-templates overrideable for the source
+# install. Can be removed when source install is removed.
+export DIB_INSTALLTYPE_tripleo_heat_templates=${DIB_INSTALLTYPE_tripleo_heat_templates:-package}
+
 # Miscellaneous
 export DIB_INSTALLTYPE_get_pip_py=package
+export DIB_INSTALLTYPE_novnc=package
