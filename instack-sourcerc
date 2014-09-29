@@ -34,7 +34,8 @@ sudo cp /root/stackrc .
 #############################################################################"
 
 if [ "$LKG" = "1" ]; then
-    export DELOREAN_REPO=http://209.132.178.33/repos/b7/26/b7261e39cbeb96e22e804e1de83e8f629c248a61/delorean.repo
+    export DELOREAN_REPO=http://209.132.178.33/repos/0d/f4/0df4f416f9587881b8f7442b07506edf1155c3d3/delorean.repo
+    export DELOREAN_REPO_ALT=http://209.132.178.33/repos/e3/af/e3af9b42b532363b6cdc8eb95207c7d5e0ea87fc/delorean.repo
 else
     export DELOREAN_REPO=http://209.132.178.33/repos/current/delorean.repo
 fi
@@ -43,10 +44,10 @@ export PIP_DOWNLOAD_CACHE=~/.cache/pip
 
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
-    export DIB_REPOREF_tripleo_image_elements=4b3d93e144b3452509048e5f9f5a10fcb93ded5c
-    export DIB_REPOREF_diskimage_builder=41ba1d2b9c0bee5738bec921f2a1114e772a3ab8
+    export DIB_REPOREF_tripleo_image_elements=5fea32ff79220fce2eb808d9b119832a98ace626
+    export DIB_REPOREF_diskimage_builder=dbc60e8942ca700cd673a115a6d327af8ee41483
     export DIB_REPOREF_os_cloud_config=4a03e6b129c91a7269b6103a1f85fd011ec92c91
-    export DIB_REPOREF_tripleo_incubator=9f3f00eb6c21528d1cda9b80958da5088e8d25cf
+    export DIB_REPOREF_tripleo_incubator=b51d5a1840b4e985b7daa334814a10590af00d53
 
     # This is set manually since swift is not part of the undercloud
     export DIB_REPOREF_swift=4dc718e8c3bd2a8bbe1f2d7a98ad03421a70217f
@@ -91,7 +92,6 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOLOCATION_python_novaclient=https://git.openstack.org/openstack/python-novaclient.git
     export DIB_REPOREF_python_swiftclient=45465c70e31764167b43fe342c38231a3e0b825c
     export DIB_REPOLOCATION_python_swiftclient=https://git.openstack.org/openstack/python-swiftclient.git
-
 fi
 
 export ELEMENTS_PATH="\

@@ -60,6 +60,7 @@ REGISTER_SERVICE_OPTS=
 # Needed by ceilometer user in register-endpoint
 keystone role-create --name=ResellerAdmin
 
+# TODO: this needs to be switched over to use os-cloud-config's setup-endpoints
 setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
 
 keystone role-create --name heat_stack_user
