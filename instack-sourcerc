@@ -149,7 +149,7 @@ hosts \
 neutron-openvswitch-agent \
 nova-compute \
 nova-kvm \
-nfs-utils \
+nfs-client \
 ntp \
 os-collect-config \
 pip-cache \
