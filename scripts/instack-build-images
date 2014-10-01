@@ -39,7 +39,7 @@ pip-cache \
 nova-compute \
 nova-kvm \
 neutron-openvswitch-agent \
-nfs-utils \
+nfs-client \
 os-collect-config \
 baremetal \
 dhcp-all-interfaces \
