@@ -93,12 +93,6 @@ if [ ! -d $INSTACK_ROOT/tripleo-incubator ]; then
         git reset --hard FETCH_HEAD
     fi
 
-
-    ## create-nodes x86_64 support
-    #
-    # https://review.openstack.org/#/c/123803/
-    git fetch https://review.openstack.org/openstack/tripleo-incubator refs/changes/03/123803/2 && git cherry-pick FETCH_HEAD
-
     popd
 
 fi
