@@ -47,7 +47,7 @@ if [ "$LKG" = "1" ]; then
     export DIB_REPOREF_tripleo_image_elements=5fea32ff79220fce2eb808d9b119832a98ace626
     export DIB_REPOREF_diskimage_builder=dbc60e8942ca700cd673a115a6d327af8ee41483
     export DIB_REPOREF_os_cloud_config=4a03e6b129c91a7269b6103a1f85fd011ec92c91
-    export DIB_REPOREF_tripleo_incubator=b51d5a1840b4e985b7daa334814a10590af00d53
+    export DIB_REPOREF_tripleo_incubator=c3fb309727671130a32b4c19de48ec22c8530aa1
 
     # This is set manually since swift is not part of the undercloud
     export DIB_REPOREF_swift=4dc718e8c3bd2a8bbe1f2d7a98ad03421a70217f
