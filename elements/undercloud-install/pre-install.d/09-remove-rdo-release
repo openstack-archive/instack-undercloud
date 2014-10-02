@@ -2,7 +2,7 @@
 
 set -eux
 
-# Muse remove rdo-release-icehouse so that when it's installed via
+# Muse remove rdo-release so that when it's installed via
 # install-packages from the tie element, that doesn't fail since yum install is
 # used vs yum update.
-yum -y erase rdo-release-icehouse || true
+yum -y erase rdo-release || true
