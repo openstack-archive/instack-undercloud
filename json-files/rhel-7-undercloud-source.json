@@ -40,6 +40,7 @@
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
+      "epel",
       "rdo-release",
       "rdo-icehouse"
     ],
