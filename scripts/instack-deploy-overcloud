@@ -10,6 +10,7 @@ fi
 
 # setup-baremetal requires this to be set
 export TRIPLEO_ROOT=.
+export INSTACK_ROOT=${INSTACK_ROOT:-"/usr/share"}
 export NODES_JSON=${NODES_JSON:-"instackenv.json"}
 export USE_IRONIC=1
 export ROOT_DISK=${ROOT_DISK:-10}
