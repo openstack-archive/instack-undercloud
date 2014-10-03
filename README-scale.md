@@ -36,10 +36,10 @@ to the overcloud roles you intend to deploy. These are example commands.
         nova flavor-create swiftstorage auto 1024 40 1
         deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
         deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
-        nova flavor-key control set "cpu_arch"="amd64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
-        nova flavor-key compute set "cpu_arch"="amd64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
-        nova flavor-key blockstorage set "cpu_arch"="amd64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
-        nova flavor-key swiftstorage set "cpu_arch"="amd64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
+        nova flavor-key control set "cpu_arch"="x86_64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
+        nova flavor-key compute set "cpu_arch"="x86_64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
+        nova flavor-key blockstorage set "cpu_arch"="x86_64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
+        nova flavor-key swiftstorage set "cpu_arch"="x86_64" "baremetal:deploy_kernel_id"="$deploy_kernel_id" "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
 
 4. Before running instack-deploy-overcloud, edit instackenv.json and update the
 node hardware characterists to match what edits you made to the actual VM's.
