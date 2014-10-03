@@ -55,6 +55,9 @@ function do_tripleo_source_installs {
         popd
     fi
 
+    # tar is required if we want to run diskimage-builder
+    sudo yum install -y tar
+
     if [ ! -d "$INSTACK_ROOT/dib-utils" ]; then
         git clone https://git.openstack.org/openstack/dib-utils
     fi
@@ -160,9 +163,6 @@ else
     sudo yum -y update python-oslo-config
     export TUSKAR_ROLE_DIRECTORY=/usr/share/openstack-tripleo-heat-templates
 fi
-
-# tar is required if we want to run diskimage-builder
-sudo yum install -y tar
 
 # needed for semanage
 sudo yum install -y policycoreutils-python
