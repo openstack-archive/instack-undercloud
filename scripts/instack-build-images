@@ -2,6 +2,12 @@
 
 set -eux
 
+export image_build=${1:-"all"}
+
+export INSTACK_ROOT=${INSTACK_ROOT:-"/usr/share"}
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
+source "$INSTACK_ROOT"/instack-undercloud/instack-sourcerc
+
 # Override TMP_DIR for image build.
 # It defaults /tmp. But, /tmp is usually tmpfs mounted on Fedora, and dib will
 # use a tmpfs on it's own if there is enough free RAM.
@@ -13,7 +19,6 @@ export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
-export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
 
 
 export DEPLOY_DIB_EXTRA_ARGS=${DEPLOY_DIB_EXTRA_ARGS:-"\
@@ -119,6 +124,7 @@ os-refresh-config-reboot \
 undercloud-package-install \
 "}
 
+function deploy-ramdisk {
 if [ ! -f $DEPLOY_NAME.initramfs -o \
      ! -f $DEPLOY_NAME.kernel ]; then
     ramdisk-image-create \
@@ -129,58 +135,83 @@ if [ ! -f $DEPLOY_NAME.initramfs -o \
         $DIB_COMMON_ELEMENTS \
         2>&1 | tee dib-deploy.log
 fi
+}
 
-if [ ! -f $DISCOVERY_NAME.initramfs -o \
-     ! -f $DISCOVERY_NAME.kernel ]; then
-    ramdisk-image-create \
-        -a $NODE_ARCH \
-        -o $DISCOVERY_NAME \
-        $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
-        $DIB_COMMON_ELEMENTS \
-        2>&1 | tee dib-discovery.log
-fi
+function discovery-ramdisk {
+    if [ ! -f $DISCOVERY_NAME.initramfs -o \
+         ! -f $DISCOVERY_NAME.kernel ]; then
+        ramdisk-image-create \
+            -a $NODE_ARCH \
+            -o $DISCOVERY_NAME \
+            $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
+            $DIB_COMMON_ELEMENTS \
+            2>&1 | tee dib-discovery.log
+    fi
+}
 
-if [ ! -f overcloud-control.qcow2 ]; then
-    disk-image-create \
-        -a $NODE_ARCH \
-        -o overcloud-control \
-        $NODE_DIST \
-        $OVERCLOUD_CONTROL_DIB_EXTRA_ARGS \
-        $DIB_COMMON_ELEMENTS \
-        2>&1 | tee dib-overcloud-control.log
-fi
+function overcloud-control {
+    if [ ! -f overcloud-control.qcow2 ]; then
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o overcloud-control \
+            $NODE_DIST \
+            $OVERCLOUD_CONTROL_DIB_EXTRA_ARGS \
+            $DIB_COMMON_ELEMENTS \
+            2>&1 | tee dib-overcloud-control.log
+    fi
+}
 
-if [ ! -f overcloud-compute.qcow2 ]; then
-    disk-image-create \
-        -a $NODE_ARCH \
-        -o overcloud-compute \
-        $NODE_DIST  \
-        $OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS \
-        $DIB_COMMON_ELEMENTS \
-        2>&1 | tee dib-overcloud-compute.log
-fi
+function overcloud-compute {
+    if [ ! -f overcloud-compute.qcow2 ]; then
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o overcloud-compute \
+            $NODE_DIST  \
+            $OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS \
+            $DIB_COMMON_ELEMENTS \
+            2>&1 | tee dib-overcloud-compute.log
+    fi
+}
 
-if [ ! -f overcloud-cinder-volume.qcow2 ]; then
-    disk-image-create \
-        -a $NODE_ARCH \
-        -o overcloud-cinder-volume \
-        $NODE_DIST \
-        $OVERCLOUD_CINDER_DIB_EXTRA_ARGS \
-        $DIB_COMMON_ELEMENTS \
-        2>&1 | tee dib-overcloud-cinder-volume.log
-fi
+function overcloud-cinder-volume {
+    if [ ! -f overcloud-cinder-volume.qcow2 ]; then
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o overcloud-cinder-volume \
+            $NODE_DIST \
+            $OVERCLOUD_CINDER_DIB_EXTRA_ARGS \
+            $DIB_COMMON_ELEMENTS \
+            2>&1 | tee dib-overcloud-cinder-volume.log
+    fi
+}
 
-if [ ! -f overcloud-swift-storage.qcow2 ]; then
-    disk-image-create \
-        -a $NODE_ARCH \
-        -o overcloud-swift-storage \
-        $NODE_DIST \
-        $OVERCLOUD_SWIFT_DIB_EXTRA_ARGS \
-        $DIB_COMMON_ELEMENTS \
-        2>&1 | tee dib-overcloud-swift-storage.log
-fi
+function overcloud-swift-storage {
+    if [ ! -f overcloud-swift-storage.qcow2 ]; then
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o overcloud-swift-storage \
+            $NODE_DIST \
+            $OVERCLOUD_SWIFT_DIB_EXTRA_ARGS \
+            $DIB_COMMON_ELEMENTS \
+            2>&1 | tee dib-overcloud-swift-storage.log
+    fi
+}
 
-if [ ! -f fedora-user.qcow2 ]; then
-    # Just copy the already downloaded Fedora cloud image as fedora-user.qcow2
-    cp ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2
+function fedora-user {
+    if [ ! -f fedora-user.qcow2 ]; then
+        # Just copy the already downloaded Fedora cloud image as fedora-user.qcow2
+        cp ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2
+    fi
+}
+
+if [ "$image_build" = "all" ]; then
+    deploy-ramdisk
+    discovery-ramdisk
+    overcloud-control
+    overcloud-compute
+    overcloud-cinder-volume
+    overcloud-swift-storage
+    fedora-user
+else
+    eval "$image_build"
 fi
