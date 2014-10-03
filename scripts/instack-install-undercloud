@@ -10,7 +10,7 @@ exec 2>&1
 
 echo "Running $0"
 
-export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json}
+export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-delorean.json}
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/diskimage-builder/elements/ \
                                        /usr/share/tripleo-image-elements/ \
