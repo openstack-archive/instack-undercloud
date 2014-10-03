@@ -33,11 +33,10 @@ logvol / --fstype ext4 --name=LogVol00 --vgname=VolGroup00 --size=1024 --grow
 reboot
 
 %post
-pushd /root
-git clone https://github.com/agroup/instack-undercloud /root/instack-undercloud
-source /root/instack-undercloud/instack-sourcerc
+curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
+yum -y install instack-undercloud
 export RUN_INSTACK=0
-/root/instack-undercloud/scripts/instack-install-undercloud-source
+instack-install-undercloud-source
 popd
 %end
 

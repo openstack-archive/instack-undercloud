@@ -5,20 +5,8 @@
    <command name='pty'>sed 's/.*requiretty//g' /etc/sudoers_backup > /etc/sudoers</command>
    <command name='convert'>qemu-img convert -f raw -O qcow2 /mnt/input_image.raw /mnt/input_image.qcow2</command>
    <command name="localimage">export DIB_LOCAL_IMAGE=/mnt/input_image.qcow2
-set -eux
-source /root/instack-undercloud/instack-sourcerc
-export TMP_DIR=${TMP_DIR:-/var/tmp}
-export TMPDIR=/var/tmp
-export NODE_ARCH=${NODE_ARCH:-amd64}
-export NODE_DIST=${NODE_DIST:-"fedora"}
-disk-image-create \
-	--no-tmpfs \
-	-a $NODE_ARCH \
-	-o /mnt/overcloud-control \
-	$NODE_DIST  \
-	$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS \
-	$DIB_COMMON_ELEMENTS
+instack-build-images overcloud-control
 </command>
-<command name="tar">tar cf /mnt/overcloud-control.tar /mnt/overcloud-control.qcow2 /mnt/overcloud-control.vmlinuz /mnt/overcloud-control.initrd</command>
+<command name="tar">tar cf /mnt/overcloud-control.tar overcloud-control.qcow2 overcloud-control.vmlinuz overcloud-control.initrd</command>
 </commands>
 </template>

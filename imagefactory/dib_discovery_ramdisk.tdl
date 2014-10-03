@@ -5,21 +5,8 @@
    <command name='pty'>sed 's/.*requiretty//g' /etc/sudoers_backup > /etc/sudoers</command>
    <command name='convert'>qemu-img convert -f raw -O qcow2 /mnt/input_image.raw /mnt/input_image.qcow2</command>
    <command name="localimage">export DIB_LOCAL_IMAGE=/mnt/input_image.qcow2
-set -eux
-source /root/instack-undercloud/instack-sourcerc
-export TMP_DIR=${TMP_DIR:-/var/tmp}
-export TMPDIR=/var/tmp
-export NODE_ARCH=${NODE_ARCH:-amd64}
-export NODE_DIST=${NODE_DIST:-"fedora"}
-export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
-export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
-ramdisk-image-create \
-    -a $NODE_ARCH \
-    -o /mnt/$DISCOVERY_NAME \
-    $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
-    $DISCOVERY_DIB_EXTRA_ARGS \
-    $DIB_COMMON_ELEMENTS
+instack-build-images discovery-ramdisk
 </command>
-<command name="tar">tar cf /mnt/discovery-ramdisk.tar /mnt/discovery-ramdisk.initramfs /mnt/discovery-ramdisk.kernel</command>
+<command name="tar">tar cf /mnt/discovery-ramdisk.tar discovery-ramdisk.initramfs discovery-ramdisk.kernel</command>
 </commands>
 </template>

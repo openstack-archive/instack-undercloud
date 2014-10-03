@@ -17,7 +17,7 @@ overcloud-control:
 		--parameter utility_image $(UTILITY_IMAGE_ID) \
 		--file-parameter utility_customizations dib_overcloud_control.tdl \
 		--parameter results_location "/overcloud-control.tar" indirection
-	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+	tar -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
 overcloud-compute:
 	imagefactory --debug \
@@ -26,7 +26,7 @@ overcloud-compute:
 		--parameter utility_image $(UTILITY_IMAGE_ID) \
 		--file-parameter utility_customizations dib_overcloud_compute.tdl \
 		--parameter results_location "/overcloud-compute.tar" indirection
-	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+	tar -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
 overcloud-cinder-volume:
 	imagefactory --debug \
@@ -35,7 +35,7 @@ overcloud-cinder-volume:
 		--parameter utility_image $(UTILITY_IMAGE_ID) \
 		--file-parameter utility_customizations dib_overcloud_cinder_volume.tdl \
 		--parameter results_location "/overcloud-cinder-volume.tar" indirection
-	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+	tar -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
 overcloud-swift-storage:
 	imagefactory --debug \
@@ -44,7 +44,7 @@ overcloud-swift-storage:
 		--parameter utility_image $(UTILITY_IMAGE_ID) \
 		--file-parameter utility_customizations dib_overcloud_swift_storage.tdl \
 		--parameter results_location "/overcloud-swift-storage.tar" indirection
-	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+	tar -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
 deploy-ramdisk-ironic:
 	imagefactory --debug \
@@ -53,7 +53,7 @@ deploy-ramdisk-ironic:
 		--parameter utility_image $(UTILITY_IMAGE_ID) \
 		--file-parameter utility_customizations dib_deploy_ramdisk_ironic.tdl \
 		--parameter results_location "/deploy-ramdisk-ironic.tar" indirection
-	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+	tar -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
 discovery-ramdisk:
 	imagefactory --debug \
@@ -62,5 +62,5 @@ discovery-ramdisk:
 		--parameter utility_image $(UTILITY_IMAGE_ID) \
 		--file-parameter utility_customizations dib_discovery_ramdisk.tdl \
 		--parameter results_location "/discovery-ramdisk.tar" indirection
-	tar --strip-components 1 -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
+	tar -x -f $$(ls -1tr /var/lib/imagefactory/storage/*.body | tail -n 1)
 
