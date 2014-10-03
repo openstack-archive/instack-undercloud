@@ -175,7 +175,7 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
-instack-install-undercloud-packages
+instack-install-undercloud
 
 if [ "$DELOREAN" -eq 1 ]; then
 

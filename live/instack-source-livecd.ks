@@ -99,7 +99,7 @@ yum -y install git
 git clone https://github.com/agroup/instack-undercloud
 cp instack-undercloud/instack-baremetal.answers.sample /home/stack/instack.answers
 cp instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
-# instack-install-undercloud-packages sources ~/instack.answers, and during the
+# instack-install-undercloud sources ~/instack.answers, and during the
 # %chroot phase, apparently ~ evaluates to /tmp. So, we need to copy the
 # answers file there as well.
 cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers

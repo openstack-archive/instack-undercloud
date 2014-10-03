@@ -37,7 +37,7 @@ virtual machine environment, the stack user in the default instack vm is already
    the sceen. It also logs to ~/.instack/install-undercloud.log. You should see
    `install-undercloud Complete!` at the end of a successful run.
 
-        instack-install-undercloud-packages
+        instack-install-undercloud
         
 4. Once the install script has run to completion, you should take note to secure and save the files
    `/root/stackrc` and `/root/tripleo-undercloud-passwords`. Both these files will be needed to interact
