@@ -9,59 +9,100 @@ export TMP_DIR=${TMP_DIR:-/var/tmp}
 
 export NODE_ARCH=${NODE_ARCH:-amd64}
 export NODE_DIST=${NODE_DIST:-"fedora"}
-export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-baremetal}
-export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk}
+export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
+export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
-
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
+
 
 export DEPLOY_DIB_EXTRA_ARGS=${DEPLOY_DIB_EXTRA_ARGS:-"\
 undercloud-package-install"}
 
+export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
+export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS element-manifest"
+
+export DELOREAN=${DELOREAN:-"1"}
+if [ "$DELOREAN" = "1" ]; then
+    export DELOREAN_REPO=http://209.132.178.33/repos/0d/f4/0df4f416f9587881b8f7442b07506edf1155c3d3/delorean.repo
+    export DELOREAN_REPO_ALT=http://209.132.178.33/repos/e3/af/e3af9b42b532363b6cdc8eb95207c7d5e0ea87fc/delorean.repo
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install dib-run-parts-update"
+fi
+
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
-pip-cache boot-stack cinder-api os-collect-config \
-neutron-network-node dhcp-all-interfaces stackuser swift-proxy swift-storage \
 baremetal \
+base \
+boot-stack \
+ceilometer-agent-central \
+ceilometer-agent-notification \
+ceilometer-api \
+ceilometer-collector \
+cinder-api \
 cinder-lio \
 cinder-volume-nfs \
-fedora-rdo-icehouse-repository \
+common-venv \
+dhcp-all-interfaces \
+haproxy \
 horizon \
+hosts \
+keepalived \
+mariadb-rpm \
+neutron-network-node \
+ntp \
+os-collect-config \
+pip-cache \
 rabbitmq-server \
-keystone-1289935 \
-mariadb-rdo \
+snmpd \
 stable-interface-names \
-os-refresh-config-reboot \
-undercloud-package-install"}
+stackuser \
+swift-proxy \
+swift-storage \
+use-ephemeral \
+selinux-policy-updates \
+"}
+
+if [ "$DELOREAN" = "1" ]; then
+    # Delorean is patched but there isn't a new build yet.
+    export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS glance-wsme ceilometer-delorean dib-run-parts-update"
+fi
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
-pip-cache \
+baremetal \
+base \
+common-venv \
+dhcp-all-interfaces \
+hosts \
+neutron-openvswitch-agent \
 nova-compute \
 nova-kvm \
-neutron-openvswitch-agent \
 nfs-client \
+ntp \
 os-collect-config \
-baremetal \
-dhcp-all-interfaces \
-stackuser \
-fedora-rdo-icehouse-repository \
+pip-cache \
+pypi-openstack \
+snmpd \
 stable-interface-names \
-os-refresh-config-reboot \
-undercloud-package-install"}
+stackuser \
+use-ephemeral \
+"}
+
 
 export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
-pip-cache \
-neutron-openvswitch-agent \
-os-collect-config \
 baremetal \
+base \
 cinder-lio \
 cinder-volume-nfs \
+common-venv \
 dhcp-all-interfaces \
-stackuser \
-fedora-rdo-icehouse-repository \
+hosts \
+ntp \
+os-collect-config \
+pip-cache \
+pypi-openstack \
+snmpd \
 stable-interface-names \
-os-refresh-config-reboot \
-undercloud-package-install \
+stackuser \
+use-ephemeral \
 "}
 
 export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS=${OVERCLOUD_SWIFT_DIB_EXTRA_ARGS:-"\
@@ -95,7 +136,6 @@ if [ ! -f $DISCOVERY_NAME.initramfs -o \
         -a $NODE_ARCH \
         -o $DISCOVERY_NAME \
         $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
-        $DISCOVERY_DIB_EXTRA_ARGS \
         $DIB_COMMON_ELEMENTS \
         2>&1 | tee dib-discovery.log
 fi
