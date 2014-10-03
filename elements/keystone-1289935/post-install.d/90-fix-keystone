@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-# This is a hack until https://bugs.launchpad.net/keystone/+bug/1289935 is
-# fixed in the rdo rpm
-sed -i "s/self.revoke_map.remove(e)/self.revoke_map.remove_event(e)/g" /usr/lib/python2.7/site-packages/keystone/contrib/revoke/core.py
