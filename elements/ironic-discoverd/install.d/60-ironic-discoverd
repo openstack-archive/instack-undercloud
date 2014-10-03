@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+
+# TODO(dtantsur): replace with package
+pip install ironic-discoverd
+os-svc-deamon -n ironic-discoverd -i /usr -u root -c ironic-discoverd /etc/ironic-discoverd/discoverd.conf
