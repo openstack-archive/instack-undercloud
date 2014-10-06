@@ -63,7 +63,6 @@ stackuser \
 swift-proxy \
 swift-storage \
 use-ephemeral \
-selinux-policy-updates \
 "}
 
 if [ "$DELOREAN" = "1" ]; then
