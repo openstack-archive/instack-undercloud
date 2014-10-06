@@ -63,6 +63,7 @@ stackuser \
 swift-proxy \
 swift-storage \
 use-ephemeral \
+oslo-serialization \
 "}
 
 if [ "$DELOREAN" = "1" ]; then
@@ -88,6 +89,7 @@ snmpd \
 stable-interface-names \
 stackuser \
 use-ephemeral \
+oslo-serialization \
 "}
 
 
@@ -107,6 +109,7 @@ snmpd \
 stable-interface-names \
 stackuser \
 use-ephemeral \
+oslo-serialization \
 "}
 
 export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS=${OVERCLOUD_SWIFT_DIB_EXTRA_ARGS:-"\
@@ -121,6 +124,7 @@ fedora-rdo-icehouse-repository \
 stable-interface-names \
 os-refresh-config-reboot \
 undercloud-package-install \
+oslo-serialization \
 "}
 
 function deploy-ramdisk {
