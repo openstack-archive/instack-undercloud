@@ -1,0 +1,7 @@
+default discover
+
+label discover
+kernel discovery.kernel
+append initrd=discovery.ramdisk ironic_callback_url=http://{{local-ipv4}}:5050/v1/continue
+ipappend 3
+
