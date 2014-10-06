@@ -90,9 +90,9 @@ tripleo configure-vm \
 virsh start $UNDERCLOUD_VM_NAME
 
 while true; do
-    IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac instack) | awk '{print $3;}')
+    IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac $UNDERCLOUD_VM_NAME) | awk '{print $3;}')
     if [ -n "$IP" ]; then
-        echo "instack vm IP address is $IP"
+        echo "$UNDERCLOUD_VM_NAME vm IP address is $IP"
         break
     fi
     sleep 3
