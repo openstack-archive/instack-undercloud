@@ -38,7 +38,7 @@ fi
 
 tripleo wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| grep 'enabled.*\ up\ '
 
-tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host \| grep "\":-).*Open vSwitch agent.*overcloud-novacompute\""
+tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host \| grep "\":-).*Open vSwitch agent.*novacompute\""
 
 # source $TRIPLEO_ROOT/overcloudrc-user
 
