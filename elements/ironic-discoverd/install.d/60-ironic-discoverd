@@ -2,7 +2,9 @@
 
 set -eux
 
-# TODO(dtantsur): replace with package
 pip install ironic-discoverd
 os-svc-daemon -n ironic-discoverd -i /usr -u root -c ironic-discoverd /etc/ironic-discoverd/discoverd.conf
 install -d -m 0750 -o root -g root /etc/ironic-discoverd
+
+# Enable the service
+os-svc-enable -n ironic-discoverd

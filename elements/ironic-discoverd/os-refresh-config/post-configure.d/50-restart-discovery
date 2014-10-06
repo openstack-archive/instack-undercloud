@@ -1,0 +1,9 @@
+#!/bin/bash
+# (re)starts the discovery dnsmasq process. This is just for
+# plumbing... there is currently no configuration (eventually use
+# os-apply-config to get a dnsmasq.conf)
+
+set -eux
+
+os-svc-restart -n discovery-dhcp-dnsmasq
+os-svc-restart -n ironic-discoverd

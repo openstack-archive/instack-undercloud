@@ -42,7 +42,7 @@
       "ceilometer-undercloud-config",
       "tuskar-ui",
       "dib-run-parts-update",
-      "discovery-dhcp",
+      "ironic-discoverd",
       "element-manifest",
       "tuskar"
     ],
