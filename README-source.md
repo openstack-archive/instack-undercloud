@@ -59,7 +59,6 @@ step.
         git clone https://github.com/agroup/instack-undercloud
         source instack-undercloud/instack-sourcerc
         instack-install-undercloud-source
-        sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
 
 1. Once the install script has run to completion, copy the files
    `/root/stackrc` and `/root/tripleo-undercloud-passwords` into the stack user's home directory.
