@@ -1,2 +1,3 @@
 os-svc-install
 os-apply-config
+os-refresh-config
