@@ -49,7 +49,7 @@ export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal"}
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal"}
 
-OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud.yaml"
+OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-without-mergepy.yaml"
 RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-resource-registry.yaml"
 
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
