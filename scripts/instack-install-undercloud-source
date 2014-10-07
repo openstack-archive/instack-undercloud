@@ -111,9 +111,9 @@ function do_tripleo_source_installs {
         ## Compute and controller templates without merge.py + Add converted version of block and object storage
         #
         # https://review.openstack.org/#/c/123100
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/5 && git cherry-pick FETCH_HEAD
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/6 && git cherry-pick FETCH_HEAD
         # https://review.openstack.org/#/c/123713/
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/8 && git cherry-pick FETCH_HEAD
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/10 && git cherry-pick FETCH_HEAD
         popd
 
     fi
