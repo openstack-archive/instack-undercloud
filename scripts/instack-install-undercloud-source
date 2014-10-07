@@ -39,6 +39,12 @@ function do_tripleo_source_installs {
             git reset --hard FETCH_HEAD
         fi
 
+        # https://review.openstack.org/#/c/125354
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/54/125354/4 && git cherry-pick FETCH_HEAD
+
+        # https://review.openstack.org/#/c/126508/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/126508/2 && git cherry-pick FETCH_HEAD       
+
         popd
     fi
 
