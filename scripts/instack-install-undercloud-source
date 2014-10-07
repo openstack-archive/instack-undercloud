@@ -39,10 +39,6 @@ function do_tripleo_source_installs {
             git reset --hard FETCH_HEAD
         fi
 
-        # tuskar-load-roles needs --resource-registry param
-        # https://review.openstack.org/#/c/126041/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/41/126041/1 && git cherry-pick FETCH_HEAD
-
         popd
     fi
 
