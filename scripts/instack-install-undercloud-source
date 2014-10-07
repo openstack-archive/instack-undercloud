@@ -16,7 +16,9 @@ if [ "$DELOREAN" = "1" ]; then
     sudo curl -o /etc/yum.repos.d/delorean-alt.repo $DELOREAN_REPO_ALT
     sudo sed -i "s/delorean/delorean-alt/g" /etc/yum.repos.d/delorean-alt.repo
     sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean.repo"
+    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-buiilder dib-utils os-cloud-config' >> /etc/yum.repos.d/delorean.repo"
     sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean-alt.repo"
+    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-buiilder dib-utils os-cloud-config' >> /etc/yum.repos.d/delorean-alt.repo"
 fi
 
 sudo yum -y install git python-pip ccache
