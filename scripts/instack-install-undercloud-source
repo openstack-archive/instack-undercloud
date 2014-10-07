@@ -116,6 +116,9 @@ function do_tripleo_source_installs {
         git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/6 && git cherry-pick FETCH_HEAD
         # https://review.openstack.org/#/c/123713/
         git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/10 && git cherry-pick FETCH_HEAD
+        # https://review.openstack.org/#/c/126562
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/62/126562/2 && git cherry-pick FETCH_HEAD
+
         popd
 
     fi
