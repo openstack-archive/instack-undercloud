@@ -46,7 +46,7 @@ sudo cp /root/stackrc .
 #############################################################################"
 
 if [ "$LKG" = "1" ]; then
-    export DELOREAN_REPO=http://209.132.178.33/repos/0d/f4/0df4f416f9587881b8f7442b07506edf1155c3d3/delorean.repo
+    export DELOREAN_REPO=http://209.132.178.33/repos/00/8f/008f5b67839ae03fa9a73ddc9a430c8312472e1a/delorean.repo
     export DELOREAN_REPO_ALT=http://209.132.178.33/repos/e3/af/e3af9b42b532363b6cdc8eb95207c7d5e0ea87fc/delorean.repo
 else
     export DELOREAN_REPO=http://209.132.178.33/repos/current/delorean.repo
