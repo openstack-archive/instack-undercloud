@@ -16,9 +16,9 @@ if [ "$DELOREAN" = "1" ]; then
     sudo curl -o /etc/yum.repos.d/delorean-alt.repo $DELOREAN_REPO_ALT
     sudo sed -i "s/delorean/delorean-alt/g" /etc/yum.repos.d/delorean-alt.repo
     sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean.repo"
-    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-buiilder dib-utils os-cloud-config' >> /etc/yum.repos.d/delorean.repo"
+    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-builder dib-utils os-cloud-config openstack-ironic-api openstack-ironic-common openstack-ironic-conductor' >> /etc/yum.repos.d/delorean.repo"
     sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean-alt.repo"
-    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-buiilder dib-utils os-cloud-config' >> /etc/yum.repos.d/delorean-alt.repo"
+    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-builder dib-utils os-cloud-config openstack-ironic-api openstack-ironic-common openstack-ironic-conductor' >> /etc/yum.repos.d/delorean-alt.repo"
 fi
 
 sudo yum -y install git python-pip ccache
@@ -39,6 +39,10 @@ function do_tripleo_source_installs {
         if [ "$LKG" = "1" ]; then
             git fetch origin $DIB_REPOREF_tripleo_image_elements
             git reset --hard FETCH_HEAD
+
+            # Use --resource-registry parameter
+            # https://review.openstack.org/#/c/126041/
+            git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/41/126041/1 && git cherry-pick FETCH_HEAD
         fi
 
         # https://review.openstack.org/#/c/125354
@@ -186,9 +190,10 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
-instack-install-undercloud
-
 if [ "$DELOREAN" -eq 1 ]; then
+
+    # Must delete any newer packages first
+    sudo yum -y erase openstack-ironic-common
 
     sudo yum -y install \
         https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-api-2014.0923-2.noarch.rpm \
@@ -211,9 +216,7 @@ Defaults:ironic !requiretty
 ironic ALL = (root) NOPASSWD: /usr/bin/ironic-rootwrap /etc/ironic/rootwrap.conf *
 EOF
 "
-
-    # Need to restart ironic conductor to pick up the new code
-    sudo systemctl restart openstack-ironic-conductor || true
+    sudo chmod 0440 /etc/sudoers.d/ironic
 
     # python-swiftclient requires python-futures
     sudo yum -y install python-futures
@@ -225,6 +228,8 @@ if [ "$LKG" -eq 1 -a "$DELOREAN" -eq "0" ]; then
     sudo /opt/stack/venvs/openstack/bin/pip install -U "sqlalchemy-migrate!=0.9.2"
     sudo systemctl restart heat-engine
 fi
+
+instack-install-undercloud
 
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
