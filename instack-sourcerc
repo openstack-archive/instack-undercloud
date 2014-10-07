@@ -50,6 +50,7 @@ if [ "$LKG" = "1" ]; then
     export DELOREAN_REPO_ALT=http://209.132.178.33/repos/e3/af/e3af9b42b532363b6cdc8eb95207c7d5e0ea87fc/delorean.repo
 else
     export DELOREAN_REPO=http://209.132.178.33/repos/current/delorean.repo
+    export DELOREAN_REPO_ALT=http://209.132.178.33/repos/current/delorean.repo
 fi
 
 export PIP_DOWNLOAD_CACHE=~/.cache/pip
