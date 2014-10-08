@@ -223,13 +223,13 @@ EOF
 
 fi
 
+instack-install-undercloud
+
 if [ "$LKG" -eq 1 -a "$DELOREAN" -eq "0" ]; then
     # Heat's requirements for LKG cause issues
     sudo /opt/stack/venvs/openstack/bin/pip install -U "sqlalchemy-migrate!=0.9.2"
     sudo systemctl restart heat-engine
 fi
-
-instack-install-undercloud
 
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
