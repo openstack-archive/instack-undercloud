@@ -40,9 +40,6 @@ function do_tripleo_source_installs {
             git fetch origin $DIB_REPOREF_tripleo_image_elements
             git reset --hard FETCH_HEAD
 
-            # Use --resource-registry parameter
-            # https://review.openstack.org/#/c/126041/
-            git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/41/126041/1 && git cherry-pick FETCH_HEAD
         fi
 
         # https://review.openstack.org/#/c/125354
