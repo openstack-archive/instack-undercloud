@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -eux
+set -o pipefail
 
 export image_build=${1:-"all"}
 
