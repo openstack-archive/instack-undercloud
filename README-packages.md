@@ -1,8 +1,8 @@
 instack-undercloud via packages
 ===============================
 
-These steps can be used to install the undercloud on the already setup instack
-vm to use tripleo packages from the copr repo instead of from git.
+These steps can be used to install the undercloud from tripleo packages on the
+already setup instack vm. The packages are pulled from the copr repo for now.
 
 1. Once you are ssh'd into the instack vm as the stack user, setup the copr repo
 
