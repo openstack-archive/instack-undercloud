@@ -42,6 +42,11 @@ function do_tripleo_source_installs {
 
         fi
 
+        # This patch is RDO specific, as such there is no upstream review for it.
+        # Change default swift ports
+        git fetch https://github.com/redhat-openstack/tripleo-image-elements
+        git cherry-pick d540b460083251231465fee4a158e6848767b33f
+
         # https://review.openstack.org/#/c/125354
         git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/54/125354/4 && git cherry-pick FETCH_HEAD
 
