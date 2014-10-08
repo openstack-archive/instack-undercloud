@@ -45,7 +45,7 @@
       "tuskar-ui",
       "glance-wsme",
       "dib-run-parts-update",
-      "discovery-dhcp",
+      "ironic-discoverd",
       "element-manifest",
       "tuskar"
     ],
