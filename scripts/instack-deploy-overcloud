@@ -3,11 +3,41 @@
 set -eux
 set -o pipefail
 
+SCRIPT_NAME=$(basename $0)
+
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then
     echo "You must source a stackrc file for the Undercloud."
     exit 1
 fi
+
+TUSKAR=
+
+function show_options () {
+    echo "Usage: $SCRIPT_NAME [options]"
+    echo
+    echo "Deploys an Overcloud."
+    echo
+    echo "Options:"
+    echo "      --tuskar       -- will use tuskar for building the heat Template"
+    echo
+    exit $1
+}
+
+TEMP=$(getopt -o ,h -l,tuskar,help -n $SCRIPT_NAME -- "$@")
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+while true ; do
+    case "$1" in
+        --tuskar) TUSKAR="1"; shift 1;;
+        -h | --help) show_options 0;;
+        --) shift ; break ;;
+        *) echo "Error: unsupported option $1." ; exit 1 ;;
+    esac
+done
 
 # setup-baremetal requires this to be set
 export TRIPLEO_ROOT=.
@@ -52,64 +82,152 @@ export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal"}
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal"}
 
-OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-without-mergepy.yaml"
-RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-resource-registry.yaml"
-
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
-export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
--P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
--P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
--P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
--P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
--P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
--P CinderISCSIHelper=lioadm \
--P CloudName=overcloud \
--P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
--P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
--P NeutronControlPlaneID=$NeutronControlPlaneID \
--P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
--P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
--P NeutronPublicInterface=$NeutronPublicInterface \
--P HypervisorNeutronPublicInterface=$HypervisorNeutronPublicInterface \
--P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
--P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
--P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
--P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
--P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
--P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
--P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
--P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
--P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
--P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
--P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
--P NtpServer=${NtpServer} \
-"}
+if [ -n "$TUSKAR" ]; then
+
+    # TODO(lsmola) Not needed when tuskar CLI will be installed correctly
+    set +u
+    source /opt/stack/venvs/openstack/bin/activate
+    set -u
+
+    # TODO(lsmola) version not needed when it will be registered to keystone correctly
+    PLAN_ID=$( tuskar --tuskar-api-version 2 plan-show overcloud | awk '$2=="uuid" {print $4}' )
+
+    export TUSKAR_PARAMETERS=${TUSKAR_PARAMETERS:-"
+    -A NeutronControlPlaneID=${NeutronControlPlaneID}
+    -A controller-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
+    -A controller-1::AdminToken=${OVERCLOUD_ADMIN_TOKEN}
+    -A cinder-storage-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
+    -A compute-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
+    -A controller-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A cinder-storage-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A swift-storage-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A compute-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A controller-1::CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD}
+    -A controller-1::CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET}
+    -A compute-1::CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD}
+    -A compute-1::CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET}
+    -A controller-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
+    -A cinder-storage-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
+    -A controller-1::GlancePassword=${OVERCLOUD_GLANCE_PASSWORD}
+    -A controller-1::HeatPassword=${OVERCLOUD_HEAT_PASSWORD}
+    -A controller-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
+    -A compute-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
+    -A cinder-storage-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
+    -A controller-1::NovaPassword=${OVERCLOUD_NOVA_PASSWORD}
+    -A compute-1::NovaPassword=${OVERCLOUD_NOVA_PASSWORD}
+    -A controller-1::SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}
+    -A controller-1::SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}
+    -A controller-1::CinderISCSIHelper=lioadm
+    -A cinder-storage-1::CinderISCSIHelper=lioadm
+    -A controller-1::CloudName=overcloud
+    -A controller-1::NeutronPublicInterface=$NeutronPublicInterface
+    -A compute-1::NeutronPublicInterface=$NeutronPublicInterface
+    -A cinder-storage-1::NeutronPublicInterface=$NeutronPublicInterface
+    -A compute-1::NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE
+    -A controller-1::NtpServer=${NtpServer}
+    -A compute-1::NtpServer=${NtpServer}
+    -A controller-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    -A compute-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    -A cinder-storage-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    -A swift-storage-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    -A controller-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
+    -A compute-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
+    "}
+
+    # These attributes can't be changed in Tuskar-UI, so this is the only
+    # difference to deploying through UI
+    # -A NeutronDnsmasqOptions=dhcp-option-force=26,1400
+    # -A NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    # -A NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
+
+    tuskar --tuskar-api-version 2 plan-patch $TUSKAR_PARAMETERS $PLAN_ID
+    tuskar --tuskar-api-version 2 plan-templates -O tuskar_templates $PLAN_ID
+
+    set +u
+    deactivate
+    set -u
+
+    OVERCLOUD_YAML_PATH="$INSTACK_ROOT/tuskar_templates/plan.yaml"
+    RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/tuskar_templates/environment.yaml"
+
+    RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
+
+    HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
+    ENV_JSON='{"parameters":{}}'
+
+    jq . > "${HEAT_ENV}" <<< $ENV_JSON
+    chmod 0600 "${HEAT_ENV}"
+    generate-keystone-pki --heatenv $HEAT_ENV
+    sed -i 's/KeystoneCACertificate/controller-1::KeystoneCACertificate/g' $HEAT_ENV
+    sed -i 's/KeystoneSigningCertificate/controller-1::KeystoneSigningCertificate/g' $HEAT_ENV
+    sed -i 's/KeystoneSigningKey/controller-1::KeystoneSigningKey/g' $HEAT_ENV
+
+    HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
+
+    heat stack-create -f $OVERCLOUD_YAML_PATH \
+        $RESOURCE_REGISTRY \
+        $HEAT_ENVIRONMENT \
+        overcloud
+else
+    OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-without-mergepy.yaml"
+    RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-resource-registry.yaml"
+
+    export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
+    -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
+    -P AdminToken=${OVERCLOUD_ADMIN_TOKEN} \
+    -P CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD} \
+    -P CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET} \
+    -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
+    -P CinderISCSIHelper=lioadm \
+    -P CloudName=overcloud \
+    -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
+    -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
+    -P NeutronControlPlaneID=$NeutronControlPlaneID \
+    -P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
+    -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
+    -P NeutronPublicInterface=$NeutronPublicInterface \
+    -P HypervisorNeutronPublicInterface=$HypervisorNeutronPublicInterface \
+    -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
+    -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
+    -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
+    -P SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD} \
+    -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
+    -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
+    -P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
+    -P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
+    -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
+    -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
+    -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
+    -P NtpServer=${NtpServer} \
+    "}
 
 
-HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
-ENV_JSON='{"parameters":{}}'
+    HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
+    ENV_JSON='{"parameters":{}}'
 
 
-RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
-ENV_JSON=$(jq '.parameters = .parameters + {
-    "ControllerCount": '${CONTROLSCALE}',
-    "ComputeCount": '${COMPUTESCALE}',
-    "BlockStorageCount": '${BLOCKSTORAGESCALE}',
-    "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
-  }' <<< $ENV_JSON)
+    RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
+    ENV_JSON=$(jq '.parameters = .parameters + {
+        "ControllerCount": '${CONTROLSCALE}',
+        "ComputeCount": '${COMPUTESCALE}',
+        "BlockStorageCount": '${BLOCKSTORAGESCALE}',
+        "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
+      }' <<< $ENV_JSON)
 
-jq . > "${HEAT_ENV}" <<< $ENV_JSON
-chmod 0600 "${HEAT_ENV}"
-generate-keystone-pki --heatenv $HEAT_ENV
-HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
+    jq . > "${HEAT_ENV}" <<< $ENV_JSON
+    chmod 0600 "${HEAT_ENV}"
+    generate-keystone-pki --heatenv $HEAT_ENV
+    HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
 
 
-heat stack-create -f $OVERCLOUD_YAML_PATH \
-    $RESOURCE_REGISTRY \
-    $OVERCLOUD_PARAMETERS \
-    $HEAT_ENVIRONMENT \
-    overcloud
+    heat stack-create -f $OVERCLOUD_YAML_PATH \
+        $RESOURCE_REGISTRY \
+        $OVERCLOUD_PARAMETERS \
+        $HEAT_ENVIRONMENT \
+        overcloud
+fi
 
 tripleo wait_for_stack_ready 220 10 overcloud
 
