@@ -61,9 +61,6 @@ function do_tripleo_source_installs {
         # https://review.openstack.org/#/c/127104/
         git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/127104/1 && git cherry-pick FETCH_HEAD
 
-        # https://review.openstack.org/#/c/121949/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/49/121949/1 && git cherry-pick FETCH_HEAD
-
         popd
     fi
 
