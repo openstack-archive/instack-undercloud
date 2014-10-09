@@ -64,6 +64,9 @@ function do_tripleo_source_installs {
         if [ "$LKG" = "1" ]; then
             git fetch origin $DIB_REPOREF_diskimage_builder
             git reset --hard FETCH_HEAD
+
+	    # Install openstack-selinux on RHEL
+            git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/65/123865/3 && git cherry-pick FETCH_HEAD
         fi
 
         popd
