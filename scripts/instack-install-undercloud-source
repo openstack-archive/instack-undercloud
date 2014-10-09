@@ -139,6 +139,13 @@ function do_tripleo_source_installs {
     export DIB_INSTALLTYPE_tripleo_heat_templates=source
     export TUSKAR_ROLE_DIRECTORY=/opt/stack/tripleo-heat-templates
 
+    # pip installs netaddr package as one of dependencies when
+    # installing instack-related projects bellow. Then later
+    # python-netaddr rpm is being installed and it fails on RHEL
+    # because it conflicts with pip's netaddr. Make sure python-netaddr
+    # rpm is installed first.
+    sudo yum -y install python-netaddr
+
     pushd $INSTACK_ROOT/dib-utils
     sudo pip install -U .
     popd
