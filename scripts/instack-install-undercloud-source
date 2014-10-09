@@ -53,6 +53,14 @@ function do_tripleo_source_installs {
         # https://review.openstack.org/#/c/126508/
         git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/126508/2 && git cherry-pick FETCH_HEAD
 
+	# SELinux keepalived custom policy
+        # https://review.openstack.org/#/c/127095/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/95/127095/1 && git cherry-pick FETCH_HEAD
+
+	# SELinux swift /var/lib/swift/.local denial
+	# https://review.openstack.org/#/c/127104/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/127104/1 && git cherry-pick FETCH_HEAD
+	
         popd
     fi
 
