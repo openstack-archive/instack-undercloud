@@ -57,7 +57,7 @@ export PIP_DOWNLOAD_CACHE=~/.cache/pip
 
 if [ "$LKG" = "1" ]; then
     # These are set manually, since they're not part of source-repositories
-    export DIB_REPOREF_tripleo_image_elements=aaa653d6a2e0bede680db8f0a509d12db963ba2a
+    export DIB_REPOREF_tripleo_image_elements=07e7f1f9639863473e865ddccdcf4d882f227ee0
     export DIB_REPOREF_diskimage_builder=de60893ccd78b35731828081e0aaa053676cbfed
     export DIB_REPOREF_os_cloud_config=a2b5ec4d4d0f22dd58454023324d1245ecdeece7
     export DIB_REPOREF_tripleo_incubator=c3fb309727671130a32b4c19de48ec22c8530aa1
