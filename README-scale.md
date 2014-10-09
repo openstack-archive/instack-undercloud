@@ -30,7 +30,7 @@ DEPLOYMENT_MODE to scale.
 3. After the completed installation, create the baremetal flavors to correspond
 to the overcloud roles you intend to deploy. These are example commands.
 
-        nova flavor-create control auto 3072 40 2
+        nova flavor-create control auto 4096 40 2
         nova flavor-create compute auto 1024 40 1
         nova flavor-create blockstorage auto 1024 40 1
         nova flavor-create swiftstorage auto 1024 40 1
