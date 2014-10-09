@@ -51,7 +51,18 @@ function do_tripleo_source_installs {
         git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/54/125354/4 && git cherry-pick FETCH_HEAD
 
         # https://review.openstack.org/#/c/126508/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/126508/2 && git cherry-pick FETCH_HEAD       
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/126508/2 && git cherry-pick FETCH_HEAD
+
+        # SELinux keepalived custom policy
+        # https://review.openstack.org/#/c/127095/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/95/127095/1 && git cherry-pick FETCH_HEAD
+
+        # SELinux swift /var/lib/swift/.local denial
+        # https://review.openstack.org/#/c/127104/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/127104/1 && git cherry-pick FETCH_HEAD
+
+        # https://review.openstack.org/#/c/121949/
+        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/49/121949/1 && git cherry-pick FETCH_HEAD
 
         popd
     fi
@@ -64,6 +75,9 @@ function do_tripleo_source_installs {
         if [ "$LKG" = "1" ]; then
             git fetch origin $DIB_REPOREF_diskimage_builder
             git reset --hard FETCH_HEAD
+
+	    # Install openstack-selinux on RHEL
+            git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/65/123865/3 && git cherry-pick FETCH_HEAD
         fi
 
         popd
@@ -121,7 +135,7 @@ function do_tripleo_source_installs {
         ## Compute and controller templates without merge.py + Add converted version of block and object storage
         #
         # https://review.openstack.org/#/c/123100
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/6 && git cherry-pick FETCH_HEAD
+        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/7 && git cherry-pick FETCH_HEAD
         # https://review.openstack.org/#/c/123713/
         git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/10 && git cherry-pick FETCH_HEAD
         # https://review.openstack.org/#/c/126562
@@ -138,6 +152,13 @@ function do_tripleo_source_installs {
     export DIB_REPOLOCATION_tripleo_heat_templates=$INSTACK_ROOT/tripleo-heat-templates
     export DIB_INSTALLTYPE_tripleo_heat_templates=source
     export TUSKAR_ROLE_DIRECTORY=/opt/stack/tripleo-heat-templates
+
+    # pip installs netaddr package as one of dependencies when
+    # installing instack-related projects bellow. Then later
+    # python-netaddr rpm is being installed and it fails on RHEL
+    # because it conflicts with pip's netaddr. Make sure python-netaddr
+    # rpm is installed first.
+    sudo yum -y install python-netaddr
 
     pushd $INSTACK_ROOT/dib-utils
     sudo pip install -U .
