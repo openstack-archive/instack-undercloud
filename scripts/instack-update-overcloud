@@ -11,7 +11,7 @@ fi
 # setup-baremetal requires this to be set
 export TRIPLEO_ROOT=.
 CPU=${CPU:-1}
-MEM=${MEM:-3072}
+MEM=${MEM:-4096}
 DISK=${DISK:-30}
 ARCH=${ARCH:-amd64}
 MACS=${MACS:-"52:54:00:b5:bd:f0 52:54:00:f2:be:f0"}

@@ -41,7 +41,7 @@ fi
 export NODE_CNT=${NODE_CNT:-4}
 export NODE_DIST=${NODE_DIST:-"fedora"}
 export NODE_ARCH=${NODE_ARCH:-x86_64}
-export NODE_MEM=${NODE_MEM:-3072}
+export NODE_MEM=${NODE_MEM:-4096}
 
 source $DEVTEST_VARIABLES
 
