@@ -126,6 +126,13 @@ undercloud-package-install \
 oslo-serialization \
 "}
 
+if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
+    OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS epel rdo-release"
+    OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS="$OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS epel rdo-release"
+    OVERCLOUD_CINDER_DIB_EXTRA_ARGS="$OVERCLOUD_CINDER_DIB_EXTRA_ARGS epel rdo-release"
+    OVERCLOUD_SWIFT_DIB_EXTRA_ARGS="$OVERCLOUD_SWIFT_DIB_EXTRA_ARGS epel rdo-release"
+fi
+
 function deploy-ramdisk {
 if [ ! -f $DEPLOY_NAME.initramfs -o \
      ! -f $DEPLOY_NAME.kernel ]; then
