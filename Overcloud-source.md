@@ -7,11 +7,11 @@ installed.
 the overcloud. Set the values to to the number of nodes deployed for each role type. You must deploy
 at least 1 Compute node, but do not need to deploy any block storage or object storage nodes. Once you are done
 making any edits to the file, source the file into your shell.
-   
 
-        COMPUTESCALE=${COMPUTESCALE:-1}
-        BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
-        SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
+
+        export COMPUTESCALE=${COMPUTESCALE:-1}
+        export BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
+        export SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
         source deploy-overcloudrc
 
 1. Deploy the overcloud using heat:
