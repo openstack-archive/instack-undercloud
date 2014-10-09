@@ -30,6 +30,16 @@ mkdir -p $PIP_DOWNLOAD_CACHE
 git config --global user.email "instack@example.com"
 git config --global user.name "instack"
 
+function cherry_pick {
+    local PROJ_NAME=$1
+    local REFSPEC=$2
+
+    pushd $PROJ_NAME
+    git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC"
+    git cherry-pick FETCH_HEAD || echo "Failed to cherry-pick $REFSPEC from $PROJ_NAME"
+    popd
+}
+
 function do_tripleo_source_installs {
     if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
         git clone https://git.openstack.org/openstack/tripleo-image-elements
@@ -47,21 +57,12 @@ function do_tripleo_source_installs {
         git fetch https://github.com/redhat-openstack/tripleo-image-elements
         git cherry-pick d540b460083251231465fee4a158e6848767b33f
 
-        # https://review.openstack.org/#/c/125354
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/54/125354/4 && git cherry-pick FETCH_HEAD
-
-        # https://review.openstack.org/#/c/126508/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/08/126508/2 && git cherry-pick FETCH_HEAD
-
-        # SELinux keepalived custom policy
-        # https://review.openstack.org/#/c/127095/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/95/127095/1 && git cherry-pick FETCH_HEAD
-
-        # SELinux swift /var/lib/swift/.local denial
-        # https://review.openstack.org/#/c/127104/
-        git fetch https://review.openstack.org/openstack/tripleo-image-elements refs/changes/04/127104/1 && git cherry-pick FETCH_HEAD
-
         popd
+
+        cherry_pick tripleo-image-elements refs/changes/54/125354/4
+        cherry_pick tripleo-image-elements refs/changes/08/126508/2
+        cherry_pick tripleo-image-elements refs/changes/95/127095/1
+        cherry_pick tripleo-image-elements refs/changes/04/127104/1
     fi
 
     if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
@@ -73,8 +74,8 @@ function do_tripleo_source_installs {
             git fetch origin $DIB_REPOREF_diskimage_builder
             git reset --hard FETCH_HEAD
 
-	    # Install openstack-selinux on RHEL
-            git fetch https://review.openstack.org/openstack/diskimage-builder refs/changes/65/123865/3 && git cherry-pick FETCH_HEAD
+            # Install openstack-selinux on RHEL
+            cherry_pick diskimage-builder refs/changes/65/123865/3
         fi
 
         popd
@@ -128,17 +129,15 @@ function do_tripleo_source_installs {
     if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git clone https://git.openstack.org/openstack/tripleo-heat-templates
 
-        pushd tripleo-heat-templates
         ## Compute and controller templates without merge.py + Add converted version of block and object storage
         #
         # https://review.openstack.org/#/c/123100
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/00/123100/7 && git cherry-pick FETCH_HEAD
+        cherry_pick tripleo-heat-templates refs/changes/00/123100/7
         # https://review.openstack.org/#/c/123713/
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/13/123713/10 && git cherry-pick FETCH_HEAD
+        cherry_pick tripleo-heat-templates refs/changes/13/123713/10
         # https://review.openstack.org/#/c/126562
-        git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/62/126562/2 && git cherry-pick FETCH_HEAD
+        cherry_pick tripleo-heat-templates refs/changes/62/126562/2
 
-        popd
 
     fi
 
