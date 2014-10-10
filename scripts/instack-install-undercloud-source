@@ -62,6 +62,12 @@ function do_tripleo_source_installs {
         cherry_pick tripleo-image-elements refs/changes/08/126508/2
         cherry_pick tripleo-image-elements refs/changes/95/127095/1
         cherry_pick tripleo-image-elements refs/changes/04/127104/1
+
+        # disable keepalived custom policy on RHEL because it doesn't install
+        # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
+        if [[ "$NODE_DIST" =~ "centos" || "$NODE_DIST" =~ "rhel" ]]; then
+            rm $INSTACK_ROOT/tripleo-image-elements/elements/selinux/custom-policies/tripleo-selinux-keepalived.te
+        fi
     fi
 
     if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
