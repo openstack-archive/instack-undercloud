@@ -115,9 +115,13 @@ if [ $SWIFTSTORAGESCALE -gt 0 ]; then
     swift upload test $tmpfile
     swiftfile=$(swift list test)
 
-    if [ ! $(swift download --output - test $swiftfile) == "SWIFTTEST" ]; then
+    swift download --output $tmpfile-1 test $swiftfile
+
+    if [ ! "$(cat $tmpfile-1)" == "SWIFTTEST" ]; then
         echo Swift test failed!
     fi
+
+    swift delete test
 
     echo Swift test successful!
 fi
