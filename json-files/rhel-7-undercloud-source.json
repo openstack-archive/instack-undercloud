@@ -20,8 +20,8 @@
     "element": [
       "base",
       "undercloud-install",
-      "fedora",
-      "fedora-distro",
+      "rhel7",
+      "rhel7-distro",
       "boot-stack",
       "nova-ironic",
       "os-collect-config",
