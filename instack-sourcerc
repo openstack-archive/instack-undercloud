@@ -20,6 +20,8 @@ export IMG_SOURCE_URL=http://file.rdu.redhat.com/~jslagle/tripleo-images-juno-so
 export DELOREAN=${DELOREAN:-1}
 # Using LKG is the default
 export LKG=${LKG:-1}
+# When using rdo-release, we default to rdo-icehouse
+export RDO_RELEASE=${RDO_RELEASE:-"icehouse"}
 
 if [ "$DELOREAN" = "1" ]; then
     export JSONFILE=${JSONFILE:-$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-delorean.json}
