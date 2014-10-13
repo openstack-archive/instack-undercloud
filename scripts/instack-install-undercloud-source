@@ -59,10 +59,15 @@ function do_tripleo_source_installs {
 
         popd
 
-        cherry_pick tripleo-image-elements refs/changes/54/125354/4
         cherry_pick tripleo-image-elements refs/changes/08/126508/2
         cherry_pick tripleo-image-elements refs/changes/95/127095/1
         cherry_pick tripleo-image-elements refs/changes/04/127104/1
+
+        # disable keepalived custom policy on RHEL because it doesn't install
+        # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
+        if [[ "$NODE_DIST" =~ "centos" || "$NODE_DIST" =~ "rhel" ]]; then
+            rm $INSTACK_ROOT/tripleo-image-elements/elements/selinux/custom-policies/tripleo-selinux-keepalived.te
+        fi
     fi
 
     if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
@@ -79,6 +84,14 @@ function do_tripleo_source_installs {
 
         # Install openstack-selinux on RHEL
         cherry_pick diskimage-builder refs/changes/65/123865/3
+
+        # fix epel repo url
+        # https://review.openstack.org/#/c/125552/
+        # https://review.openstack.org/#/c/125450/
+        # https://review.openstack.org/#/c/127304/
+        cherry_pick diskimage-builder refs/changes/52/125552/1
+        cherry_pick diskimage-builder refs/changes/50/125450/4
+        cherry_pick diskimage-builder refs/changes/04/127304/1
     fi
 
     # tar is required if we want to run diskimage-builder

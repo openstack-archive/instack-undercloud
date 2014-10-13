@@ -41,8 +41,7 @@
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
       "epel",
-      "rdo-release",
-      "rdo-icehouse"
+      "rdo-release"
     ],
     "hook": [
       "extra-data",
