@@ -5,5 +5,5 @@
 
 set -eux
 
-os-svc-restart -n discovery-dhcp-dnsmasq
-os-svc-restart -n ironic-discoverd
+os-svc-restart -n openstack-ironic-discoverd-dnsmasq
+os-svc-restart -n openstack-ironic-discoverd
