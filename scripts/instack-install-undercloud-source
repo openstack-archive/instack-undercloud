@@ -36,7 +36,7 @@ function cherry_pick {
 
     pushd $PROJ_NAME
     git fetch https://review.openstack.org/openstack/$PROJ_NAME "$REFSPEC"
-    git cherry-pick FETCH_HEAD || echo "Failed to cherry-pick $REFSPEC from $PROJ_NAME"
+    git cherry-pick FETCH_HEAD
     popd
 }
 
