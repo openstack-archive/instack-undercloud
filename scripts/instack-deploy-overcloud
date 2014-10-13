@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -eux
+set -o pipefail
 
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then
