@@ -59,6 +59,7 @@ function do_tripleo_source_installs {
 
         popd
 
+        cherry_pick tripleo-image-elements refs/changes/54/125354/4
         cherry_pick tripleo-image-elements refs/changes/08/126508/2
         cherry_pick tripleo-image-elements refs/changes/95/127095/1
         cherry_pick tripleo-image-elements refs/changes/04/127104/1
