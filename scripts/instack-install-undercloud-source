@@ -272,4 +272,17 @@ fi
 # $USER is not always set in a live cd building enviroment, so use || true
 sudo -E chown -R $USER: $HOME/.cache/image-create || true
 
+# svc-map requires PyYAML, need to submit this patch upstream
+sudo yum -y install PyYAML
+
+# Must erase NetworkManager, otherwise ifup called on the provisioning
+# interface tries to use nmcli and that fails for some yet undetermined reason,
+# so just delete NetworkManager for now.
+sudo yum -y erase NetworkManager
+
+# Must reinstall cmd2 as there is a package conflict with the pip install, so
+# we have to reinstall it. Otherwise, "neturon net-show" during
+# instack-deploy-overcloud fails.
+sudo pip install -U cmd2
+
 echo "$COMPLETION_MESSAGE"
