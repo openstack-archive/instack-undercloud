@@ -65,6 +65,7 @@ function do_tripleo_source_installs {
 
         # disable keepalived custom policy on RHEL because it doesn't install
         # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
+        export NODE_DIST=${NODE_DIST:-fedora}
         if [[ "$NODE_DIST" =~ "centos" || "$NODE_DIST" =~ "rhel" ]]; then
             rm $INSTACK_ROOT/tripleo-image-elements/elements/selinux/custom-policies/tripleo-selinux-keepalived.te
         fi
