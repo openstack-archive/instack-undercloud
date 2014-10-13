@@ -143,5 +143,10 @@
     "stonith_enabled": "false",
     "recheck_interval": "5",
     "quorum_policy": "ignore"
+  },
+  "discovery": {
+    "interface": "{{DISCOVERY_INTERFACE}}",
+    "iprange": "{{DISCOVERY_IPRANGE}}",
+    "pxeip": "{{DISCOVERY_PXEIP}}"
   }
 }
