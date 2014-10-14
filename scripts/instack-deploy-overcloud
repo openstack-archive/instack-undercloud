@@ -78,12 +78,12 @@ export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
 -P NeutronNetworkType=${NEUTRON_NETWORK_TYPE} \
 -P NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES} \
 -P SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD} \
+-P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
+-P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
+-P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
+-P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
 "}
 
-# -P OvercloudControlFlavor=${OVERCLOUD_CONTROL_FLAVOR} \
-# -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
-# -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
-# -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
 
 HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
 ENV_JSON='{"parameters":{}}'
