@@ -39,6 +39,7 @@ NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 # Define the overcloud libvirt type for virtualization. kvm for
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
+NtpServer=${NtpServer:-""}
 
 CONTROLSCALE=${CONTROLSCALE:-1}
 COMPUTESCALE=${COMPUTESCALE:-1}
@@ -82,6 +83,7 @@ export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
 -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
 -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
 -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
+-P NtpServer=${NtpServer} \
 "}
 
 
