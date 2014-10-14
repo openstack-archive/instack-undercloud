@@ -34,6 +34,7 @@ source tripleo-undercloud-passwords
 # Define the interface that will be bridged onto the Neutron defined
 # network.
 NeutronPublicInterface=${NeutronPublicInterface:-eth0}
+HypervisorNeutronPublicInterface=${HypervisorNeutronPublicInterface:-$NeutronPublicInterface}
 NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 # Define the overcloud libvirt type for virtualization. kvm for
 # baremetal, qemu for an overcloud running in vm's.
@@ -69,6 +70,7 @@ export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
 -P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
 -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
 -P NeutronPublicInterface=$NeutronPublicInterface \
+-P HypervisorNeutronPublicInterface=$HypervisorNeutronPublicInterface \
 -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
 -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
 -P SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH} \
