@@ -21,6 +21,3 @@ ExecStart=/sbin/dnsmasq --conf-file=/etc/ironic-discoverd/dnsmasq.conf
 WantedBy=multi-user.target
 Alias=openstack-ironic-discoverd-dnsmasq.service
 eof
-
-# Enable the service
-os-svc-enable -n openstack-ironic-discoverd-dnsmasq

@@ -33,6 +33,9 @@ export DHCP_START
 export DHCP_END
 export NETWORK_CIDR
 export NETWORK_GATEWAY
+export DISCOVERY_INTERFACE
+export DISCOVERY_IPRANGE
+export DISCOVERY_PXEIP
 
 export UNDERCLOUD_DB_PASSWORD=${UNDERCLOUD_DB_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_ADMIN_TOKEN=${UNDERCLOUD_ADMIN_TOKEN:-$(tripleo os-make-password)}

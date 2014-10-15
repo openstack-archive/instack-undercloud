@@ -5,5 +5,8 @@
 
 set -eux
 
+os-svc-enable -n openstack-ironic-discoverd-dnsmasq
+os-svc-enable -n openstack-ironic-discoverd
+
 os-svc-restart -n openstack-ironic-discoverd-dnsmasq
 os-svc-restart -n openstack-ironic-discoverd
