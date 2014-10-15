@@ -76,7 +76,7 @@ glance image-update --property type='overcloud provisioning' overcloud-swift-sto
 glance image-update --property type='overcloud provisioning ramdisk' overcloud-swift-storage-initrd
 glance image-update --property type='overcloud provisioning kernel' overcloud-swift-storage-vmlinuz
 
-DEPLOYMENT_MODE=${DEPLOYMENT_MODE:-"poc"}
+DEPLOYMENT_MODE=$(os-apply-config --key deployment-mode --key-default 'poc')
 if [ "$DEPLOYMENT_MODE" = "poc" ]; then
     if ! nova flavor-show baremetal 2>&1 1>/dev/null; then
         nova flavor-create baremetal auto 4096 30 1
