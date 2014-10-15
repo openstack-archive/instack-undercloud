@@ -32,3 +32,14 @@ appliance-source:
 		--proxy http://192.168.122.1:3128 \
 		--make-appliance \
 		--tmp .
+
+livecd-tools-iso:
+	livecd-creator \
+		--debug \
+		--verbose \
+		--config instack-livecd.ks \
+		--title "OpenStack Management Title" \
+		--product "OpenStack Management Fedora" \
+		--releasever 20 \
+		--cache /var/cache/livecd-tools \
+		--tmpdir /tmp

@@ -79,7 +79,7 @@ sed -i 's/^#user-session=.*/user-session=xfce/' /etc/lightdm/lightdm.conf
 mkdir /home/stack/Desktop
 cp /usr/share/applications/liveinst.desktop /home/stack/Desktop
 sed -i -e 's/NoDisplay=true/NoDisplay=false/' /home/stack/Desktop/liveinst.desktop
-sed -i -e 's/Exec=\/usr\/bin\/liveinst/\0 --kickstart \/home\/stack\/instack-undercloud\/live\/instack-install.ks/' /home/stack/Desktop/liveinst.desktop
+sed -i -e 's/Exec=\/usr\/bin\/liveinst/\0 --kickstart \/usr\/share\/instack-undercloud\/live\/instack-install.ks/' /home/stack/Desktop/liveinst.desktop
 sed -i -e 's/Terminal=false/Terminal=true/' /home/stack/Desktop/liveinst.desktop
 mkdir -p  /home/stack/.config/autostart
 ln -s /home/stack/Desktop/liveinst.desktop /home/stack/.config/autostart
@@ -95,19 +95,17 @@ pushd /home/stack
 
 ssh-keygen -t rsa -N "" -f /home/stack/virtual-power-key
 
-yum -y install git
-git clone https://github.com/agroup/instack-undercloud
-cp instack-undercloud/instack-baremetal.answers.sample /home/stack/instack.answers
-cp instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
+curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
+yum -y install https://slagle.fedorapeople.org/copr/instack-undercloud-1.0.10-1.fc20.noarch.rpm
+cp /usr/share/doc/instack-undercloud/instack.answers.sample /home/stack/instack.answers
+cp /usr/share/doc/instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
 # instack-install-undercloud sources ~/instack.answers, and during the
 # %chroot phase, apparently ~ evaluates to /tmp. So, we need to copy the
 # answers file there as well.
-cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
+cp /usr/share/doc/instack-undercloud/instack.answers.sample ~/instack.answers
 
 export RUN_ORC=0
-export LKG=1
-source instack-undercloud/instack-sourcerc
-instack-undercloud/scripts/instack-install-undercloud-source
+instack-install-undercloud-source
 
 cat << EOF >> /etc/fstab
 tmpfs /mnt tmpfs rw 0 0
@@ -122,11 +120,10 @@ popd
 chown -R stack:stack /home/stack
 restorecon -R /home/stack
 
-# Always force the source install
-echo "source /home/stack/instack-undercloud/instack-sourcerc" >> /home/stack/.bashrc
-
 # disable os-collect-config
 rm -f /etc/systemd/system/multi-user.target.wants/os-collect-config.service
+# disable crond so that os-refresh-config on boot job does not start
+rm -f /etc/systemd/system/multi-user.target.wants/crond.service
 
 # need to reinstall anaconda
 yum -y install anaconda
