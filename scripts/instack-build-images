@@ -113,16 +113,20 @@ oslo-serialization \
 
 export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS=${OVERCLOUD_SWIFT_DIB_EXTRA_ARGS:-"\
 pip-cache \
+pypi-openstack \
 swift-storage \
-neutron-openvswitch-agent \
 os-collect-config \
 baremetal \
+base \
+common-venv \
 dhcp-all-interfaces \
+hosts \
+ntp \
+snmpd \
 stackuser \
-fedora-rdo-icehouse-repository \
 stable-interface-names \
+use-ephemeral \
 os-refresh-config-reboot \
-undercloud-package-install \
 oslo-serialization \
 "}
 
