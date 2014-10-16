@@ -41,7 +41,6 @@
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
-      "ceilometer-delorean",
       "tuskar-ui",
       "glance-wsme",
       "dib-run-parts-update",
