@@ -21,16 +21,17 @@ export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
-
-export DEPLOY_DIB_EXTRA_ARGS=${DEPLOY_DIB_EXTRA_ARGS:-"\
-undercloud-package-install"}
-
 export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
-export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS element-manifest"
+export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS element-manifest dib-run-parts-update"
 
-export DELOREAN=${DELOREAN:-"1"}
+export DELOREAN=${DELOREAN:-"0"}
 if [ "$DELOREAN" = "1" ]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean undercloud-package-install dib-run-parts-update"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean" 
+fi
+
+export PACKAGES=${PACKAGES:-"1"}
+if [ "$PACKAGES" = "1" ]; then
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install rdo-juno-team-virt"
 fi
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
@@ -64,11 +65,6 @@ swift-storage \
 use-ephemeral \
 oslo-serialization \
 "}
-
-if [ "$DELOREAN" = "1" ]; then
-    # Delorean is patched but there isn't a new build yet.
-    export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS glance-wsme ceilometer-delorean dib-run-parts-update"
-fi
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
 baremetal \
@@ -144,7 +140,6 @@ if [ ! -f $DEPLOY_NAME.initramfs -o \
         -a $NODE_ARCH \
         -o $DEPLOY_NAME \
         $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
-        $DEPLOY_DIB_EXTRA_ARGS \
         $DIB_COMMON_ELEMENTS \
         2>&1 | tee dib-deploy.log
 fi

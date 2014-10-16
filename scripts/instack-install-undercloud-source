@@ -7,19 +7,8 @@ export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
 /usr/share/tripleo-image-elements:\
 /usr/share/diskimage-builder/elements:\
 /usr/share/instack-undercloud"}
-export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-delorean.json}
-
+export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages}
 source "$INSTACK_ROOT"/instack-undercloud/instack-sourcerc
-
-if [ "$DELOREAN" = "1" ]; then
-    sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
-    sudo curl -o /etc/yum.repos.d/delorean-alt.repo $DELOREAN_REPO_ALT
-    sudo sed -i "s/delorean/delorean-alt/g" /etc/yum.repos.d/delorean-alt.repo
-    sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean.repo"
-    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-builder dib-utils os-cloud-config openstack-ironic-api openstack-ironic-common openstack-ironic-conductor' >> /etc/yum.repos.d/delorean.repo"
-    sudo /bin/bash -c "echo >> /etc/yum.repos.d/delorean-alt.repo"
-    sudo /bin/bash -c "echo 'exclude=openstack-tripleo openstack-tripleo-image-elements openstack-tripleo-heat-templates diskimage-builder dib-utils os-cloud-config openstack-ironic-api openstack-ironic-common openstack-ironic-conductor' >> /etc/yum.repos.d/delorean-alt.repo"
-fi
 
 sudo yum -y install git python-pip ccache
 
@@ -217,7 +206,7 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
-if [ "$DELOREAN" -eq 1 ]; then
+if [[ "$JSONFILE" =~ "package" ]]; then
 
     # Must delete any newer packages first
     sudo yum -y erase openstack-ironic-common
@@ -250,6 +239,14 @@ EOF
     # python-swiftclient requires python-futures
     sudo yum -y install python-futures
 
+    # Must install python-heatclient from Delorean until we get an updated RDO
+    # package that has the feature to supply multiple environment files on the
+    # command line.
+    sudo yum -y install http://209.132.178.33/repos/00/8f/008f5b67839ae03fa9a73ddc9a430c8312472e1a/python-heatclient-0.2.11.6-g6089d31.fc20.noarch.rpm
+
+    # Must install python-ironicclient from Delorean until it is available in
+    # RDO.
+    sudo yum -y install http://209.132.178.33/repos/00/8f/008f5b67839ae03fa9a73ddc9a430c8312472e1a/python-ironicclient-0.3.0.10-g0ff9641.fc20.noarch.rpm
 fi
 
 instack-install-undercloud
