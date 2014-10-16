@@ -42,7 +42,6 @@
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
       "tuskar-ui",
-      "glance-wsme",
       "dib-run-parts-update",
       "ironic-discoverd",
       "element-manifest",

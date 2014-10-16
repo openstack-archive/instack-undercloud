@@ -187,11 +187,6 @@ export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
 if [ "$INSTACK_TRIPLEO_SOURCE" = "1" ]; then
     do_tripleo_source_installs
 else
-    # Need to update to newer tripleo packages until we get more recent releases
-    sudo yum -y update openstack-tripleo-image-elements
-    sudo yum -y update diskimage-builder
-    # Make sure we don't end up with older oslo config from Fedora 20.
-    sudo yum -y update python-oslo-config
     export TUSKAR_ROLE_DIRECTORY=/usr/share/openstack-tripleo-heat-templates
 fi
 
@@ -250,12 +245,6 @@ EOF
 fi
 
 instack-install-undercloud
-
-if [ "$LKG" -eq 1 -a "$DELOREAN" -eq "0" ]; then
-    # Heat's requirements for LKG cause issues
-    sudo /opt/stack/venvs/openstack/bin/pip install -U "sqlalchemy-migrate!=0.9.2"
-    sudo systemctl restart heat-engine
-fi
 
 # Reset ownership of cache directory
 # This is needed in order for instack-build-images to make changes to the cache
