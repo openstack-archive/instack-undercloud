@@ -189,6 +189,6 @@ rm $NETWORK_JSON
 
 
 nova flavor-delete m1.tiny
-nova flavor-create m1.tiny 1 512 2 1
+nova flavor-create m1.tiny 1 512 10 1
 
 echo "Overcloud Deployed"
