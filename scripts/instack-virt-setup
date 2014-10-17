@@ -54,12 +54,6 @@ MACS=$(for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; do
 cp $RCFILE /tmp/deploy-virt-overcloudrc
 sed -i "s/MACS=\"\"/MACS=\"$MACS\"/" /tmp/deploy-virt-overcloudrc
 
-UNDERCLOUD_ROOT_PASSWORD=${UNDERCLOUD_ROOT_PASSWORD:-""}
-UNDERCLOUD_PASSWORD_ARG=
-if [ $UNDERCLOUD_ROOT_PASSWORD ]; then
-  UNDERCLOUD_PASSWORD_ARG="--root-password password:$UNDERCLOUD_ROOT_PASSWORD"
-fi
-
 export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
 export UNDERCLOUD_OS=${UNDERCLOUD_OS:-"fedora-20"}
 export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
