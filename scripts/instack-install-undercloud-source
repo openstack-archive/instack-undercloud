@@ -75,6 +75,9 @@ function do_tripleo_source_installs {
 
         popd
 
+        # https://review.openstack.org/#/c/129305
+        cherry_pick diskimage-builder refs/changes/05/129305/1
+
     fi
 
     # tar is required if we want to run diskimage-builder
@@ -220,9 +223,6 @@ instack-install-undercloud
 # This is needed in order for instack-build-images to make changes to the cache
 # $USER is not always set in a live cd building enviroment, so use || true
 sudo -E chown -R $USER: $HOME/.cache/image-create || true
-
-# svc-map requires PyYAML, need to submit this patch upstream
-sudo yum -y install PyYAML
 
 # Must erase NetworkManager, otherwise ifup called on the provisioning
 # interface tries to use nmcli and that fails for some yet undetermined reason,
