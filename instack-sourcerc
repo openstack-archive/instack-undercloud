@@ -23,6 +23,7 @@ export PACKAGES=${PACKAGES:-1}
 export LKG=${LKG:-1}
 # When using rdo-release, we default to rdo-juno
 export RDO_RELEASE=${RDO_RELEASE:-"juno"}
+export RDO_RELEASE_RPM=${RDO_RELEASE_RPM:-http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm}
 
 if [ "$PACKAGES" = "1" ]; then
     export JSONFILE=${JSONFILE:-$INSTACK_ROOT/instack-undercloud/json-files/fedora-20-undercloud-packages.json}

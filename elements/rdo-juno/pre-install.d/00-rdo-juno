@@ -3,7 +3,7 @@
 set -eux
 set -o pipefail
 
-yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
+yum -y install $RDO_RELEASE_RPM
 
 # Must install python-ironicclient from Delorean until it is available in
 # RDO.

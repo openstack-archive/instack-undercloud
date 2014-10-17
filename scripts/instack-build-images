@@ -31,7 +31,7 @@ fi
 
 export PACKAGES=${PACKAGES:-"1"}
 if [ "$PACKAGES" = "1" ]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install rdo-juno-team-virt"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install rdo-juno"
 fi
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\

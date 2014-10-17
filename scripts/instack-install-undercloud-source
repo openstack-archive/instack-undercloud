@@ -202,7 +202,7 @@ fi
 
 if [ "$PACKAGES" = "1" -a "$DELOREAN" = "0" ]; then
     if ! rpm -q rdo-release; then
-        sudo yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
+        sudo yum -y install $RDO_RELEASE_RPM
     fi
 fi
 
