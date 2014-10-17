@@ -220,6 +220,10 @@ if [[ "$JSONFILE" =~ "package" ]]; then
     if ! rpm -q python-ironicclient; then
         sudo yum -y install http://209.132.178.33/repos/00/8f/008f5b67839ae03fa9a73ddc9a430c8312472e1a/python-ironicclient-0.3.0.10-g0ff9641.fc20.noarch.rpm
     fi
+
+    # python-swiftclient requires python-futures
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1154169
+    sudo yum -y install python-futures
 fi
 
 instack-install-undercloud
