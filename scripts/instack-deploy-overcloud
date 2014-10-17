@@ -306,6 +306,6 @@ setup-neutron -n $NETWORK_JSON
 rm $NETWORK_JSON
 
 
-nova flavor-create m1.demo 1 512 10 1
+nova flavor-create m1.demo auto 512 10 1
 
 echo "Overcloud Deployed"
