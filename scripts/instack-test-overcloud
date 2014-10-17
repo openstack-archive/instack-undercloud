@@ -29,9 +29,6 @@ source $TRIPLEO_ROOT/overcloudrc
 export no_proxy=${no_proxy:-""}
 export no_proxy=$no_proxy,$OVERCLOUD_IP
 
-nova flavor-delete m1.tiny
-nova flavor-create m1.tiny 1 512 2 1
-
 # tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
 if ! glance image-show user 2>&1 1>/dev/null; then
