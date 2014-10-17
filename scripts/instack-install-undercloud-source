@@ -39,6 +39,8 @@ function do_tripleo_source_installs {
             git fetch origin $DIB_REPOREF_tripleo_image_elements
             git reset --hard FETCH_HEAD
 
+            # Fix nested /etc/neutron/rootwrap.d in multiple runs
+            cherry_pick tripleo-image-elements refs/changes/35/128935/1
         fi
 
         # This patch is RDO specific, as such there is no upstream review for it.
