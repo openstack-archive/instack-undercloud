@@ -48,7 +48,7 @@ if ! nova keypair-show default 2>&1 1>/dev/null; then
 	tripleo user-config
 fi
 
-nova boot --key-name default --flavor m1.tiny --image user --nic net-id=$NET_ID demo
+nova boot --key-name default --flavor m1.demo --image user --nic net-id=$NET_ID demo
 
 sleep 3
 
