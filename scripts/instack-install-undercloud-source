@@ -201,6 +201,12 @@ if [ "$RUN_INSTACK" -eq 0 ]; then
     exit 0
 fi
 
+if [ "$PACKAGES" = "1" -a "$DELOREAN" = "0" ]; then
+    if ! rpm -q rdo-release; then
+        sudo yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
+    fi
+fi
+
 if [[ "$JSONFILE" =~ "package" ]]; then
 
     # Must delete any newer packages first
