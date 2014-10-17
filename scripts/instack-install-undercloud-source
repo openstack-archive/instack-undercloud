@@ -54,6 +54,10 @@ function do_tripleo_source_installs {
         cherry_pick tripleo-image-elements refs/changes/64/128764/1
         # https://review.openstack.org/#/c/128769/
         cherry_pick tripleo-image-elements refs/changes/69/128769/1
+        # https://review.openstack.org/129310
+        cherry_pick tripleo-image-elements refs/changes/10/129310/1
+        # https://review.openstack.org/129311
+        cherry_pick tripleo-image-elements refs/changes/11/129311/1
 
         # disable keepalived custom policy on RHEL because it doesn't install
         # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
