@@ -44,6 +44,9 @@ function do_tripleo_source_installs {
     if [ ! -d $INSTACK_ROOT/tripleo-image-elements/elements ]; then
         git clone https://git.openstack.org/openstack/tripleo-image-elements
 
+        # Fix nested /etc/neutron/rootwrap.d in multiple runs
+        cherry_pick tripleo-image-elements refs/changes/35/128935/1
+
         pushd tripleo-image-elements
 
         if [ "$LKG" = "1" ]; then
