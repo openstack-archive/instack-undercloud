@@ -77,21 +77,21 @@ tripleo wait_for 30 10 ssh -o BatchMode=yes -o StrictHostKeyChecking=no -tt fedo
 
 echo Compute test successful!
 
-if [ $BLOCKSTORAGESCALE -gt 0 ]; then
-    CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
 
-    tripleo wait_for 10 3 cinder list \| grep available
+CINDER_VOLUME_ID=$(cinder create 1 | grep " id " | awk '{print $4}')
 
-    nova volume-attach demo $CINDER_VOLUME_ID
+tripleo wait_for 10 3 cinder list \| grep available
 
-    tripleo wait_for 30 10 ssh -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls /dev/vdb
+nova volume-attach demo $CINDER_VOLUME_ID
 
-    ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
+tripleo wait_for 30 10 ssh -o StrictHostKeyChecking=no fedora@$FLOATINGIP ls /dev/vdb
+
+ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
 o
 w
 EOF
 
-    ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
+ssh -tt fedora@$FLOATINGIP sudo fdisk /dev/vdb <<EOF
 n
 p
 1
@@ -100,28 +100,28 @@ p
 w
 EOF
 
-    ssh -tt fedora@$FLOATINGIP sudo mkfs.ext4 /dev/vdb1
+ssh -tt fedora@$FLOATINGIP sudo mkfs.ext4 /dev/vdb1
 
-    ssh -tt fedora@$FLOATINGIP sudo mount /dev/vdb1 /mnt
-    ssh -tt fedora@$FLOATINGIP sudo umount /mnt
+ssh -tt fedora@$FLOATINGIP sudo mount /dev/vdb1 /mnt
+ssh -tt fedora@$FLOATINGIP sudo umount /mnt
 
-    echo Cinder test successful!
+
+echo Cinder test successful!
+
+
+tmpfile=$(mktemp)
+echo SWIFTTEST > $tmpfile
+
+swift upload test $tmpfile
+swiftfile=$(swift list test)
+
+swift download --output $tmpfile-1 test $swiftfile
+
+if [ ! "$(cat $tmpfile-1)" == "SWIFTTEST" ]; then
+    echo Swift test failed!
 fi
 
-if [ $SWIFTSTORAGESCALE -gt 0 ]; then
-    tmpfile=$(mktemp)
-    echo SWIFTTEST > $tmpfile
+swift delete test
 
-    swift upload test $tmpfile
-    swiftfile=$(swift list test)
 
-    swift download --output $tmpfile-1 test $swiftfile
-
-    if [ ! "$(cat $tmpfile-1)" == "SWIFTTEST" ]; then
-        echo Swift test failed!
-    fi
-
-    swift delete test
-
-    echo Swift test successful!
-fi
+echo Swift test successful!
