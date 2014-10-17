@@ -59,6 +59,11 @@ function do_tripleo_source_installs {
 
         popd
 
+	# https://review.openstack.org/#/c/128764/
+	cherry_pick tripleo-image-elements refs/changes/64/128764/1
+	# https://review.openstack.org/#/c/128769/
+	cherry_pick tripleo-image-elements refs/changes/69/128769/1
+
         # disable keepalived custom policy on RHEL because it doesn't install
         # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
         export NODE_DIST=${NODE_DIST:-fedora}
