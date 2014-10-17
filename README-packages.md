@@ -49,7 +49,14 @@ step.
         sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
         sudo yum -y install instack-undercloud
 
-3. Run the installation script
+3. Run the installation script. By default the install will use packages from
+the RDO openstack-juno repo at
+https://repos.fedorapeople.org/repos/openstack/openstack-juno/fedora-20/. If
+you wish to use the internal stage repo, you can override $RDO_RELEASE_RPM as
+shown.
+
+        # Optionally switch to the internal stage repo
+        # export RDO_RELEASE_RPM=http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
 
         instack-install-undercloud-source
 
