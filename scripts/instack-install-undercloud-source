@@ -207,45 +207,6 @@ if [ "$PACKAGES" = "1" -a "$DELOREAN" = "0" ]; then
 fi
 
 if [[ "$JSONFILE" =~ "package" ]]; then
-
-    # Must delete any newer packages first
-    sudo yum -y erase openstack-ironic-common
-
-    sudo yum -y install \
-        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-api-2014.0923-2.noarch.rpm \
-        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-common-2014.0923-2.noarch.rpm \
-        https://athomas.fedorapeople.org/ironic/fedora20/openstack-ironic-conductor-2014.0923-2.noarch.rpm
-
-    sudo yum install -y libffi-devel gcc python-devel openssl-devel libxml2-devel libxslt-devel
-
-    # No update for python-paramiko yet, so update it via pip.
-    # https://bugzilla.redhat.com/show_bug.cgi?id=1139319
-    sudo pip install -U paramiko
-
-    # We also need newer eventlet. This is already packaged upstream in Juno,
-    # so no need to file a bug on this one.
-    sudo pip install -U eventlet
-
-    # This has been fixed in Delorean, just need to wait for a new Ironic build.
-    sudo /bin/bash -c "
-cat > /etc/sudoers.d/ironic <<EOF
-Defaults:ironic !requiretty
-
-ironic ALL = (root) NOPASSWD: /usr/bin/ironic-rootwrap /etc/ironic/rootwrap.conf *
-EOF
-"
-    sudo chmod 0440 /etc/sudoers.d/ironic
-
-    # python-swiftclient requires python-futures
-    sudo yum -y install python-futures
-
-    # Must install python-heatclient from Delorean until we get an updated RDO
-    # package that has the feature to supply multiple environment files on the
-    # command line.
-    if ! rpm -q python-heatclient; then
-        sudo yum -y install http://209.132.178.33/repos/00/8f/008f5b67839ae03fa9a73ddc9a430c8312472e1a/python-heatclient-0.2.11.6-g6089d31.fc20.noarch.rpm
-    fi
-
     # Must install python-ironicclient from Delorean until it is available in
     # RDO.
     if ! rpm -q python-ironicclient; then
