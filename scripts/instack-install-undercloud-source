@@ -178,17 +178,13 @@ if [ ! -d $INSTACK_ROOT/tuskar-ui ]; then
     sudo git clone https://git.openstack.org/openstack/tuskar-ui $INSTACK_ROOT/tuskar-ui
 fi
 export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
-# If you want to use source installs for tuskar-ui, uncomment the next line, or
-# apply it in your shell.
-# export DIB_INSTALLTYPE_tuskar_ui=${DIB_INSTALLTYPE_tuskar_ui:-"source"}
+export DIB_INSTALLTYPE_tuskar_ui=source
 
 if [ ! -d $INSTACK_ROOT/tuskar ]; then
     sudo git clone https://git.openstack.org/openstack/tuskar $INSTACK_ROOT/tuskar
 fi
 export DIB_REPOLOCATION_tuskar=$INSTACK_ROOT/tuskar
-# If you want to use source installs for tuskar, uncomment the next line, or
-# apply it in your shell.
-# export DIB_INSTALLTYPE_tuskar=${DIB_INSTALLTYPE_tuskar:-"source"}
+export DIB_INSTALLTYPE_tuskar=source
 
 if [ "$INSTACK_TRIPLEO_SOURCE" = "1" ]; then
     do_tripleo_source_installs
