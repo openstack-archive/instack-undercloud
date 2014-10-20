@@ -215,10 +215,10 @@ if [ "$PACKAGES" = "1" -a "$DELOREAN" = "0" ]; then
 fi
 
 if [[ "$JSONFILE" =~ "package" ]]; then
-    # Must install python-ironicclient from Delorean until it is available in
+    # Must install python-ironicclient from koji until it is available in
     # RDO.
     if ! rpm -q python-ironicclient; then
-        sudo yum -y install http://209.132.178.33/repos/00/8f/008f5b67839ae03fa9a73ddc9a430c8312472e1a/python-ironicclient-0.3.0.10-g0ff9641.fc20.noarch.rpm
+        sudo yum -y install https://kojipkgs.fedoraproject.org//packages/python-ironicclient/0.3.1/1.fc22/noarch/python-ironicclient-0.3.1-1.fc22.noarch.rpm
     fi
 
     # python-swiftclient requires python-futures
