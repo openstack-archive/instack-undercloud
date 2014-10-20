@@ -236,6 +236,12 @@ sudo -E chown -R $USER: $HOME/.cache/image-create || true
 # Must erase NetworkManager, otherwise ifup called on the provisioning
 # interface tries to use nmcli and that fails for some yet undetermined reason,
 # so just delete NetworkManager for now.
+# It also causes issues with the undercloud dropping its IP, so we need to
+# disable it and restart networking too.
+if systemctl status NetworkManager; then
+    systemctl stop NetworkManager
+    systemctl restart network
+fi
 sudo yum -y erase NetworkManager
 
 # Must reinstall cmd2 as there is a package conflict with the pip install, so
