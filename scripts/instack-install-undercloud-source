@@ -53,6 +53,8 @@ function do_tripleo_source_installs {
         cherry_pick tripleo-image-elements refs/changes/10/129310/2
         # https://review.openstack.org/129311
         cherry_pick tripleo-image-elements refs/changes/11/129311/2
+        # Make rdo-release safe to install twice
+        cherry_pick tripleo-image-elements refs/changes/27/129727/1
 
         # disable keepalived custom policy on RHEL because it doesn't install
         # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
