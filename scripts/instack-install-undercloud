@@ -57,8 +57,9 @@ sudo -E instack \
   -j $JSONFILE
 
 RUN_ORC=${RUN_ORC:-"1"}
+export INSTACK_ROOT=${INSTACK_ROOT:-""}
 if [ "$RUN_ORC" = "1" ]; then
-    sudo IMAGE_PATH=$IMAGE_PATH os-refresh-config
+    sudo INSTACK_ROOT=$INSTACK_ROOT IMAGE_PATH=$IMAGE_PATH os-refresh-config
 
     # generate ssh authentication keys if they don't exist
     if [ ! -f ~/.ssh/id_rsa ]; then
