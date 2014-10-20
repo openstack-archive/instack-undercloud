@@ -43,23 +43,16 @@ function do_tripleo_source_installs {
         # This patch is RDO specific, as such there is no upstream review for it.
         # Change default swift ports
         git fetch https://github.com/redhat-openstack/tripleo-image-elements
-        git cherry-pick 9a73b8a1cf8cdf23cbf065358532210c66dcdb40
+        git cherry-pick da8c680c78f28d99bbfc76fc817ea67b8d0fba9c
 
         popd
 
-        if [ "$LKG" = "1" ]; then
-            # Fix nested /etc/neutron/rootwrap.d in multiple runs
-            cherry_pick tripleo-image-elements refs/changes/35/128935/1
-        fi
-
         # https://review.openstack.org/#/c/128764/
         cherry_pick tripleo-image-elements refs/changes/64/128764/1
-        # https://review.openstack.org/#/c/128769/
-        cherry_pick tripleo-image-elements refs/changes/69/128769/1
         # https://review.openstack.org/129310
-        cherry_pick tripleo-image-elements refs/changes/10/129310/1
+        cherry_pick tripleo-image-elements refs/changes/10/129310/2
         # https://review.openstack.org/129311
-        cherry_pick tripleo-image-elements refs/changes/11/129311/1
+        cherry_pick tripleo-image-elements refs/changes/11/129311/2
 
         # disable keepalived custom policy on RHEL because it doesn't install
         # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
