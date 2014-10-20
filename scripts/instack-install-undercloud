@@ -12,9 +12,10 @@ echo "Running $0"
 
 export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json}
 
-export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/diskimage-builder/elements/ \
-                                       /usr/share/tripleo-image-elements/ \
-                                       /usr/share/instack-undercloud/"}
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+/usr/share/tripleo-image-elements:\
+/usr/share/diskimage-builder/elements:\
+/usr/share/instack-undercloud"}
 
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
