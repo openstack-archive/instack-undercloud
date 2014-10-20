@@ -14,7 +14,10 @@ sudo ip addr del 192.0.2.1/24 dev eth1 || true
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
-export PATH=$PATH:$INSTACK_ROOT/instack-undercloud/scripts
+export INSTACK_ROOT=${INSTACK_ROOT:-""}
+if [ -n "$INSTACK_ROOT" ]; then
+    export PATH=$PATH:$INSTACK_ROOT/instack-undercloud/scripts
+fi
 
 if [ ! -f /root/.ssh/authorized_keys ]; then
     sudo mkdir -p /root/.ssh

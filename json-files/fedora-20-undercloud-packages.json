@@ -33,7 +33,6 @@
       "mariadb-rpm",
       "os-refresh-config-reboot",
       "common-venv",
-      "set-instack-root",
       "undercloud-post-config",
       "undercloud-package-install",
       "ceilometer-collector",
