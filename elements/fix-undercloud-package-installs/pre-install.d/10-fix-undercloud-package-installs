@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+if rpm -q fedora-release; then
+    if ! rpm -q python-ironicclient; then
+        yum -y install https://kojipkgs.fedoraproject.org//packages/python-ironicclient/0.3.1/1.fc22/noarch/python-ironicclient-0.3.1-1.fc22.noarch.rpm
+    fi
+    if ! rpm -q python-tuskarclient; then
+        yum -y install https://kojipkgs.fedoraproject.org//packages/python-tuskarclient/0.1.15/1.fc22/noarch/python-tuskarclient-0.1.15-1.fc22.noarch.rpm
+    fi
+    if ! rpm -q openstack-tuskar; then
+        yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-tuskar/0.4.15/1.fc22/noarch/openstack-tuskar-0.4.15-1.fc22.noarch.rpm
+    fi
+    if ! rpm -q openstack-tuskar-ui; then
+        yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-tuskar-ui/0.2.0/2.fc22/noarch/openstack-tuskar-ui-0.2.0-2.fc22.noarch.rpm
+    fi
+    
+    # Go ahead and enable rdo juno momentarily so that we can install ironic to
+    # fix it.
+    if ! rpm -q rdo-release; then
+        yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
+    fi
+    if ! rpm -q openstack-ironic; then
+        yum -y install openstack-ironic-common
+    fi
+
+    # openstack-tuskar does not create the tuskar user
+    if ! id tuskar; then
+        useradd tuskar
+    fi
+
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1154720
+    chmod 0440 /etc/sudoers.d/ironic
+fi

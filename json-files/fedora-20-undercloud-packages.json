@@ -44,7 +44,8 @@
       "dib-run-parts-update",
       "ironic-discoverd",
       "element-manifest",
-      "tuskar"
+      "tuskar",
+      "fix-undercloud-package-installs"
     ],
     "hook": [
       "extra-data",
