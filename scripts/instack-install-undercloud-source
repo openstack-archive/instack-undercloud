@@ -169,8 +169,9 @@ function do_tripleo_source_installs {
     sudo pip install -e .
     popd
 
-    # Must uninstall cmd2 otherwise, the package install will fail later on
+    # Must uninstall cmd2 and netaddr otherwise, the package install will fail later on
     sudo pip uninstall -y cmd2
+    sudo pip uninstall -y netaddr
 
 }
 
@@ -179,6 +180,7 @@ if [ ! -d $INSTACK_ROOT/tuskar-ui ]; then
 fi
 export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
 export DIB_INSTALLTYPE_tuskar_ui=source
+export DIB_INSTALLTYPE_horizon=source
 
 if [ ! -d $INSTACK_ROOT/tuskar ]; then
     sudo git clone https://git.openstack.org/openstack/tuskar $INSTACK_ROOT/tuskar
