@@ -137,13 +137,9 @@ function do_tripleo_source_installs {
         ## Compute and controller templates without merge.py + Add converted version of block and object storage
         #
         # https://review.openstack.org/#/c/123100
-        cherry_pick tripleo-heat-templates refs/changes/00/123100/11
+        cherry_pick tripleo-heat-templates refs/changes/00/123100/12
         # https://review.openstack.org/#/c/123713/
-        cherry_pick tripleo-heat-templates refs/changes/13/123713/15
-        # https://review.openstack.org/#/c/126562
-        cherry_pick tripleo-heat-templates refs/changes/62/126562/4
-        # https://review.openstack.org/#/c/129234/
-        cherry_pick tripleo-heat-templates refs/changes/34/129234/3
+        cherry_pick tripleo-heat-templates refs/changes/13/123713/16
 
     fi
 
