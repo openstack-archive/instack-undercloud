@@ -3,32 +3,34 @@
 set -eux
 
 # OpenStack projects
-export DIB_INSTALLTYPE_heat=package
-export DIB_INSTALLTYPE_keystone=package
-export DIB_INSTALLTYPE_neutron=package
-export DIB_INSTALLTYPE_glance=package
-export DIB_INSTALLTYPE_swift=package
-export DIB_INSTALLTYPE_cinder=package
-export DIB_INSTALLTYPE_horizon=source
-export DIB_INSTALLTYPE_ceilometer=package
-export DIB_INSTALLTYPE_ironic=package
-export DIB_INSTALLTYPE_nova=package
+export DIB_INSTALLTYPE_heat=${DIB_INSTALLTYPE_heat:-package}
+export DIB_INSTALLTYPE_keystone=${DIB_INSTALLTYPE_keystone:-package}
+export DIB_INSTALLTYPE_neutron=${DIB_INSTALLTYPE_neutron:-package}
+export DIB_INSTALLTYPE_glance=${DIB_INSTALLTYPE_glance:-package}
+export DIB_INSTALLTYPE_swift=${DIB_INSTALLTYPE_swift:-package}
+export DIB_INSTALLTYPE_cinder=${DIB_INSTALLTYPE_cinder:-package}
+export DIB_INSTALLTYPE_ceilometer=${DIB_INSTALLTYPE_ceilometer:-package}
+export DIB_INSTALLTYPE_ironic=${DIB_INSTALLTYPE_ironic:-package}
+export DIB_INSTALLTYPE_nova=${DIB_INSTALLTYPE_nova:-package}
+export DIB_INSTALLTYPE_horizon=${DIB_INSTALLTYPE_horizon:-package}
+export DIB_INSTALLTYPE_tuskar=${DIB_INSTALLTYPE_tuskar:-package}
+export DIB_INSTALLTYPE_tuskar_ui=${DIB_INSTALLTYPE_tuskar_ui:-package}
 
 # Clients
-export DIB_INSTALLTYPE_python_cinderclient=package
-export DIB_INSTALLTYPE_python_glanceclient=package
-export DIB_INSTALLTYPE_python_heatclient=package
-export DIB_INSTALLTYPE_python_keystoneclient=package
-export DIB_INSTALLTYPE_python_neutronclient=package
-export DIB_INSTALLTYPE_python_novaclient=package
-export DIB_INSTALLTYPE_python_swiftclient=package
-export DIB_INSTALLTYPE_python_ceilometerclient=package
-export DIB_INSTALLTYPE_python_ironicclient=package
+export DIB_INSTALLTYPE_python_cinderclient=${DIB_INSTALLTYPE_python_cinderclient:-package}
+export DIB_INSTALLTYPE_python_glanceclient=${DIB_INSTALLTYPE_python_glanceclient:-package}
+export DIB_INSTALLTYPE_python_heatclient=${DIB_INSTALLTYPE_python_heatclient:-package}
+export DIB_INSTALLTYPE_python_keystoneclient=${DIB_INSTALLTYPE_python_keystoneclient:-package}
+export DIB_INSTALLTYPE_python_neutronclient=${DIB_INSTALLTYPE_python_neutronclient:-package}
+export DIB_INSTALLTYPE_python_novaclient=${DIB_INSTALLTYPE_python_novaclient:-package}
+export DIB_INSTALLTYPE_python_swiftclient=${DIB_INSTALLTYPE_python_swiftclient:-package}
+export DIB_INSTALLTYPE_python_ceilometerclient=${DIB_INSTALLTYPE_python_ceilometerclient:-package}
+export DIB_INSTALLTYPE_python_ironicclient=${DIB_INSTALLTYPE_python_ironicclient:-package}
 
 # os-*-config
-export DIB_INSTALLTYPE_os_collect_config=package
-export DIB_INSTALLTYPE_os_refresh_config=package
-export DIB_INSTALLTYPE_os_apply_config=package
+export DIB_INSTALLTYPE_os_collect_config=${DIB_INSTALLTYPE_os_collect_config:-package}
+export DIB_INSTALLTYPE_os_refresh_config=${DIB_INSTALLTYPE_os_refresh_config:-package}
+export DIB_INSTALLTYPE_os_apply_config=${DIB_INSTALLTYPE_os_apply_config:-package}
 
 # TripleO
 # Make the setting for tripleo-heat-templates overrideable for the source
@@ -36,5 +38,5 @@ export DIB_INSTALLTYPE_os_apply_config=package
 export DIB_INSTALLTYPE_tripleo_heat_templates=${DIB_INSTALLTYPE_tripleo_heat_templates:-package}
 
 # Miscellaneous
-export DIB_INSTALLTYPE_get_pip_py=package
-export DIB_INSTALLTYPE_novnc=package
+export DIB_INSTALLTYPE_get_pip_py=${DIB_INSTALLTYPE_get_pip_py:-package}
+export DIB_INSTALLTYPE_novnc=${DIB_INSTALLTYPE_novnc:-package}

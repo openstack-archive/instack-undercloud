@@ -49,6 +49,8 @@ export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-mak
 export UNDERCLOUD_CEILOMETER_PASSWORD=${UNDERCLOUD_CEILOMETER_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD:-$(tripleo os-make-password)}
 
+export TUSKAR_ROLE_DIRECTORY=${TUSKAR_ROLE_DIRECTORY:-/usr/share/openstack-tripleo-heat-templates}
+
 sudo -E instack \
   -p $ELEMENTS_PATH \
   -j $JSONFILE

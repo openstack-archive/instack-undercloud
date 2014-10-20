@@ -182,17 +182,19 @@ function do_tripleo_source_installs {
 }
 
 if [ ! -d $INSTACK_ROOT/tuskar-ui ]; then
-
     sudo git clone https://git.openstack.org/openstack/tuskar-ui $INSTACK_ROOT/tuskar-ui
-
 fi
-
 export DIB_REPOLOCATION_tuskar_ui=$INSTACK_ROOT/tuskar-ui
+export DIB_INSTALLTYPE_tuskar_ui=source
+
+if [ ! -d $INSTACK_ROOT/tuskar ]; then
+    sudo git clone https://git.openstack.org/openstack/tuskar $INSTACK_ROOT/tuskar
+fi
+export DIB_REPOLOCATION_tuskar=$INSTACK_ROOT/tuskar
+export DIB_INSTALLTYPE_tuskar=source
 
 if [ "$INSTACK_TRIPLEO_SOURCE" = "1" ]; then
     do_tripleo_source_installs
-else
-    export TUSKAR_ROLE_DIRECTORY=/usr/share/openstack-tripleo-heat-templates
 fi
 
 # needed for semanage
