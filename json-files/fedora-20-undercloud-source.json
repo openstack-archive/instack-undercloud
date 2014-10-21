@@ -39,7 +39,6 @@
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
       "tuskar-ui",
-      "dib-run-parts-update",
       "ironic-discoverd",
       "element-manifest",
       "tuskar"
