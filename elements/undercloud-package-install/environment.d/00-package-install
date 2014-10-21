@@ -40,3 +40,4 @@ export DIB_INSTALLTYPE_tripleo_heat_templates=${DIB_INSTALLTYPE_tripleo_heat_tem
 # Miscellaneous
 export DIB_INSTALLTYPE_get_pip_py=${DIB_INSTALLTYPE_get_pip_py:-package}
 export DIB_INSTALLTYPE_novnc=${DIB_INSTALLTYPE_novnc:-package}
+export DIB_INSTALLTYPE_ironic_discoverd=${DIB_INSTALLTYPE_ironic_discoverd:-package}
