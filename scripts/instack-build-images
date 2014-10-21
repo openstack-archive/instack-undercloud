@@ -139,6 +139,7 @@ if [ ! -f $DEPLOY_NAME.initramfs -o \
     ramdisk-image-create \
         -a $NODE_ARCH \
         -o $DEPLOY_NAME \
+        --ramdisk-element dracut-ramdisk \
         $NODE_DIST $DEPLOY_IMAGE_ELEMENT \
         $DIB_COMMON_ELEMENTS \
         2>&1 | tee dib-deploy.log
