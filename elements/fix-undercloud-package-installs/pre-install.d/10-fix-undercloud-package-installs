@@ -19,7 +19,7 @@ if rpm -q fedora-release; then
 
     if [ "$DIB_INSTALLTYPE_tuskar" = "package" ]; then
         if ! rpm -q openstack-tuskar; then
-            yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-tuskar/0.4.15/1.fc22/noarch/openstack-tuskar-0.4.15-1.fc22.noarch.rpm
+            yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-tuskar/0.4.15/2.fc22/noarch/openstack-tuskar-0.4.15-2.fc22.noarch.rpm
         fi
     fi
 
@@ -31,11 +31,6 @@ if rpm -q fedora-release; then
     
     if ! rpm -q openstack-ironic; then
         yum -y install openstack-ironic-common
-    fi
-
-    # openstack-tuskar does not create the tuskar user
-    if ! id tuskar; then
-        useradd tuskar
     fi
 
     # https://bugzilla.redhat.com/show_bug.cgi?id=1154720
