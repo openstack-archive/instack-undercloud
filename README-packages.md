@@ -58,7 +58,7 @@ shown.
         # Optionally switch to the internal stage repo
         # export RDO_RELEASE_RPM=http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
 
-        instack-install-undercloud-source
+        instack-install-undercloud
 
 1. Once the install script has run to completion, copy the files
    `/root/stackrc` and `/root/tripleo-undercloud-passwords` into the stack user's home directory.
