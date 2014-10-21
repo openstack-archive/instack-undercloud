@@ -72,12 +72,14 @@ function do_tripleo_source_installs {
         if [ "$LKG" = "1" ]; then
             git fetch origin $DIB_REPOREF_diskimage_builder
             git reset --hard FETCH_HEAD
-
-            # Dracut ramdisks - merged upstream but not in LKG yet
-            cherry_pick diskimage-builder refs/changes/75/105275/12
         fi
 
         popd
+
+        if [ "$LKG" = "1" ]; then
+            # Dracut ramdisks - merged upstream but not in LKG yet
+            cherry_pick diskimage-builder refs/changes/75/105275/12
+        fi
 
         # https://review.openstack.org/#/c/129305
         cherry_pick diskimage-builder refs/changes/05/129305/1
