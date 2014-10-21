@@ -139,7 +139,7 @@ function do_tripleo_source_installs {
         # https://review.openstack.org/#/c/123100
         cherry_pick tripleo-heat-templates refs/changes/00/123100/12
         # https://review.openstack.org/#/c/123713/
-        cherry_pick tripleo-heat-templates refs/changes/13/123713/16
+        cherry_pick tripleo-heat-templates refs/changes/13/123713/17
 
     fi
 
