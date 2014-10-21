@@ -241,8 +241,8 @@ sudo -E chown -R $USER: $HOME/.cache/image-create || true
 # It also causes issues with the undercloud dropping its IP, so we need to
 # disable it and restart networking too.
 if systemctl status NetworkManager; then
-    systemctl stop NetworkManager
-    systemctl restart network
+    sudo systemctl stop NetworkManager
+    sudo systemctl restart network
 fi
 sudo yum -y erase NetworkManager
 
