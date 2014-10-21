@@ -210,6 +210,9 @@ function fedora-user {
     if [ ! -f fedora-user.qcow2 ]; then
         # Just copy the already downloaded Fedora cloud image as fedora-user.qcow2
         cp ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2
+        # The perms always seem to be wrong when copying out of the cache, so
+        # fix them
+        chmod 644 fedora-user.qcow2
     fi
 }
 
