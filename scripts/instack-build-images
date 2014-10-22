@@ -22,7 +22,9 @@ export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
 export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
-export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS element-manifest"
+export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS \
+element-manifest \
+network-gateway"
 
 export DELOREAN=${DELOREAN:-"0"}
 if [ "$DELOREAN" = "1" ]; then
