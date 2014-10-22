@@ -77,12 +77,12 @@ function do_tripleo_source_installs {
         popd
 
         if [ "$LKG" = "1" ]; then
-            # Dracut ramdisks - merged upstream but not in LKG yet
-            cherry_pick diskimage-builder refs/changes/75/105275/12
+            echo
         fi
 
-        # https://review.openstack.org/#/c/129305
-        cherry_pick diskimage-builder refs/changes/05/129305/1
+        # Move busybox binary-dep to ramdisk element
+        # https://review.openstack.org/#/c/130034/
+        cherry_pick diskimage-builder refs/changes/34/130034/1
 
     fi
 
