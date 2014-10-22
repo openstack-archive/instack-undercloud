@@ -44,7 +44,8 @@
       "ironic-discoverd",
       "element-manifest",
       "tuskar",
-      "fix-undercloud-package-installs"
+      "fix-undercloud-package-installs",
+      "python-swiftclient-python-futures"
     ],
     "hook": [
       "extra-data",

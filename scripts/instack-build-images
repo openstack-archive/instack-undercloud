@@ -64,6 +64,7 @@ swift-proxy \
 swift-storage \
 use-ephemeral \
 oslo-serialization \
+python-swiftclient-python-futures \
 "}
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
