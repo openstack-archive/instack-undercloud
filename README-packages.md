@@ -46,7 +46,11 @@ step.
 
 1. Once you are ssh'd into the instack vm as the stack user, setup the copr repo and install instack-undercloud.
 
+        # Fedora
         sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
+	# RHEL
+        sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/epel-7/slagle-openstack-m-epel-7.repo
+
         sudo yum -y install instack-undercloud
 
 3. Run the installation script. By default the install will use packages from
