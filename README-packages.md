@@ -1,4 +1,4 @@
-instack-undercloud via source
+instack-undercloud via packages
 =============================
 
 1. The user performing all of the installation steps on the virt host needs to
