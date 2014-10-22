@@ -8,9 +8,6 @@ if [ -f $OK_FILE ]; then
     exit
 fi
 
-# Fixes pxe boot failures for overcloud nodes
-sudo ip addr del 192.0.2.1/24 dev eth1 || true
-
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
