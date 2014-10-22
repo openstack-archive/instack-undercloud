@@ -66,7 +66,6 @@ stackuser \
 swift-proxy \
 swift-storage \
 use-ephemeral \
-oslo-serialization \
 python-swiftclient-python-futures \
 "}
 
@@ -88,7 +87,6 @@ snmpd \
 stable-interface-names \
 stackuser \
 use-ephemeral \
-oslo-serialization \
 "}
 
 
@@ -108,7 +106,6 @@ snmpd \
 stable-interface-names \
 stackuser \
 use-ephemeral \
-oslo-serialization \
 "}
 
 export OVERCLOUD_SWIFT_DIB_EXTRA_ARGS=${OVERCLOUD_SWIFT_DIB_EXTRA_ARGS:-"\
@@ -127,7 +124,6 @@ stackuser \
 stable-interface-names \
 use-ephemeral \
 os-refresh-config-reboot \
-oslo-serialization \
 "}
 
 if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
