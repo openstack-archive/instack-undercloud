@@ -37,7 +37,7 @@ pushd /home/stack
 ssh-keygen -t rsa -N "" -f /home/stack/id_rsa_virt_power
 
 curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
-yum -y install https://slagle.fedorapeople.org/copr/instack-undercloud-1.0.10-1.fc20.noarch.rpm
+yum -y install instack-undercloud
 cp /usr/share/doc/instack-undercloud/instack.answers.sample /home/stack/instack.answers
 cp /usr/share/doc/instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
 # instack-install-undercloud sources ~/instack.answers, and during the
@@ -48,7 +48,7 @@ cp instack-undercloud/instack-baremetal.answers.sample ~/instack.answers
 export RUN_ORC=0
 export HOME=/home/stack
 export PATH=/usr/bin:/usr/sbin/:/sbin
-instack-install-undercloud-source
+instack-install-undercloud
 
 cat << EOF >> /etc/fstab
 tmpfs /mnt tmpfs rw 0 0
