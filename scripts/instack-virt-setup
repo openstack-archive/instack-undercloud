@@ -84,6 +84,8 @@ tripleo configure-vm \
 
 virsh start $UNDERCLOUD_VM_NAME
 
+timeout_seconds=180
+elapsed_seconds=0
 while true; do
     IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac $UNDERCLOUD_VM_NAME) | awk '{print $3;}')
     if [ -n "$IP" ]; then
@@ -91,4 +93,8 @@ while true; do
         break
     fi
     sleep 3
+    (( elapsed_seconds += 3 ))
+    if [ $elapsed_seconds -ge $timeout_seconds ]; then
+        echo "$UNDERCLOUD_VM_NAME never got an IP address from the libvirt default network."
+    fi
 done
