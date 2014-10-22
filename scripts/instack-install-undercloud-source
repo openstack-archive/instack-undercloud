@@ -134,10 +134,8 @@ function do_tripleo_source_installs {
     if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git clone https://git.openstack.org/openstack/tripleo-heat-templates
 
-        ## Compute and controller templates without merge.py + Add converted version of block and object storage
+        ## block and object storage templates without merge.py
         #
-        # https://review.openstack.org/#/c/123100
-        cherry_pick tripleo-heat-templates refs/changes/00/123100/12
         # https://review.openstack.org/#/c/123713/
         cherry_pick tripleo-heat-templates refs/changes/13/123713/17
 
