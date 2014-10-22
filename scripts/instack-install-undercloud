@@ -52,6 +52,15 @@ export UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWO
 
 export TUSKAR_ROLE_DIRECTORY=${TUSKAR_ROLE_DIRECTORY:-/usr/share/openstack-tripleo-heat-templates}
 
+# Temporary RHEL fixes
+if [ "$(grep "Fedora" /etc/redhat-release)" == "" ]; then
+    # python-ironicclient is missing from installed repos
+    sudo yum -y install https://kojipkgs.fedoraproject.org//packages/python-ironicclient/0.3.1/1.fc22/noarch/python-ironicclient-0.3.1-1.fc22.noarch.rpm
+    # remove tripleo-selinux-keepalived.te because it doesn't install on RHEL
+    # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
+    sudo rm /usr/share/tripleo-image-elements/elements/selinux/custom-policies/tripleo-selinux-keepalived.te
+fi
+
 sudo -E instack \
   -p $ELEMENTS_PATH \
   -j $JSONFILE
