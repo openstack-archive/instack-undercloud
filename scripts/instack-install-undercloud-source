@@ -81,6 +81,9 @@ function do_tripleo_source_installs {
         # Move busybox binary-dep to ramdisk element
         # https://review.openstack.org/#/c/130034/
         cherry_pick diskimage-builder refs/changes/34/130034/1
+        # Unset trap before dracut ramdisk build script exits
+        # https://review.openstack.org/#/c/130632/
+        cherry_pick diskimage-builder refs/changes/32/130632/1
 
     fi
 
