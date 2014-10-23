@@ -3,6 +3,6 @@
 set -eux
 
 # FIXME(dtantsur): temporary until update hits Juno RDO
-rpm -q openstack-ironic-discoverd || yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-ironic-discoverd/0.2.1/1.fc22/noarch/openstack-ironic-discoverd-0.2.1-1.fc22.noarch.rpm
+rpm -q openstack-ironic-discoverd || yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-ironic-discoverd/0.2.1/2.fc22/noarch/openstack-ironic-discoverd-0.2.1-2.fc22.noarch.rpm
 # install-packages openstack-ironic-discoverd
 install -d -m 0755 -o ironic -g ironic /tftpboot/pxelinux.cfg
