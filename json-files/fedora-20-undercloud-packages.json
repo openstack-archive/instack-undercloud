@@ -55,7 +55,8 @@
       "post-install"
     ],
     "exclude-element": [
-      "dkms"
+      "dkms",
+      "openvswitch-datapath"
     ],
     "blacklist": [
       "10-cloud-init",
