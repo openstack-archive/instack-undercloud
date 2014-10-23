@@ -203,8 +203,6 @@ sudo yum install -y policycoreutils-python
 # ensure latest policy
 sudo yum install -y selinux-policy
 
-export DIB_INSTALLTYPE_ironic_discoverd=source
-
 if [ "$RUN_INSTACK" -eq 0 ]; then
     echo "Exiting without running instack."
     exit 0
