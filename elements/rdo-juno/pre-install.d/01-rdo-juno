@@ -5,7 +5,6 @@ set -o pipefail
 
 yum -y install $RDO_RELEASE_RPM
 
-# Must install python-ironicclient from Delorean until it is available in
+# Must install python-ironicclient from RDO stage until it is available in
 # RDO.
-yum -y install https://kojipkgs.fedoraproject.org//packages/python-ironicclient/0.3.1/1.fc22/noarch/python-ironicclient-0.3.1-1.fc22.noarch.rpm
-
+yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/fedora-20/python-ironicclient-0.3.1-1.fc22.noarch.rpm
