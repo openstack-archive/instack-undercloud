@@ -84,7 +84,7 @@ fi
 
 export COMPLETION_MESSAGE=${COMPLETION_MESSAGE:-"\
 #############################################################################
-install-undercloud complete.
+instack-install-undercloud complete.
 
 The file containing this installation's passwords is at
 /root/tripleo-undercloud-passwords.
