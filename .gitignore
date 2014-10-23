@@ -35,6 +35,6 @@ nosetests.xml
 .pydevproject
 
 # tarballs
-.tar.gz
+*.tar.gz
 
 instack.answers
