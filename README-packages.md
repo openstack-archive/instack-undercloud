@@ -44,12 +44,17 @@ step.
    to copy them over to the instack vm. The images will be uploaded to glance
    at the end of the install.
 
-1. Once you are ssh'd into the instack vm as the stack user, setup the copr repo and install instack-undercloud.
+1. Once you are ssh'd into the instack vm as the stack user, setup the copr and
+RDO stage repo and install instack-undercloud.
 
 		# Fedora
 		sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
 		# RHEL
 		sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/epel-7/slagle-openstack-m-epel-7.repo
+
+        # Fedora and RHEL
+        sudo yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
+        sudo sed -i 's#^baseurl.*#baseurl=http://team.virt.bos.redhat.com/openstack/openstack-juno/
 
 		sudo yum -y install instack-undercloud
 
