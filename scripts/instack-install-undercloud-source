@@ -47,21 +47,19 @@ function do_tripleo_source_installs {
 
         popd
 
-        # https://review.openstack.org/#/c/128764/
-        cherry_pick tripleo-image-elements refs/changes/64/128764/1
         # https://review.openstack.org/129310
         cherry_pick tripleo-image-elements refs/changes/10/129310/2
         # https://review.openstack.org/129311
         cherry_pick tripleo-image-elements refs/changes/11/129311/2
         # Make rdo-release safe to install twice
         cherry_pick tripleo-image-elements refs/changes/27/129727/1
+        # Change how SELinux policies are compiled
+        # https://review.openstack.org/130420
+        cherry_pick tripleo-image-elements refs/changes/20/130420/1
+        # Simplify keepalived custom policy
+        # https://review.openstack.org/130422
+        cherry_pick tripleo-image-elements refs/changes/22/130422/1
 
-        # disable keepalived custom policy on RHEL because it doesn't install
-        # https://bugzilla.redhat.com/show_bug.cgi?id=1151647
-        export NODE_DIST=${NODE_DIST:-fedora}
-        if [[ "$NODE_DIST" =~ "centos" || "$NODE_DIST" =~ "rhel" ]]; then
-            rm $INSTACK_ROOT/tripleo-image-elements/elements/selinux/custom-policies/tripleo-selinux-keepalived.te
-        fi
     fi
 
     if [ ! -d $INSTACK_ROOT/diskimage-builder ]; then
