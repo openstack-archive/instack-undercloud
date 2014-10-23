@@ -56,7 +56,7 @@ RDO stage repo and install instack-undercloud.
         # Fedora and RHEL
         sudo yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
         # Optionally enable the stage RDO repo instead
-        sudo sed -i 's#^baseurl.*#baseurl=http://team.virt.bos.redhat.com/openstack/openstack-juno/#' /etc/yum.repos.d/rdo-release.repo
+        sudo sed -i 's#^baseurl.*#baseurl=http://team.virt.bos.redhat.com/openstack/openstack-juno/fedora-$releasever/#' /etc/yum.repos.d/rdo-release.repo
 
 		sudo yum -y install instack-undercloud
 
