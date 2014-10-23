@@ -4,9 +4,9 @@ set -ex
 
 if [ -z "$INSTACK_ROOT" ]; then
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
-    export RCFILE=/usr/share/doc/instack-undercloud/deploy-virt-overcloudrc
-    export ANSWERSFILE=/usr/share/doc/instack-undercloud/instack.answers.sample
-    export ELEMENTS_PATH=/usr/share//tripleo-image-elements:/usr/share/diskimage-builder/elements:/usr/share/instack-undercloud
+    export RCFILE=/usr/share/instack-undercloud/deploy-virt-overcloudrc
+    export ANSWERSFILE=/usr/share/instack-undercloud/instack.answers.sample
+    export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements:/usr/share/instack-undercloud
 else
     DEVTEST_VARIABLES=$INSTACK_ROOT/tripleo-incubator/scripts/devtest_variables.sh
     export RCFILE=$INSTACK_ROOT/instack-undercloud/deploy-virt-overcloudrc
@@ -38,7 +38,11 @@ else
 fi
 
 
-export NODE_CNT=${NODE_CNT:-4}
+# We use $NODE_COUNT here instead of the $NODE_CNT from devtest_variables.sh so
+# that it can still be overrideable *after* sourcing devtest_variables.sh
+export NODE_COUNT=${NODE_COUNT:-4}
+export NODE_CNT=$NODE_COUNT
+
 export NODE_DIST=${NODE_DIST:-"fedora"}
 export NODE_ARCH=${NODE_ARCH:-x86_64}
 export NODE_MEM=${NODE_MEM:-4096}
