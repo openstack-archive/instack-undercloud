@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+
+# Must install python-ironicclient from RDO stage until it is available in
+# RDO.
+if rpm -q fedora-release; then
+    rpm -q python-ironicclient || yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/fedora-20/python-ironicclient-0.3.1-1.fc22.noarch.rpm
+else
+    rpm -q python-ironicclient || yum -y install http://team.virt.bos.redhat.com/openstack/openstack-juno/epel-7/python-ironicclient-0.3.1-1.el7.centos.noarch.rpm
+fi
