@@ -1,12 +1,12 @@
 #!/bin/bash
-# just starts the discovery dnsmasq process
+
 set -eux
 
-install-packages dnsmasq dnsmasq-utils
+install-packages dnsmasq
 
-# make sure tftpboot is labelled correctly
-mkdir -p /tftpboot
-restorecon -R /tftpboot
+pip install ironic-discoverd
+os-svc-daemon -n openstack-ironic-discoverd -i /usr -u root -c ironic-discoverd /etc/ironic-discoverd/discoverd.conf
+install -d -m 0750 -o root -g root /etc/ironic-discoverd
 
 cat > /lib/systemd/system/openstack-ironic-discoverd-dnsmasq.service << eof
 [Unit]
