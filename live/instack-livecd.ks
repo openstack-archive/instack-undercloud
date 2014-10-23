@@ -38,8 +38,8 @@ ssh-keygen -t rsa -N "" -f /home/stack/id_rsa_virt_power
 
 curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
 yum -y install instack-undercloud
-cp /usr/share/doc/instack-undercloud/instack.answers.sample /home/stack/instack.answers
-cp /usr/share/doc/instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
+cp /usr/share/instack-undercloud/instack.answers.sample /home/stack/instack.answers
+cp /usr/share/instack-undercloud/deploy-virt-overcloudrc /home/stack/deploy-overcloudrc
 # instack-install-undercloud sources ~/instack.answers, and during the
 # %chroot phase, apparently ~ evaluates to /tmp. So, we need to copy the
 # answers file there as well.
@@ -71,6 +71,9 @@ yum -y install anaconda
 # firewalld is installed back by anaconda, so we must totally disable it.
 rm '/etc/systemd/system/basic.target.wants/firewalld.service'
 rm '/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service'
+
+# need to reinstall grub2
+yum -y install grub2
 
 %end
 
