@@ -4,31 +4,6 @@ set -eux
 set -o pipefail
 
 if rpm -q fedora-release; then
-    # Go ahead and enable rdo juno momentarily so that we can install ironic to
-    # fix it, and pull in other needed deps
-    if ! rpm -q rdo-release; then
-        yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
-    fi
-
-    if ! rpm -q python-ironicclient; then
-        yum -y install https://kojipkgs.fedoraproject.org//packages/python-ironicclient/0.3.1/1.fc22/noarch/python-ironicclient-0.3.1-1.fc22.noarch.rpm
-    fi
-    if ! rpm -q python-tuskarclient; then
-        yum -y install https://kojipkgs.fedoraproject.org//packages/python-tuskarclient/0.1.15/1.fc22/noarch/python-tuskarclient-0.1.15-1.fc22.noarch.rpm
-    fi
-
-    if [ "$DIB_INSTALLTYPE_tuskar" = "package" ]; then
-        if ! rpm -q openstack-tuskar; then
-            yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-tuskar/0.4.15/2.fc22/noarch/openstack-tuskar-0.4.15-2.fc22.noarch.rpm
-        fi
-    fi
-
-    if [ "$DIB_INSTALLTYPE_tuskar_ui" = "package" ]; then
-        if ! rpm -q openstack-tuskar-ui; then
-            yum -y install https://kojipkgs.fedoraproject.org//packages/openstack-tuskar-ui/0.2.0/2.fc22/noarch/openstack-tuskar-ui-0.2.0-2.fc22.noarch.rpm
-        fi
-    fi
-    
     if ! rpm -q openstack-ironic; then
         yum -y install openstack-ironic-common
     fi
