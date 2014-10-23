@@ -152,6 +152,7 @@ function discovery-ramdisk {
         ramdisk-image-create \
             -a $NODE_ARCH \
             -o $DISCOVERY_NAME \
+            --ramdisk-element dracut-ramdisk \
             $NODE_DIST $DISCOVERY_IMAGE_ELEMENT \
             $DIB_COMMON_ELEMENTS \
             2>&1 | tee dib-discovery.log
