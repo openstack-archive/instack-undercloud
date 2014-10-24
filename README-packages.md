@@ -62,11 +62,7 @@ RDO stage repo and install instack-undercloud.
 
 		sudo yum -y install instack-undercloud
 
-3. Run the installation script. By default the install will use packages from
-the RDO openstack-juno repo at
-https://repos.fedorapeople.org/repos/openstack/openstack-juno/fedora-20/. If
-you wish to use the internal stage repo, you can override $RDO_RELEASE_RPM as
-shown.
+3. Run the installation script.
 
         instack-install-undercloud
 
