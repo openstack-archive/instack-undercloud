@@ -2,10 +2,10 @@ url --url=http://download.eng.brq.redhat.com/pub/fedora/releases/20/Fedora/x86_6
 # Without the Everything repo, we cannot install cloud-init
 repo --name="fedora-everything" --baseurl=http://download.eng.brq.redhat.com/pub/fedora/releases/20/Everything/x86_64/os/
 repo --name="updates" --baseurl=http://download.eng.brq.redhat.com/pub/fedora/linux/updates/20/x86_64/
-# At moment this is where the working version of diskimage-builder lives
-# repo --name=updates-testing --baseurl=http://download.eng.brq.redhat.com/pub/fedora/linux/updates/testing/20/x86_64/
-# instack-undercloud lives here for now
-# repo --name=openstack --baseurl=http://repos.fedorapeople.org/repos/openstack/openstack-icehouse/fedora-20/
+repo --name=openstack --baseurl=http://repos.fedorapeople.org/repos/openstack/openstack-juno/fedora-20/
+
+# Uncomment the following line to use the copr repository
+# repo --name=copr-openstack-m --baseurl=http://copr-be.cloud.fedoraproject.org/results/slagle/openstack-m/fedora-$releasever-$basearch/
 
 install
 text
@@ -32,19 +32,10 @@ logvol swap --fstype swap --name=LogVol01 --vgname=VolGroup00 --size=768 --grow 
 logvol / --fstype ext4 --name=LogVol00 --vgname=VolGroup00 --size=1024 --grow
 reboot
 
-%post
-curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
-yum -y install instack-undercloud
-export RUN_INSTACK=0
-instack-install-undercloud-source
-popd
-%end
-
 %packages
 @core
 qemu-img
-# diskimage-builder
-# instack-undercloud
+instack-undercloud
 git
 %end
 
