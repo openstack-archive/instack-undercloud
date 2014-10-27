@@ -219,14 +219,6 @@ if [ "$PACKAGES" = "1" -a "$DELOREAN" = "0" ]; then
     fi
 fi
 
-if [[ "$JSONFILE" =~ "package" ]]; then
-    # Must install python-ironicclient from koji until it is available in
-    # RDO.
-    if ! rpm -q python-ironicclient; then
-        sudo yum -y install https://kojipkgs.fedoraproject.org//packages/python-ironicclient/0.3.1/1.fc22/noarch/python-ironicclient-0.3.1-1.fc22.noarch.rpm
-    fi
-fi
-
 instack-install-undercloud
 
 # Reset ownership of cache directory
