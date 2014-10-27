@@ -45,7 +45,6 @@
       "element-manifest",
       "tuskar",
       "fix-undercloud-package-installs",
-      "python-swiftclient-python-futures",
       "os-cloud-config"
     ],
     "hook": [

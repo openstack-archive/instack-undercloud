@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eux
-set -o pipefail
-
-# python-swiftclient requires python-futures
-# https://bugzilla.redhat.com/show_bug.cgi?id=1154169
-yum -y install python-futures

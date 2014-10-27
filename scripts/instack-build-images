@@ -66,7 +66,6 @@ stackuser \
 swift-proxy \
 swift-storage \
 use-ephemeral \
-python-swiftclient-python-futures \
 "}
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
