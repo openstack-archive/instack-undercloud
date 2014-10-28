@@ -17,7 +17,7 @@ Using tripleo packages
         instack-build-images
         # Note that you can build just a single image type by passing the image name as the first
         # argument to instack-build-images like so:
-        # instack-builder-images overcloud-control
+        # instack-build-images overcloud-control
 
 Using tripleo source
 --------------------
