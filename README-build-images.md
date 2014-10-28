@@ -15,6 +15,9 @@ Using tripleo packages
 
         export DIB_COMMON_ELEMENTS="tripleo-image-elements copr-openstack-m rdo-juno-stage"
         instack-build-images
+        # Note that you can build just a single image type by passing the image name as the first
+        # argument to instack-build-images like so:
+        # instack-builder-images overcloud-control
 
 Using tripleo source
 --------------------
