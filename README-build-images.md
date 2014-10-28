@@ -1,6 +1,24 @@
 Overcloud image building
 ========================
-    
+
+Using tripleo packages
+----------------------
+1. Enable copr.
+
+        sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
+
+1. Install instack-undercloud
+
+        sudo yum -y update instack-undercloud diskimage-builder openstack-tripleo-image-elements
+        
+1. Build images. Enable the use of the needed extra elements for now.
+
+        export DIB_COMMON_ELEMENTS="tripleo-image-elements copr-openstack-m rdo-juno-stage"
+        instack-build-images
+
+Using tripleo source
+--------------------
+
 1. Create initial directory for instack, and clone the needed repositories.
 
 
