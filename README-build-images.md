@@ -9,7 +9,7 @@ Using tripleo packages
 
 1. Install instack-undercloud
 
-        sudo yum -y update instack-undercloud diskimage-builder openstack-tripleo-image-elements
+        sudo yum -y install instack-undercloud diskimage-builder openstack-tripleo-image-elements
         
 1. Build images. Enable the use of the needed extra elements for now.
 
