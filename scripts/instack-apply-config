@@ -3,6 +3,11 @@
 set -eu
 set -o pipefail
 
+export INSTACK_ROOT=${INSTACK_ROOT:-""}
+if [ -z "$INSTACK_ROOT" ]; then
+    cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
+fi
+
 vi ~/instack.answers
 
 echo "Sourcing answers file from instack.answers..."
@@ -37,7 +42,7 @@ export UNDERCLOUD_IRONIC_PASSWORD=${UNDERCLOUD_IRONIC_PASSWORD:-$(tripleo os-mak
 export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-make-password)}
 
 if [ -z "$INSTACK_ROOT" ]; then
-    sudo -E /usr/share/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata    
+    sudo -E /usr/share/instack-undercloud/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata    
 else
     sudo -E $INSTACK_ROOT/instack-undercloud/elements/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata
 fi
