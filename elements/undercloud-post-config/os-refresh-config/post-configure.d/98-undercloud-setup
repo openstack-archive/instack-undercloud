@@ -56,7 +56,7 @@ ENDPOINT_LIST="--glance-password $UNDERCLOUD_GLANCE_PASSWORD
     --ceilometer-password $UNDERCLOUD_CEILOMETER_PASSWORD"
 
 REGISTER_SERVICE_OPTS=
-    
+
 # Needed by ceilometer user in register-endpoint
 keystone role-create --name=ResellerAdmin
 
@@ -81,7 +81,8 @@ jq "." <<EOF > $NETWORK_JSON
         "cidr": "$NETWORK_CIDR",
         "allocation_start": "$DHCP_START",
         "allocation_end": "$DHCP_END",
-        "name": "$PHYSICAL_NETWORK"
+        "name": "$PHYSICAL_NETWORK",
+        "nameserver": "${UNDERCLOUD_NAMESERVER:-192.168.122.1}"
     }
 }
 EOF
