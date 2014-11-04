@@ -60,7 +60,7 @@ function do_tripleo_source_installs {
         # https://review.openstack.org/130422
         cherry_pick tripleo-image-elements refs/changes/22/130422/2
         # Multiple custom policy installs in one operation to save
-        # time 
+        # time
         # https://review.openstack.org/130875
         cherry_pick tripleo-image-elements refs/changes/75/130875/1
 
@@ -138,12 +138,6 @@ function do_tripleo_source_installs {
 
     if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git clone https://git.openstack.org/openstack/tripleo-heat-templates
-
-        ## block and object storage templates without merge.py
-        #
-        # https://review.openstack.org/#/c/123713/
-        cherry_pick tripleo-heat-templates refs/changes/13/123713/17
-
     fi
 
     # Create a useful symlink for openstack-tripleo-heat-templates
