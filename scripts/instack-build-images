@@ -27,6 +27,10 @@ element-manifest \
 network-gateway \
 "
 
+if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-release"
+fi
+
 export DELOREAN=${DELOREAN:-"0"}
 if [ "$DELOREAN" = "1" ]; then
     export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean" 
@@ -124,13 +128,6 @@ stable-interface-names \
 use-ephemeral \
 os-refresh-config-reboot \
 "}
-
-if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
-    OVERCLOUD_CONTROL_DIB_EXTRA_ARGS="$OVERCLOUD_CONTROL_DIB_EXTRA_ARGS epel rdo-release"
-    OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS="$OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS epel rdo-release"
-    OVERCLOUD_CINDER_DIB_EXTRA_ARGS="$OVERCLOUD_CINDER_DIB_EXTRA_ARGS epel rdo-release"
-    OVERCLOUD_SWIFT_DIB_EXTRA_ARGS="$OVERCLOUD_SWIFT_DIB_EXTRA_ARGS epel rdo-release"
-fi
 
 function deploy-ramdisk {
 if [ ! -f $DEPLOY_NAME.initramfs -o \
