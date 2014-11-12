@@ -43,7 +43,14 @@ fi
 export NODE_COUNT=${NODE_COUNT:-4}
 export NODE_CNT=$NODE_COUNT
 
-export NODE_DIST=${NODE_DIST:-"fedora"}
+# TODO(bnemec): This should use set-os-type from tripleo-incubator, but that's
+# currently broken for rhel7.
+if $(grep -Eqs 'Red Hat Enterprise Linux Server release 7' /etc/redhat-release); then
+    DEFAULT_DIST=rhel7
+else
+    DEFAULT_DIST=fedora
+fi
+export NODE_DIST=${NODE_DIST:-$DEFAULT_DIST}
 export NODE_ARCH=${NODE_ARCH:-x86_64}
 export NODE_MEM=${NODE_MEM:-4096}
 
