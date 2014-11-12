@@ -134,6 +134,10 @@ if [ -n "$TUSKAR" ]; then
     -A swift-storage-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
     -A controller-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
     -A compute-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
+    -A controller-1::count=${CONTROLSCALE}
+    -A compute-1::count=${COMPUTESCALE}
+    -A swift-storage-1::count=${SWIFTSTORAGESCALE}
+    -A cinder-storage-1::count=${BLOCKSTORAGESCALE}
     "}
 
     # These attributes can't be changed in Tuskar-UI, so this is the only
