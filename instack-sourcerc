@@ -73,11 +73,13 @@ if [ "$LKG" = "1" ]; then
     # To generate these, run:
     # tripleo set-source-vars -m /etc/dib-manifests/dib-manifest-git-instack
     # after a successful installation.
+    # You need to set PACKAGES=0, otherwise these reporefs will not be used
+    # and RDO packages will be installed instead.
     export DIB_REPOREF_ceilometer=85b859f42f10038edd22578cad266e5be58ceb01
     export DIB_REPOLOCATION_ceilometer=https://git.openstack.org/openstack/ceilometer
     export DIB_REPOREF_glance=b68c6471686163a9484058398fcb790ce578fb5e
     export DIB_REPOLOCATION_glance=https://git.openstack.org/openstack/glance.git
-    export DIB_REPOREF_heat=1fdce41373bd8d160915b2e23dd4b176bd332d49
+    export DIB_REPOREF_heat=c9d671cd0bb0b38745f5dfd0b32b9f096296bd9e
     export DIB_REPOLOCATION_heat=https://git.openstack.org/openstack/heat.git
     export DIB_REPOREF_horizon=ce839aa58d32a9bd475c099f371d0e820d51f1a3
     export DIB_REPOLOCATION_horizon=https://git.openstack.org/openstack/horizon
