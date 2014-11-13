@@ -10,7 +10,11 @@ exec 2>&1
 
 echo "Running $0"
 
-export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json}
+if [ "$(grep "Fedora" /etc/redhat-release)" == "" ]; then
+    export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/rhel-7-undercloud-packages.json}
+else
+    export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json}
+fi
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
 /usr/share/tripleo-image-elements:\
