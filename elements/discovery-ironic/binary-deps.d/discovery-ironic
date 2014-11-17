@@ -3,3 +3,4 @@ dmidecode
 fdisk
 ipmitool
 lscpu
+wc
