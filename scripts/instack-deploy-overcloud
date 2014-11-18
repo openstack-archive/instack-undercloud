@@ -85,14 +85,7 @@ export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
 if [ -n "$TUSKAR" ]; then
-
-    # TODO(lsmola) Not needed when tuskar CLI will be installed correctly
-    set +u
-    source /opt/stack/venvs/openstack/bin/activate
-    set -u
-
-    # TODO(lsmola) version not needed when it will be registered to keystone correctly
-    PLAN_ID=$( tuskar --tuskar-api-version 2 plan-show overcloud | awk '$2=="uuid" {print $4}' )
+    PLAN_ID=$( tuskar plan-show overcloud | awk '$2=="uuid" {print $4}' )
 
     export TUSKAR_PARAMETERS=${TUSKAR_PARAMETERS:-"
     -A NeutronControlPlaneID=${NeutronControlPlaneID}
@@ -146,15 +139,11 @@ if [ -n "$TUSKAR" ]; then
     # -A NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
     # -A NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
 
-    tuskar --tuskar-api-version 2 plan-patch $TUSKAR_PARAMETERS $PLAN_ID
-    tuskar --tuskar-api-version 2 plan-templates -O tuskar_templates $PLAN_ID
+    tuskar plan-patch $TUSKAR_PARAMETERS $PLAN_ID
+    tuskar plan-templates -O tuskar_templates $PLAN_ID
 
-    set +u
-    deactivate
-    set -u
-
-    OVERCLOUD_YAML_PATH="$INSTACK_ROOT/tuskar_templates/plan.yaml"
-    RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/tuskar_templates/environment.yaml"
+    OVERCLOUD_YAML_PATH="tuskar_templates/plan.yaml"
+    RESOURCE_REGISTRY_PATH="tuskar_templates/environment.yaml"
 
     RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
 

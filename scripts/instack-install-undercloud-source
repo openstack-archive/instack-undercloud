@@ -63,6 +63,11 @@ function do_tripleo_source_installs {
         # time
         # https://review.openstack.org/130875
         cherry_pick tripleo-image-elements refs/changes/75/130875/1
+        # Add source and package install for Tuskar client
+        # Both patches needed, first adds openstack client, otherwise
+        # there is cherry-pick conflict
+        cherry_pick tripleo-image-elements refs/changes/08/130608/5
+        cherry_pick tripleo-image-elements refs/changes/14/130714/12
 
     fi
 
