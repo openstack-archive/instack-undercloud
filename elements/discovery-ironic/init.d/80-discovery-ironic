@@ -37,7 +37,9 @@ IFACES="{$(echo $IFACES | sed s/,//)}"
 # NOTE(dtantsur): deprecated, left for compatibility
 MACS="[$(echo $MACS | sed 's/ /,/g')]"
 
+modprobe ipmi_msghandler || echo "WARNING: modprobe failed, ipmitool call may fail"
 modprobe ipmi_devintf || echo "WARNING: modprobe failed, ipmitool call may fail"
+modprobe ipmi_si || echo "WARNING: modprobe failed, ipmitool call may fail"
 BMC_ADDRESS=$(ipmitool lan print | grep -e "IP Address [^S]" | awk '{ print $4 }')
 
 CPU_ARCH=$(lscpu | grep Architecture | awk '{ print $2 }')
