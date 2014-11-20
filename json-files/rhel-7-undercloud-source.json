@@ -62,7 +62,8 @@
       "05-fstab-rootfs-label",
       "15-fedora-remove-grub",
       "00-load-selinux-policy",
-      "00-install-and-load-selinux-policy"
+      "00-install-and-load-selinux-policy",
+      "00-rhel-registration"
     ]
   }
 ]
