@@ -146,6 +146,15 @@ function do_tripleo_source_installs {
 
     if [ ! -d $INSTACK_ROOT/tripleo-heat-templates ]; then
         git clone https://git.openstack.org/openstack/tripleo-heat-templates
+
+        pushd tripleo-heat-templates
+
+        if [ "$LKG" = "1" ]; then
+            git fetch origin $DIB_REPOREF_tripleo_heat_templates
+            git reset --hard FETCH_HEAD
+        fi
+
+        popd
     fi
 
     # Create a useful symlink for openstack-tripleo-heat-templates
