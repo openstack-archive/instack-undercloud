@@ -104,7 +104,6 @@ export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
 baremetal \
 base \
 cinder-lio \
-cinder-volume-nfs \
 common-venv \
 dhcp-all-interfaces \
 hosts \
