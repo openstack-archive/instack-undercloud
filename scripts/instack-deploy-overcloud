@@ -85,14 +85,7 @@ export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
 if [ -n "$TUSKAR" ]; then
-
-    # TODO(lsmola) Not needed when tuskar CLI will be installed correctly
-    set +u
-    source /opt/stack/venvs/openstack/bin/activate
-    set -u
-
-    # TODO(lsmola) version not needed when it will be registered to keystone correctly
-    PLAN_ID=$( tuskar --tuskar-api-version 2 plan-show overcloud | awk '$2=="uuid" {print $4}' )
+    PLAN_ID=$( tuskar plan-show overcloud | awk '$2=="uuid" {print $4}' )
 
     export TUSKAR_PARAMETERS=${TUSKAR_PARAMETERS:-"
     -A NeutronControlPlaneID=${NeutronControlPlaneID}
@@ -146,34 +139,35 @@ if [ -n "$TUSKAR" ]; then
     # -A NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
     # -A NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
 
-    tuskar --tuskar-api-version 2 plan-patch $TUSKAR_PARAMETERS $PLAN_ID
-    tuskar --tuskar-api-version 2 plan-templates -O tuskar_templates $PLAN_ID
+    tuskar plan-patch $TUSKAR_PARAMETERS $PLAN_ID
 
-    set +u
-    deactivate
-    set -u
-
-    OVERCLOUD_YAML_PATH="$INSTACK_ROOT/tuskar_templates/plan.yaml"
-    RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/tuskar_templates/environment.yaml"
-
-    RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
-
+    # Generate keystone certificates
     HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
     ENV_JSON='{"parameters":{}}'
 
     jq . > "${HEAT_ENV}" <<< $ENV_JSON
     chmod 0600 "${HEAT_ENV}"
     generate-keystone-pki --heatenv $HEAT_ENV
-    sed -i 's/KeystoneCACertificate/controller-1::KeystoneCACertificate/g' $HEAT_ENV
-    sed -i 's/KeystoneSigningCertificate/controller-1::KeystoneSigningCertificate/g' $HEAT_ENV
-    sed -i 's/KeystoneSigningKey/controller-1::KeystoneSigningKey/g' $HEAT_ENV
 
-    HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
+    KeystoneCACertificate=$(os-apply-config -m $HEAT_ENV --key parameters.KeystoneCACertificate --type raw)
+    KeystoneSigningCertificate=$(os-apply-config -m $HEAT_ENV --key parameters.KeystoneSigningCertificate --type raw)
+    KeystoneSigningKey=$(os-apply-config -m $HEAT_ENV --key parameters.KeystoneSigningKey --type raw)
+
+    # Sending the Certificates one by one, otherwise there are problems with escaping
+    tuskar plan-patch -A controller-1::KeystoneCACertificate="${KeystoneCACertificate}" $PLAN_ID
+    tuskar plan-patch -A controller-1::KeystoneSigningCertificate="${KeystoneSigningCertificate}" $PLAN_ID
+    tuskar plan-patch -A controller-1::KeystoneSigningKey="${KeystoneSigningKey}" $PLAN_ID
+
+    # Get templates from tuskar
+    tuskar plan-templates -O tuskar_templates $PLAN_ID
+
+    OVERCLOUD_YAML_PATH="tuskar_templates/plan.yaml"
+    ENVIROMENT_YAML_PATH="tuskar_templates/environment.yaml"
 
     heat stack-create -f $OVERCLOUD_YAML_PATH \
-        $RESOURCE_REGISTRY \
-        $HEAT_ENVIRONMENT \
+        -e $ENVIROMENT_YAML_PATH \
         overcloud
+
 else
     OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-without-mergepy.yaml"
     RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-resource-registry.yaml"
