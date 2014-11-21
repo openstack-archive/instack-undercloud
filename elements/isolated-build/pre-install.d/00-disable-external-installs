@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+echo git >> /tmp/yum-blacklist
+echo python-pip >> /tmp/yum-blacklist
+echo python-virtualenv >> /tmp/yum-blacklist
+
+yum -y erase git python-pip python-virtualenv
