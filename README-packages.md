@@ -15,7 +15,10 @@ instack-undercloud via packages
 
 1. Enable the test TripleO copr repository and install instack-undercloud.
 
+        # fedora
         sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/fedora-20/slagle-openstack-m-fedora-20.repo
+        # rhel
+        sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/epel-7/slagle-openstack-m-epel-7.repo
         sudo yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
         # Enable the stage RDO repo
         sudo sed -i 's#^baseurl.*#baseurl=http://team.virt.bos.redhat.com/openstack/openstack-juno/fedora-$releasever/#' /etc/yum.repos.d/rdo-release.repo
