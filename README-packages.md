@@ -21,7 +21,7 @@ instack-undercloud via packages
         sudo curl -o /etc/yum.repos.d/slagle-openstack-m.repo https://copr.fedoraproject.org/coprs/slagle/openstack-m/repo/epel-7/slagle-openstack-m-epel-7.repo
         sudo yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
         # Enable the stage RDO repo
-        sudo sed -i 's#repos.fedorapeople.org/repos#team.virt.bos.redhat.com#' /etc/yum.repos.d/rdo-release.repo
+        sudo sed -i 's#repos.fedorapeople.org/repos#rdo-stage.virt.bos.redhat.com#' /etc/yum.repos.d/rdo-release.repo
         sudo yum -y install instack-undercloud
         
 1. Complete the initial setup.
@@ -61,7 +61,7 @@ RDO stage repo and install instack-undercloud.
         # Fedora and RHEL
         sudo yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
         # Enable the stage RDO repo
-        sudo sed -i 's#repos.fedorapeople.org/repos#team.virt.bos.redhat.com#' /etc/yum.repos.d/rdo-release.repo
+        sudo sed -i 's#repos.fedorapeople.org/repos#rdo-stage.virt.bos.redhat.com#' /etc/yum.repos.d/rdo-release.repo
 
 		sudo yum -y install instack-undercloud
 
