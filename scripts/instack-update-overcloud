@@ -159,7 +159,7 @@ if [ -n "$TUSKAR" ]; then
     ENVIROMENT_YAML_PATH="tuskar_templates/environment.yaml"
 
     heat stack-update -f $OVERCLOUD_YAML_PATH \
-        -e $ENVIROMENT_YAML_PATH
+        -e $ENVIROMENT_YAML_PATH \
         overcloud
 
 else
