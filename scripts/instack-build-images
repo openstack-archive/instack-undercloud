@@ -36,6 +36,7 @@ network-gateway \
 
 if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
     export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-release"
+    export FS_TYPE=${FS_TYPE:-xfs}
 fi
 
 export DELOREAN=${DELOREAN:-"0"}
