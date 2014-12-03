@@ -15,5 +15,5 @@ fi
 if [ -z "$RHOS_PUDDLE" ]; then
     rhos-release -d $RHOS_RELEASE
 else
-    rhos-release -d -p $RHOS__PUDDLE $RHOS_RELEASE
+    rhos-release -d -p $RHOS_PUDDLE $RHOS_RELEASE
 fi
