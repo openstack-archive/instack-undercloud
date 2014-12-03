@@ -34,8 +34,13 @@ element-manifest \
 network-gateway \
 "
 
+export RHOS=${RHOS:-"0"}
 if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-release"
+    if [ "$RHOS" = "1" ]; then
+        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS rhos-release"
+    else
+        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-release"
+    fi 
 fi
 
 export DELOREAN=${DELOREAN:-"0"}
