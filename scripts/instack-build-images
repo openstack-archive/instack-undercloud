@@ -39,7 +39,7 @@ if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
     if [ "$RHOS" = "1" ]; then
         export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS rhos-release"
     else
-        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-release"
+        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-juno rdo-release"
     fi 
 fi
 
@@ -50,7 +50,7 @@ fi
 
 export PACKAGES=${PACKAGES:-"1"}
 if [ "$PACKAGES" = "1" ]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS tripleo-image-elements undercloud-package-install rdo-juno"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS tripleo-image-elements undercloud-package-install"
 fi
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
