@@ -7,9 +7,9 @@ export RHOS_RELEASE=${RHOS_RELEASE:-"6"}
 export RHOS_PUDDLE=${RHOS_PUDDLE:-""}
 
 if rpm -q rhos-release; then
-    yum update http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+    yum -y update http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
 else
-    yum install http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+    yum -y install http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
 fi
 
 if [ -z "$RHOS_PUDDLE" ]; then
