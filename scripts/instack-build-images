@@ -35,12 +35,13 @@ network-gateway \
 "
 
 export RHOS=${RHOS:-"0"}
+export RHOS_RELEASE=${RHOS_RELEASE:-"0"}
 if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
-    if [ "$RHOS" = "1" ]; then
-        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS rhos-release"
-    else
+    if [ "$RHOS" = "0" ]; then
         export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-juno rdo-release"
-    fi 
+    elif [ ! "$RHOS_RELEASE" = "0" ]; then
+        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS rhos-release"
+    fi
 fi
 
 export DELOREAN=${DELOREAN:-"0"}
