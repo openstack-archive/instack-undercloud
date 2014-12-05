@@ -53,6 +53,7 @@ fi
 export NODE_DIST=${NODE_DIST:-$DEFAULT_DIST}
 export NODE_ARCH=${NODE_ARCH:-x86_64}
 export NODE_MEM=${NODE_MEM:-4096}
+export NODE_CPU=${NODE_CPU:-1}
 
 source $DEVTEST_VARIABLES
 
@@ -90,8 +91,8 @@ tripleo configure-vm \
     --seed \
     --libvirt-nic-driver virtio \
     --arch x86_64 \
-    --memory 4194304 \
-    --cpus 1
+    --memory $((1024 * $NODE_MEM)) \
+    --cpus $NODE_CPU
 
 virsh start $UNDERCLOUD_VM_NAME
 
