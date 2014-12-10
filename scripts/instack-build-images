@@ -221,7 +221,7 @@ function overcloud-swift-storage {
 
 function fedora-user {
     if [ ! -f fedora-user.qcow2 ]; then
-        if [ -f ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2 ]; then
+        if [ -f ~/.cache/image-create/fedora-20.x86_64.qcow2 ]; then
             # Just copy the already downloaded Fedora cloud image as fedora-user.qcow2
             cp ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2
         else
