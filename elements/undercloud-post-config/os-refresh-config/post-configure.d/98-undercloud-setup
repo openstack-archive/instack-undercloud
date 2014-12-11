@@ -102,6 +102,5 @@ nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin
 # Using the source checkout path for now.
 instack-prepare-for-overcloud
 rm -rf $HOME/.novaclient
-instack-prepare-discovery
 
 touch $OK_FILE
