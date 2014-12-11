@@ -25,7 +25,7 @@ fi
 export NODE_DIST=${NODE_DIST:-$DEFAULT_DIST}
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
-export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-discovery-ironic}
+export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-ironic-discoverd-ramdisk-instack}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
 export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}

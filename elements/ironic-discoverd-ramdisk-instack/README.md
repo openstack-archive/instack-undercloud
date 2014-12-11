@@ -1,11 +1,10 @@
+ironic-discoverd [1] is a StackForge project for conducting hardware properties
+discovery via booting a special discovery ramdisk and interrogating hardware
+from within it.
+
 This ramdisk collects hardware information from the machine
 it's booted on and posts it to the URL provided via
-kernel argument 'ironic_callback_url'.
-
-The ramdisk is meant to be used with Ironic, thus it's name,
-but it's not really tied to it. We may switch to talking
-to an intermediate service later without changing ramdisk
-code.
+kernel argument 'discoverd_callback_url'.
 
 The hardware information collected by the ramdisk are:
 
@@ -13,6 +12,8 @@ The hardware information collected by the ramdisk are:
 * CPU count and architecture
 * Memory amount in MiB
 * Hard drive size in GiB
-* Mac addresses for all NICs except the loopback
+* IP and mac addresses for all NICs except the loopback
 
 The machine is halted at the end of the process.
+
+[1] https://pypi.python.org/pypi/ironic-discoverd
