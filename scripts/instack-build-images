@@ -37,7 +37,6 @@ network-gateway \
 export RHOS=${RHOS:-"0"}
 export RHOS_RELEASE=${RHOS_RELEASE:-"0"}
 if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
-
     # Default filesystem type is XFS for RHEL 7
     export FS_TYPE=${FS_TYPE:-xfs}
 

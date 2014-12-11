@@ -47,6 +47,7 @@ export NODE_CNT=$NODE_COUNT
 # currently broken for rhel7.
 if $(grep -Eqs 'Red Hat Enterprise Linux Server release 7' /etc/redhat-release); then
     DEFAULT_DIST=rhel7
+    export FS_TYPE=${FS_TYPE:-xfs}
 else
     DEFAULT_DIST=fedora
 fi
