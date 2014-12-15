@@ -1,73 +1,547 @@
-readonly DISCOVERD_URL=$(get_kernel_parameter discoverd_callback_url)
+# Default behavior if install succeed
+ONSUCCESS="halt"
+ONFAILURE="console"
+VERBOSE=0
+IP="all:dhcp"
 
-function request_curl(){
+set +e
+set +x
+
+exec 3>&1
+exec 4>&2
+
+exec >> /log 2>&1
+
+tail -f /log > /dev/console &
+tpid=$!
+
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^DEBUG=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^VERBOSE=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^ONSUCCESS=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^ONFAILURE=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^KEXEC_KERNEL=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^EMBEDDED=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^IP=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^UPLOAD_LOG=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^DISCO=")
+
+if [[ "$DEBUG" = "1" ]]; then
+    log "DEBUG param deprecated, please use ONFAILURE=console"
+    ONFAILURE="console"
+fi
+
+if [ "$VERBOSE" = 1 ]; then
+    set -x			# show commands
+fi
+
+################################################################################
+# extracted from /var/lib/dpkg/info/openssh-server.postinst
+#
+# Do not fix indentation to be able to compare with the original file
+# easily.
+################################################################################
+get_config_option() {
+    option="$1"
+
+    [ -f /etc/ssh/sshd_config ] || return
+
+    # TODO: actually only one '=' allowed after option
+    perl -lne 's/\s+/ /g; print if s/^\s*'"$option"'[[:space:]=]+//i' \
+    /etc/ssh/sshd_config
+}
+
+host_keys_required() {
+    hostkeys="$(get_config_option HostKey)"
+    if [ "$hostkeys" ]; then
+        echo "$hostkeys"
+    else
+        # No HostKey directives at all, so the server picks some
+        # defaults depending on the setting of Protocol.
+        protocol="$(get_config_option Protocol)"
+        [ "$protocol" ] || protocol=1,2
+        if echo "$protocol" | grep 1 >/dev/null; then
+            echo /etc/ssh/ssh_host_key
+        fi
+        if echo "$protocol" | grep 2 >/dev/null; then
+            echo /etc/ssh/ssh_host_rsa_key
+            echo /etc/ssh/ssh_host_dsa_key
+            echo /etc/ssh/ssh_host_ecdsa_key
+        fi
+    fi
+}
+
+create_key() {
+    msg="$1"
+    shift
+    hostkeys="$1"
+    shift
+    file="$1"
+    shift
+
+    if echo "$hostkeys" | grep -x "$file" >/dev/null && \
+       [ ! -f "$file" ] ; then
+        echo -n $msg
+        ssh-keygen -q -f "$file" -N '' "$@"
+        echo
+        if which restorecon >/dev/null 2>&1; then
+            restorecon "$file.pub"
+        fi
+    fi
+}
+
+create_keys() {
+    hostkeys="$(host_keys_required)"
+
+    create_key "Creating SSH1 key; this may take some time ..." \
+        "$hostkeys" /etc/ssh/ssh_host_key -t rsa1
+
+    create_key "Creating SSH2 RSA key; this may take some time ..." \
+        "$hostkeys" /etc/ssh/ssh_host_rsa_key -t rsa
+    create_key "Creating SSH2 DSA key; this may take some time ..." \
+        "$hostkeys" /etc/ssh/ssh_host_dsa_key -t dsa
+    create_key "Creating SSH2 ECDSA key; this may take some time ..." \
+        "$hostkeys" /etc/ssh/ssh_host_ecdsa_key -t ecdsa
+}
+
+update_ssh_port() {
+    sed -i -e 's/^.*Port.*$/Port 2222/' /etc/ssh/sshd_config
+    sed -i -e 's/^.*#PermitRootLogin.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sed -i -e 's/^.*#PermitEmptyPasswords.*$/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
+    echo 'UseDNS no' >> /etc/ssh/sshd_config
+}
+
+start_ssh_server() {
+    create_keys
+    update_ssh_port
+    mkdir -p /var/lock/subsys
+    /etc/init.d/ssh start &>/dev/null || /etc/init.d/sshd start &>/dev/null || /usr/sbin/sshd -o UsePAM=no
+}
+
+upload_log() {
+    :
+}
+
+do_reboot() {
+    upload_log
+    umount -a
+    reboot -f
+}
+
+do_halt() {
+    umount -a
+    upload_log
+    sync
+    sleep 5
+    poweroff -f
+}
+
+do_console() {
+    upload_log
+    start_ssh_server
+    exec /bin/bash -i
+}
+
+step() {
+    echo "################################################################"
+    echo "$@"
+    echo "################################################################"
+}
+
+log() {
+    echo "$@"
+}
+
+log_n() {
+    echo -n "$@"
+}
+
+run_detect() {
+    hardware-detect > /hw.json || give_up "Failed to detect hardware"
+}
+
+give_up() {
+    log "$@"
+    #save_log
+    #upload_log
+    #report_failure
+
+    case "$ONFAILURE" in
+      "halt")
+        log "Automatic poweroff as required by ONFAILURE"
+        do_halt
+        ;;
+      "console")
+        log "ONFAILURE=console, launching an interactive shell"
+        do_console
+        ;;
+      "reboot")
+        log "Automatic poweroff as required by ONFAILURE"
+        do_reboot
+        ;;
+      *)
+        log "Unsupported ONFAILURE=$ONFAILURE value"
+        do_console
+        ;;
+    esac
+}
+
+get_pci_modules() {
+    for d in $(cut -f2 /proc/bus/pci/devices ); do
+        echo $d| sed 's/\(....\)/\1 /'|while read vendor device; do
+            egrep -i "pci:v0000${vendor}d(\*|0000${device})" /lib/modules/$(uname -r)/modules.alias|while read a n module; do
+                echo $module
+            done
+        done
+    done
+}
+
+get_virtio_modules() {
+    for id in $(cut -f2 -d: /sys/bus/virtio/devices/*/modalias | sed 's/v.*/v/' ); do
+        egrep -i "virtio:${id}\*" /lib/modules/$(uname -r)/modules.alias|while read a n module; do
+            echo $module
+        done
+     done
+}
+
+probe_virtio_devices() {
+    for loop in $(seq 10); do
+        if [ -d /sys/bus/virtio/devices ]; then
+            for module in $(get_virtio_modules|sort -u); do
+                log_n "Loading $module "
+                modprobe $module && log "done" || log "error"
+            done
+            break
+        fi
+    done
+}
+
+probe_pci_devices() {
+    step "Probing PCI devices"
+    BLACK_LIST="snd_hda_intel mgag200"
+    for module in $(get_pci_modules|sort -u); do
+        echo "$BLACK_LIST" | grep -qw "$module" && log "Skipping $module" && continue
+        log_n "Loading $module "
+        modprobe $module && log "done" || log "error"
+        if [ $module = virtio_pci ]; then
+            probe_virtio_devices
+        fi
+    done
+
+    # Some kernel drivers doesn't have hardware dependencies but are required to make the device work
+    # Let's probe them before starting the network stuff
+    step "Probing Additional modules"
+    # Show all Mellanox cards (15b3 is hexa vendor ID)
+    if [ "$(lspci -d 15b3: -n|awk '{print $2}'|grep -q '0280';echo $?)" -eq 0 ]; then
+      additional_modules='mlx4_en ib_sa ib_cm ib_umad ib_addr ib_uverbs ib_ipoib ib_ipath mlx4_ib'
+      for module in $additional_modules; do
+        log_n "Loading additional module $module "
+        modprobe $module && log "done" || log "error"
+      done
+    fi
+
+    # Add weird sleep to get all drivers probed
+    sleep 5
+}
+
+
+probe_kernel_modules() {
+    step "Probing complementary kernel modules"
+    # Some kernel modules could be needed to perfom some operations
+
+    # Some linux distribution have dm-mod in module, some other in static.
+    # Let's try to probe it for the 1st case
+    modprobe "dm-mod" || true
+}
+
+enable_network_links() {
+    nolink=$1
+    retry_count=$2
+    DEVICE_LIST=
+    for current_pass in `seq 1 $retry_count`; do
+        log "Enabling Ethernet Links ($current_pass/$retry_count)"
+        pushd /sys/class/net >/dev/null
+        for device in *; do
+            if [ "$device" = "lo" ]; then
+                continue
+            fi
+            ip link set dev $device up
+            DEVICE_LIST="$DEVICE_LIST $device"
+        done
+        popd > /dev/null
+
+        if [ -n "$DEVICE_LIST" ]; then
+            log "Ethernet devices detection completed"
+            break;
+        else
+            log "No Ethernet devices found"
+            if [ "$current_pass" != "$retry_count" ]; then
+                log "Waiting a little bit before retrying"
+                sleep 2
+            fi
+        fi
+    done
+
+    # If we have only match "lo" it means no physical interface got detected !
+    if [ -z "$DEVICE_LIST" ]; then
+        show_kernel_modules
+        show_network_cards
+        if [ "$nolink" = "fatal" ]; then
+            give_up "No Network interface found !"
+        fi
+    fi
+
+    # Only consider interface that have a Link ok
+    log "Waiting a few seconds to catch network link"
+    sleep 10
+
+    log "List of available network devices is :$DEVICE_LIST"
+}
+
+get_network_configuration() {
+    searched_iface=$1
+    OLD_IFS=$IFS
+    IFS=","
+    other="dhcp"
+    for entry in $IP; do
+        iface_name=$(echo $entry | cut -d ":" -f 1)
+        iface_config=$(echo $entry | cut -d ":" -f 2)
+        if [ "$iface_name" = "$searched_iface" ] || [ "$iface_name" = "all" ]; then
+            echo -n $iface_config
+            return
+        fi
+        if [ "$iface_name" = "other" ]; then
+            other=$iface_config
+        fi
+    done
+    IFS=$OLD_IFS
+    # If no configuration got found, we consider this is dhcp
+    echo -n $other
+}
+
+
+probe_network_devices() {
+# Let's wait 30 seconds to get a DHCP answer
+# Default is very very long....
+DHCP_TIMEOUT=30
+DHCP_GRACE_TIME=10
+DHCP_NO_RACETIMING=1
+if [ -f /etc/dhcp/dhclient.conf ]; then
+    sed -i "s/^\#timeout.*/timeout $DHCP_TIMEOUT/g" /etc/dhcp/dhclient.conf
+else
+    echo "timeout $DHCP_TIMEOUT;" > /etc/dhcp/dhclient.conf
+fi
+
+lldpad -d
+MAX_RUN=6
+RUN=0
+while true; do
+
+    enable_network_links fatal 3
+
+    CARRIER_DEVICE_LIST=
+    DHCP_IFACES_COUNT=0
+    PIDS=
+    pushd /sys/class/net >/dev/null
+    for iface in *; do
+        if [ "$iface" = "lo" ]; then
+            continue
+        fi
+
+        # Let's check if the network interface reports some carrier
+        # If so, let's try to get a DHCP answer from here
+        if [ "$(cat /sys/class/net/$iface/carrier)" = "1" ]; then
+            CARRIER_DEVICE_LIST="$CARRIER_DEVICE_LIST $iface"
+            log "Enabling LLDP rx on $iface"
+            lldptool set-lldp -i $iface adminstatus=rxtx &>/dev/null
+            # Let's run all the dhclients in parallel
+            config=$(get_network_configuration $iface)
+            case "$config" in
+                "dhcp")
+                    DHCP_IFACES_COUNT=$(($DHCP_IFACES_COUNT + 1))
+                    ( log "Waiting for $iface to get a DHCP answer."
+                        if [ -r /var/run/dhclient-$iface.pid ]; then
+                            kill $(cat /var/run/dhclient-$iface.pid)
+                        fi
+                        dhclient -d -pf /var/run/dhclient-$iface.pid $iface >> /$iface.log 2>&1 &
+                        count=$DHCP_GRACE_TIME
+                        while [ $count -gt 0 ] && ! ifconfig $iface|grep -q 'inet addr'; do
+                            sleep 1
+                            count=$(($count - 1))
+                        done
+                    ) &
+                    PIDS="$PIDS $!"
+                    sleep $DHCP_NO_RACETIMING # Don't race dhcp clients too much
+                ;;
+                "none")
+                    log "Ignoring network interface $iface"
+                ;;
+                *)
+                    log "Setting up $iface with $config"
+                    ip addr add $config dev $iface
+                ;;
+            esac
+        else
+            log "Rejecting Interface $iface : carrier not detected"
+        fi
+    done
+    popd >/dev/null
+
+    log "Valid interfaces with Carrier were $CARRIER_DEVICE_LIST"
+
+    if [ $DHCP_IFACES_COUNT -eq 0 ]; then
+        # We don't have any DHCP interface to wait, let's exit
+        break;
+    else
+        # We now have to let enough time to let all the racing dhcpclient finishing
+        DHCP_WAITING_TIME=$((DHCP_TIMEOUT + $DHCP_GRACE_TIME + $DHCP_IFACES_COUNT*$DHCP_NO_RACETIMING + 3))
+        log "Waiting for $DHCP_IFACES_COUNT DHCP anwsers to come up in $DHCP_WAITING_TIME sec"
+
+        while [ -n "$PIDS" ]; do
+        NEW_PIDS=
+        for p in $(echo $PIDS); do
+            if [ -d /proc/$p ]; then
+                NEW_PIDS="$NEW_PIDS $p"
+            fi
+        done
+        DHCP_WAITING_TIME=$(($DHCP_WAITING_TIME - 1))
+        if [ -n "$NEW_PIDS" -a $DHCP_WAITING_TIME -gt 0 ]; then
+            PIDS="$NEW_PIDS"
+            sleep 1
+        else
+            PIDS=
+        fi
+        done
+
+        IP_SET=$(ip -4 a  | grep -iw "inet" | grep -v "127.0.0.1" | wc -l)
+        if [ "$IP_SET" -gt 0 ]; then
+            log "Found $IP_SET interfaces properly configured"
+            # We found at least once DHCP server so we can continue
+            # the install procedure
+            break
+        fi
+
+        RUN=$(( $RUN + 1 ))
+        if [ "$RUN" != "$MAX_RUN" ]; then
+            log "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            log "!! NO DHCP FOUND ! Waiting 10 seconds before trying again. !!"
+            log "!! ($RUN / $MAX_RUN)                                       !!"
+            log "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+	    sleep 10
+        else
+            log "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+            log "!! NO DHCP FOUND after $RUN tries.                         !!"
+            log "!! last chance, let dhclient handle the discovery          !!"
+            log "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+	    killall dhclient
+	    dhclient
+	    break
+        fi
+    fi
+done
+
+# Let's wait up to 45 seconds to get all links getting their lldp status
+WAIT_LLDP_TIME=5
+NB_LLDP_LOOPS=9
+
+if [ -n "$CARRIER_DEVICE_LIST" ]; then
+    for loop in `seq 1 $NB_LLDP_LOOPS`; do
+        NB_DEVICES=$(echo "$CARRIER_DEVICE_LIST" | wc -w)
+        log "Searching for LLDP information on $NB_DEVICES interfaces (loop $loop / $NB_LLDP_LOOPS)"
+        for iface in $CARRIER_DEVICE_LIST; do
+            NB_PKTS=$(lldptool -S -i $iface | grep "Total Frames Received" | awk '{print $5}')
+            if [ "$NB_PKTS" != "0" ]; then
+                NB_DEVICES=$(( $NB_DEVICES - 1 ))
+            fi
+        done
+        # If all links had one LLDP packet at least, let's exit earlier
+        if [ $NB_DEVICES -eq 0 ]; then
+            log "Received at least one LLDP packet per valid interface"
+            log "End of LLDP discovery process"
+            return;
+        fi
+        sleep $WAIT_LLDP_TIME
+    done
+fi
+}
+
+set_path() {
+    PATH=/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin
+    export PATH
+}
+
+discoverd_request(){
     HTTP_METHOD=$1
     URL=$2
     DATA=$3
 
-    if [ ! -z "$DATA" ]; then
-        DATA="\"-d \"$DATA\"\""
+    if [ -z "$DATA" ]; then
+        give_up "no data passed to discoverd_request"
     fi
 
     RESULT=$(eval curl -i -X "$HTTP_METHOD" \
            "-H 'Accept: application/json'" \
            "-H 'Content-Type: application/json'" \
-           "$DATA" \
-           "$URL") || troubleshoot
+           -d "$DATA" \
+           "$URL") || give_up "Failed to send data to $URL"
     # CURL can't return error code on 4xx error
     if echo $RESULT | grep "HTTP/1.0 4"; then
-        echo "Ironic API returned error: $RESULT"
-        troubleshoot
+        give_up "Ironic API returned error: $RESULT"
     fi
-    echo $RESULT
+    log "discoverd_request $URL: $RESULT"
 }
 
-IFACES=
-for iface in $(ls /sys/class/net/ | grep -v lo)
-do
-    MAC=$(ip link show $iface | awk '/ether/ {print $2}')
-    IP=$(ip addr show $iface | awk '/inet / { sub(/\/.*/, "", $2); print $2 }')
-    if [ ! -z "$MAC" ]; then
-        IFACES="$IFACES,\"$iface\":{\"mac\":\"$MAC\",\"ip\":\"$IP\"}"
-    fi
-done
-IFACES="{$(echo $IFACES | sed s/,//)}"
+probe_kernel_modules
 
-# NOTE(dtantsur): workaround for IPMI device not present on some systems
-modprobe ipmi_msghandler || echo "WARNING: modprobe failed, ipmitool call may fail"
-modprobe ipmi_devintf || echo "WARNING: modprobe failed, ipmitool call may fail"
-modprobe ipmi_si || echo "WARNING: modprobe failed, ipmitool call may fail"
-
-BMC_ADDRESS=$(ipmitool lan print | grep -e "IP Address [^S]" | awk '{ print $4 }')
-
-CPU_ARCH=$(lscpu | grep Architecture | awk '{ print $2 }')
-# NOTE(lucasagomes): dmidecode because we want to know the total
-# memory in the system, even the reserved part to the BIOS
-RAM=$(dmidecode -t 16 | grep 'Maximum Capacity' | awk '{if ($4 == "GB") s+=$3*1024; else s+=$3;} END {print s}')
-CPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
-disk_bytes=$(fdisk -l | grep Disk | awk '{print $5}' | head -n 1)
-# NOTE(dtantsur): -1 is required to give Ironic some spacing for partitioning and may be removed later
-DISK_SIZE=$(($disk_bytes/1024/1024/1024 - 1))
-
-NODE_DATA="'{\"ipmi_address\":\"$BMC_ADDRESS\",\"local_gb\":$DISK_SIZE,\"memory_mb\":$RAM,\"cpus\":$CPUS,\"cpu_arch\":\"$CPU_ARCH\""
-NODE_DATA="$NODE_DATA,\"interfaces\":$IFACES}'"
-echo Collected $NODE_DATA
-NODE_RESP=$(request_curl POST $DISCOVERD_URL $NODE_DATA)
-
-if echo "$NODE_RESP" | grep -E '"ipmi_setup_credentials": *(true)';
-then
-    USER=$(echo "$NODE_RESP" | sed -r 's/.*"ipmi_username": *"([^"]*)".*/\1/')
-    PASSWORD=$(echo "$NODE_RESP" | sed -r 's/.*"ipmi_password": *"([^"]*)".*/\1/')
-    echo "Assigning IPMI credentials: $USER";
-
-    ipmitool user set name 2 $USER
-    ipmitool user set password 2 $PASSWORD
-    # Assign priviledges just in case
-    ipmitool channel setaccess 1 2 link=on ipmi=on callin=on privilege=4
-    ipmitool user enable 2
+step "Starting services"
+if [ -x /etc/init.d/sysklogd ]; then
+    /etc/init.d/sysklogd start
 fi
 
-echo "Node is now discovered! Halting..."
-# Give user a chance of seeing the output
-sleep 5
-poweroff -f
+if [ -x /etc/init.d/klogd ]; then
+    /etc/init.d/klogd start
+fi
+
+# It's all over netlink now
+echo "" > /proc/sys/kernel/hotplug
+
+mcelog --ignorenodev --filter --daemon --logfile /mcelog
+
+# On RHEL7, we need lvmetad to run to make {lv}* commands working
+if [ -x /sbin/lvmetad ]; then
+    lvmetad
+fi
+
+################################################################################
+# Hardware detection starts here
+################################################################################
+probe_pci_devices
+
+# if [ "$DEBUG" = 1 ]; then
+#     start_ssh_server
+# fi
+
+probe_network_devices
+
+ip a
+
+run_detect
+echo "{\"data\": $(cat /hw.json)}" > /discoverd.json
+discoverd_request POST "${DISCO}" @/discoverd.json
+
+case "$ONSUCCESS" in
+    "reboot")
+        log "Automatic rebooting as required by ONSUCCESS"
+        do_reboot
+        ;;
+    "halt")
+        log "Automatic poweroff as required by ONSUCCESS"
+        do_halt
+        ;;
+    "console")
+        log "ONSUCCESS=console, launching an interactive shell"
+        do_console
+        ;;
+    *)
+        give_up "Unsupported ONSUCCESS=$ONSUCCESS value"
+        ;;
+esac
