@@ -68,6 +68,8 @@ function do_tripleo_source_installs {
         # there is cherry-pick conflict
         cherry_pick tripleo-image-elements refs/changes/08/130608/5
         cherry_pick tripleo-image-elements refs/changes/14/130714/12
+	# tuskar-ui to tuskar-api race condition
+        cherry_pick tripleo-image-elements refs/changes/14/135814/2
 
     fi
 
