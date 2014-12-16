@@ -39,6 +39,7 @@
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
       "tuskar-ui",
+      "tuskar-ui-extras",
       "ironic-discoverd",
       "element-manifest",
       "tuskar"
