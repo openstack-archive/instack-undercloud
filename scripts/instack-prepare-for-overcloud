@@ -6,6 +6,7 @@ IMAGE_PATH=${IMAGE_PATH:-"."}
 
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
+TFTP_ROOT=${TFTP_ROOT:-/tftpboot}
 
 command $(sudo cat /root/stackrc | xargs)
 
@@ -52,12 +53,8 @@ glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --public \
     --disk-format ari < $IMAGE_PATH/$DEPLOY_NAME.initramfs
 
-glance image-delete discovery-kernel 2>/dev/null || :
-glance image-create --name discovery-kernel --public \
-    --disk-format aki < $IMAGE_PATH/$DISCOVERY_NAME.kernel
-glance image-delete discovery-ramdisk 2>/dev/null || :
-glance image-create --name discovery-ramdisk --public \
-    --disk-format ari < $IMAGE_PATH/$DISCOVERY_NAME.initramfs
+cp -f "$IMAGE_PATH/$DISCOVERY_NAME.kernel" "$TFTP_ROOT/discovery.kernel"
+cp -f "$IMAGE_PATH/$DISCOVERY_NAME.initramfs" "$TFTP_ROOT/discovery.ramdisk"
 
 glance image-update --property type='discovery ramdisk' discovery-ramdisk
 glance image-update --property type='discovery kernel' discovery-kernel
