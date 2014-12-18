@@ -54,6 +54,19 @@ NODE_DATA="$NODE_DATA,\"interfaces\":$IFACES}'"
 echo Collected $NODE_DATA
 NODE_RESP=$(request_curl POST $DISCOVERD_URL $NODE_DATA)
 
+if echo "$NODE_RESP" | grep -E '"ipmi_setup_credentials": *(true)';
+then
+    USER=$(echo "$NODE_RESP" | sed -r 's/.*"ipmi_username": *"([^"]*)".*/\1/')
+    PASSWORD=$(echo "$NODE_RESP" | sed -r 's/.*"ipmi_password": *"([^"]*)".*/\1/')
+    echo "Assigning IPMI credentials: $USER";
+
+    ipmitool user set name 2 $USER
+    ipmitool user set password 2 $PASSWORD
+    # Assign priviledges just in case
+    ipmitool channel setaccess 1 2 link=on ipmi=on callin=on privilege=4
+    ipmitool user enable 2
+fi
+
 echo "Node is now discovered! Halting..."
 # Give user a chance of seeing the output
 sleep 5
