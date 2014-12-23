@@ -66,6 +66,9 @@
          },
          { "option": "discovery_allow_search_by_mac",
            "value": "true"
+         },
+         { "option": "pxe_append_params",
+           "value": "biosdevname=1"
          }
       ],
       "section": "pxe"
