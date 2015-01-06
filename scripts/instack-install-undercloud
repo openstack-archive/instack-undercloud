@@ -17,9 +17,9 @@ else
 fi
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+/usr/share/instack-undercloud:\
 /usr/share/tripleo-image-elements:\
-/usr/share/diskimage-builder/elements:\
-/usr/share/instack-undercloud"}
+/usr/share/diskimage-builder/elements"}
 
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
