@@ -10,16 +10,29 @@ exec 2>&1
 
 echo "Running $0"
 
+# Attempt to be smart about detecting the path to the json files.
+JSONFILEDIR=/usr/share/instack-undercloud/json-files
+if [ ! -d "$JSONFILEDIR" ]; then
+    JSONFILEDIR=$(dirname $0)/../json-files
+fi
+
 if [ "$(grep "Fedora" /etc/redhat-release)" == "" ]; then
-    export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/rhel-7-rhos-6-undercloud-packages.json}
+    export JSONFILE=${JSONFILE:-$JSONFILEDIR/rhel-7-rhos-6-undercloud-packages.json}
 else
-    export JSONFILE=${JSONFILE:-/usr/share/instack-undercloud/json-files/fedora-20-undercloud-packages.json}
+    export JSONFILE=${JSONFILE:-$JSONFILEDIR/fedora-20-undercloud-packages.json}
+fi
+
+# Attempt to be smart about detecting the patch to the instack-undercloud
+# elements
+INSTACKUNDERCLOUDELEMENTS=/usr/share/instack-undercloud
+if [ ! -d $INSTACKUNDERCLOUDELEMENTS ]; then
+    INSTACKUNDERCLOUDELEMENTS=$(dirname $0)/../elements
 fi
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+$INSTACKUNDERCLOUDELEMENTS:\
 /usr/share/tripleo-image-elements:\
-/usr/share/diskimage-builder/elements:\
-/usr/share/instack-undercloud"}
+/usr/share/diskimage-builder/elements"}
 
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
