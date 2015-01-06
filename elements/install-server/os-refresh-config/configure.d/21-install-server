@@ -1,0 +1,17 @@
+
+if [ ! -e ~/.ssh/id_rsa ] ; then
+    ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
+    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+fi
+
+mkdir -p /etc/jenkins_jobs
+cd /opt/stack/config-tools/
+
+# provision needs this but will overwrite it
+# proper DNS would fix it
+#echo "127.0.0.1 install-server.etest" >> /etc/hosts
+#
+#echo install-server.etest > /etc/hostname
+#hostname install-server.etest
+
+#./provision.sh I.1.2.0 http://goodsquishy.com/downloads/repos/spinalstack-env.git/etest.yml version=D7-I.1.2.0

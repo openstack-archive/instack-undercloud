@@ -46,7 +46,8 @@
       "element-manifest",
       "tuskar",
       "fix-undercloud-package-installs",
-      "os-cloud-config"
+      "os-cloud-config",
+      "install-server"
     ],
     "hook": [
       "extra-data",
