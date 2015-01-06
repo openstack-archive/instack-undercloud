@@ -99,8 +99,7 @@ done
 # Disable nova quotas
 nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin | awk '$2=="id" {print $4}')
 
-# Using the source checkout path for now.
-instack-prepare-for-overcloud
+# instack-prepare-for-overcloud
 rm -rf $HOME/.novaclient
 
 touch $OK_FILE
