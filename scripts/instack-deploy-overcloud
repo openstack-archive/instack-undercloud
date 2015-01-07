@@ -70,6 +70,7 @@ NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 NtpServer=${NtpServer:-""}
+OVERCLOUD_EXTRA_CONFIG=${OVERCLOUD_EXTRA_CONFIG:-"{}"}
 
 CONTROLSCALE=${CONTROLSCALE:-1}
 COMPUTESCALE=${COMPUTESCALE:-1}
@@ -177,6 +178,7 @@ else
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
     -P CinderISCSIHelper=lioadm \
     -P CloudName=overcloud \
+    -P ExtraConfig=${OVERCLOUD_EXTRA_CONFIG} \
     -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
     -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
     -P NeutronControlPlaneID=$NeutronControlPlaneID \
