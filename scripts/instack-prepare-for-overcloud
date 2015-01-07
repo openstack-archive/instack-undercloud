@@ -38,7 +38,6 @@ check_image overcloud-control.qcow2
 check_image overcloud-compute.qcow2
 check_image overcloud-cinder-volume.qcow2
 check_image overcloud-swift-storage.qcow2
-check_image fedora-user.qcow2
 
 load_image overcloud-control.qcow2
 load_image overcloud-compute.qcow2
