@@ -40,11 +40,8 @@
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
-      "tuskar-ui",
-      "tuskar-ui-extras",
       "ironic-discoverd",
       "element-manifest",
-      "tuskar",
       "fix-undercloud-package-installs",
       "os-cloud-config",
       "install-server"
