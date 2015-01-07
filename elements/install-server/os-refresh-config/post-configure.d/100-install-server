@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+# Jenkins seems to need starting..
+systemctl start jenkins
+systemctl status jenkins
+
+# Wait Jenkins is up and running, it may take a long time.
+if ! timeout 1000 sh -c "while ! curl -s http://localhost:8282 | grep 'No builds in the queue.' >/dev/null 2>&1; do sleep 10; done"; then
+    echo "Jenkins is not up and running after long time."
+    exit 1
+fi
+
+# Install the jenkins job builder jobs
+cd /opt
+git clone https://github.com/hardys/jjb-openstack.git jenkins_jobs
+rm -fr /etc/jenkins_jobs
+ln -s /opt/jenkins_jobs /etc/jenkins_jobs
+/opt/jenkins-job-builder/jenkins_jobs/cmd.py update --delete-old /etc/jenkins_jobs/jobs
