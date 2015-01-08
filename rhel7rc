@@ -1,7 +1,6 @@
-echo $(dirname $0)
 export NODE_DIST=rhel7
 export DIB_LOCAL_IMAGE=rhel-guest-image-7.0-20140930.0.x86_64.qcow2 
-export ELEMENTS_PATH=$(realpath $(dirname $0)/instack-undercloud/elements/):/usr/share/tripleo-image-elements/
+export ELEMENTS_PATH=$(realpath $(pwd)/instack-undercloud/elements/):/usr/share/tripleo-image-elements/
 export REG_METHOD=disable
 export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.0.repo
 export RHOS=1
