@@ -5,6 +5,15 @@ set -o pipefail
 
 install-packages net-tools yum-utils git
 
+useradd -m stack
+
+cat > /etc/sudoers.d/stack <<eof
+stack ALL=(ALL) NOPASSWD:ALL
+eof
+
+chmod 0440 /etc/sudoers.d/stack
+visudo -c
+
 mkdir -p /home/stack/.ssh
 cp /tmp/in_target.d/id_rsa_virt_power /home/stack/.ssh/id_rsa_virt_power
 cp /tmp/in_target.d/id_rsa_virt_power.pub /home/stack/.ssh/id_rsa_virt_power.pub
@@ -13,4 +22,3 @@ cp /tmp/in_target.d/instack.answers.sample /home/stack/instack.answers
 cp /tmp/in_target.d/$TE_DATAFILE /home/stack/instackenv.json
 
 chown -R stack:stack /home/stack
-
