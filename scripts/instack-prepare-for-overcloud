@@ -35,16 +35,9 @@ check_image $DEPLOY_NAME.initramfs
 check_image $DEPLOY_NAME.kernel
 check_image $DISCOVERY_NAME.initramfs
 check_image $DISCOVERY_NAME.kernel
-check_image overcloud-control.qcow2
-check_image overcloud-compute.qcow2
-check_image overcloud-cinder-volume.qcow2
-check_image overcloud-swift-storage.qcow2
-check_image fedora-user.qcow2
+check_image openstack-full.qcow2
 
-load_image overcloud-control.qcow2
-load_image overcloud-compute.qcow2
-load_image overcloud-cinder-volume.qcow2
-load_image overcloud-swift-storage.qcow2
+load_image openstack-full.qcow2
 
 glance image-delete bm-deploy-kernel 2>/dev/null || :
 glance image-create --name bm-deploy-kernel --public \
@@ -56,34 +49,3 @@ glance image-create --name bm-deploy-ramdisk --public \
 cp -f "$IMAGE_PATH/$DISCOVERY_NAME.kernel" "$TFTP_ROOT/discovery.kernel"
 cp -f "$IMAGE_PATH/$DISCOVERY_NAME.initramfs" "$TFTP_ROOT/discovery.ramdisk"
 
-glance image-update --property type='discovery ramdisk' discovery-ramdisk
-glance image-update --property type='discovery kernel' discovery-kernel
-glance image-update --property type='deploy ramdisk' bm-deploy-ramdisk
-glance image-update --property type='deploy kernel' bm-deploy-kernel
-glance image-update --property type='overcloud provisioning' overcloud-control
-glance image-update --property type='overcloud provisioning ramdisk' overcloud-control-initrd
-glance image-update --property type='overcloud provisioning kernel' overcloud-control-vmlinuz
-glance image-update --property type='overcloud provisioning' overcloud-compute
-glance image-update --property type='overcloud provisioning ramdisk' overcloud-compute-initrd
-glance image-update --property type='overcloud provisioning kernel' overcloud-compute-vmlinuz
-glance image-update --property type='overcloud provisioning' overcloud-cinder-volume
-glance image-update --property type='overcloud provisioning ramdisk' overcloud-cinder-volume-initrd
-glance image-update --property type='overcloud provisioning kernel' overcloud-cinder-volume-vmlinuz
-glance image-update --property type='overcloud provisioning' overcloud-swift-storage
-glance image-update --property type='overcloud provisioning ramdisk' overcloud-swift-storage-initrd
-glance image-update --property type='overcloud provisioning kernel' overcloud-swift-storage-vmlinuz
-
-DEPLOYMENT_MODE=$(sudo os-apply-config --key deployment-mode --key-default 'poc')
-if [ "$DEPLOYMENT_MODE" = "poc" ]; then
-    if ! nova flavor-show baremetal 2>&1 1>/dev/null; then
-        nova flavor-create baremetal auto 4096 30 1
-
-        deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
-        deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
-
-        nova flavor-key baremetal set \
-            "cpu_arch"="x86_64" \
-            "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
-            "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id"
-    fi
-fi
