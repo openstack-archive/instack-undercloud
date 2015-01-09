@@ -201,6 +201,12 @@ else
     "}
 
 
+    if [ $CONTROLSCALE -gt 1 ]; then
+        export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
+        -P NeutronL3HA=True \
+        "
+    fi
+
     HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
     ENV_JSON='{"parameters":{}}'
 
