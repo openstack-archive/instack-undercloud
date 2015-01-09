@@ -70,6 +70,7 @@ NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 NtpServer=${NtpServer:-""}
+OVERCLOUD_EXTRA_CONFIG=${OVERCLOUD_EXTRA_CONFIG:-"{}"}
 
 CONTROLSCALE=${CONTROLSCALE:-1}
 COMPUTESCALE=${COMPUTESCALE:-1}
@@ -128,6 +129,10 @@ if [ -n "$TUSKAR" ]; then
     -A compute-1::count=${COMPUTESCALE}
     -A swift-storage-1::count=${SWIFTSTORAGESCALE}
     -A cinder-storage-1::count=${BLOCKSTORAGESCALE}
+    -A controller-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A compute-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A swift-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A cinder-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     "}
 
     # These attributes can't be changed in Tuskar-UI, so this is the only
@@ -177,6 +182,7 @@ else
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
     -P CinderISCSIHelper=lioadm \
     -P CloudName=overcloud \
+    -P ExtraConfig=${OVERCLOUD_EXTRA_CONFIG} \
     -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
     -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
     -P NeutronControlPlaneID=$NeutronControlPlaneID \
