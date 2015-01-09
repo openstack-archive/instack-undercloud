@@ -129,6 +129,10 @@ if [ -n "$TUSKAR" ]; then
     -A compute-1::count=${COMPUTESCALE}
     -A swift-storage-1::count=${SWIFTSTORAGESCALE}
     -A cinder-storage-1::count=${BLOCKSTORAGESCALE}
+    -A controller-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A compute-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A swift-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A cinder-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     "}
 
     # These attributes can't be changed in Tuskar-UI, so this is the only
