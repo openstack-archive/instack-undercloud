@@ -237,14 +237,23 @@ function fedora-user {
     fi
 }
 
+function openstack-full {
+    if [ ! -f openstack-full.qcow2 ]; then
+        # SpinalStack only supports RHOS 5 currently.
+        export RHOS_RELEASE=5
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o openstack-full \
+            $NODE_DIST \
+            openstack-full \
+            baremetal
+    fi
+}
+
 if [ "$image_build" = "all" ]; then
     deploy-ramdisk
     discovery-ramdisk
-    overcloud-control
-    overcloud-compute
-    overcloud-cinder-volume
-    overcloud-swift-storage
-    fedora-user
+    openstack-full
 else
     eval "$image_build"
 fi
