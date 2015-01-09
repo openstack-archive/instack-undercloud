@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+sudo rpm -Uvh http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+sudo rhos-release -d 6
+
+sudo yum install instack-undercloud # need to get all the instack-undercloud deps
+sudo rpm -evh instack-undercloud # the actual rpm is no longer needed
+
+sudo yum install git
+git clone -b spinalstack http://github.com/agroup/instack-undercloud
