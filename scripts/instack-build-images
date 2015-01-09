@@ -250,7 +250,9 @@ function openstack-full {
             -o openstack-full \
             $NODE_DIST \
             openstack-full \
-            baremetal
+            baremetal \
+            2>&1 | tee dib-openstack-full.log
+    fi
     fi
 }
 
