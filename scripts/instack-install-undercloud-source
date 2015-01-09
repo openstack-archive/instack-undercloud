@@ -65,16 +65,6 @@ function do_tripleo_source_installs {
             echo
         fi
 
-        # Move busybox binary-dep to ramdisk element
-        # https://review.openstack.org/#/c/130034/
-        cherry_pick diskimage-builder refs/changes/34/130034/1
-        # Unset trap before dracut ramdisk build script exits
-        # https://review.openstack.org/#/c/130632/
-        cherry_pick diskimage-builder refs/changes/32/130632/1
-        # Install lsb_release from package
-        # https://review.openstack.org/#/c/133452/
-        cherry_pick diskimage-builder refs/changes/52/133452/1
-
     fi
 
     # tar is required if we want to run diskimage-builder

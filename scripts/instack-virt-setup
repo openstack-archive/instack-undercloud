@@ -2,40 +2,13 @@
 
 set -ex
 
-if [ -z "$INSTACK_ROOT" ]; then
+if [ ! -d "/usr/share/instack-undercloud" ]; then
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
-    export RCFILE=/usr/share/instack-undercloud/deploy-virt-overcloudrc
-    export ANSWERSFILE=/usr/share/instack-undercloud/instack.answers.sample
-    export ELEMENTS_PATH=/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements:/usr/share/instack-undercloud
-else
-    DEVTEST_VARIABLES=$INSTACK_ROOT/tripleo-incubator/scripts/devtest_variables.sh
-    export RCFILE=$INSTACK_ROOT/instack-undercloud/deploy-virt-overcloudrc
-    export ANSWERSFILE=$INSTACK_ROOT/instack-undercloud/instack.answers.sample
-    export TRIPLEO_ROOT=$INSTACK_ROOT
-
-    if [ ! -d "$INSTACK_ROOT/diskimage-builder" ]; then
-        git clone https://git.openstack.org/openstack/diskimage-builder
-        export PATH="$PATH:$INSTACK_ROOT/diskimage-builder/bin/"
-    fi
-
-    if [ ! -d "$INSTACK_ROOT/dib-utils" ]; then
-        git clone https://git.openstack.org/openstack/dib-utils
-
-        pushd $INSTACK_ROOT/dib-utils
-        # environment.d sort fix, plus other fixes
-        git fetch https://review.openstack.org/openstack/dib-utils refs/changes/12/122412/2 && git cherry-pick FETCH_HEAD || true
-        popd
-
-        export PATH="$PATH:$INSTACK_ROOT/dib-utils/bin/"
-    fi
-
-    if [ ! -d "$INSTACK_ROOT/tripleo-image-elements" ]; then
-        git clone https://git.openstack.org/openstack/tripleo-image-elements
-    fi
-
-    export ELEMENTS_PATH=$INSTACK_ROOT/tripleo-image-elements/elements:$INSTACK_ROOT/instack-undercloud/elements
-
+    export RCFILE=$(dirname $0)/../deploy-virt-overcloudrc
+    export ANSWERSFILE=$(dirname $0)/../instack.answers.sample
+    export ELEMENTS_PATH="$(realpath $(dirname $0)/../elements):/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 fi
+
 
 
 # We use $NODE_COUNT here instead of the $NODE_CNT from devtest_variables.sh so

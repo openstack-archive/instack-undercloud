@@ -6,7 +6,7 @@ set -o pipefail
 export image_build=${1:-"all"}
 
 export INSTACK_ROOT=${INSTACK_ROOT:-"/usr/share"}
-export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/tripleo-image-elements:/usr/share/instack-undercloud"}
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/instack-undercloud:/usr/share/tripleo-image-elements"}
 source "$INSTACK_ROOT"/instack-undercloud/instack-sourcerc
 
 # Override TMP_DIR for image build.
