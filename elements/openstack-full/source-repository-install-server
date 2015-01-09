@@ -1,0 +1,1 @@
+puppet-release file /opt/stack/files/puppet-release.rpm http://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7-11.noarch.rpm
