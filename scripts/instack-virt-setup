@@ -76,6 +76,10 @@ while true; do
     IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac $UNDERCLOUD_VM_NAME) | awk '{print $3;}')
     if [ -n "$IP" ]; then
         echo "$UNDERCLOUD_VM_NAME vm IP address is $IP"
+        echo "You can connect by running:"
+        echo "ssh root@$IP"
+        echo "And then su to the stack user:"
+        echo "su - stack"
         break
     fi
     sleep 3

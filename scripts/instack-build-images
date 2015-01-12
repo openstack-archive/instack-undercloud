@@ -58,7 +58,7 @@ fi
 
 export PACKAGES=${PACKAGES:-"1"}
 if [ "$PACKAGES" = "1" ]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS tripleo-image-elements undercloud-package-install"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS tripleo-image-elements undercloud-package-install pip-and-virtualenv-override"
 fi
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
@@ -86,7 +86,6 @@ pip-cache \
 rabbitmq-server \
 snmpd \
 stable-interface-names \
-stackuser \
 swift-proxy \
 swift-storage \
 use-ephemeral \
@@ -109,7 +108,6 @@ pip-cache \
 pypi-openstack \
 snmpd \
 stable-interface-names \
-stackuser \
 use-ephemeral \
 sysctl \
 "}
@@ -128,7 +126,6 @@ pip-cache \
 pypi-openstack \
 snmpd \
 stable-interface-names \
-stackuser \
 use-ephemeral \
 sysctl \
 "}
@@ -145,7 +142,6 @@ dhcp-all-interfaces \
 hosts \
 ntp \
 snmpd \
-stackuser \
 stable-interface-names \
 use-ephemeral \
 os-refresh-config-reboot \

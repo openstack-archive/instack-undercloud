@@ -54,7 +54,8 @@
     ],
     "exclude-element": [
       "dkms",
-      "openvswitch-datapath"
+      "openvswitch-datapath",
+      "pip-and-virtualenv"
     ],
     "blacklist": [
       "10-cloud-init",
