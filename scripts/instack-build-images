@@ -249,7 +249,6 @@ function openstack-full {
             baremetal \
             2>&1 | tee dib-openstack-full.log
     fi
-    fi
 }
 
 if [ "$image_build" = "all" ]; then
