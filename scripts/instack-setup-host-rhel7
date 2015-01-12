@@ -10,4 +10,4 @@ sudo yum install instack-undercloud # need to get all the instack-undercloud dep
 sudo rpm -evh instack-undercloud # the actual rpm is no longer needed
 
 sudo yum install git
-git clone -b spinalstack http://github.com/agroup/instack-undercloud
+git clone http://github.com/agroup/instack-undercloud
