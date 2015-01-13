@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+cp $(dirname $0)/../dnsmasq-forwarder.service /lib/systemd/system/dnsmasq-forwarder.service

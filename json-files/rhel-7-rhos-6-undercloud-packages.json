@@ -46,7 +46,8 @@
       "os-cloud-config",
       "install-server",
       "selinux-permissive",
-      "selinux-setenforce-0"
+      "selinux-setenforce-0",
+      "dnsmasq-forwarder"
     ],
     "hook": [
       "extra-data",

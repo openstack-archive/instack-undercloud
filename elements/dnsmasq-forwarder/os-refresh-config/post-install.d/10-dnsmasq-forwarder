@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+systemctl enable dnsmasq-forwarder
+systemctl start dnsmasq-forwarder
+
+iptables -I INPUT -p udp --dport 53 -j ACCEPT
+iptables -I FORWARD -j ACCEPT
