@@ -5,6 +5,9 @@ set -eux
 # Services couldn't talk to mysql, disable selinux for now
 sed -i -e 's/=enforcing/=permissive/g' /etc/selinux/config
 
+# pip is required since we're installing install-server bits from source
+yum -y install python-pip
+
 yum install -y --nogpg  make rubygems ruby-devel rubygem-rake numpy java /opt/stack/files/ruby-devel.rpm python-jinja2 wget
 gem install --no-ri --no-rdoc bundler
 
