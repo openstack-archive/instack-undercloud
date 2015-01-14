@@ -31,3 +31,9 @@ add-rule INPUT -p tcp --dport 8140 -j ACCEPT
 add-rule INPUT -p tcp --dport 8081 -j ACCEPT
 # Open iptables port for jenkins
 add-rule INPUT -p tcp --dport 8282 -j ACCEPT
+
+# Jenkins will need to ssh to each openstack-full instance, so give it stacks key
+mkdir ~jenkins/.ssh
+cp ~stack/.ssh/id_rsa ~jenkins/.ssh/id_rsa
+chmod 600 ~jenkins/.ssh/ ~jenkins/.ssh/id_rsa
+chown -R jenkins ~jenkins/.ssh
