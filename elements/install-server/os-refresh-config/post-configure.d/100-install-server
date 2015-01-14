@@ -20,7 +20,7 @@ rm -f /usr/lib/python2.7/site-packages/jenkins_job_builder-1.1.0.post1-py2.7.egg
 
 # Install the jenkins job builder jobs
 cd /opt
-git clone https://github.com/hardys/jjb-openstack.git jenkins_jobs
+git clone https://github.com/enovance/jjb-openstack.git jenkins_jobs
 rm -fr /etc/jenkins_jobs
 ln -s /opt/jenkins_jobs /etc/jenkins_jobs
 /opt/jenkins-job-builder/jenkins_jobs/cmd.py update --delete-old /etc/jenkins_jobs/jobs
