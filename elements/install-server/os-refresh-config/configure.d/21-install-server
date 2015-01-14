@@ -4,9 +4,6 @@ if [ ! -e ~/.ssh/id_rsa ] ; then
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 fi
 
-mkdir -p /etc/jenkins_jobs
-cd /opt/stack/config-tools/
-
 # provision needs this but will overwrite it
 # proper DNS would fix it
 echo "127.0.0.1 install-server.etest" >> /etc/hosts
