@@ -9,9 +9,7 @@ cd /opt/stack/config-tools/
 
 # provision needs this but will overwrite it
 # proper DNS would fix it
-#echo "127.0.0.1 install-server.etest" >> /etc/hosts
-#
-#echo install-server.etest > /etc/hostname
-#hostname install-server.etest
+echo "127.0.0.1 install-server.etest" >> /etc/hosts
 
-#./provision.sh I.1.2.0 http://goodsquishy.com/downloads/repos/spinalstack-env.git/etest.yml version=D7-I.1.2.0
+echo install-server.etest > /etc/hostname
+hostname install-server.etest
