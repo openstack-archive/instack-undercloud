@@ -13,6 +13,12 @@ fi
 
 TUSKAR=
 
+# Default stack create timeout, in minutes
+# Note heat defaults to 60mins, which may not be enough when
+# creating large overclouds, 240 aligns with the undercloud keystone
+# token expiry, which is increased from the default 1 hour to 4.
+TIMEOUT=240
+
 function show_options () {
     echo "Usage: $SCRIPT_NAME [options]"
     echo
@@ -20,11 +26,12 @@ function show_options () {
     echo
     echo "Options:"
     echo "      --tuskar       -- will use tuskar for building the heat Template"
+    echo "      --timeout      -- create timeout in minutes, default $TIMEOUT"
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,tuskar,help -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,tuskar,timeout:,help -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -33,6 +40,7 @@ eval set -- "$TEMP"
 while true ; do
     case "$1" in
         --tuskar) TUSKAR="1"; shift 1;;
+        --timeout) TIMEOUT="$2"; shift 2;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
         *) echo "Error: unsupported option $1." ; exit 1 ;;
@@ -166,7 +174,7 @@ if [ -n "$TUSKAR" ]; then
     OVERCLOUD_YAML_PATH="tuskar_templates/plan.yaml"
     ENVIROMENT_YAML_PATH="tuskar_templates/environment.yaml"
 
-    heat stack-create -f $OVERCLOUD_YAML_PATH \
+    heat stack-create -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
         -e $ENVIROMENT_YAML_PATH \
         overcloud
 
@@ -229,7 +237,7 @@ else
     HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
 
 
-    heat stack-create -f $OVERCLOUD_YAML_PATH \
+    heat stack-create -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
         $RESOURCE_REGISTRY \
         $OVERCLOUD_PARAMETERS \
         $HEAT_ENVIRONMENT \
