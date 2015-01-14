@@ -33,6 +33,9 @@ add-rule INPUT -p tcp --dport 8081 -j ACCEPT
 add-rule INPUT -p tcp --dport 8282 -j ACCEPT
 
 # Jenkins will need to ssh to each openstack-full instance, so give it stacks key
+if [ ! -f /home/stack/.ssh/id_rsa ] ; then
+    su stack -c 'ssh-keygen -N "" -f /home/stack/.ssh/id_rsa'
+fi
 mkdir ~jenkins/.ssh
 cp ~stack/.ssh/id_rsa ~jenkins/.ssh/id_rsa
 chmod 600 ~jenkins/.ssh/ ~jenkins/.ssh/id_rsa
