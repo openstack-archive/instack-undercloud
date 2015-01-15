@@ -31,8 +31,6 @@ add-rule INPUT -p tcp --dport 8140 -j ACCEPT
 add-rule INPUT -p tcp --dport 8081 -j ACCEPT
 # Open iptables port for jenkins
 add-rule INPUT -p tcp --dport 8282 -j ACCEPT
-# Allow traffic from instances to be forwarded via the install-server
-add-rule FORWARD -s 192.0.2.0/24 -j ACCEPT
 
 # Jenkins will need to ssh to each openstack-full instance, so give it stacks key
 if [ ! -f /home/stack/.ssh/id_rsa ] ; then
