@@ -6,4 +6,4 @@ set -eux
 sed -i -e 's/=enforcing/=permissive/g' /etc/selinux/config
 
 yum install -y --nogpg /opt/stack/files/puppet-release.rpm
-yum install -y --nogpg puppet augeas rabbitmq-server openstack-keystone keepalived haproxy mariadb-galera-server ntp memcached mongodb-server xinetd
+yum install -y --nogpg puppet augeas rabbitmq-server openstack-keystone keepalived haproxy mariadb-galera-server ntp memcached mongodb-server xinetd mongodb
