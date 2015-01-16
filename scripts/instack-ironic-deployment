@@ -1,0 +1,93 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+SCRIPT_NAME=$(basename $0)
+
+OS_AUTH_URL=${OS_AUTH_URL:-""}
+if [ -z "$OS_AUTH_URL" ]; then
+    echo "You must source a stackrc file for the Undercloud."
+    exit 1
+fi
+
+function show_options () {
+    echo "Usage: $SCRIPT_NAME [options]"
+    echo
+    echo "Deploys instances via Ironic in preparation for an Overcloud deployment."
+    echo
+    echo "Options:"
+    echo "      --register-nodes    -- register nodes from a nodes json file"
+    echo "      --nodes-json        -- nodes json file containing node data"
+    echo "                             for registration."
+    echo "                             Default: nodes.json in the current directory"
+    echo "      --discover-nodes    -- Perform discovery of registered nodes."
+    echo "                             Powers on registered nodes to complete"
+    echo "                             the discovery process."
+    echo "      -x                  -- enable tracing"        
+    echo
+    exit $1
+}
+
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,help -o,x -n $SCRIPT_NAME -- "$@")
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+REGISTER_NODES=
+NODES_JSON=
+DISCOVER_NODES=
+
+while true ; do
+    case "$1" in
+        --register-nodes) REGISTER_NODES="1"; shift 1;;
+        --nodes-json) NODES_JSON="$1"; shift 2;;
+        --discover-nodes) DISCOVER_NODES="1"; shift 1;;
+        -x) set -x; shift 1;;
+        -h | --help) show_options 0;;
+        --) shift ; break ;;
+        *) echo "Error: unsupported option $1." ; exit 1 ;;
+    esac
+done
+
+function register_nodes {
+    NODES_JSON=${NODES_JSON:-"nodes.json"}
+    echo "  Registering nodes from $NODES_JSON"
+    register-nodes --service-host undercloud --nodes <(jq '.nodes' $NODES_JSON) 1>/dev/null
+    echo "  Nodes registered."
+    echo
+    echo "  Setting nodes to maintenance mode"
+    node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    for node_id in $node_ids; do
+        echo -n "    Setting node $node_id to maintenance mode ... "
+        ironic node-update $node_id replace maintenance=True 1>/dev/null
+        ironic node-update $node_id add /extra/on_discovery=True 1>/dev/null
+        echo "DONE."
+    done
+    echo
+    ironic node-list
+    echo
+}
+
+function discover_nodes {
+    echo "  Discovering nodes."
+    node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    for node_id in $node_ids; do
+        echo -n "    Powering on node $node_id ... "
+        ironic node-set-power-state $node_id on
+        echo "ON."
+    done
+}
+
+echo "Preparing for deployment..."
+
+if [ "$REGISTER_NODES" = 1 ]; then
+    register_nodes
+fi
+
+if [ "$DISCOVER_NODES" = 1 ]; then
+    discover_nodes
+fi
+
+echo "Prepared."
