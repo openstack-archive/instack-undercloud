@@ -26,13 +26,13 @@ EOF
 bundle install --gemfile=/tmp/gemfile
 
 #install jenkins
-yum install -y --nogpg /opt/stack/files/jenkins.rpm
+rpm -q jenkins || yum install -y --nogpg /opt/stack/files/jenkins.rpm
 sed -i -e 's/HTTP_PORT=8080/HTTP_PORT=8282/' -e 's/JENKINS_PORT="8080"/JENKINS_PORT="8282"/' /etc/sysconfig/jenkins
 echo -e 'Defaults:jenkins !requiretty\njenkins ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/jenkins
 chmod 0440 /etc/sudoers.d/jenkins
 
 #install puppet
-yum install -y --nogpg /opt/stack/files/puppet-release.rpm
+rpm -q puppetlabs-release || yum install -y --nogpg /opt/stack/files/puppet-release.rpm
 yum install -y --nogpg puppet-server git augeas ntp httpd puppetdb puppetdb-terminus python-pip mod_wsgi apr-util-devel apr-devel httpd-devel zlib-devel openssl-devel libcurl-devel gcc-c++ gcc mod_ssl patch
 gem install rack passenger
 passenger-install-apache2-module -a
