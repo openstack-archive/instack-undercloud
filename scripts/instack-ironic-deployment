@@ -62,8 +62,6 @@ function register_nodes {
     for node_id in $node_ids; do
         echo -n "    Setting node $node_id to maintenance mode ... "
         ironic node-update $node_id replace maintenance=True 1>/dev/null
-        # XXX(slagle): Is this needed so that the nodes can actually be discovered?
-        ironic node-update $node_id add /extra/on_discovery=True 1>/dev/null
         echo "DONE."
     done
     echo
@@ -74,13 +72,14 @@ function register_nodes {
 function discover_nodes {
     echo "  Discovering nodes."
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    token=$(keystone token-get | grep ' id ' | awk '{print $4}')
     for node_id in $node_ids; do
-        echo -n "    Powering on node $node_id ... "
-        # TODO: so instead of powering on here, we actually need to post to the
-        # discoverd API like so:
-        # curl -d '["c61aad6a-4fab-4aee-b69d-72bcfc2cd5bf"]' -H "x-auth-token: 13d5673e1d6b4f3894e1d6572577f289" http://0.0.0.0:5050/v1/discover
-        ironic node-set-power-state $node_id on
-        echo "ON."
+        echo -n "    Sending node ID $node_id to discoverd for discovery ... "
+        curl -d '["'$node_id'"]' -H "x-auth-token: $token" http://0.0.0.0:5050/v1/discover
+        echo "DONE."
+
+        # TODO poll something to make sure discovery is completed
+        # TODO remove nodes from maintenance mode
     done
 }
 
