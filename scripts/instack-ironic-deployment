@@ -86,7 +86,12 @@ function discover_nodes {
         while true; do
             res=$(python -m ironic_discoverd.client get_status $node_id --auth-token $token)
             if [[ "$(echo $res | jq '.finished')" != "false" ]]; then
-                echo "error: $(echo $res | jq '.error')"
+                error=$(echo $res | jq '.error')
+                if [ "$error" = "null" ]; then
+                    echo "DISCOVERED."
+                else
+                    echo "ERROR: $error"
+                fi
                 break
             fi
             sleep 15
