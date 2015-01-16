@@ -75,12 +75,24 @@ function discover_nodes {
     token=$(keystone token-get | grep ' id ' | awk '{print $4}')
     for node_id in $node_ids; do
         echo -n "    Sending node ID $node_id to discoverd for discovery ... "
-        curl -d '["'$node_id'"]' -H "x-auth-token: $token" http://0.0.0.0:5050/v1/discover
+        # NOTE(dtantsur): this is not a stable CLI
+        python -m ironic_discoverd.client introspect $node_id --auth-token $token
         echo "DONE."
-
-        # TODO poll something to make sure discovery is completed
-        # TODO remove nodes from maintenance mode
     done
+
+    echo "   Polling discoverd for discovery results ... "
+    for node_id in $node_ids; do
+        echo -n "       Result for node $node_id is ... "
+        while true; do
+            res=$(python -m ironic_discoverd.client get_status $node_id --auth-token $token)
+            if [[ "$(echo $res | jq '.finished')" != "false" ]]; then
+                echo "error: $(echo $res | jq '.error')"
+                break
+            fi
+            sleep 15
+        done
+    done
+    # TODO remove nodes from maintenance mode
 }
 
 echo "Preparing for deployment..."
