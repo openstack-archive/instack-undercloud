@@ -62,6 +62,7 @@ function register_nodes {
     for node_id in $node_ids; do
         echo -n "    Setting node $node_id to maintenance mode ... "
         ironic node-update $node_id replace maintenance=True 1>/dev/null
+        # XXX(slagle): Is this needed so that the nodes can actually be discovered?
         ironic node-update $node_id add /extra/on_discovery=True 1>/dev/null
         echo "DONE."
     done
