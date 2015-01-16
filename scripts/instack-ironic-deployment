@@ -76,6 +76,9 @@ function discover_nodes {
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
     for node_id in $node_ids; do
         echo -n "    Powering on node $node_id ... "
+        # TODO: so instead of powering on here, we actually need to post to the
+        # discoverd API like so:
+        # curl -d '["c61aad6a-4fab-4aee-b69d-72bcfc2cd5bf"]' -H "x-auth-token: 13d5673e1d6b4f3894e1d6572577f289" http://0.0.0.0:5050/v1/discover
         ironic node-set-power-state $node_id on
         echo "ON."
     done
