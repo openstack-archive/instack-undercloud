@@ -3,11 +3,17 @@
 set -eux
 set -o pipefail
 
-sudo rpm -Uvh http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+sudo rpm -Uvh -force http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
 sudo rhos-release -d 6
 
 sudo yum -y install instack-undercloud # need to get all the instack-undercloud deps
 sudo rpm -evh instack-undercloud # the actual rpm is no longer needed
 
 sudo yum -y install git
-git clone http://github.com/agroup/instack-undercloud
+
+if [ ! -d "instack-undercloud" ]; then
+    git clone http://github.com/agroup/instack-undercloud
+else
+    echo "WARNING##################################:"
+    echo "instack-undercloud directory already exists, not recloning"
+fi
