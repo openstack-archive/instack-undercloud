@@ -25,11 +25,12 @@ function show_options () {
     echo "                             Powers on registered nodes to complete"
     echo "                             the discovery process."
     echo "      -x                  -- enable tracing"        
+    echo "      --help, -h          -- Print this help message."
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,help -o,x -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,help -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
