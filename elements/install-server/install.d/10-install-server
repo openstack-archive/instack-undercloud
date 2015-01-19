@@ -35,7 +35,7 @@ chmod 0440 /etc/sudoers.d/jenkins
 
 #install puppet
 rpm -q puppetlabs-release || yum install -y --nogpg /opt/stack/files/puppet-release.rpm
-yum install -y --nogpg puppet-server git augeas ntp httpd puppetdb puppetdb-terminus python-pip mod_wsgi apr-util-devel apr-devel httpd-devel zlib-devel openssl-devel libcurl-devel gcc-c++ gcc mod_ssl patch
+yum install -y --nogpg puppet-server git augeas ntp httpd puppetdb puppetdb-terminus python-pip mod_wsgi apr-util-devel apr-devel httpd-devel zlib-devel openssl-devel libcurl-devel gcc-c++ gcc mod_ssl patch bind-utils
 gem install rack passenger
 passenger-install-apache2-module -a
 mkdir -p /usr/share/puppet/rack/puppetmasterd/public /usr/share/puppet/rack/puppetmasterd/tmp
