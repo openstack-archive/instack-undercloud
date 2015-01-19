@@ -43,7 +43,7 @@ DISCOVER_NODES=
 while true ; do
     case "$1" in
         --register-nodes) REGISTER_NODES="1"; shift 1;;
-        --nodes-json) NODES_JSON="$1"; shift 2;;
+        --nodes-json) NODES_JSON="$2"; shift 2;;
         --discover-nodes) DISCOVER_NODES="1"; shift 1;;
         -x) set -x; shift 1;;
         -h | --help) show_options 0;;
