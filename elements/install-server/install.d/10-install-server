@@ -142,7 +142,7 @@ EOF
 #tempest.instal
 
 
-pip install /opt/jenkins-job-builder
+pip install -U /opt/jenkins-job-builder
 
 JENKINS_URL=https://updates.jenkins-ci.org/download/plugins
 JENKINS_URL2=http://ftp.nluug.nl/programming/jenkins/plugins
