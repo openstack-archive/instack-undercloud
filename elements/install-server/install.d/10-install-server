@@ -12,6 +12,9 @@ rpm -q python-pip || yum -y install http://download.devel.redhat.com/brewroot/pa
 # Same goes for python-pbr
 rpm -q python-pbr || yum -y install http://download.devel.redhat.com/brewroot/packages/python-pbr/0.8.0/1.el7ost/noarch/python-pbr-0.8.0-1.el7ost.noarch.rpm
 
+# pip install the new python hardware module
+pip install hardware
+
 yum install -y --nogpg  make rubygems ruby-devel rubygem-rake numpy java /opt/stack/files/ruby-devel.rpm python-jinja2 wget
 gem install --no-ri --no-rdoc bundler
 
