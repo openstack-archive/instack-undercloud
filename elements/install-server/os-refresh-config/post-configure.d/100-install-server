@@ -41,13 +41,5 @@ cp ~stack/.ssh/id_rsa ~jenkins/.ssh/id_rsa
 chmod 600 ~jenkins/.ssh/ ~jenkins/.ssh/id_rsa
 chown -R jenkins ~jenkins/.ssh
 
-# Apply patch to ironic to help with race condition
-# https://bugzilla.redhat.com/show_bug.cgi?id=1175716
-# https://review.openstack.org/#/c/142838/ - PS5
-cp -r /usr/lib/python2.7/site-packages/ironic /usr/lib/python2.7/site-packages/ironic_orig
-curl http://paste.fedoraproject.org/169292/42119188/raw/ | sudo patch -p 2 -d /usr/lib/python2.7/site-packages/ironic
-echo 'partprobe: CommandFilter, partprobe, root' | sudo tee -a /etc/ironic/rootwrap.d/ironic-utils.filters
-systemctl restart openstack-ironic-conductor
-
 # patch for hiera
 curl https://raw.githubusercontent.com/enovance/edeploy-roles/master/files/backend.rb.patch | patch /usr/share/ruby/vendor_ruby/hiera/backend.rb -
