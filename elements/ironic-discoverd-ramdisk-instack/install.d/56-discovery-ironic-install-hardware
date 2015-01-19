@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+install-packages python-pip hdparm ipmitool lshw ethtool lldpad hdparm sdparm pciutils mcelog smartmontools util-linux lvm2
+
+pip install hardware
