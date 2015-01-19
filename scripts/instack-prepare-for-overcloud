@@ -46,13 +46,6 @@ glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --public \
     --disk-format ari < $IMAGE_PATH/$DEPLOY_NAME.initramfs
 
-glance image-delete discovery-kernel 2>/dev/null || :
-glance image-create --name discovery-kernel --public \
-    --disk-format aki < $IMAGE_PATH/$DISCOVERY_NAME.kernel
-glance image-delete discovery-ramdisk 2>/dev/null || :
-glance image-create --name discovery-ramdisk --public \
-    --disk-format ari < $IMAGE_PATH/$DISCOVERY_NAME.initramfs
-
 nova flavor-create baremetal auto 4096 30 1
 
 deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
