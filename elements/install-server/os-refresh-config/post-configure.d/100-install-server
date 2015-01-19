@@ -36,7 +36,7 @@ add-rule INPUT -p tcp --dport 8282 -j ACCEPT
 if [ ! -f /home/stack/.ssh/id_rsa ] ; then
     su stack -c 'ssh-keygen -N "" -f /home/stack/.ssh/id_rsa'
 fi
-mkdir ~jenkins/.ssh
+mkdir -p ~jenkins/.ssh
 cp ~stack/.ssh/id_rsa ~jenkins/.ssh/id_rsa
 chmod 600 ~jenkins/.ssh/ ~jenkins/.ssh/id_rsa
 chown -R jenkins ~jenkins/.ssh
