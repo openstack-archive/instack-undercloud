@@ -17,3 +17,7 @@ else
     echo "WARNING##################################:"
     echo "instack-undercloud directory already exists, not recloning"
 fi
+
+# Enable the copr repo for our custom builds
+curl -o /etc/yum.repos.d/divius-instack-ironic-nova-epel-7.repo \
+    https://copr.fedoraproject.org/coprs/divius/instack-ironic-nova/repo/epel-7/divius-instack-ironic-nova-epel-7.repo
