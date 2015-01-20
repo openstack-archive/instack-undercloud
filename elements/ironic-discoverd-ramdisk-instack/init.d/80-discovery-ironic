@@ -107,14 +107,18 @@ update_ssh_port() {
     sed -i -e 's/^.*Port.*$/Port 2222/' /etc/ssh/sshd_config
     sed -i -e 's/^.*#PermitRootLogin.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
     sed -i -e 's/^.*#PermitEmptyPasswords.*$/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
+    sed -i -e 's/^.*UsePAM.*$/UsePAM no/' /etc/ssh/sshd_config
+    sed -i -e 's/^.*UsePrivilegeSeparation.*$/UsePrivilegeSeparation no/' /etc/ssh/sshd_config
     echo 'UseDNS no' >> /etc/ssh/sshd_config
 }
 
 start_ssh_server() {
     create_keys
     update_ssh_port
+    # Remove root passwd
+    sed -i 's/root:x/root:/' /etc/passwd
     mkdir -p /var/lock/subsys
-    /etc/init.d/ssh start &>/dev/null || /etc/init.d/sshd start &>/dev/null || /usr/sbin/sshd -o UsePAM=no
+    /etc/init.d/ssh start &>/dev/null || /etc/init.d/sshd start &>/dev/null || /sbin/sshd
 }
 
 upload_log() {
