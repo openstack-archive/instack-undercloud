@@ -29,6 +29,7 @@ modprobe
 netstat
 nproc
 parted
+perl
 poweroff
 pvcreate
 python
