@@ -1,0 +1,50 @@
+heat_template_version: 2014-10-16
+
+parameters:
+  config_drive_label:
+    type: string
+    default: config-2
+
+  discovery_metadata_key:
+    type: string
+    default: hardware
+
+  flavor:
+    type: string
+    default: baremetal
+
+  image:
+    type: string
+    default: openstack-full
+
+  key_name:
+    type: string
+    default: default
+
+  node_count:
+    type: number
+    default: 1
+
+resources:
+  servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: {get_param: node_count}
+      resource_def:
+        type: OS::Nova::Server
+        properties:
+          flavor: {get_param: flavor}
+          image: {get_param: image}
+          key_name: {get_param: key_name}
+          config_drive: True
+          user_data:
+            str_replace:
+              template: |
+                #!/bin/bash -v
+                # Mount the config drive and extract the discovery data
+                mount /dev/disk/by-label/disklabel /mnt
+                jq -r ".metadata_key" /mnt/openstack/latest/meta_data.json > /tmp/discovery.json
+    
+              params:
+                disklabel: { get_param: config_drive_label }
+                metadata_key: { get_param: discovery_metadata_key }
