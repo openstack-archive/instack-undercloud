@@ -16,8 +16,8 @@ EOF
 
 cat > /etc/edeploy/hw1.specs <<EOF
 [
- ('disk', '$disk', 'size', 'gt(4)'),
- ('network', '$eth', 'ipv4', 'network(192.0.2.0/24)'),
+ ('disk', '\$disk', 'size', 'gt(4)'),
+ ('network', '\$eth', 'ipv4', 'network(192.0.2.0/24)'),
 ]
 EOF
 
