@@ -23,7 +23,7 @@ eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^KEXEC_KERNEL=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^EMBEDDED=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^IP=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^UPLOAD_LOG=")
-eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^DISCO=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^discoverd_callback_url=")
 
 if [[ "$DEBUG" = "1" ]]; then
     log "DEBUG param deprecated, please use ONFAILURE=console"
@@ -527,7 +527,7 @@ ip a
 
 run_detect
 echo "{\"data\": $(cat /hw.json)}" > /discoverd.json
-discoverd_request POST "${DISCO}" @/discoverd.json
+discoverd_request POST "${discoverd_callback_url}" @/discoverd.json
 
 case "$ONSUCCESS" in
     "reboot")
