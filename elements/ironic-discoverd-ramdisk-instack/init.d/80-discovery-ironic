@@ -331,6 +331,7 @@ else
     echo "timeout $DHCP_TIMEOUT;" > /etc/dhcp/dhclient.conf
 fi
 
+mkdir -p /var/lib/lldpad
 lldpad -d
 MAX_RUN=6
 RUN=0
