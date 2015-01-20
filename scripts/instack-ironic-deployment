@@ -99,9 +99,9 @@ function deploy_nodes {
     DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
     DEPLOY_COUNT=${DEPLOY_COUNT:-"4"}
     DEPLOY_NAME=${DEPLOY_NAMET:-"ironic-discover"}
-    echo -n "  Creating heat stack ... "
+    echo "  Creating heat stack ... "
     heat stack-create $DEPLOY_NAME -f $DEPLOY_HEAT_TEMPLATE -P "node_count=$DEPLOY_COUNT"
-    echo "  DONE."
+    echo "  Created."
     echo
     heat stack-show $DEPLOY_NAME
     echo
