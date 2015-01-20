@@ -11,5 +11,4 @@ yum -y install http://download.devel.redhat.com/brewroot/packages/python-pip/1.3
 # lshw must be installed from EPEL.
 yum -y install http://dl.fedoraproject.org/pub/epel/7/x86_64/l/lshw-B.02.17-3.el7.x86_64.rpm
 
-
 pip install hardware
