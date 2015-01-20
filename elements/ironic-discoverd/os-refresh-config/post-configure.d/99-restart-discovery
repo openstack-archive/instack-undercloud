@@ -21,5 +21,7 @@ cat > /etc/edeploy/hw1.specs <<EOF
 ]
 EOF
 
+echo "processing_hooks = scheduler,validate_interfaces,edeploy" >> /etc/ironic-discoverd/discoverd.conf
+
 os-svc-restart -n openstack-ironic-discoverd-dnsmasq
 os-svc-restart -n openstack-ironic-discoverd
