@@ -44,6 +44,8 @@ resources:
                 # Mount the config drive and extract the discovery data
                 mount /dev/disk/by-label/disklabel /mnt
                 jq -r ".metadata_key" /mnt/openstack/latest/meta_data.json > /tmp/discovery.json
+                # Enable ssh as root for Puppet.
+                sed -i -e 's/.*ssh-/ssh-/'  ~root/.ssh/authorized_keys
     
               params:
                 disklabel: { get_param: config_drive_label }
