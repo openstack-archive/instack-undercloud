@@ -30,7 +30,7 @@ function show_options () {
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,help -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -39,12 +39,14 @@ eval set -- "$TEMP"
 REGISTER_NODES=
 NODES_JSON=
 DISCOVER_NODES=
+DEPLOY_NODES=
 
 while true ; do
     case "$1" in
         --register-nodes) REGISTER_NODES="1"; shift 1;;
         --nodes-json) NODES_JSON="$2"; shift 2;;
         --discover-nodes) DISCOVER_NODES="1"; shift 1;;
+        --deploy-nodes) DEPLOY_NODES="1"; shift 1;;
         -x) set -x; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -92,6 +94,13 @@ function discover_nodes {
     done
 }
 
+function deploy_nodes {
+    DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
+    DEPLOY_COUNT=${DEPLOY_COUNT:-"4"}
+    DEPLOY_NAME=${DEPLOY_NAMET:-"ironic-disover"}
+    heat stack-create $DEPLOY_NAME -f $DEPLOY_HEAT_TEMPLATE -P "node_count=$DEPLOY_COUNT"
+}
+
 echo "Preparing for deployment..."
 
 if [ "$REGISTER_NODES" = 1 ]; then
@@ -103,3 +112,9 @@ if [ "$DISCOVER_NODES" = 1 ]; then
 fi
 
 echo "Prepared."
+
+if [ "$DEPLOY_NODES" = 1 ]; then
+    echo "Deploying..."
+    deploy_nodes
+    echo "Deployed."
+fi
