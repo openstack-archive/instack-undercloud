@@ -24,6 +24,7 @@ function show_options () {
     echo "      --discover-nodes    -- Perform discovery of registered nodes."
     echo "                             Powers on registered nodes to complete"
     echo "                             the discovery process."
+    echo "      --deploy-nodes      -- Deploy nodes"
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
     echo
@@ -98,7 +99,12 @@ function deploy_nodes {
     DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
     DEPLOY_COUNT=${DEPLOY_COUNT:-"4"}
     DEPLOY_NAME=${DEPLOY_NAMET:-"ironic-disover"}
+    echo -n "  Creating heat stack ... "
     heat stack-create $DEPLOY_NAME -f $DEPLOY_HEAT_TEMPLATE -P "node_count=$DEPLOY_COUNT"
+    echo "  DONE."
+    echo
+    heat stack-show $DEPLOY_NAME
+    echo
 }
 
 echo "Preparing for deployment..."
