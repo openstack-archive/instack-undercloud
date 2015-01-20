@@ -12,6 +12,7 @@ hardware-detect
 hdparm
 ip
 ipmitool
+jq
 killall
 lldpad
 lldptool

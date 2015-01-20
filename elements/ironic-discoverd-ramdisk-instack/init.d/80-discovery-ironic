@@ -135,6 +135,8 @@ do_halt() {
     umount -a
     upload_log
     sync
+    echo "Node is now discovered! Halting..."
+    # Give user a chance of seeing the output
     sleep 5
     poweroff -f
 }
@@ -159,8 +161,44 @@ log_n() {
     echo -n "$@"
 }
 
-run_detect() {
+run_edeploy_detect() {
     hardware-detect > /hw.json || give_up "Failed to detect hardware"
+}
+
+run_standard_detect() {
+    IFACES=
+    for iface in $(ls /sys/class/net/ | grep -v lo)
+    do
+        MAC=$(ip link show $iface | awk '/ether/ {print $2}')
+        IP=$(ip addr show $iface | awk '/inet / { sub(/\/.*/, "", $2); print $2 }')
+        if [ ! -z "$MAC" ]; then
+            IFACES="$IFACES,\"$iface\":{\"mac\":\"$MAC\",\"ip\":\"$IP\"}"
+        fi
+    done
+    IFACES="{$(echo $IFACES | sed s/,//)}"
+
+    # NOTE(dtantsur): workaround for IPMI device not present on some systems
+    modprobe ipmi_msghandler || echo "WARNING: modprobe failed, ipmitool call may fail"
+    modprobe ipmi_devintf || echo "WARNING: modprobe failed, ipmitool call may fail"
+    modprobe ipmi_si || echo "WARNING: modprobe failed, ipmitool call may fail"
+
+    BMC_ADDRESS=$(ipmitool lan print | grep -e "IP Address [^S]" | awk '{ print $4 }')
+
+    CPU_ARCH=$(lscpu | grep Architecture | awk '{ print $2 }')
+    # NOTE(lucasagomes): dmidecode because we want to know the total
+    # memory in the system, even the reserved part to the BIOS
+    RAM=$(dmidecode -t 16 | grep 'Maximum Capacity' | awk '{if ($4 == "GB") s+=$3*1024; else s+=$3;} END {print s}')
+    CPUS=$(cat /proc/cpuinfo | grep processor | wc -l)
+    disk_bytes=$(fdisk -l | grep Disk | awk '{print $5}' | head -n 1)
+    # NOTE(dtantsur): -1 is required to give Ironic some spacing for partitioning and may be removed later
+    DISK_SIZE=$(($disk_bytes/1024/1024/1024 - 1))
+
+    NODE_DATA="{\"ipmi_address\":\"$BMC_ADDRESS\",\"local_gb\":$DISK_SIZE,\"memory_mb\":$RAM,\"cpus\":$CPUS,\"cpu_arch\":\"$CPU_ARCH\""
+    NODE_DATA="$NODE_DATA,\"interfaces\":$IFACES}"
+    echo Collected $NODE_DATA
+
+    echo "$NODE_DATA" > /standard.json
+
 }
 
 give_up() {
@@ -493,6 +531,20 @@ discoverd_request(){
         give_up "Ironic API returned error: $RESULT"
     fi
     log "discoverd_request $URL: $RESULT"
+
+    if echo "$RESULT" | grep -E '"ipmi_setup_credentials": *(true)';
+    then
+        USER=$(echo "$RESULT" | sed -r 's/.*"ipmi_username": *"([^"]*)".*/\1/')
+        PASSWORD=$(echo "$RESULT" | sed -r 's/.*"ipmi_password": *"([^"]*)".*/\1/')
+        echo "Assigning IPMI credentials: $USER";
+
+        ipmitool user set name 2 $USER
+        ipmitool user set password 2 $PASSWORD
+        # Assign priviledges just in case
+        ipmitool channel setaccess 1 2 link=on ipmi=on callin=on privilege=4
+        ipmitool user enable 2
+    fi
+
 }
 
 probe_kernel_modules
@@ -529,9 +581,11 @@ probe_network_devices
 
 ip a
 
-run_detect
+run_standard_detect
+run_edeploy_detect
 echo "{\"data\": $(cat /hw.json)}" > /discoverd.json
-discoverd_request POST "${discoverd_callback_url}" @/discoverd.json
+jq -s '.[0] + .[1]' /standard.json /discoverd.json > /node_data.json
+discoverd_request POST "${discoverd_callback_url}" @/node_data.json
 
 case "$ONSUCCESS" in
     "reboot")
