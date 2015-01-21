@@ -6,4 +6,8 @@ set -eux
 sed -i -e 's/=enforcing/=permissive/g' /etc/selinux/config
 
 yum install -y --nogpg /opt/stack/files/puppet-release.rpm
-yum install -y --nogpg puppet augeas rabbitmq-server openstack-keystone keepalived haproxy mariadb-galera-server ntp memcached mongodb-server xinetd mongodb grub2 bind-utils openstack-swift-account openstack-swift-container openstack-swift-object openstack-dashboard jq
+yum install -y --nogpg puppet augeas rabbitmq-server openstack-keystone keepalived haproxy mariadb-galera-server ntp memcached mongodb-server xinetd mongodb grub2 bind-utils openstack-swift-account openstack-swift-container openstack-swift-object openstack-dashboard
+
+# For now, openstack-full is RHOS 5 based, which has no jq.
+# We can however just install the build for RHOS 6.
+yum install -y --nogpg http://download.devel.redhat.com/brewroot/packages/jq/1.3/2.el7ost/x86_64/jq-1.3-2.el7ost.x86_64.rpm
