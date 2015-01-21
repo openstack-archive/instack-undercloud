@@ -14,7 +14,9 @@ file_list="$HOME/.ssh/id_rsa_virt_power
 $HOME/.ssh/id_rsa_virt_power.pub
 /tmp/deploy-virt-overcloudrc
 $ANSWERSFILE
-$TE_DATAFILE"
+$TE_DATAFILE
+nodes.json"
+
 for f in $file_list; do
     cp "$f" "$TMP_HOOKS_PATH"
 done
