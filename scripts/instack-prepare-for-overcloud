@@ -46,8 +46,16 @@ glance image-delete bm-deploy-ramdisk 2>/dev/null || :
 glance image-create --name bm-deploy-ramdisk --is-public true \
     --disk-format ari < $IMAGE_PATH/$DEPLOY_NAME.initramfs
 
-if ! $(nova flavor-show baremetal 2>&1 1>/dev/null); then
-    nova flavor-create baremetal auto 4096 30 1
+if ! nova flavor-show baremetal 2>&1 1>/dev/null; then
+    nova flavor-create baremetal auto 4096 40 1
+fi
+
+if ! nova flavor-show baremetal_control 2>&1 1>/dev/null; then
+    nova flavor-create baremetal_control auto 2048 40 1
+fi
+
+if ! nova flavor-show baremetal_compute 2>&1 1>/dev/null; then
+    nova flavor-create baremetal_compute auto 4096 40 1
 fi
 
 deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
@@ -58,6 +66,20 @@ nova flavor-key baremetal set \
     "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
     "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
     "baremetal:localboot"="true"
+
+nova flavor-key baremetal_control set \
+    "cpu_arch"="x86_64" \
+    "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
+    "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
+    "baremetal:localboot"="true" \
+    "profile=control"
+
+nova flavor-key baremetal_compute set \
+    "cpu_arch"="x86_64" \
+    "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
+    "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
+    "baremetal:localboot"="true" \
+    "profile=compute"
 
 sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.kernel" "$TFTP_ROOT/discovery.kernel"
 sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.initramfs" "$TFTP_ROOT/discovery.ramdisk"

@@ -9,9 +9,13 @@ parameters:
     type: string
     default: hardware
 
-  flavor:
+  control_flavor:
     type: string
-    default: baremetal
+    default: baremetal_control
+
+  compute_flavor:
+    type: string
+    default: baremetal_compute
 
   image:
     type: string
@@ -26,14 +30,14 @@ parameters:
     default: 1
 
 resources:
-  servers:
+  control_servers:
     type: OS::Heat::ResourceGroup
     properties:
       count: {get_param: node_count}
       resource_def:
         type: OS::Nova::Server
         properties:
-          flavor: {get_param: flavor}
+          flavor: {get_param: control_flavor}
           image: {get_param: image}
           key_name: {get_param: key_name}
           config_drive: True
@@ -46,7 +50,32 @@ resources:
                 jq -r ".metadata_key" /mnt/openstack/latest/meta_data.json > /tmp/discovery.json
                 # Enable ssh as root for Puppet.
                 sed -i -e 's/.*ssh-/ssh-/'  ~root/.ssh/authorized_keys
-    
+
+              params:
+                disklabel: { get_param: config_drive_label }
+                metadata_key: { get_param: discovery_metadata_key }
+
+  compute_servers:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: {get_param: node_count}
+      resource_def:
+        type: OS::Nova::Server
+        properties:
+          flavor: {get_param: compute_flavor}
+          image: {get_param: image}
+          key_name: {get_param: key_name}
+          config_drive: True
+          user_data:
+            str_replace:
+              template: |
+                #!/bin/bash -v
+                # Mount the config drive and extract the discovery data
+                mount /dev/disk/by-label/disklabel /mnt
+                jq -r ".metadata_key" /mnt/openstack/latest/meta_data.json > /tmp/discovery.json
+                # Enable ssh as root for Puppet.
+                sed -i -e 's/.*ssh-/ssh-/'  ~root/.ssh/authorized_keys
+
               params:
                 disklabel: { get_param: config_drive_label }
                 metadata_key: { get_param: discovery_metadata_key }
