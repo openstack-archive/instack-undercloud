@@ -172,3 +172,8 @@ done
 
 # ImportError: No module named http_client
 pip install -U six
+
+# We need a specific version of specinfra
+sudo gem uninstall --force -i /usr/local/share/gems specinfra || true
+sudo gem install specinfra -v '1.2.0'
+
