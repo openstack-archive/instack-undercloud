@@ -40,10 +40,10 @@ check_image openstack-full.qcow2
 load_image openstack-full.qcow2
 
 glance image-delete bm-deploy-kernel 2>/dev/null || :
-glance image-create --name bm-deploy-kernel --public \
+glance image-create --name bm-deploy-kernel --is-public true \
     --disk-format aki < $IMAGE_PATH/$DEPLOY_NAME.kernel
 glance image-delete bm-deploy-ramdisk 2>/dev/null || :
-glance image-create --name bm-deploy-ramdisk --public \
+glance image-create --name bm-deploy-ramdisk --is-public true \
     --disk-format ari < $IMAGE_PATH/$DEPLOY_NAME.initramfs
 
 if ! $(nova flavor-show baremetal 2>&1 1>/dev/null); then
