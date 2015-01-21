@@ -73,6 +73,11 @@ function discover_nodes {
         echo -n "    Sending node ID $node_id to discoverd for discovery ... "
         # NOTE(dtantsur): this is not a stable CLI
         python -m ironic_discoverd.client introspect $node_id --auth-token $token
+        # tftpd chokes when serving 4 or more clients. Seeing less than 3Mb/s
+        # throughput. As a workaround, sleep for some time in between sending
+        # each node to discovery to give each node enough time to download the
+        # kernel/ramdisk before the next node is powered on.
+        sleep 10
         echo "DONE."
     done
 
