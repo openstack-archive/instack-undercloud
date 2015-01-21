@@ -45,3 +45,7 @@ chown -R jenkins ~jenkins/.ssh
 
 # patch for hiera
 curl https://raw.githubusercontent.com/enovance/edeploy-roles/master/files/backend.rb.patch | patch /usr/share/ruby/vendor_ruby/hiera/backend.rb -
+
+# give stackrc to the stack user
+sudo cp ~root/stackrc ~stack/stackrc
+
