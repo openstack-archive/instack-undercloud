@@ -1,0 +1,84 @@
+- job:
+    name: 'instack-ironic-deployment-full'
+    description: 'Use Ironic to do full node deployment'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          "source /root/stackrc; 
+          DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml 
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --register-nodes
+          --nodes-json /home/stack/nodes.json
+          --discover-nodes
+          --show-profile
+          --deploy-nodes"
+- job:
+    name: 'instack-ironic-deployment-registration'
+    description: 'Use Ironic to do node registration'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc; 
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --register-nodes
+          --nodes-json /opt/stack/nodes.json"
+- job:
+    name: 'instack-ironic-deployment-discovery'
+    description: 'Use Ironic to do node discovery'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc; 
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --discover-nodes"
+- job:
+    name: 'instack-ironic-deployment-deploy-only'
+    description: 'Use Ironic to do node deployment only'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc; 
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --deploy-nodes"
+- job:
+    name: 'instack-ironic-deployment-show-profiles'
+    description: 'Use Ironic to show assigned node profiles'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc; 
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --show-profile"
+- job:
+    name: 'instack-ironic-deployment-setup-flavors'
+    description: 'Use Ironic to setup flavors'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc; 
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --setup-flavors"
