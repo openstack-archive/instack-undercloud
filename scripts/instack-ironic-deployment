@@ -26,6 +26,7 @@ function show_options () {
     echo "                             the discovery process."
     echo "      --setup-flavors     -- Setup Nova flavors to match discovered"
     echo "                             profiles"
+    echo "      --show-profile      -- Show matching profile of nodes"
     echo "      --deploy-nodes      -- Deploy nodes"
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
@@ -33,7 +34,7 @@ function show_options () {
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -44,6 +45,7 @@ NODES_JSON=
 DISCOVER_NODES=
 DEPLOY_NODES=
 SETUP_FLAVORS=
+SHOW_PROFILE=
 STDERR=/dev/null
 
 while true ; do
@@ -51,6 +53,7 @@ while true ; do
         --register-nodes) REGISTER_NODES="1"; shift 1;;
         --nodes-json) NODES_JSON="$2"; shift 2;;
         --discover-nodes) DISCOVER_NODES="1"; shift 1;;
+        --show-profile) SHOW_PROFILE="1"; shift 1;;
         --deploy-nodes) DEPLOY_NODES="1"; shift 1;;
         --setup-flavors) SETUP_FLAVORS="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
@@ -167,6 +170,22 @@ function setup_flavors {
     nova flavor-show baremetal_compute
 }
 
+function show_profile {
+    node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    token=$(keystone token-get | grep ' id ' | awk '{print $4}')
+    echo "  Querying assigned profiles ... "
+    echo
+    for node_id in $node_ids; do
+        echo "    $node_id:"
+        echo -n "      "
+        curl -s -H "x-auth-token: $token" http://192.0.2.1:6385/v1/nodes/$node_id | jq '.properties.capabilities'
+        echo
+    done
+    echo
+    echo "  DONE."
+    echo
+}
+
 echo "Preparing for deployment..."
 
 if [ "$REGISTER_NODES" = 1 ]; then
@@ -179,6 +198,10 @@ fi
 
 if [ "$SETUP_FLAVORS" = 1 ]; then
     setup_flavors
+fi
+
+if [ "$SHOW_PROFILE" = 1 ]; then
+    show_profile
 fi
 
 echo "Prepared."
