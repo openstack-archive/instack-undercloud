@@ -24,6 +24,8 @@ function show_options () {
     echo "      --discover-nodes    -- Perform discovery of registered nodes."
     echo "                             Powers on registered nodes to complete"
     echo "                             the discovery process."
+    echo "      --setup-flavors     -- Setup Nova flavors to match discovered"
+    echo "                             profiles"
     echo "      --deploy-nodes      -- Deploy nodes"
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
@@ -31,7 +33,7 @@ function show_options () {
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -41,6 +43,8 @@ REGISTER_NODES=
 NODES_JSON=
 DISCOVER_NODES=
 DEPLOY_NODES=
+SETUP_FLAVORS=
+STDERR=/dev/null
 
 while true ; do
     case "$1" in
@@ -48,7 +52,8 @@ while true ; do
         --nodes-json) NODES_JSON="$2"; shift 2;;
         --discover-nodes) DISCOVER_NODES="1"; shift 1;;
         --deploy-nodes) DEPLOY_NODES="1"; shift 1;;
-        -x) set -x; shift 1;;
+        --setup-flavors) SETUP_FLAVORS="1"; shift 1;;
+        -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
         *) echo "Error: unsupported option $1." ; exit 1 ;;
@@ -57,8 +62,17 @@ done
 
 function register_nodes {
     NODES_JSON=${NODES_JSON:-"nodes.json"}
+    NULL_STATS=${NULL_STATS:-0}
+    tmp_json=$NODES_JSON
+    if [ "$NULL_STATS" = "1" ]; then
+        tmp_json=$(mktemp)
+        jq '.nodes[].memory=null | .nodes[].disk=null | .nodes[].arch=null | .nodes[].cpu=null' $NODES_JSON > $tmp_json
+    fi
     echo "  Registering nodes from $NODES_JSON"
-    register-nodes --service-host undercloud --nodes <(jq '.nodes' $NODES_JSON) 1>/dev/null
+    register-nodes --service-host undercloud --nodes <(jq '.nodes' $tmp_json) 1>/dev/null
+    if [ "$NULL_STATS" = "1" ]; then
+        rm -f $tmp_json
+    fi
     echo "  Nodes registered."
     echo
     ironic node-list
@@ -112,6 +126,47 @@ function deploy_nodes {
     echo
 }
 
+function setup_flavors {
+    if ! nova flavor-show baremetal_control 2>$STDERR 1>/dev/null; then
+        echo "  Creating baremetal_control flavor ... "
+        nova flavor-create baremetal_control auto 2048 40 1
+    else
+        echo "  baremetal_control flavor already exists."
+    fi
+
+    if ! nova flavor-show baremetal_compute 2>$STDERR 1>/dev/null; then
+        echo "  Creating baremetal_compute flavor ... "
+        nova flavor-create baremetal_compute auto 4096 40 1
+    else
+        echo "  baremetal_compute flavor already exists."
+    fi
+
+    deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
+    deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
+
+    echo
+    nova flavor-list
+    echo
+
+    echo "  Setting baremetal_control flavor keys ... "
+    nova flavor-key baremetal_control set \
+        "cpu_arch"="x86_64" \
+        "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
+        "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
+        "baremetal:localboot"="true" \
+        "profile=control"
+    nova flavor-show baremetal_control
+
+    echo "  Setting baremetal_compute flavor keys ... "
+    nova flavor-key baremetal_compute set \
+        "cpu_arch"="x86_64" \
+        "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
+        "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
+        "baremetal:localboot"="true" \
+        "profile=compute"
+    nova flavor-show baremetal_compute
+}
+
 echo "Preparing for deployment..."
 
 if [ "$REGISTER_NODES" = 1 ]; then
@@ -120,6 +175,10 @@ fi
 
 if [ "$DISCOVER_NODES" = 1 ]; then
     discover_nodes
+fi
+
+if [ "$SETUP_FLAVORS" = 1 ]; then
+    setup_flavors
 fi
 
 echo "Prepared."

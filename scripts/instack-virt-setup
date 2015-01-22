@@ -34,13 +34,6 @@ source $DEVTEST_VARIABLES
 export TE_DATAFILE=instackenv.json
 tripleo devtest_testenv.sh $TE_DATAFILE
 
-# Reconfigure 2 of the vm's to only have 2 GB of ram.
-virsh setmem --config baremetal_2 2097152
-virsh setmem --config baremetal_3 2097152
-virsh setmaxmem --config baremetal_2 2097152
-virsh setmaxmem --config baremetal_3 2097152
-jq '.nodes[].memory=null | .nodes[].disk=null | .nodes[].arch=null | .nodes[].cpu=null' $TE_DATAFILE > nodes.json
-
 sudo virsh undefine --remove-all-storage seed
 
 MACS=$(for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; done)
