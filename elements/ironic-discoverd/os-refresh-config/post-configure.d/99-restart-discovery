@@ -8,27 +8,5 @@ set -eux
 os-svc-enable -n openstack-ironic-discoverd-dnsmasq
 os-svc-enable -n openstack-ironic-discoverd
 
-mkdir -p /etc/edeploy/
-
-cat > /etc/edeploy/state <<EOF
-[('compute', '*'), ('control', '1')]
-EOF
-
-cat > /etc/edeploy/compute.specs <<EOF
-[
- ('disk', '\$disk', 'size', 'gt(4)'),
- ('network', '\$eth', 'ipv4', 'network(192.0.2.0/24)'),
- ('memory', 'total', 'size', 'ge(4294967296)'),
-]
-EOF
-
-cat > /etc/edeploy/control.specs <<EOF
-[
- ('disk', '\$disk', 'size', 'gt(4)'),
- ('network', '\$eth', 'ipv4', 'network(192.0.2.0/24)'),
- ('memory', 'total', 'size', 'ge(2147483648)'),
-]
-EOF
-
 os-svc-restart -n openstack-ironic-discoverd-dnsmasq
 os-svc-restart -n openstack-ironic-discoverd
