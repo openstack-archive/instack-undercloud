@@ -28,13 +28,15 @@ function show_options () {
     echo "                             profiles"
     echo "      --show-profile      -- Show matching profile of nodes"
     echo "      --deploy-nodes      -- Deploy nodes"
+    echo "      --check-ssh         -- Check the root ssh connection to each"
+    echo "                             deployed node."
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile,check-ssh -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -46,6 +48,7 @@ DISCOVER_NODES=
 DEPLOY_NODES=
 SETUP_FLAVORS=
 SHOW_PROFILE=
+CHECK_SSH=
 STDERR=/dev/null
 
 while true ; do
@@ -56,6 +59,7 @@ while true ; do
         --show-profile) SHOW_PROFILE="1"; shift 1;;
         --deploy-nodes) DEPLOY_NODES="1"; shift 1;;
         --setup-flavors) SETUP_FLAVORS="1"; shift 1;;
+        --check-ssh) CHECK_SSH="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -117,6 +121,19 @@ function discover_nodes {
     done
 }
 
+function wait_for_ssh {
+    echo "  Waiting for ssh as root to be enabled ... "
+    echo
+    ips=$(nova list | tail -n +4 | head -n -1 | awk '{print $12}' | cut -d= -f2)
+    for ip in $ips; do
+        echo -n "    checking $ip ... "
+        tripleo wait_for 180 1 ssh -o "StrictHostKeyChecking=no" root@$ip ls
+        echo "DONE."
+    done
+    echo
+}
+
+
 function deploy_nodes {
     wait_for_hypervisor_stats
     DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
@@ -132,6 +149,7 @@ function deploy_nodes {
     echo "DONE."
     heat stack-show $DEPLOY_NAME
     heat stack-list
+    wait_for_ssh
     echo
 }
 
@@ -229,6 +247,10 @@ fi
 
 if [ "$SHOW_PROFILE" = 1 ]; then
     show_profile
+fi
+
+if [ "$CHECK_SSH" = 1 ]; then
+    wait_for_ssh
 fi
 
 echo "Prepared."
