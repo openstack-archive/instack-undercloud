@@ -8,7 +8,7 @@
     builders:
       - shell: >
           sudo /bin/bash -c "
-          "source /root/stackrc; 
+          source /root/stackrc; 
           DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml 
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --register-nodes
