@@ -9,10 +9,11 @@
       - shell: >
           sudo /bin/bash -c "
           source /root/stackrc; 
-          DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml 
+          DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml
+          NULL_STATS=1
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --register-nodes
-          --nodes-json /home/stack/nodes.json
+          --nodes-json /home/stack/instackenv.json
           --discover-nodes
           --show-profile
           --deploy-nodes"
@@ -27,9 +28,10 @@
       - shell: >
           sudo /bin/bash -c "
           source /root/stackrc; 
+          NULL_STATS=1
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --register-nodes
-          --nodes-json /opt/stack/nodes.json"
+          --nodes-json /home/stack/instackenv.json"
 - job:
     name: 'instack-ironic-deployment-discovery'
     description: 'Use Ironic to do node discovery'
@@ -54,6 +56,7 @@
       - shell: >
           sudo /bin/bash -c "
           source /root/stackrc; 
+          DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --deploy-nodes"
 - job:
@@ -82,3 +85,28 @@
           source /root/stackrc; 
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --setup-flavors"
+- job:
+    name: 'instack-ironic-deployment-delete-stack'
+    description: 'Use Ironic to setup flavors'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc;
+          heat stack-delete ironic-discover"
+- job:
+    name: 'instack-ironic-deployment-delete-nodes'
+    description: 'Use Ironic to setup flavors'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc;
+          for n in $(ironic node-list | grep power | awk '{print $2}'); do ironic node-delete $n; done"
+

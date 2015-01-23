@@ -23,7 +23,11 @@ cd /opt
 git clone https://github.com/enovance/jjb-openstack.git jenkins_jobs
 rm -fr /etc/jenkins_jobs
 ln -s /opt/jenkins_jobs /etc/jenkins_jobs
-/opt/jenkins-job-builder/jenkins_jobs/cmd.py update --delete-old /etc/jenkins_jobs/jobs:/home/stack/instack-undercloud/jenkins-jobs
+# Symlink our instack jenkins jobs under /etc/jenkins_jobs/jobs
+# Otherwise the jenkins job that periodically updates all the jobs will blow
+# away any other jobs we define.
+ln -f -s /home/stack/instack-undercloud/jenkins-jobs/* /etc/jenkins_jobs/jobs
+/opt/jenkins-job-builder/jenkins_jobs/cmd.py update --delete-old /etc/jenkins_jobs/jobs
 
 # Open iptables port for puppetmaster
 add-rule INPUT -p tcp --dport 8140 -j ACCEPT
