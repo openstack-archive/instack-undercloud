@@ -16,6 +16,7 @@
           --nodes-json /home/stack/instackenv.json
           --discover-nodes
           --show-profile
+          --setup-flavors
           --deploy-nodes"
 - job:
     name: 'instack-ironic-deployment-registration'
