@@ -30,13 +30,14 @@ function show_options () {
     echo "      --deploy-nodes      -- Deploy nodes"
     echo "      --check-ssh         -- Check the root ssh connection to each"
     echo "                             deployed node."
+    echo "      --delete-stack      -- Wait until the stack has deleted."
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile,check-ssh -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile,check-ssh,delete-stack -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -49,7 +50,10 @@ DEPLOY_NODES=
 SETUP_FLAVORS=
 SHOW_PROFILE=
 CHECK_SSH=
+DELETE_STACK=
 STDERR=/dev/null
+
+DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
 
 while true ; do
     case "$1" in
@@ -60,6 +64,7 @@ while true ; do
         --deploy-nodes) DEPLOY_NODES="1"; shift 1;;
         --setup-flavors) SETUP_FLAVORS="1"; shift 1;;
         --check-ssh) CHECK_SSH="1"; shift 1;;
+        --delete-stack) DELETE_STACK="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -137,7 +142,6 @@ function wait_for_ssh {
 function deploy_nodes {
     wait_for_hypervisor_stats
     DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
-    DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
     CONTROL_COUNT=${CONTROL_COUNT:-"1"}
     COMPUTE_COUNT=${COMPUTE_COUNT:-"1"}
     echo "  Creating heat stack ... "
@@ -232,6 +236,11 @@ function wait_for_hypervisor_stats {
     echo
 }
 
+function delete_stack {
+    heat stack-delete $DEPLOY_NAME
+    tripleo wait_for 30 2 ! heat stack-show $DEPLOY_NAME
+}
+
 echo "Preparing for deployment..."
 
 if [ "$REGISTER_NODES" = 1 ]; then
@@ -252,6 +261,10 @@ fi
 
 if [ "$CHECK_SSH" = 1 ]; then
     wait_for_ssh
+fi
+
+if [ "$DELETE_STACK" = 1 ]; then
+    delete_stack
 fi
 
 echo "Prepared."

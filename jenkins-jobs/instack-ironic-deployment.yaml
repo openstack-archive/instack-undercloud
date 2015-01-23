@@ -97,7 +97,8 @@
       - shell: >
           sudo /bin/bash -c "
           source /root/stackrc;
-          heat stack-delete ironic-discover"
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --delete-stack"
 - job:
     name: 'instack-ironic-deployment-delete-nodes'
     description: 'Use Ironic to setup flavors'
