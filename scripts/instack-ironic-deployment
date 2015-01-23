@@ -127,7 +127,7 @@ function wait_for_ssh {
     ips=$(nova list | tail -n +4 | head -n -1 | awk '{print $12}' | cut -d= -f2)
     for ip in $ips; do
         echo -n "    checking $ip ... "
-        tripleo wait_for 180 1 ssh -o "StrictHostKeyChecking=no" root@$ip ls
+        tripleo wait_for 300 1 ssh -o "PasswordAuthentication=no" -o "StrictHostKeyChecking=no" root@$ip ls
         echo "DONE."
     done
     echo
