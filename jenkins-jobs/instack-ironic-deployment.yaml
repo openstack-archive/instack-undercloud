@@ -108,5 +108,4 @@
       - shell: >
           sudo /bin/bash -c "
           source /root/stackrc;
-          for n in $(ironic node-list | grep power | awk '{print $2}'); do ironic node-delete $n; done"
-
+          for n in \$(ironic node-list | grep power | awk '{print \$2}'); do ironic node-delete \$n; done"
