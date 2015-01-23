@@ -25,15 +25,19 @@ parameters:
     type: string
     default: default
 
-  node_count:
+  control_count:
     type: number
-    default: 1
+    default: 3
+
+  compute_count:
+    type: number
+    default: 0
 
 resources:
   control_servers:
     type: OS::Heat::ResourceGroup
     properties:
-      count: {get_param: node_count}
+      count: {get_param: control_count}
       resource_def:
         type: OS::Nova::Server
         properties:
@@ -59,7 +63,7 @@ resources:
   compute_servers:
     type: OS::Heat::ResourceGroup
     properties:
-      count: {get_param: node_count}
+      count: {get_param: compute_count}
       resource_def:
         type: OS::Nova::Server
         properties:

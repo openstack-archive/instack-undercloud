@@ -137,10 +137,11 @@ function wait_for_ssh {
 function deploy_nodes {
     wait_for_hypervisor_stats
     DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
-    DEPLOY_COUNT=${DEPLOY_COUNT:-"1"}
     DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
+    CONTROL_COUNT=${CONTROL_COUNT:-"1"}
+    COMPUTE_COUNT=${COMPUTE_COUNT:-"1"}
     echo "  Creating heat stack ... "
-    heat stack-create $DEPLOY_NAME -f $DEPLOY_HEAT_TEMPLATE -P "node_count=$DEPLOY_COUNT"
+    heat stack-create $DEPLOY_NAME -f $DEPLOY_HEAT_TEMPLATE -P "control_count=$CONTROL_COUNT" -P "compute_count=$COMPUTE_COUNT"
     echo "  Created."
     echo
     echo -n "  Waiting for stack to finish ... "
