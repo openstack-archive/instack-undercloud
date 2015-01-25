@@ -31,13 +31,14 @@ function show_options () {
     echo "      --check-ssh         -- Check the root ssh connection to each"
     echo "                             deployed node."
     echo "      --delete-stack      -- Wait until the stack has deleted."
+    echo "      --delete-nodes      -- Delete all nodes."
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile,check-ssh,delete-stack -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,deploy-nodes,help,setup-flavors,show-profile,check-ssh,delete-stack,delete-nodes -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -51,6 +52,7 @@ SETUP_FLAVORS=
 SHOW_PROFILE=
 CHECK_SSH=
 DELETE_STACK=
+DELETE_NODES=
 STDERR=/dev/null
 
 DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
@@ -65,6 +67,7 @@ while true ; do
         --setup-flavors) SETUP_FLAVORS="1"; shift 1;;
         --check-ssh) CHECK_SSH="1"; shift 1;;
         --delete-stack) DELETE_STACK="1"; shift 1;;
+        --delete-nodes) DELETE_NODES="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -241,6 +244,12 @@ function delete_stack {
     tripleo wait_for 30 2 ! heat stack-show $DEPLOY_NAME
 }
 
+function delete_nodes {
+    for n in $(ironic node-list | tail -n +4 | head -n -1 | awk '{print $2}'); do
+        ironic node-delete $n;
+    done
+}
+
 echo "Preparing for deployment..."
 
 if [ "$REGISTER_NODES" = 1 ]; then
@@ -265,6 +274,10 @@ fi
 
 if [ "$DELETE_STACK" = 1 ]; then
     delete_stack
+fi
+
+if [ "$DELETE_NODES" = 1 ]; then
+    delete_nodes
 fi
 
 echo "Prepared."
