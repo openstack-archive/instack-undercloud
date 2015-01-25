@@ -140,7 +140,7 @@ function discover_nodes {
     # delete discovered ports that are not on the provisioning network
     ports_to_delete=$(ironic port-list | grep 52:54 | awk '{print $2}')
     for p in $ports_to_delete; do
-        ironic port-delete $p
+        tripleo wait_for 20 3 ironic port-delete $p
     done
 }
 
