@@ -11,6 +11,8 @@
           source /root/stackrc; 
           DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml
           NULL_STATS=1
+          CONTROL_COUNT=1
+          COMPUTE_COUNT=3
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --register-nodes
           --nodes-json /home/stack/instackenv.json
@@ -58,6 +60,8 @@
           sudo /bin/bash -c "
           source /root/stackrc; 
           DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml
+          CONTROL_COUNT=1
+          COMPUTE_COUNT=3
           /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
           --deploy-nodes"
 - job:
@@ -101,7 +105,7 @@
           --delete-stack"
 - job:
     name: 'instack-ironic-deployment-delete-nodes'
-    description: 'Use Ironic to setup flavors'
+    description: 'Delete all nodes'
     project-type: freestyle
     wrappers:
       - ansicolor:
@@ -110,4 +114,30 @@
       - shell: >
           sudo /bin/bash -c "
           source /root/stackrc;
-          for n in \$(ironic node-list | grep power | awk '{print \$2}'); do ironic node-delete \$n; done"
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --delete-nodes"
+- job:
+    name: 'instack-ironic-deployment-clean-full'
+    description: 'Clean up a previous deployment and then do a full deployment'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc;
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --delete-stack
+          --delete-nodes;
+          DEPLOY_HEAT_TEMPLATE=/home/stack/instack-undercloud/heat-templates/ironic-deployment.yaml
+          NULL_STATS=1
+          CONTROL_COUNT=1
+          COMPUTE_COUNT=3
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --register-nodes
+          --nodes-json /home/stack/instackenv.json
+          --discover-nodes
+          --show-profile
+          --setup-flavors
+          --deploy-nodes"
