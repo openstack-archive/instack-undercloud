@@ -256,7 +256,7 @@ function wait_for_hypervisor_stats {
 
 function delete_stack {
     heat stack-delete $DEPLOY_NAME
-    tripleo wait_for 30 2 ! heat stack-show $DEPLOY_NAME
+    tripleo wait_for 90 2 ! heat stack-show $DEPLOY_NAME
 }
 
 function delete_nodes {
