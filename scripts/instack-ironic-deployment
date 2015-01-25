@@ -161,7 +161,7 @@ function deploy_nodes {
     wait_for_hypervisor_stats
     DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
     CONTROL_COUNT=${CONTROL_COUNT:-"1"}
-    COMPUTE_COUNT=${COMPUTE_COUNT:-"1"}
+    COMPUTE_COUNT=${COMPUTE_COUNT:-"3"}
     echo "  Creating heat stack ... "
     heat stack-create $DEPLOY_NAME -f $DEPLOY_HEAT_TEMPLATE -P "control_count=$CONTROL_COUNT" -P "compute_count=$COMPUTE_COUNT"
     echo "  Created."
