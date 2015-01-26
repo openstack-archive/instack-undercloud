@@ -227,7 +227,7 @@ function show_profile {
     echo "  Querying assigned profiles ... "
     echo
     for node_id in $node_ids; do
-        echo "    $node_id:"
+        echo "    $node_id"
         echo -n "      "
         curl -s -H "x-auth-token: $token" http://192.0.2.1:6385/v1/nodes/$node_id | jq '.properties.capabilities'
         echo
