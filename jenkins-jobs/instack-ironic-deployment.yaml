@@ -141,3 +141,16 @@
           --show-profile
           --setup-flavors
           --deploy-nodes"
+- job:
+    name: 'instack-ironic-deployment-config-tools-provision'
+    description: 'Run config-tools provision.sh to prep for Puppet'
+    project-type: freestyle
+    wrappers:
+      - ansicolor:
+          colormap: xterm
+    builders:
+      - shell: >
+          sudo /bin/bash -c "
+          source /root/stackrc;
+          /home/stack/instack-undercloud/scripts/instack-ironic-deployment -x
+          --config-tools-provision"
