@@ -272,11 +272,20 @@ function delete_nodes {
 function config_tools_provision {
     pushd /opt/stack/config-tools/
     sudo mkdir -p /var/www/install
-    sudo bash -x ./provision.sh master https://github.com/agroup/spinalstack-env.git/etest.yml version=master
+    if [ -d /opt/stack/config-tools/env ] ; then
+        pushd /opt/stack/config-tools/env
+        sudo git reset --hard HEAD
+        popd
+    else
+        sudo bash -x ./provision.sh master https://github.com/agroup/spinalstack-env.git/etest.yml version=master
+    fi
     for x in 0 1 2; do
         sudo sed -i -e "s/SERVER$x/$(nova show openstack$x | grep ctlplane | grep -Eo "192[^ ]+")/g" env/etest.yml
+        # Clean up certs from previous runs
+        sudo puppet cert clean openstack$x.etest
     done
     sudo bash -x ./provision.sh -l master https://github.com/agroup/spinalstack-env.git/etest.yml version=master
+    sudo rm -f /etc/config-tools/step
     popd
 }
 
