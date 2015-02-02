@@ -132,7 +132,6 @@ do_reboot() {
 }
 
 do_halt() {
-    umount -a
     upload_log
     sync
     echo "Node is now discovered! Halting..."
