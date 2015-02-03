@@ -198,6 +198,7 @@ class { 'neutron::agents::ml2::ovs':
 # swift proxy
 include ::memcached
 include ::swift::proxy
+include ::swift::ringbuilder
 include ::swift::proxy::proxy_logging
 include ::swift::proxy::healthcheck
 include ::swift::proxy::cache
@@ -226,6 +227,20 @@ if(!defined(File['/srv/node'])) {
 $swift_components = ['account', 'container', 'object']
 swift::storage::filter::recon { $swift_components : }
 swift::storage::filter::healthcheck { $swift_components : }
+
+$controller_host = hiera('controller_host')
+@@ring_object_device { "${controller_host}:6000/1":
+  zone   => 1,
+  weight => 1,
+}
+@@ring_container_device { "${controller_host}:6001/1":
+  zone   => 1,
+  weight => 1,
+}
+@@ring_account_device { "${controller_host}:6002/1":
+  zone   => 1,
+  weight => 1,
+}
 
 # Ceilometer
 include ::ceilometer
