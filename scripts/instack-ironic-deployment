@@ -59,6 +59,8 @@ CONFIG_TOOLS_PROVISION=
 STDERR=/dev/null
 
 DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
+IRONIC=$(keystone endpoint-get --service baremetal | grep publicURL | awk '{ print $4; }')
+IRONIC=${IRONIC%/}
 
 while true ; do
     case "$1" in
@@ -229,7 +231,7 @@ function show_profile {
     for node_id in $node_ids; do
         echo "    $node_id"
         echo -n "      "
-        curl -s -H "x-auth-token: $token" http://192.0.2.1:6385/v1/nodes/$node_id | jq '.properties.capabilities'
+        curl -s -H "x-auth-token: $token" $IRONIC/v1/nodes/$node_id | jq '.properties.capabilities'
         echo
     done
     echo
@@ -246,8 +248,8 @@ function wait_for_hypervisor_stats {
     token=$(keystone token-get | grep ' id ' | awk '{print $4}')
     echo -n "  Wating for nova hypervisor stats ... "
     for node_id in $node_ids; do
-        mem=$(curl -s -H "x-auth-token: $token" http://192.0.2.1:6385/v1/nodes/$node_id | jq '.properties.memory_mb | tonumber')
-        vcpu=$(curl -s -H "x-auth-token: $token" http://192.0.2.1:6385/v1/nodes/$node_id | jq '.properties.cpus | tonumber')
+        mem=$(curl -s -H "x-auth-token: $token" $IRONIC/v1/nodes/$node_id | jq '.properties.memory_mb | tonumber')
+        vcpu=$(curl -s -H "x-auth-token: $token" $IRONIC/v1/nodes/$node_id | jq '.properties.cpus | tonumber')
         expected_memory=$(($expected_memory + $mem))
         expected_vcpus=$(($expected_vcpus + $vcpu))
     done
