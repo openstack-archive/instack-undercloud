@@ -24,6 +24,7 @@ eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^EMBEDDED=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^IP=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^UPLOAD_LOG=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^discoverd_callback_url=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^BOOTIF=")
 
 if [[ "$DEBUG" = "1" ]]; then
     log "DEBUG param deprecated, please use ONFAILURE=console"
@@ -193,7 +194,7 @@ run_standard_detect() {
     DISK_SIZE=$(($disk_bytes/1024/1024/1024 - 1))
 
     NODE_DATA="{\"ipmi_address\":\"$BMC_ADDRESS\",\"local_gb\":$DISK_SIZE,\"memory_mb\":$RAM,\"cpus\":$CPUS,\"cpu_arch\":\"$CPU_ARCH\""
-    NODE_DATA="$NODE_DATA,\"interfaces\":$IFACES}"
+    NODE_DATA="$NODE_DATA,\"interfaces\":$IFACES,\"boot_interface\":\"$BOOTIF\"}"
     echo Collected $NODE_DATA
 
     echo "$NODE_DATA" > /standard.json
