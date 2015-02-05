@@ -24,6 +24,7 @@ install() {
 
 installkernel() {
     instmods sg
+    instmods ipmi_msghandler
     instmods ipmi_si
     instmods ipmi_devintf
 }
