@@ -1,0 +1,1 @@
+os-disk-config git /opt/stack/os-disk-config https://github.com/agroup/os-disk-config

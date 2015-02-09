@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+virtualenv --setuptools ${OS_DISK_CONFIG_VENV_DIR}
+set +u
+source ${OS_DISK_CONFIG_VENV_DIR}/bin/activate
+set -u
+
+# bug #1201253 : virtualenv-1.10.1 embeds setuptools-0.9.8, which
+# doesn't manage correctly HTTPS sockets when downloading pbr from
+# https://pypi.python.org/simple/ if using http_proxy and https_proxy
+# envvars
+${OS_DISK_CONFIG_VENV_DIR}/bin/pip install -U 'setuptools>=1.0'
+# bug #1293812 : Avoid easy_install triggering on pbr.
+${OS_DISK_CONFIG_VENV_DIR}/bin/pip install -U 'pbr>=0.6,<1.0'
+if [ -e /opt/stack/os-disk-config/requirements.txt ]; then
+    reqs=/opt/stack/os-disk-config/requirements.txt
+else
+    reqs=""
+fi
+if [ -n "$reqs" ] ; then
+    pip install -r $reqs
+fi
+
+pip install /opt/stack/os-disk-config
+
+set +u
+deactivate
+set -u
+
+ln -s ${OS_DISK_CONFIG_VENV_DIR}/bin/os-disk-config /usr/local/bin/

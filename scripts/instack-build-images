@@ -251,6 +251,19 @@ function openstack-full {
     fi
 }
 
+function os-disk-config {
+    # Super basic image including os-disk-config for demonstrating its functionality
+    if [ ! -f os-disk-config.qcow2 ]; then
+        unset DIB_COMMON_ELEMENTS
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o os-disk-config \
+            $NODE_DIST \
+            os-disk-config baremetal \
+            2>&1 | tee dib-os-disk-config.log
+    fi
+}
+
 if [ "$image_build" = "all" ]; then
     deploy-ramdisk
     discovery-ramdisk
