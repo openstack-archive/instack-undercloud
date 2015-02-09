@@ -9,7 +9,15 @@ if [ ! -d "/usr/share/instack-undercloud" ]; then
     export ELEMENTS_PATH="$(realpath $(dirname $0)/../elements):/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 fi
 
-
+export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
+if sudo virsh list --all --name | grep -q "^$UNDERCLOUD_VM_NAME$"; then
+    set +x
+    echo "*** Error ***"
+    echo "Found existing libvirt domain '$UNDERCLOUD_VM_NAME'."
+    echo "This script will not work if the domain already exists."
+    echo "Undefine the domain and re-run instack-virt-setup."
+    exit 1
+fi
 
 # We use $NODE_COUNT here instead of the $NODE_CNT from devtest_variables.sh so
 # that it can still be overrideable *after* sourcing devtest_variables.sh
@@ -48,7 +56,6 @@ for i in $(seq 0 3); do
     sudo virsh attach-disk baremetal_$i $qcow_file vdb --driver=file --subdriver=qcow2 --persistent
 done
 
-export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
 export UNDERCLOUD_OS=${UNDERCLOUD_OS:-"fedora-20"}
 export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
 
