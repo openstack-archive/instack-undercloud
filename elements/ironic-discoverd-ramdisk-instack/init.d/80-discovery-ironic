@@ -530,8 +530,8 @@ discoverd_request(){
 
     if echo "$RESULT" | grep -E '"ipmi_setup_credentials": *(true)';
     then
-        USER=$(echo "$RESULT" | sed -r 's/.*"ipmi_username": *"([^"]*)".*/\1/')
-        PASSWORD=$(echo "$RESULT" | sed -r 's/.*"ipmi_password": *"([^"]*)".*/\1/')
+        USER=$(echo "$RESULT" | sed -r 's/.*"ipmi_username": *"([^"]*)".*/\1/' | tail -n1)
+        PASSWORD=$(echo "$RESULT" | sed -r 's/.*"ipmi_password": *"([^"]*)".*/\1/' | tail -n1)
         echo "Assigning IPMI credentials: $USER";
 
         ipmitool user set name 2 $USER
