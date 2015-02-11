@@ -1,0 +1,3 @@
+resource_registry:
+  OS::TripleO::DiskConfig: os-disk-config.yaml
+
