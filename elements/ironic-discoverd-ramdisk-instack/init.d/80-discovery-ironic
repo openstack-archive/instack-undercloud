@@ -201,6 +201,12 @@ run_standard_detect() {
 
 }
 
+run_block_device_detect() {
+  DEVICES=`lsblk -no TYPE,SERIAL | grep disk | sed '/^$/d'| awk -v ORS=\",\" '{print $2}' | sed 's/^/\"/' | sed 's/,\"$/\n/'`
+  DEVICES_DATA="{\"block_devices\":{\"serials\":[$DEVICES]}}"
+  echo "${DEVICES_DATA}" > /block_devices.json
+}
+
 give_up() {
     log "$@"
     #save_log
@@ -579,8 +585,9 @@ ip a
 
 run_standard_detect
 run_edeploy_detect
+run_block_device_detect
 echo "{\"data\": $(cat /hw.json)}" > /discoverd.json
-jq -s '.[0] + .[1]' /standard.json /discoverd.json > /node_data.json
+jq -s '.[0] + .[1] + .[2]' /standard.json /discoverd.json /block_devices.json > /node_data.json
 discoverd_request POST "${discoverd_callback_url}" @/node_data.json
 
 case "$ONSUCCESS" in
