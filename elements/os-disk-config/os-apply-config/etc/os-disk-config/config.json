@@ -1,0 +1,3 @@
+{{#os_disk_config}}
+{{.}}
+{{/os_disk_config}}
