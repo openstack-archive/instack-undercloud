@@ -88,7 +88,8 @@
       "physical_bridge": "br-ctlplane",
       "physical_network": "ctlplane",
       "public_interface": "{{LOCAL_INTERFACE}}",
-      "tenant_network_type": "vlan"
+      "tenant_network_type": "vlan",
+      "local_ip": "{{LOCAL_IP}}"
     },
     "service-password": "{{UNDERCLOUD_NEUTRON_PASSWORD}}",
     "dhcp_start": "{{DHCP_START}}",

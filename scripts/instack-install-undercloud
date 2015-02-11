@@ -17,7 +17,7 @@ if [ ! -d "$JSONFILEDIR" ]; then
 fi
 
 if [ "$(grep "Fedora" /etc/redhat-release)" == "" ]; then
-    export JSONFILE=${JSONFILE:-$JSONFILEDIR/rhel-7-rhos-6-undercloud-packages.json}
+    export JSONFILE=${JSONFILE:-$JSONFILEDIR/rhel-7-undercloud-packages.json}
 else
     export JSONFILE=${JSONFILE:-$JSONFILEDIR/fedora-20-undercloud-packages.json}
 fi

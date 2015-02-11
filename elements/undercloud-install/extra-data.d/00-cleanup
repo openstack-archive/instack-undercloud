@@ -13,4 +13,10 @@ sudo rm -rf \
   /mnt/state \
   /var/lib/heat-cfntools \
   /etc/dib* \
-  /usr/local/bin/*
+  /usr/local/bin/* \
+  /var/lib/rabbitmq \
+  /var/log/rabbitmq
+
+# Uninstall rabbitmq-server so that it gets reinstalled and recreates the
+# needed dirs under /var
+sudo yum -y erase rabbitmq-server

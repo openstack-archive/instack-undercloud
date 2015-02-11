@@ -40,7 +40,6 @@
       "ceilometer-agent-central",
       "ceilometer-agent-notification",
       "ceilometer-undercloud-config",
-      "tuskar-ui",
       "ironic-discoverd",
       "element-manifest",
       "tuskar",
@@ -51,11 +50,13 @@
       "extra-data",
       "pre-install",
       "install",
-      "post-install"
+      "post-install",
+      "finalise"
     ],
     "exclude-element": [
       "dkms",
-      "openvswitch-datapath"
+      "openvswitch-datapath",
+      "pip-and-virtualenv"
     ],
     "blacklist": [
       "10-cloud-init",
