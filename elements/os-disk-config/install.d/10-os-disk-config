@@ -3,6 +3,8 @@
 set -eux
 set -o pipefail
 
+# The version of this in f20 and rhel7.0 is too old to use, but at least
+# installing it should get all of the necessary deps installed.
 sudo yum -y install python-blivet
 
 virtualenv --setuptools --system-site-packages ${OS_DISK_CONFIG_VENV_DIR}
@@ -27,6 +29,7 @@ if [ -n "$reqs" ] ; then
 fi
 
 pip install /opt/stack/os-disk-config
+pip install /opt/stack/blivet
 
 set +u
 deactivate
