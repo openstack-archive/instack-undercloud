@@ -16,7 +16,7 @@ sudo rpm -evh instack-undercloud # the actual rpm is no longer needed
 sudo yum -y install git
 
 if [ ! -d "instack-undercloud" ]; then
-    git clone http://github.com/agroup/instack-undercloud
+    git clone http://github.com/rdo-management/instack-undercloud
 else
     echo "WARNING##################################:"
     echo "instack-undercloud directory already exists, not recloning"
