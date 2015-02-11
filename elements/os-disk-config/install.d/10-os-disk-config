@@ -3,6 +3,8 @@
 set -eux
 set -o pipefail
 
+sudo yum -y install python-blivet
+
 virtualenv --setuptools --system-site-packages ${OS_DISK_CONFIG_VENV_DIR}
 set +u
 source ${OS_DISK_CONFIG_VENV_DIR}/bin/activate
@@ -31,5 +33,3 @@ deactivate
 set -u
 
 ln -s ${OS_DISK_CONFIG_VENV_DIR}/bin/os-disk-config /usr/local/bin/
-
-sudo yum -y install python-blivet
