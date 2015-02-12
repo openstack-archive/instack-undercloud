@@ -1,7 +1,0 @@
-#!/bin/bash
-
-basedir=$(os-refresh-config --print-base)
-mkdir $basedir/environment.d
-cat > $basedir/environment.d/10-tuskar-role-directory <<EOF
-export TUSKAR_ROLE_DIRECTORY=$TUSKAR_ROLE_DIRECTORY
-EOF

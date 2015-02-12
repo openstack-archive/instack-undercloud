@@ -14,37 +14,9 @@ template = os.path.join(os.path.dirname(__file__),
                         '..',
                         'config.json.template')
 
-
 context = { 
-    'DEPLOYMENT_MODE': os.environ.get('DEPLOYMENT_MODE', 'poc'),
-    'SCHEDULER_DEFAULT_FILTERS':
-        os.environ.get('SCHEDULER_DEFAULT_FILTERS',
-                       'RetryFilter,'
-                       'AvailabilityZoneFilter,'
-                       'RamFilter,'
-                       'DiskFilter,'
-                       'CoreFilter,'
-                       'ComputeFilter,'
-                       'ComputeCapabilitiesFilter,'
-                       'ImagePropertiesFilter,'
-                       'ServerGroupAntiAffinityFilter,'
-                       'ServerGroupAffinityFilter'),
-    'BAREMETAL_SCHEDULER_DEFAULT_FILTERS':
-        os.environ.get('BAREMETAL_SCHEDULER_DEFAULT_FILTERS',
-                       'RetryFilter,'
-                       'AvailabilityZoneFilter,'
-                       'ComputeFilter,'
-                       'ComputeCapabilitiesFilter,'
-                       'ImagePropertiesFilter,'
-                       'ExactRamFilter,'
-                       'ExactDiskFilter,'
-                       'ExactCoreFilter,'
-                       'ServerGroupAntiAffinityFilter,'
-                       'ServerGroupAffinityFilter'),
     'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
     'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
-    'DNSMASQ_START': os.environ.get('DNSMASQ_START', '192.0.2.4'),
-    'DNSMASQ_END': os.environ.get('DNSMASQ_END', '192.0.2.4'),
     'MASQUERADE_NETWORK': os.environ.get('MASQUERADE_NETWORK', '192.0.2.0/24'),
     'DHCP_START': os.environ.get('DHCP_START', '192.0.2.5'),
     'DHCP_END': os.environ.get('DHCP_END', '192.0.2.24'),
@@ -53,23 +25,9 @@ context = {
     'DISCOVERY_INTERFACE': os.environ.get('DISCOVERY_INTERFACE', 'br-ctlplane'),
     'DISCOVERY_IPRANGE': os.environ.get('DISCOVERY_IPRANGE', '192.0.2.100,192.0.2.120'),
     'DISCOVERY_PXEIP': os.environ.get('DISCOVERY_PXEIP', '192.0.2.1'),
-    'UNDERCLOUD_DB_PASSWORD': os.environ.get('UNDERCLOUD_DB_PASSWORD', 'unset'),
-    'UNDERCLOUD_ADMIN_TOKEN': os.environ.get('UNDERCLOUD_ADMIN_TOKEN', 'unset'),
-    'UNDERCLOUD_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_ADMIN_PASSWORD', 'unset'),
-    'UNDERCLOUD_CEILOMETER_PASSWORD': os.environ.get('UNDERCLOUD_CEILOMETER_PASSWORD', 'unset'),
-    'UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD': os.environ.get('UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD', 'unset'),
-    'UNDERCLOUD_GLANCE_PASSWORD': os.environ.get('UNDERCLOUD_GLANCE_PASSWORD', 'unset'),
-    'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
-    'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
-    'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
     'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
-    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset')
+    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
 }
-
-if context['DEPLOYMENT_MODE'] == 'scale':
-    context['SCHEDULER_USE_BAREMETAL_FILTERS'] = 'True'
-else:
-    context['SCHEDULER_USE_BAREMETAL_FILTERS'] = 'False'
 
 with open(template) as f:
     config_json = renderer.render(f.read(), context)
@@ -79,11 +37,6 @@ if not os.path.exists(os.path.dirname(cfn_path)):
     os.makedirs(os.path.dirname(cfn_path))
 with open(cfn_path, 'w') as f:
     f.write(config_json)
-
-# For future reference, we could also generate this separately and combine the
-# cfn-init-data with the generated keystone data with:
-# jq -s '.[0].keystone=(.[0].keystone + .[1].keystone) | .[0]' cfn.json key.json 
-subprocess.check_call(['generate-keystone-pki', '-s', '--heatenv', cfn_path])
 
 # Make the json pretty again
 tmpfile = tempfile.mkstemp()[1]

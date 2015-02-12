@@ -1,0 +1,185 @@
+debug: false
+controller_host: {{LOCAL_IP}} #local-ipv4
+ntp::servers:
+  -
+
+# Common Hiera data gets applied to all nodes
+ssh::server::storeconfigs_enabled: false
+
+# ceilometer settings used by compute and controller ceilo auth settings
+ceilometer::agent::auth::auth_region: 'regionOne'
+# FIXME: Might be better to use 'service' tenant here but this requires
+# changes in the tripleo-incubator keystone role setup
+ceilometer::agent::auth::auth_tenant_name: 'admin'
+
+# Swift
+swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
+swift::proxy::authtoken::auth_host: {{LOCAL_IP}}
+swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
+swift::swift_hash_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
+swift::proxy::account_autocreate: true
+swift::proxy::authtoken::admin_password: {{UNDERCLOUD_SWIFT_PASSWORD}}
+tripleo::ringbuilder::part_power: 10
+tripleo::ringbuilder::replicas: 3
+tripleo::ringbuilder::min_part_hours: 1
+swift_mount_check: false
+
+swift::proxy::pipeline:
+  - 'catch_errors'
+  - 'healthcheck'
+  - 'cache'
+  - 'ratelimit'
+  - 'tempurl'
+  - 'formpost'
+  - 'staticweb'
+  - 'ceilometer'
+  - 'authtoken'
+  - 'keystone'
+  - 'proxy-logging'
+  - 'proxy-server'
+
+# NOTE(dprince): build_ring support is currently not wired in.
+# See: https://review.openstack.org/#/c/109225/
+tripleo::ringbuilder::build_ring: True
+
+# Glance
+glance::api::bind_port: 9292
+glance::api::bind_host: {{LOCAL_IP}}
+glance::api::auth_host: {{LOCAL_IP}}
+glance::api::registry_host: {{LOCAL_IP}}
+glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
+glance::api::known_stores:
+  - glance.store.filesystem.Store
+  - glance.store.swift.Store
+glance::api::pipeline: 'keystone'
+# used to construct glance_api_servers
+glance_port: 9292
+glance_protocol: http
+glance_notifier_strategy: noop
+glance_log_file: ''
+glance::api::database_connection: mysql://glance:unset@{{LOCAL_IP}}/glance
+glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
+glance::registry::database_connection: mysql://glance:unset@{{LOCAL_IP}}/glance
+glance::registry::bind_host: {{LOCAL_IP}}
+glance::registry::auth_host: {{LOCAL_IP}}
+glance::registry::manage_service: true
+glance::registry::pipeline: 'keystone'
+
+# Heat
+heat_stack_domain_admin_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
+heat::engine::configure_delegated_roles: false
+heat::engine::heat_stack_user_role: 'heat_stack_user'
+heat::engine::heat_watch_server_url: http://{{LOCAL_IP}}:8003
+heat::engine::heat_metadata_server_url: http://{{LOCAL_IP}}:8000
+heat::engine::heat_waitcondition_server_url: http://{{LOCAL_IP}}:8000/v1/waitcondition
+heat::engine::trusts_delegated_roles: []
+heat::engine::auth_encryption_key: unset___________
+heat::instance_user: heat-admin
+heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+heat::rabbit_host: {{LOCAL_IP}}
+heat::keystone_host: {{LOCAL_IP}}
+heat::keystone_password: {{UNDERCLOUD_HEAT_PASSWORD}}
+heat::api::bind_host: {{LOCAL_IP}}
+heat::api_cloudwatch::bind_host: {{LOCAL_IP}}
+heat::api_cfn::bind_host: {{LOCAL_IP}}
+heat::database_connection: mysql://heat:unset@{{LOCAL_IP}}/heat
+heat_dsn: mysql://heat:unset@{{LOCAL_IP}}/heat
+
+# Keystone
+keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
+keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
+keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
+keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
+keystone::database_connection: mysql://keystone:unset@{{LOCAL_IP}}/keystone
+keystone::public_bind_host: 0.0.0.0
+keystone::admin_bind_host: 0.0.0.0
+
+# MySQL
+admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
+mysql_innodb_buffer_pool_size: 0
+mysql_root_password: ''
+mysql_cluster_name: unset
+mysql::server::manage_config_file: true
+
+# Neutron
+neutron::bind_host: {{LOCAL_IP}}
+neutron::core_plugin: ml2
+neutron::dhcp_agents_per_network: 2
+neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USER}}
+neutron::server::auth_host: {{LOCAL_IP}}
+neutron::server::database_connection: mysql://neutron:unset@{{LOCAL_IP}}/neutron
+neutron::server::sync_db: true
+neutron::agents::ml2::ovs::enable_tunneling: True
+neutron::agents::ml2::ovs::local_ip: {{LOCAL_IP}}
+neutron_flat_networks: ''
+neutron_mechanism_drivers: openvswitch
+neutron_bridge_mappings: ctlplane:br-ctlplane
+neutron_public_interface: {{LOCAL_INTERFACE}}
+neutron_physical_bridge: br-ctlplane
+neutron::server::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+
+# Ceilometer
+ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
+ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+ceilometer::rabbit_host: {{LOCAL_IP}}
+ceilometer::api::host: {{LOCAL_IP}}
+ceilometer::api::keystone_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
+ceilometer::api::keystone_host: {{LOCAL_IP}}
+ceilometer::db::database_connection: mysql://ceilometer:unset@{{LOCAL_IP}}/ceilometer
+ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
+ceilometer_compute_agent: ''
+snmpd_readonly_user_name: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
+snmpd_readonly_user_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}
+
+# Nova
+nova::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+nova::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+nova::api::auth_host: {{LOCAL_IP}}
+nova::api::api_bind_address: {{LOCAL_IP}}
+nova::api::enabled: true
+nova::api::metadata_listen: {{LOCAL_IP}}
+nova::api::admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
+nova::api::osapi_v3: true
+nova::conductor::enabled: true
+nova::consoleauth::enabled: true
+nova::database_connection: mysql://nova:unset@{{LOCAL_IP}}/nova
+nova::network::neutron::neutron_admin_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+nova::notify_on_state_change: 'vm_and_task_state'
+nova::scheduler::enabled: true
+
+# Ironic
+ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+ironic::api::auth_host: {{LOCAL_IP}}
+ironic::database_connection: mysql://ironic:unset@{{LOCAL_IP}}/ironic
+ironic::rabbit_host: {{LOCAL_IP}}
+ironic::rabbit_hosts: {{LOCAL_IP:5672}}
+ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+
+# Rabbit
+rabbit_client_port: 5672
+rabbit_client_use_ssl: false
+rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
+rabbitmq::delete_guest_user: false
+rabbitmq::package_source: undef
+rabbitmq::port: '5672'
+rabbitmq::repos_ensure: false
+rabbitmq::wipe_db_on_cookie_change: true
+rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+rabbit_username: {{UNDERCLOUD_RABBIT_USERNAME}}
+
+# service tenant
+ceilometer::api::keystone_tenant: 'service'
+cinder::api::keystone_tenant: 'service'
+glance::api::keystone_tenant: 'service'
+glance::registry::keystone_tenant: 'service'
+heat::keystone_tenant: 'service'
+ironic::api::admin_tenant_name: 'service'
+neutron::agents::metadata::auth_tenant: 'service'
+neutron::server::auth_tenant: 'service'
+nova::api::admin_tenant_name: 'service'
+swift::proxy::authtoken::admin_tenant_name: 'service'

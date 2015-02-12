@@ -23,28 +23,19 @@
       "undercloud-install",
       "rhel7",
       "rhel7-distro",
-      "boot-stack",
-      "nova-ironic",
       "os-collect-config",
       "horizon",
-      "neutron-dhcp-agent",
       "undercloud-stack-config",
-      "rabbitmq-server",
-      "mariadb-rpm",
-      "os-refresh-config-reboot",
       "common-venv",
       "undercloud-post-config",
       "undercloud-package-install",
-      "ceilometer-collector",
-      "ceilometer-api",
-      "ceilometer-agent-central",
-      "ceilometer-agent-notification",
-      "ceilometer-undercloud-config",
       "ironic-discoverd",
       "element-manifest",
       "tuskar",
-      "fix-undercloud-package-installs",
-      "os-cloud-config"
+      "ironic-conductor",
+      "os-cloud-config",
+      "os-net-config",
+      "puppet-stack-config"
     ],
     "hook": [
       "extra-data",
@@ -56,7 +47,8 @@
     "exclude-element": [
       "dkms",
       "openvswitch-datapath",
-      "pip-and-virtualenv"
+      "pip-and-virtualenv",
+      "ironic"
     ],
     "blacklist": [
       "10-cloud-init",

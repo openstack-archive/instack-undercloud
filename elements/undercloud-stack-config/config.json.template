@@ -1,160 +1,48 @@
 {
-  "OpenStack::Heat::Stack": {
-  },
-  "deployment-mode": "{{DEPLOYMENT_MODE}}",
-  "admin-password": "{{UNDERCLOUD_ADMIN_PASSWORD}}",
-  "admin-token": "{{UNDERCLOUD_ADMIN_TOKEN}}",
-  "db-password": "{{UNDERCLOUD_DB_PASSWORD}}",
-  "local-ipv4": "{{LOCAL_IP}}",
-  "keystone": {
-    "host": "127.0.0.1",
-    "db": "mysql://keystone:{{UNDERCLOUD_DB_PASSWORD}}@localhost/keystone"
-  },
-  "rabbit": {
-    "host": "127.0.0.1",
-    "password": "guest",
-    "username": "guest",
-    "cookie": "changeme"
-  },
-  "glance": {
-    "backend": "file",
-    "host": "127.0.0.1",
-    "protocol": "http",
-    "port": "9292",
-    "db": "mysql://glance:{{UNDERCLOUD_DB_PASSWORD}}@localhost/glance",
-    "service-password": "{{UNDERCLOUD_GLANCE_PASSWORD}}",
-    "notifier-strategy": "noop",
-    "log-file": "''"
-  },
-  "nova": {
-    "compute_hostname": "undercloud",
-    "host": "127.0.0.1",
-    "db":    "mysql://nova:{{UNDERCLOUD_DB_PASSWORD}}@localhost/nova",
-    "baremetal": {},
-    "compute_driver": "nova.virt.ironic.driver.IronicDriver",
-    "compute_manager": "ironic.nova.compute.manager.ClusteredComputeManager",
-    "scheduler_host_manager": "nova.scheduler.ironic_host_manager.IronicHostManager",
-    "tuning": {
-        "ram_allocation_ratio": "1.0",
-        "reserved_host_memory_mb": "0"
-    },
-    "metadata-proxy": "false",
-    "service-password": "{{UNDERCLOUD_NOVA_PASSWORD}}",
-    "config": [
-        {"section": "DEFAULT",
-         "values": [
-            {"option": "scheduler_use_baremetal_filters",
-             "value": "{{SCHEDULER_USE_BAREMETAL_FILTERS}}"
-            },
-            {"option": "scheduler_default_filters",
-             "value": "{{SCHEDULER_DEFAULT_FILTERS}}"
-            },
-            {"option": "baremetal_scheduler_default_filters",
-             "value": "{{BAREMETAL_SCHEDULER_DEFAULT_FILTERS}}"
-            }
-         ]
-       }
-    ]
-  },
-  "ironic": {
-    "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
-    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}",
-    "config" : [
-      {
-        "values": [
-           { "option": "pxe_append_params",
-             "value": "biosdevname=1"
-           }
-        ],
-        "section": "pxe"
-      },
-      {
-        "section": "discoverd",
-        "values": [
-          { "option": "enabled",
-            "value": "true"
-          }
-        ]
-      }
-    ]
-  },
-  "bootstack": {
-    "public_interface_ip": "{{LOCAL_IP}}/24",
-    "masquerade_networks": ["{{MASQUERADE_NETWORK}}"]
-  },
-  "cinder": {
-    "db": "mysql://cinder:{{UNDERCLOUD_DB_PASSWORD}}@localhost/cinder",
-    "volume_size_mb": "5000",
-    "service-password": "{{UNDERCLOUD_CINDER_PASSWORD}}"
-  },
+ "hiera": {
+  "hierarchy": [
+   "puppet-stack-config"
+  ]},
+  "local-ip": "{{LOCAL_IP}}",
+  "masquerade_networks": ["{{MASQUERADE_NETWORK}}"],
   "neutron": {
-    "host": "127.0.0.1",
-    "ovs_db": "mysql://neutron:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ovs_neutron?charset=utf8",
-    "ovs": {
-      "bridge_mappings": "ctlplane:br-ctlplane",
-      "dnsmasq_range": ["192.0.2.4", "192.0.2.4"],
-      "enable_tunneling": "False",
-      "network_vlan_ranges": "ctlplane",
-      "physical_bridge": "br-ctlplane",
-      "physical_network": "ctlplane",
-      "public_interface": "{{LOCAL_INTERFACE}}",
-      "tenant_network_type": "vlan",
-      "local_ip": "{{LOCAL_IP}}"
-    },
-    "service-password": "{{UNDERCLOUD_NEUTRON_PASSWORD}}",
     "dhcp_start": "{{DHCP_START}}",
     "dhcp_end": "{{DHCP_END}}",
     "network_cidr": "{{NETWORK_CIDR}}",
     "network_gateway": "{{NETWORK_GATEWAY}}"
   },
-  "heat": {
-    "db": "mysql://heat:{{UNDERCLOUD_DB_PASSWORD}}@localhost/heat",
-    "auth_encryption_key": "unset___________",
-    "watch_server_url": "http://{{LOCAL_IP}}:8003",
-    "waitcondition_server_url": "http://{{LOCAL_IP}}:8000/v1/waitcondition",
-    "metadata_server_url": "http://{{LOCAL_IP}}:8000",
-    "admin_tenant_name": "service",
-    "admin_user": "heat",
-    "admin_password": "{{UNDERCLOUD_HEAT_PASSWORD}}"
-  },
-  "horizon": {
-    "secret_key": "unset___________"
-  },
-  "tuskar": {
-    "service-password": "{{UNDERCLOUD_TUSKAR_PASSWORD}}",
-    "db": "mysql://tuskar:{{UNDERCLOUD_DB_PASSWORD}}@localhost/tuskar?charset=utf8",
-    "heat_keystone": {
-      "username": "admin",
-      "password": "unset",
-      "tenant_name": "admin"
-    }
-  },
-  "ceilometer": {
-    "service-password": "{{UNDERCLOUD_CEILOMETER_PASSWORD}}",
-    "db": "mysql://ceilometer:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ceilometer?charset=utf8",
-    "metering_secret": "unset",
-    "snmpd_readonly_user_name": "ro_snmp_user",
-    "snmpd_readonly_user_password": "{{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}"
-  },
-  "bootstrap_host": {
-    "bootstrap_nodeid": "undercloud",
-    "nodeid": "undercloud"
-  },
-  "corosync": {
-    "mcastport": "5577",
-    "bindnetaddr": "{{LOCAL_IP}}",
-    "nodes": [
-      { "ip": "{{LOCAL_IP}}" }
-    ]
-  },
-  "pacemaker": {
-    "stonith_enabled": "false",
-    "recheck_interval": "5",
-    "quorum_policy": "ignore"
-  },
   "discovery": {
     "interface": "{{DISCOVERY_INTERFACE}}",
     "iprange": "{{DISCOVERY_IPRANGE}}",
     "pxeip": "{{DISCOVERY_PXEIP}}"
+  },
+  "os_net_config": {
+   "network_config": [
+     {
+      "type": "ovs_bridge",
+      "name": "br-ctlplane",
+      "ovs_extra": [
+       "br-set-external-id br-ctlplane bridge-id br-ctlplane"
+      ],
+      "members": [
+       {
+        "type": "interface",
+        "name": "{{LOCAL_INTERFACE}}",
+        "primary": "true"
+       }
+      ],
+      "addresses": [
+        {
+          "ip_netmask": "{{LOCAL_IP}}/24"
+        }
+      ]
+    }
+   ]
+  },
+  "tuskar": {
+    "service-password": "{{UNDERCLOUD_TUSKAR_PASSWORD}}"
+  },
+  "ironic": {
+    "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
   }
 }

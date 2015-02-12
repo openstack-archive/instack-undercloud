@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-# xinetd controls starting the tftpd daemon so pxelinux.0 can be downloaded.
-# This is not needed upstream b/c usually it starts on boot, but we aren't
-# booting an undercloud here, we're installing one.
-systemctl restart xinetd

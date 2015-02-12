@@ -2,6 +2,6 @@ default discover
 
 label discover
 kernel discovery.kernel
-append initrd=discovery.ramdisk discoverd_callback_url=http://{{local-ipv4}}:5050/v1/continue
+append initrd=discovery.ramdisk discoverd_callback_url=http://{{local-ip}}:5050/v1/continue
 ipappend 3
 

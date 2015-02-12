@@ -41,7 +41,7 @@ tripleo wait_for 12 10 service $KEYSTONE_SERVICE status
 # Because keystone just still isn't up yet...
 sleep 20
 
-export UNDERCLOUD_IP=$(os-apply-config --key local-ipv4 --type netaddress)
+export UNDERCLOUD_IP=$(os-apply-config --key local-ip --type netaddress)
 
 init-keystone -o $UNDERCLOUD_IP -t $UNDERCLOUD_ADMIN_TOKEN \
     -e admin@example.com -p $UNDERCLOUD_ADMIN_PASSWORD -u root
@@ -101,5 +101,11 @@ nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin
 
 # instack-prepare-for-overcloud
 rm -rf $HOME/.novaclient
+
+# restart openstack-nova-compute
+# When installing via puppet, nova-compute fails the first time because the
+# ironic user does not yet exist. Now that the user has been created via
+# setup-endpoints, we need to restart the service.
+systemctl restart openstack-nova-compute
 
 touch $OK_FILE

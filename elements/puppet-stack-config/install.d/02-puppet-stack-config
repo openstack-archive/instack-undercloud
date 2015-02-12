@@ -1,0 +1,72 @@
+#!/usr/bin/python
+# Copyright 2015 Red Hat, Inc.
+# All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+import os
+import shutil
+import subprocess
+import tempfile
+
+import pystache
+
+renderer = pystache.Renderer()
+template = os.path.join(os.path.dirname(__file__),
+                        '..',
+                        'puppet-stack-config.yaml.template')
+
+keystone_pki_dir = tempfile.mkdtemp()
+subprocess.check_call(['generate-keystone-pki', '-d', keystone_pki_dir])
+
+context = {
+    'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
+    'UNDERCLOUD_ADMIN_TOKEN': os.environ.get('UNDERCLOUD_ADMIN_TOKEN', 'unset'),
+    'UNDERCLOUD_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_ADMIN_PASSWORD', 'unset'),
+    'UNDERCLOUD_RABBIT_USERNAME': os.environ.get('UNDERCLOUD_RABBIT_USERNAME', 'guest'),
+    'UNDERCLOUD_RABBIT_PASSWORD': os.environ.get('UNDERCLOUD_RABBIT_PASSWORD', 'guest'),
+    'UNDERCLOUD_RABBIT_COOKIE': os.environ.get('UNDERCLOUD_RABBIT_COOKIE', 'guest'),
+    'UNDERCLOUD_SWIFT_HASH_SUFFIX': os.environ.get('UNDERCLOUD_SWIFT_HASH_SUFFIX', 'unset'),
+    'UNDERCLOUD_SWIFT_PASSWORD': os.environ.get('UNDERCLOUD_SWIFT_PASSWORD', 'unset'),
+    'UNDERCLOUD_GLANCE_PASSWORD': os.environ.get('UNDERCLOUD_GLANCE_PASSWORD', 'unset'),
+    'UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD', 'unset'),
+    'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
+    'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
+    'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
+    'UNDERCLOUD_CEILOMETER_METERING_SECRET': os.environ.get('UNDERCLOUD_CEILOMETER_METERING_SECRET', 'unset'),
+    'UNDERCLOUD_CEILOMETER_PASSWORD': os.environ.get('UNDERCLOUD_CEILOMETER_PASSWORD', 'unset'),
+    'UNDERCLOUD_CEILOMETER_SNMPD_USER': os.environ.get('UNDERCLOUD_CEILOMETER_SNMPD_USER', 'unset'),
+    'UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD': os.environ.get('UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD', 'unset'),
+    'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
+    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
+    'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
+
+    'KEYSTONE_SIGNING_CERTIFICATE':
+        open(os.path.join(keystone_pki_dir, 'signing_cert.pem')).read(),
+    'KEYSTONE_SIGNING_KEY':
+        open(os.path.join(keystone_pki_dir, 'signing_key.pem')).read(),
+    'KEYSTONE_CA_CERTIFICATE':
+        open(os.path.join(keystone_pki_dir, 'ca_cert.pem')).read(),
+    'KEYSTONE_CA_KEY':
+        open(os.path.join(keystone_pki_dir, 'ca_key.pem')).read(),
+}
+
+with open(template) as f:
+    puppet_stack_config_yaml = renderer.render(f.read(), context)
+
+puppet_stack_config_yaml_path = '/etc/puppet/hieradata/puppet-stack-config.yaml'
+
+if not os.path.exists(os.path.dirname(puppet_stack_config_yaml_path)):
+    os.makedirs(os.path.dirname(puppet_stack_config_yaml_path))
+with open(puppet_stack_config_yaml_path, 'w') as f:
+    f.write(puppet_stack_config_yaml)
