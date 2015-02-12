@@ -27,7 +27,7 @@ Using tripleo source
 
          mkdir instack
          cd instack
-         git clone https://github.com/agroup/instack-undercloud
+         git clone https://github.com/rdo-management/instack-undercloud
 
 1. Setup needed checkouts. If you don't want to use Delorean packages, or the
 last known good commits (use latest from trunk), then set those environment

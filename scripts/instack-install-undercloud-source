@@ -76,11 +76,11 @@ function do_tripleo_source_installs {
 
 
     if [ ! -d $INSTACK_ROOT/instack-undercloud ]; then
-        git clone https://github.com/agroup/instack-undercloud
+        git clone https://github.com/rdo-management/instack-undercloud
     fi
 
     if [ ! -d $INSTACK_ROOT/instack ]; then
-        git clone https://github.com/agroup/instack
+        git clone https://github.com/rdo-management/instack
     fi
 
     if [ ! -d $INSTACK_ROOT/os-cloud-config ]; then

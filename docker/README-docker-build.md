@@ -23,7 +23,7 @@ assist with building the initial image.
 1. Clone this git repository, switch to the docker branch, and cd to the docker
    build directory.
 
-        git clone https://github.com/agroup/instack-undercloud
+        git clone https://github.com/rdo-management/instack-undercloud
         cd instack-undercloud
         git checkout docker
         cd docker/instack-virt
