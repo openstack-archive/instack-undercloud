@@ -21,5 +21,4 @@ iptables -t nat -X BOOTSTACK_MASQ || true
 # Rename the new chain into permanence.
 iptables -t nat -E BOOTSTACK_MASQ_NEW BOOTSTACK_MASQ
 # remove forwarding rule (fixes bug 1183099)
-iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited
-
+iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited || true
