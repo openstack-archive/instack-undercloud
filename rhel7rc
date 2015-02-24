@@ -1,8 +1,15 @@
 export NODE_DIST=rhel7
 export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
 export REG_METHOD=disable
-export RHOS=1
+
+# We need to set RHOS=0 so that epel/rdo get enabled.
+export RHOS=0
+# But we still actually need it to enable base RHEL repos.
+export RHOS_RELEASE=6
+export DIB_COMMON_ELEMENTS=rhos-release
 export REG_HALT_UNREGISTER=1
+export DELOREAN=1
+export DELOREAN_REPO="http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35/delorean.repo"
 
 export ELEMENTS_PATH="\
 $(realpath $(pwd)/instack-undercloud/elements/):\

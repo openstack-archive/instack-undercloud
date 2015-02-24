@@ -8,9 +8,6 @@ export image_build=${1:-"all"}
 if [ -d "/usr/share/instack-undercloud" ]; then
     export INSTACK_ROOT=${INSTACK_ROOT:-"/usr/share"}
     export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/instack-undercloud:/usr/share/tripleo-image-elements"}
-    source "$INSTACK_ROOT"/instack-undercloud/instack-sourcerc
-else
-    source "$(dirname $0)/../instack-sourcerc"
 fi
 
 # Override TMP_DIR for image build.
@@ -58,7 +55,7 @@ fi
 
 export PACKAGES=${PACKAGES:-"1"}
 if [ "$PACKAGES" = "1" ]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS tripleo-image-elements undercloud-package-install pip-and-virtualenv-override"
+    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install pip-and-virtualenv-override"
 fi
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
@@ -239,12 +236,11 @@ function fedora-user {
 
 function openstack-full {
     if [ ! -f openstack-full.qcow2 ]; then
-        # SpinalStack only supports RHOS 5 currently.
-        export RHOS_RELEASE=5
         disk-image-create \
             -a $NODE_ARCH \
             -o openstack-full \
             $NODE_DIST \
+            $DIB_COMMON_ELEMENTS \
             openstack-full \
             baremetal \
             2>&1 | tee dib-openstack-full.log
