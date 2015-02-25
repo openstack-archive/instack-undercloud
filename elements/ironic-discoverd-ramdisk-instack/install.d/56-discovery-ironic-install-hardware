@@ -8,7 +8,5 @@ install-packages hdparm ipmitool lshw ethtool lldpad hdparm sdparm pciutils mcel
 # python-pip is not available in the standard RHEL repos, it must be installed
 # directly from brew.
 yum -y install http://download.devel.redhat.com/brewroot/packages/python-pip/1.3.1/4.el7ost/noarch/python-pip-1.3.1-4.el7ost.noarch.rpm
-# lshw must be installed from EPEL.
-yum -y install http://dl.fedoraproject.org/pub/epel/7/x86_64/l/lshw-B.02.17-3.el7.x86_64.rpm
 
 pip install hardware
