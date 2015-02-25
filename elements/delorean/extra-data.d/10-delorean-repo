@@ -11,5 +11,3 @@ if [ -z "$DELOREAN_REPO" ]; then
 fi
 
 sudo curl -o $TMP_MOUNT_PATH/etc/yum.repos.d/delorean.repo $DELOREAN_REPO
-sudo curl -o $TMP_MOUNT_PATH/etc/yum.repos.d/delorean-alt.repo $DELOREAN_REPO_ALT
-sudo sed -i "s/delorean/delorean-alt/g" $TMP_MOUNT_PATH/etc/yum.repos.d/delorean-alt.repo

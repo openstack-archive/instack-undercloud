@@ -3,18 +3,74 @@
 set -eux
 set -o pipefail
 
+# Install repo file for Delorean master packages
+# Pin to an older repo for now because newer openstack-keystone requires a
+# newer and not yet avaialable python-pycadf.
+export DELOREAN_REPO=${DELOREAN_REPO:-"http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35/delorean.repo"}
+sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
+
+# Install repo file for Delorean el7 midstream packages built from
+# rdo-management.
+export DELOREAN_RHEL7_REPO=${DELOREAN_RHEL7_REPO:-"http://ec2-52-1-152-252.compute-1.amazonaws.com/repos/c3/69/c369e612c3fd9d0f33da27374947619c2184d24d_af0320b0/delorean.repo"}
+sudo curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_RHEL7_REPO
+# We can't have 2 yum repos called delorean though, so we must rename this one
+sudo sed -i 's/delorean/delorean-rdo-management/' /etc/yum.repos.d/delorean-rdo-management.repo
+
+# Delorean requires RDO
+if ! rpm -q rdo-release; then
+    sudo yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
+fi
+
+if ! rpm -q epel-release; then
+    sudo yum install -y http://mirrors.einstein.yu.edu/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+fi
+
+# rhos-release is also required, otherwise we have no base RHEL repositories to
+# pull any dependencies from (without using subscription-manager anyway).
 sudo rpm -Uvh --force http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
-sudo rhos-release 6
+export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"1"}
+if [ "$RUN_RHOS_RELEASE" = "1" ]; then
+    sudo rhos-release 6 -d
+fi
+# Ideally though, we don't want to end up with any RHOS packages installed, so
+# we disable the poodle repo.
+sudo yum-config-manager --disable rhelosp-6.0-poodle
 
-# Enable the copr repo for our custom builds
-sudo curl -o /etc/yum.repos.d/divius-instack-ironic-nova-epel-7.repo \
-    https://copr.fedoraproject.org/coprs/divius/instack-ironic-nova/repo/epel-7/divius-instack-ironic-nova-epel-7.repo
-
-sudo yum -y install instack-undercloud # need to get all the instack-undercloud deps
-sudo rpm -evh instack-undercloud # the actual rpm is no longer needed
+# Install some needed dependencies for instack-undercloud
+sudo yum -y install \
+    diskimage-builder \
+    openstack-tripleo-image-elements \
+    openstack-tripleo-heat-templates \
+    openstack-tripleo \
+    instack
 
 sudo yum -y install git
 
+# os-cloud-config is broken in Delorean packaging right now, b/c it's missing
+# the patch to remove the pbr requirements, yet doesn't actually Require it, so
+# just install it manually for now.
+sudo yum -y install os-cloud-config
+sudo yum -y install python-pbr
+
+# newer openstack-keystone requires python-zope-interface, but that is not
+# avaiable anywhere for EL7. So just install the Fedora package for now. We can
+# add this dep to Delorean going forward.
+if ! rpm -q python-zope-interface; then
+    sudo yum install -y http://mirrors.kernel.org/fedora//releases/20/Everything/x86_64/os/Packages/p/python-zope-interface-4.0.5-2.fc20.x86_64.rpm
+fi
+
+# pip install hardware for not until python-hardware is packaged
+sudo pip install hardware
+
+# tripleo-puppet-elements is not yet in Delorean, so just git clone for now
+if [ ! -d "tripleo-puppet-elements" ]; then
+    git clone http://git.openstack.org/openstack/tripleo-puppet-elements
+else
+    echo "WARNING##################################:"
+    echo "tripleo-puppet-elements directory already exists, not recloning"
+fi
+
+# git clone instack-undercloud since we're not using packages for that yet
 if [ ! -d "instack-undercloud" ]; then
     git clone http://github.com/rdo-management/instack-undercloud
 else

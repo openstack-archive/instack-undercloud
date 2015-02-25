@@ -2,6 +2,9 @@
 
 set -eux
 
+export DIB_DEFAULT_INSTALLTYPE=${DIB_DEFAULT_INSTALLTYPE:-package}
+export DIB_INSTALLTYPE_os_cloud_config=package
+
 # OpenStack projects
 export DIB_INSTALLTYPE_heat=${DIB_INSTALLTYPE_heat:-package}
 export DIB_INSTALLTYPE_keystone=${DIB_INSTALLTYPE_keystone:-package}
@@ -27,11 +30,13 @@ export DIB_INSTALLTYPE_python_swiftclient=${DIB_INSTALLTYPE_python_swiftclient:-
 export DIB_INSTALLTYPE_python_ceilometerclient=${DIB_INSTALLTYPE_python_ceilometerclient:-package}
 export DIB_INSTALLTYPE_python_ironicclient=${DIB_INSTALLTYPE_python_ironicclient:-package}
 export DIB_INSTALLTYPE_python_tuskarclient=${DIB_INSTALLTYPE_python_tuskarclient:-package}
+export DIB_INSTALLTYPE_python_openstackclient=${DIB_INSTALLTYPE_python_tuskarclient:-package}
 
 # os-*-config
 export DIB_INSTALLTYPE_os_collect_config=${DIB_INSTALLTYPE_os_collect_config:-package}
 export DIB_INSTALLTYPE_os_refresh_config=${DIB_INSTALLTYPE_os_refresh_config:-package}
 export DIB_INSTALLTYPE_os_apply_config=${DIB_INSTALLTYPE_os_apply_config:-package}
+export DIB_INSTALLTYPE_os_net_config=${DIB_INSTALLTYPE_os_net_config:-package}
 
 # TripleO
 # Make the setting for tripleo-heat-templates overrideable for the source

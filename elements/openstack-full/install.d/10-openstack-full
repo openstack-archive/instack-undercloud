@@ -2,31 +2,14 @@
 
 set -eux
 
+# newer openstack-keystone requires python-zope-interface, but that is not
+# avaiable anywhere for EL7. So just install the Fedora package for now. We can
+# add this dep to Delorean going forward.
+if ! rpm -q python-zope-interface; then
+    sudo yum install -y http://mirrors.kernel.org/fedora//releases/20/Everything/x86_64/os/Packages/p/python-zope-interface-4.0.5-2.fc20.x86_64.rpm
+fi
+
 # Services couldn't talk to mysql, disable selinux for now
 sed -i -e 's/=enforcing/=permissive/g' /etc/selinux/config
 
-yum install -y --nogpg /opt/stack/files/puppet-release.rpm
-yum install -y --nogpg puppet augeas rabbitmq-server openstack-keystone keepalived haproxy mariadb-galera-server ntp memcached mongodb-server xinetd mongodb grub2 bind-utils openstack-swift-account openstack-swift-container openstack-swift-object openstack-swift-proxy openstack-dashboard openstack-glance python-ceph
-
-# For now, openstack-full is RHOS 5 based, which has no jq.
-# We can however just install the build for RHOS 6.
-yum install -y --nogpg http://download.devel.redhat.com/brewroot/packages/jq/1.3/2.el7ost/x86_64/jq-1.3-2.el7ost.x86_64.rpm
-
-# os-net-config
-# pip is required since we're installing install-server bits from source
-# The python-pip package has been removed from recent RHELOSP poodles, so
-# we need to grab it directly from brew
-rpm -q python-pip || yum -y install http://download.devel.redhat.com/brewroot/packages/python-pip/1.3.1/4.el7ost/noarch/python-pip-1.3.1-4.el7ost.noarch.rpm
-# Same goes for python-pbr
-rpm -q python-pbr || yum -y install http://download.devel.redhat.com/brewroot/packages/python-pbr/0.8.0/1.el7ost/noarch/python-pbr-0.8.0-1.el7ost.noarch.rpm
-yum -y install gcc python-devel
-mkdir -p /opt/stack
-pushd /opt/stack
-git clone https://github.com/openstack/os-net-config.git
-pushd os-net-config/
-git fetch https://review.openstack.org/openstack/os-net-config refs/changes/94/149294/1 && git checkout FETCH_HEAD
-python setup.py install
-popd
-popd
-
-
+yum install -y --nogpg puppet augeas rabbitmq-server openstack-keystone keepalived haproxy mariadb-galera-server ntp memcached mongodb-server xinetd mongodb grub2 bind-utils openstack-swift-account openstack-swift-container openstack-swift-object openstack-swift-proxy openstack-dashboard openstack-glance python-ceph os-net-config
