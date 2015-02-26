@@ -13,7 +13,7 @@ non-root user that was used to install the undercloud.
 
 #. Source rhel7rc to set appropriate environment variables::
 
-    source instack-undercloud/rhel7rc
+    source /usr/share/instack-undercloud/rhel7rc
 
 #. Download the rhel7 cloud image or copy it from another host to the
    undercloud::
@@ -22,10 +22,10 @@ non-root user that was used to install the undercloud.
 
 #. Build the 3 image types::
 
-    instack-undercloud/scripts/instack-build-images deploy-ramdisk
-    instack-undercloud/scripts/instack-build-images discovery-ramdisk
-    instack-undercloud/scripts/instack-build-images openstack-full
+    instack-build-images deploy-ramdisk
+    instack-build-images discovery-ramdisk
+    instack-build-images openstack-full
 
 #. Load the images into Glance::
 
-    instack-undercloud/scripts/instack-prepare-for-overcloud
+    instack-prepare-for-overcloud

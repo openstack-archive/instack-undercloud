@@ -52,6 +52,10 @@ Preparing the Host Machine
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host-rhel7 | bash -x
 
+#. Install instack-undercloud::
+
+    sudo yum install instack-undercloud
+
 #. Run scripts to install required dependencies::
 
     source /usr/libexec/openstack-tripleo/devtest_variables.sh
@@ -68,13 +72,12 @@ Preparing the Host Machine
 
 #. Source rhel7rc to set appropriate environment variables::
 
-    source instack-undercloud/rhel7rc
+    source /usr/share/instack-undercloud/rhel7rc
     export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
-    export NODE_DIST=rhel7
 
 #. Run the script to setup your virtual environment::
 
-    instack-undercloud/scripts/instack-virt-setup
+    instack-virt-setup
 
 When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.

@@ -14,13 +14,17 @@ while preparing the environment.
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host-rhel7 | bash -x
 
+#. Install instack-undercloud::
+
+    sudo yum install instack-undercloud
+
 #. Source rhel7rc to set appropriate environment variables::
 
-    source instack-undercloud/rhel7rc
+    source /usr/share/instack-undercloud/rhel7rc
 
 #. Run script to install the undercloud::
 
-    instack-undercloud/scripts/instack-install-undercloud
+    instack-install-undercloud
 
 Once the install script has run to completion, you should take note of the
 files ``/root/stackrc`` and ``/root/tripleo-undercloud-passwords``. Both these

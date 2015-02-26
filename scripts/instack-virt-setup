@@ -7,6 +7,11 @@ if [ ! -d "/usr/share/instack-undercloud" ]; then
     export RCFILE=$(dirname $0)/../deploy-virt-overcloudrc
     export ANSWERSFILE=$(dirname $0)/../instack.answers.sample
     export ELEMENTS_PATH="$(realpath $(dirname $0)/../elements):/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
+else
+    DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
+    export RCFILE=/usr/share/instack-undercloud/deploy-virt-overcloudrc
+    export ANSWERSFILE=/usr/share/instack-undercloud/instack.answers.sample
+    export ELEMENTS_PATH="/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 fi
 
 export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}

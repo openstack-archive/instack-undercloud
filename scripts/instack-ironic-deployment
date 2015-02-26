@@ -165,7 +165,7 @@ function wait_for_ssh {
 
 function deploy_nodes {
     wait_for_hypervisor_stats
-    DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"$HOME/instack-undercloud/heat-templates/ironic-deployment.yaml"}
+    DEPLOY_HEAT_TEMPLATE=${DEPLOY_HEAT_TEMPLATE:-"/usr/share/instack-undercloud/heat-templates/ironic-deployment.yaml"}
     CONTROL_COUNT=${CONTROL_COUNT:-"1"}
     COMPUTE_COUNT=${COMPUTE_COUNT:-"3"}
     echo "  Creating heat stack ... "

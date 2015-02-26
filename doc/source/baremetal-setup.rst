@@ -77,7 +77,7 @@ Setting Up The Undercloud Machine
 
 #. Copy the sample instack answers file to the home directory::
 
-    cp instack-undercloud/instack.answers.sample ~/instack.answers
+    cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
 
 #. Edit the ``instack.answers`` file appropriately.
 

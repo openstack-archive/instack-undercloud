@@ -36,14 +36,6 @@ fi
 # we disable the poodle repo.
 sudo yum-config-manager --disable rhelosp-6.0-poodle
 
-# Install some needed dependencies for instack-undercloud
-sudo yum -y install \
-    diskimage-builder \
-    openstack-tripleo-image-elements \
-    openstack-tripleo-heat-templates \
-    openstack-tripleo \
-    instack
-
 sudo yum -y install git
 
 # os-cloud-config is broken in Delorean packaging right now, b/c it's missing
@@ -68,12 +60,4 @@ if [ ! -d "tripleo-puppet-elements" ]; then
 else
     echo "WARNING##################################:"
     echo "tripleo-puppet-elements directory already exists, not recloning"
-fi
-
-# git clone instack-undercloud since we're not using packages for that yet
-if [ ! -d "instack-undercloud" ]; then
-    git clone http://github.com/rdo-management/instack-undercloud
-else
-    echo "WARNING##################################:"
-    echo "instack-undercloud directory already exists, not recloning"
 fi

@@ -11,26 +11,26 @@ Registering Nodes
 
 Register nodes for your deployment with Ironic::
 
-    instack-undercloud/scripts/instack-ironic-deployment --nodes-json instackenv.json --register-nodes
+    instack-ironic-deployment --nodes-json instackenv.json --register-nodes
 
 Disovering Nodes
 ----------------
 
 Discover hardware attributes of nodes and match them to a deployment profile::
 
-    instack-undercloud/scripts/instack-ironic-deployment --discover-nodes
+    instack-ironic-deployment --discover-nodes
 
 Check what profiles were matched for the discovered nodes::
 
-    instack-undercloud/scripts/instack-ironic-deployment --show-profile
+    instack-ironic-deployment --show-profile
 
 Deploying Nodes
 ---------------
 
 Create the necessary flavors::
 
-    instack-undercloud/scripts/instack-ironic-deployment --setup-flavors
+    instack-ironic-deployment --setup-flavors
 
 Deploy the the *openstack-full* image to 3 nodes::
 
-    COMPUTE_COUNT=3 CONTROL_COUNT=0 instack-undercloud/scripts/instack-ironic-deployment --deploy-nodes
+    COMPUTE_COUNT=3 CONTROL_COUNT=0 instack-ironic-deployment --deploy-nodes
