@@ -37,4 +37,8 @@ nosetests.xml
 # tarballs
 *.tar.gz
 
+# sdist generated stuff
+AUTHORS
+ChangeLog
+
 instack.answers
