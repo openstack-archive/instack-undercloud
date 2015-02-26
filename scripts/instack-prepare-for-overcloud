@@ -57,7 +57,7 @@ nova flavor-key baremetal set \
     "cpu_arch"="x86_64" \
     "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
     "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
-    "baremetal:localboot"="true"
+    "capabilities:boot_option"="local"
 
 sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.kernel" "$TFTP_ROOT/discovery.kernel"
 sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.initramfs" "$TFTP_ROOT/discovery.ramdisk"
