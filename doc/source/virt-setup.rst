@@ -29,6 +29,7 @@ need to ensure you have enough memory and disk space.
 Preparing the Host Machine
 --------------------------
 
+#. Install RHEL 7.1 Server x86_64.
 #. Make sure sshd service is installed and running.
 #. The user performing all of the installation steps on the virt host needs to
    have sudo enabled. You can use an existing user or use the following commands
