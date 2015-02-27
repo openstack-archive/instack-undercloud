@@ -143,6 +143,13 @@ if [ -n "$TUSKAR" ]; then
     -A cinder-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     "}
 
+    if [ $CONTROLSCALE -gt 1 ]; then
+        export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
+        -A controller-1::NeutronL3HA=True
+        -A compute-1::NeutronL3HA=True
+        "
+    fi
+
     # These attributes can't be changed in Tuskar-UI, so this is the only
     # difference to deploying through UI
     # -A NeutronDnsmasqOptions=dhcp-option-force=26,1400
