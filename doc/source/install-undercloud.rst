@@ -12,7 +12,7 @@ while preparing the environment.
 
 #. Download and execute the instack-undercloud setup script::
 
-    curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host-rhel7 | bash -x
+    curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
 
 #. Install instack-undercloud::
 
@@ -43,7 +43,7 @@ The installed packages can be upgraded on the Undercloud.
 
 #. Rerun the setup script to update the list of defined yum repositories::
 
-    instack-setup-host-rhel7
+    instack-setup-host
 
 #. Use yum to update the installed packages. No services should need to be
    restarted after updating::

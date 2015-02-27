@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -eux
+
+# Install repo file for Delorean el7 midstream packages built from
+# rdo-management.
+export DELOREAN_RDO_MANAGEMENT_REPO_URL=${DELOREAN_RDO_MANAGEMENT_REPO_URL:-"http://trunk-mgt.rdoproject.org/repos/current"}
+sudo curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_RDO_MANAGEMENT_REPO_URL/delorean.repo
+# We can't have 2 yum repos called delorean though, so we must rename this one
+sudo sed -i 's/delorean/delorean-rdo-management/' /etc/yum.repos.d/delorean-rdo-management.repo
+

@@ -35,8 +35,26 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 # We must do this until tripleo-puppet-elements is packaged
 export DIB_INSTALLTYPE_puppet_modules=source
 
-if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
-    export NODE_DIST=${NODE_DIST:-rhel7}
+export DELOREAN_EL7_REPO_URL="http://104.130.230.24/centos70/4a/1d/4a1d1169acdf6b63239b60a898a33caf428acb5c_291a4aa4/"
+
+export NODE_DIST=${NODE_DIST:-""}
+
+# Attempt to detect $NODE_DIST, exit 1 if we can't
+if [ -z "$NODE_DIST" ]; then
+    if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
+        export NODE_DIST=${NODE_DIST:-rhel7}
+    elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
+        export NODE_DIST=${NODE_DIST:-centos7}
+    elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
+        export NODE_DIST=${NODE_DIST:-fedora}
+    else
+        echo "Could not detect distritubion from /etc/redhat-release!"
+        exit 1
+    fi
+fi
+
+# Set specific variables based on $NODE_DIST
+if [ "$NODE_DIST" = "rhel7" ]; then
     export REG_METHOD=disable
 
     # We need to set RHOS=0 so that epel/rdo get enabled.
@@ -46,19 +64,18 @@ if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
     export DIB_COMMON_ELEMENTS=rhos-release
     export REG_HALT_UNREGISTER=1
     export DELOREAN=1
-    export DELOREAN_REPO_URL="http://104.130.230.24/centos70/4a/1d/4a1d1169acdf6b63239b60a898a33caf428acb5c_291a4aa4/"
-elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
-    export NODE_DIST=${NODE_DIST:-centos7}
-elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
-    export NODE_DIST=${NODE_DIST:-fedora}
-else
-    echo "Could not detect distritubion from /etc/redhat-release!"
-    exit 1
+    export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL
+elif [ "$NODE_DIST" = "centos7" ]; then
+    export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL
+    # SELinux permissive for CentOS for now
+    export DIB_COMMON_ELEMENTS=selinux-permissive
 fi
 
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
-export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-ironic-discoverd-ramdisk-instack}
+# Include delorean-rdo-management with the discovery ramdisk build so that we
+# can install python-hardware from somewhere.
+export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-"ironic-discoverd-ramdisk-instack"}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
 export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
@@ -106,12 +123,16 @@ delorean-repo \
 stable-interface-names \
 "
 
+# There are new deps on python-psutil and python-debtcollector but the Nova and Cinder
+# packages are not updated yet to actually require them.
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
+-p python-psutil,python-debtcollector \
 $PUPPET_COMMON_ELEMENTS
 overcloud-controller \
 "}
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
+-p python-psutil,python-debtcollector \
 $PUPPET_COMMON_ELEMENTS
 overcloud-compute
 "}

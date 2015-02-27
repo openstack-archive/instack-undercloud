@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+# Install repo file for Delorean master packages
+# Pin to an older repo for now because newer openstack-keystone requires a
+# newer and not yet avaialable python-pycadf.
+export DELOREAN_REPO=${DELOREAN_REPO:-"http://104.130.230.24/centos70/4a/1d/4a1d1169acdf6b63239b60a898a33caf428acb5c_291a4aa4/delorean.repo"}
+sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
+
+# Install repo file for Delorean el7 midstream packages built from
+# rdo-management.
+export DELOREAN_RHEL7_REPO=${DELOREAN_RHEL7_REPO:-"http://trunk-mgt.rdoproject.org/repos/current/delorean.repo"}
+sudo curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_RHEL7_REPO
+# We can't have 2 yum repos called delorean though, so we must rename this one
+sudo sed -i 's/delorean/delorean-rdo-management/' /etc/yum.repos.d/delorean-rdo-management.repo
+
+# Delorean requires RDO
+if ! rpm -q rdo-release; then
+    sudo yum install -y https://rdo.fedorapeople.org/openstack-kilo/rdo-release-kilo-0.noarch.rpm
+fi
+
+if ! rpm -q epel-release; then
+    sudo yum install -y http://mirrors.einstein.yu.edu/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+fi
+
+if $(grep -Eqs 'Red Hat Enterprise Linux Server' /etc/redhat-release); then
+    # rhos-release is also required, otherwise we have no base RHEL repositories to
+    # pull any dependencies from (without using subscription-manager anyway).
+    sudo rpm -Uvh --force http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+    export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"1"}
+    if [ "$RUN_RHOS_RELEASE" = "1" ]; then
+        sudo rhos-release 6
+    fi
+    # We need openwsman-python from the optional repo
+    sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
+fi
+
+# newer openstack-keystone requires python-zope-interface, but that is not
+# avaiable anywhere for EL7. So just install the Fedora package for now. We can
+# add this dep to Delorean going forward.
+if ! rpm -q python-zope-interface; then
+    sudo yum install -y http://mirrors.kernel.org/fedora//releases/20/Everything/x86_64/os/Packages/p/python-zope-interface-4.0.5-2.fc20.x86_64.rpm
+fi
+
+# Required for building puppet-based images
+# We can remove these once we add a corresponding Requires:
+# to the instack-undercloud spec file.
+sudo yum install -y openstack-heat-templates
+sudo yum install -y openstack-tripleo-puppet-elements

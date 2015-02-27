@@ -26,6 +26,7 @@ if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
     export REG_HALT_UNREGISTER=1
 elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
     export NODE_DIST=${NODE_DIST:-centos7}
+    export JSONFILE=${JSONFILE:-$JSONFILEDIR/centos-7-undercloud-packages.json}
 elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
     export NODE_DIST=${NODE_DIST:-fedora}
     export JSONFILE=${JSONFILE:-$JSONFILEDIR/fedora-20-undercloud-packages.json}
@@ -65,6 +66,7 @@ export LOCAL_INTERFACE
 export MASQUERADE_NETWORK
 export POWER_DRIVER
 export VIRTUAL_POWER_USER
+
 export VIRTUAL_POWER_HOST
 export DHCP_START
 export DHCP_END
