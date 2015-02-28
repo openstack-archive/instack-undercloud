@@ -2,6 +2,8 @@
 
 set -ex
 
+export LIBVIRT_DEFAULT_URI="qemu:///system"
+
 if [ ! -d "/usr/share/instack-undercloud" ]; then
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
     export RCFILE=$(dirname $0)/../deploy-virt-overcloudrc
@@ -12,6 +14,31 @@ else
     export RCFILE=/usr/share/instack-undercloud/deploy-virt-overcloudrc
     export ANSWERSFILE=/usr/share/instack-undercloud/instack.answers.sample
     export ELEMENTS_PATH="/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
+fi
+
+source $DEVTEST_VARIABLES
+tripleo install-dependencies
+# libvirtd group
+LIBVIRTD_GROUP='libvirtd'
+getent group $LIBVIRTD_GROUP || sudo groupadd $LIBVIRTD_GROUP
+
+if ! grep LIBVIRT_DEFAULT_URI ~/.bashrc; then
+    echo 'export LIBVIRT_DEFAULT_URI="qemu:///system"' >> ~/.bashrc;
+fi
+
+if ! id | grep -qw $LIBVIRTD_GROUP; then
+    echo "adding $USER to group $LIBVIRTD_GROUP"
+    sudo usermod -a -G $LIBVIRTD_GROUP $USER
+fi
+
+if [ "$TRIPLEO_OS_FAMILY" = "redhat" ]; then
+    libvirtd_file=/etc/libvirt/libvirtd.conf
+    if ! sudo grep -q "^unix_sock_group" $libvirtd_file; then
+        sudo sed -i "s/^#unix_sock_group.*/unix_sock_group = \"$LIBVIRTD_GROUP\"/g" $libvirtd_file
+        sudo sed -i 's/^#auth_unix_rw.*/auth_unix_rw = "none"/g' $libvirtd_file
+        sudo sed -i 's/^#unix_sock_rw_perms.*/unix_sock_rw_perms = "0770"/g' $libvirtd_file
+        sudo service libvirtd restart
+    fi
 fi
 
 export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
@@ -42,10 +69,12 @@ export NODE_ARCH=${NODE_ARCH:-x86_64}
 export NODE_MEM=${NODE_MEM:-4096}
 export NODE_CPU=${NODE_CPU:-1}
 
-source $DEVTEST_VARIABLES
 
 export TE_DATAFILE=instackenv.json
-tripleo devtest_testenv.sh $TE_DATAFILE
+sudo -E tripleo devtest_testenv.sh $TE_DATAFILE
+sudo mv /root/.ssh/id_rsa_virt_power $HOME/.ssh/
+sudo mv /root/.ssh/id_rsa_virt_power.pub $HOME/.ssh/
+sudo chown -R $USER: ~/.ssh
 
 sudo virsh undefine --remove-all-storage seed
 
@@ -79,7 +108,7 @@ else
     sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 30G
 fi
 
-tripleo configure-vm \
+sudo tripleo configure-vm \
     --name $UNDERCLOUD_VM_NAME \
     --image /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 \
     --seed \
@@ -88,7 +117,7 @@ tripleo configure-vm \
     --memory $((1024 * $NODE_MEM)) \
     --cpus $NODE_CPU
 
-virsh start $UNDERCLOUD_VM_NAME
+sudo virsh start $UNDERCLOUD_VM_NAME
 
 timeout_seconds=180
 elapsed_seconds=0

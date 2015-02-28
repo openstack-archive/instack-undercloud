@@ -44,10 +44,6 @@ Preparing the Host Machine
         sudo chmod 0440 /etc/sudoers.d/stack
 
 #. Make sure you are logged in as the non-root user you intend to use.
-#. Add export of LIBVIRT_DEFAULT_URI to your bashrc file::
-
-    echo 'export LIBVIRT_DEFAULT_URI="qemu:///system"' >> ~/.bashrc
-
 #. Download and execute the instack-undercloud setup script::
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host-rhel7 | bash -x
@@ -55,15 +51,6 @@ Preparing the Host Machine
 #. Install instack-undercloud::
 
     sudo yum install instack-undercloud
-
-#. Run scripts to install required dependencies::
-
-    source /usr/libexec/openstack-tripleo/devtest_variables.sh
-    tripleo install-dependencies
-    tripleo set-usergroup-membership
-    # The previous command has added the user to the libvirtd group, so we need to login to the new group
-    newgrp libvirtd
-    newgrp
 
 #. Download the RHEL 7.1 cloud image or copy it over from a different
    location::
@@ -82,7 +69,7 @@ Preparing the Host Machine
 When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.
 
-Running virsh list --all will show you now have one virtual machine called
+Running ``sudo virsh list --all`` [#]_ will show you now have one virtual machine called
 *instack* and 4 called *baremetal[0-3]*.
 
 You can ssh to the instack vm as the root user::
@@ -99,3 +86,11 @@ can ``su - stack`` to switch to the stack user account.
     storage (/var/lib/libvirt/images). The easiest fix is to customize the
     partition layout at the time of install to provide at least 200 GB of space for
     that path.
+
+.. [#]  The libvirt virtual machines have been defined under the system
+    instance (qemu:///system). The user account executing these instructions
+    gets added to the libvirtd group which grants passwordless access to
+    the system instance. It does however require logging into a new shell (or
+    desktop environment session if wanting to use virt-manager) before this
+    change will be fully applied. To avoid having to re-login, you can use
+    ``sudo virsh``.
