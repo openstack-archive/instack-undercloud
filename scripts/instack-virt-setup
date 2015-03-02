@@ -70,6 +70,25 @@ export NODE_MEM=${NODE_MEM:-4096}
 export NODE_CPU=${NODE_CPU:-1}
 
 
+# Check if virbr0 is already defined, and if it is, check if the libvirt
+# default net is inactive. If it is inactive, we need to delete the existing
+# virbr0.
+# This is a case that shouldn't be encountered, but several people have run
+# into it, so we have this workaround.
+if ip link show | grep ' virbr0:'; then
+    default_net=$(sudo virsh net-list --all --persistent | grep default | awk 'BEGIN{OFS=":";} {print $2,$3}')
+    state=${default_net%%:*}
+    autostart=${default_net##*:}
+
+    if [ "$state" = "inactive" ]; then
+        # We're in a bad state, somehow virbr0 exists but the default net is
+        # not active.
+        # Delete virbr0
+        sudo ip link set dev virbr0 down
+        sudo brctl delbr virbr0
+    fi
+fi
+
 export TE_DATAFILE=instackenv.json
 sudo -E tripleo devtest_testenv.sh $TE_DATAFILE
 sudo mv /root/.ssh/id_rsa_virt_power $HOME/.ssh/
