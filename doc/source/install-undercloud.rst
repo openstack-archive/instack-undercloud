@@ -16,7 +16,7 @@ while preparing the environment.
 
 #. Install instack-undercloud::
 
-    sudo yum install instack-undercloud
+    sudo yum install -y instack-undercloud
 
 #. Source rhel7rc to set appropriate environment variables::
 

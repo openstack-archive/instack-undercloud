@@ -50,7 +50,7 @@ Preparing the Host Machine
 
 #. Install instack-undercloud::
 
-    sudo yum install instack-undercloud
+    sudo yum install -y instack-undercloud
 
 #. Download the RHEL 7.1 cloud image or copy it over from a different
    location::
