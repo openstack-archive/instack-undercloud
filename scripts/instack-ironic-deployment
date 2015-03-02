@@ -101,10 +101,6 @@ function register_nodes {
 }
 
 function discover_nodes {
-
-    # Reset edeploy state file to reset the role counts
-    sudo cp /usr/libexec/os-apply-config/templates/etc/edeploy/state /etc/edeploy/state
-
     echo "  Discovering nodes."
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
     token=$(keystone token-get | grep ' id ' | awk '{print $4}')
