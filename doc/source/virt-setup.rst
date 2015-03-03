@@ -53,13 +53,10 @@ Preparing the Host Machine
     sudo yum install -y instack-undercloud
 
 #. Download the RHEL 7.1 cloud image or copy it over from a different
-   location::
+   location, and define the needed environment variables for RHEL 7.1::
 
     curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-
-#. Source rhel7rc to set appropriate environment variables::
-
-    source /usr/share/instack-undercloud/rhel7rc
+    export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
     export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
 
 #. Run the script to setup your virtual environment::

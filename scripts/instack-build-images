@@ -5,10 +5,18 @@ set -o pipefail
 
 export image_build=${1:-"all"}
 
-if [ -d "/usr/share/instack-undercloud" ]; then
-    export INSTACK_ROOT=${INSTACK_ROOT:-"/usr/share"}
-    export ELEMENTS_PATH=${ELEMENTS_PATH:-"/usr/share/instack-undercloud:/usr/share/tripleo-image-elements"}
+# Attempt to be smart about detecting the path to the instack-undercloud
+# elements
+INSTACKUNDERCLOUDELEMENTS=/usr/share/instack-undercloud
+if [ ! -d $INSTACKUNDERCLOUDELEMENTS ]; then
+    INSTACKUNDERCLOUDELEMENTS=$(dirname $0)/../elements
 fi
+
+export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+$(pwd)/tripleo-puppet-elements/elements:\
+$INSTACKUNDERCLOUDELEMENTS:\
+/usr/share/tripleo-image-elements:\
+/usr/share/diskimage-builder/elements"}
 
 # Override TMP_DIR for image build.
 # It defaults /tmp. But, /tmp is usually tmpfs mounted on Fedora, and dib will
@@ -16,14 +24,31 @@ fi
 export TMP_DIR=${TMP_DIR:-/var/tmp}
 
 export NODE_ARCH=${NODE_ARCH:-amd64}
-# TODO(bnemec): This should use set-os-type from tripleo-incubator, but that's
-# currently broken for rhel7.
-if $(grep -Eqs 'Red Hat Enterprise Linux Server release 7' /etc/redhat-release); then
-    DEFAULT_DIST=rhel7
+
+# We must do this until tripleo-puppet-elements is packaged
+export DIB_INSTALLTYPE_puppet_modules=source
+
+if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-rhel7}
+    export REG_METHOD=disable
+
+    # We need to set RHOS=0 so that epel/rdo get enabled.
+    export RHOS=0
+    # But we still actually need it to enable base RHEL repos.
+    export RHOS_RELEASE=6
+    export DIB_COMMON_ELEMENTS=rhos-release
+    export REG_HALT_UNREGISTER=1
+    export DELOREAN=1
+    export DELOREAN_REPO="http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35/delorean.repo"
+elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-centos7}
+elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-fedora}
 else
-    DEFAULT_DIST=fedora
+    echo "Could not detect distritubion from /etc/redhat-release!"
+    exit 1
 fi
-export NODE_DIST=${NODE_DIST:-$DEFAULT_DIST}
+
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-ironic-discoverd-ramdisk-instack}

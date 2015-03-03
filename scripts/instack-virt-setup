@@ -16,6 +16,19 @@ else
     export ELEMENTS_PATH="/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 fi
 
+if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-rhel7}
+    export REG_METHOD=disable
+    export REG_HALT_UNREGISTER=1
+elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-centos7}
+elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-fedora}
+else
+    echo "Could not detect distritubion from /etc/redhat-release!"
+    exit 1
+fi
+
 source $DEVTEST_VARIABLES
 tripleo install-dependencies
 # libvirtd group
@@ -56,15 +69,6 @@ fi
 export NODE_COUNT=${NODE_COUNT:-4}
 export NODE_CNT=$NODE_COUNT
 
-# TODO(bnemec): This should use set-os-type from tripleo-incubator, but that's
-# currently broken for rhel7.
-if $(grep -Eqs 'Red Hat Enterprise Linux Server release 7' /etc/redhat-release); then
-    DEFAULT_DIST=rhel7
-    export FS_TYPE=${FS_TYPE:-xfs}
-else
-    DEFAULT_DIST=fedora
-fi
-export NODE_DIST=${NODE_DIST:-$DEFAULT_DIST}
 export NODE_ARCH=${NODE_ARCH:-x86_64}
 export NODE_MEM=${NODE_MEM:-4096}
 export NODE_CPU=${NODE_CPU:-1}
