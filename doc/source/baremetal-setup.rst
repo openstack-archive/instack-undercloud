@@ -71,16 +71,6 @@ Setting Up The Undercloud Machine
         echo "stack ALL=(root) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/stack
         sudo chmod 0440 /etc/sudoers.d/stack
 
-#. Download and execute the instack-undercloud setup script::
-
-    curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host-rhel7 | bash -x
-
-#. Copy the sample instack answers file to the home directory::
-
-    cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
-
-#. Edit the ``instack.answers`` file appropriately.
-
 #. Create a json file describing your baremetal nodes.  For example::
 
     {

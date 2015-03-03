@@ -18,6 +18,11 @@ while preparing the environment.
 
     sudo yum install -y instack-undercloud
 
+#. If installing on baremetal, copy in the sample answers file and edit it
+   to reflect your environment::
+
+    cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
+
 #. Run script to install the undercloud::
 
     instack-install-undercloud
