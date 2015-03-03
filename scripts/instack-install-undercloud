@@ -10,16 +10,28 @@ exec 2>&1
 
 echo "Running $0"
 
+# We must do this until tripleo-puppet-elements is packaged
+export DIB_INSTALLTYPE_puppet_modules=source
+
 # Attempt to be smart about detecting the path to the json files.
 JSONFILEDIR=/usr/share/instack-undercloud/json-files
 if [ ! -d "$JSONFILEDIR" ]; then
     JSONFILEDIR=$(dirname $0)/../json-files
 fi
 
-if [ "$(grep "Fedora" /etc/redhat-release)" == "" ]; then
+if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-rhel7}
     export JSONFILE=${JSONFILE:-$JSONFILEDIR/rhel-7-undercloud-packages.json}
-else
+    export REG_METHOD=disable
+    export REG_HALT_UNREGISTER=1
+elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-centos7}
+elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
+    export NODE_DIST=${NODE_DIST:-fedora}
     export JSONFILE=${JSONFILE:-$JSONFILEDIR/fedora-20-undercloud-packages.json}
+else
+    echo "Could not detect distritubion from /etc/redhat-release!"
+    exit 1
 fi
 
 # Attempt to be smart about detecting the patch to the instack-undercloud
@@ -30,6 +42,7 @@ if [ ! -d $INSTACKUNDERCLOUDELEMENTS ]; then
 fi
 
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
+$(pwd)/tripleo-puppet-elements/elements:\
 $INSTACKUNDERCLOUDELEMENTS:\
 /usr/share/tripleo-image-elements:\
 /usr/share/diskimage-builder/elements"}
