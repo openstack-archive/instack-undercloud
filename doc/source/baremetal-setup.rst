@@ -81,4 +81,48 @@ Setting Up The Undercloud Machine
 
 #. Edit the ``instack.answers`` file appropriately.
 
-#. Create a json file describing your baremetal nodes.
+#. Create a json file describing your baremetal nodes.  For example::
+
+    {
+        "nodes":[
+            {
+                "pm_type":"pxe_ipmitool",
+                "mac":[
+                    "fa:16:3e:2a:0e:36"
+                ],
+                "cpu":"2",
+                "memory":"4096",
+                "disk":"40",
+                "arch":"x86_64",
+                "pm_user":"admin",
+                "pm_password":"password",
+                "pm_addr":"10.0.0.8"
+            },
+            {
+                "pm_type":"pxe_ipmitool",
+                "mac":[
+                    "fa:16:3e:da:39:c9"
+                ],
+                "cpu":"2",
+                "memory":"4096",
+                "disk":"40",
+                "arch":"x86_64",
+                "pm_user":"admin",
+                "pm_password":"password",
+                "pm_addr":"10.0.0.15"
+            },
+            {
+                "pm_type":"pxe_ipmitool",
+                "mac":[
+                    "fa:16:3e:51:9b:68"
+                ],
+                "cpu":"2",
+                "memory":"4096",
+                "disk":"40",
+                "arch":"x86_64",
+                "pm_user":"admin",
+                "pm_password":"password",
+                "pm_addr":"10.0.0.16"
+            }
+        ]
+    }
