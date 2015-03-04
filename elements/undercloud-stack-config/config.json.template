@@ -59,14 +59,24 @@
   "ironic": {
     "db": "mysql://ironic:{{UNDERCLOUD_DB_PASSWORD}}@localhost/ironic",
     "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}",
-    "config" : [ {
-      "values": [
-         { "option": "pxe_append_params",
-           "value": "biosdevname=1"
-         }
-      ],
-      "section": "pxe"
-    } ]
+    "config" : [
+      {
+        "values": [
+           { "option": "pxe_append_params",
+             "value": "biosdevname=1"
+           }
+        ],
+        "section": "pxe"
+      },
+      {
+        "section": "discoverd",
+        "values": [
+          { "option": "enabled",
+            "value": "true"
+          }
+        ]
+      }
+    ]
   },
   "bootstack": {
     "public_interface_ip": "{{LOCAL_IP}}/24",
