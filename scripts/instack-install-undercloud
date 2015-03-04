@@ -97,7 +97,7 @@ if [ "$RUN_ORC" = "1" ]; then
     fi
 
     command $(sudo cat /root/stackrc | xargs)
-    if ! nova keypair-show default 2>&1 1>/dev/null; then
+    if ! nova keypair-show default 2>/dev/null; then
         tripleo user-config
     fi
 fi
