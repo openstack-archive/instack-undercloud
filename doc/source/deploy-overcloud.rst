@@ -13,8 +13,8 @@ Register nodes for your deployment with Ironic::
 
     instack-ironic-deployment --nodes-json instackenv.json --register-nodes
 
-Disovering Nodes
-----------------
+Discovering Nodes
+-----------------
 
 Discover hardware attributes of nodes and match them to a deployment profile::
 
