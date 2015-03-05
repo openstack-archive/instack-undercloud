@@ -103,11 +103,9 @@ function register_nodes {
 function discover_nodes {
     echo "  Discovering nodes."
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
-    token=$(keystone token-get | grep ' id ' | awk '{print $4}')
     for node_id in $node_ids; do
         echo -n "    Sending node ID $node_id to discoverd for discovery ... "
-        # NOTE(dtantsur): this is not a stable CLI
-        python -m ironic_discoverd.client introspect $node_id --auth-token $token
+        openstack baremetal introspection start $node_id
         # tftpd chokes when serving 4 or more clients. Seeing less than 3Mb/s
         # throughput. As a workaround, sleep for some time in between sending
         # each node to discovery to give each node enough time to download the
@@ -122,10 +120,10 @@ function discover_nodes {
     for node_id in $node_ids; do
         echo -n "       Result for node $node_id is ... "
         while true; do
-            res=$(python -m ironic_discoverd.client get_status $node_id --auth-token $token)
-            if [[ "$(echo $res | jq '.finished')" != "false" ]]; then
-                error=$(echo $res | jq '.error')
-                if [ "$error" = "null" ]; then
+            finished=$(openstack baremetal introspection status $node_id -f value -c finished)
+            if [ "$finished" = "True" ]; then
+                error=$(openstack baremetal introspection status $node_id -f value -c error)
+                if [ "$error" = "None" ]; then
                     echo "DISCOVERED."
                 else
                     echo "ERROR: $error"
