@@ -21,7 +21,8 @@ non-root user that was used to install the undercloud.
 
     instack-build-images deploy-ramdisk
     instack-build-images discovery-ramdisk
-    instack-build-images openstack-full
+    instack-build-images overcloud-control
+    instack-build-images overcloud-compute
 
 #. Load the images into Glance::
 
