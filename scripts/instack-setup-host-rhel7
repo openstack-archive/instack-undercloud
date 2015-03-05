@@ -51,6 +51,9 @@ if ! rpm -q python-zope-interface; then
     sudo yum install -y http://mirrors.kernel.org/fedora//releases/20/Everything/x86_64/os/Packages/p/python-zope-interface-4.0.5-2.fc20.x86_64.rpm
 fi
 
+# Required for building puppet-based images
+sudo yum install -y openstack-heat-templates
+
 # tripleo-puppet-elements is not yet in Delorean, so just git clone for now
 if [ ! -d "tripleo-puppet-elements" ]; then
     git clone http://git.openstack.org/openstack/tripleo-puppet-elements

@@ -16,7 +16,8 @@ export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
 $(pwd)/tripleo-puppet-elements/elements:\
 $INSTACKUNDERCLOUDELEMENTS:\
 /usr/share/tripleo-image-elements:\
-/usr/share/diskimage-builder/elements"}
+/usr/share/diskimage-builder/elements:\
+/usr/share/openstack-heat-templates/software-config/elements"}
 
 # Override TMP_DIR for image build.
 # It defaults /tmp. But, /tmp is usually tmpfs mounted on Fedora, and dib will
@@ -83,55 +84,29 @@ if [ "$PACKAGES" = "1" ]; then
     export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install pip-and-virtualenv-override"
 fi
 
-export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
-baremetal \
-base \
-boot-stack \
-ceilometer-agent-central \
-ceilometer-agent-notification \
-ceilometer-api \
-ceilometer-collector \
-cinder-api \
-cinder-lio \
-cinder-volume-nfs \
-common-venv \
-dhcp-all-interfaces \
-haproxy \
-horizon \
-hosts \
-keepalived \
-mariadb-rpm \
-neutron-network-node \
-ntp \
-os-collect-config \
-pip-cache \
-rabbitmq-server \
-snmpd \
-stable-interface-names \
-swift-proxy \
-swift-storage \
-use-ephemeral \
+# Puppet overcloud-specific configuration
+export DELOREAN_REPO_URL="http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35"
+export PUPPET_COMMON_ELEMENTS="\
 sysctl \
+hosts \
+baremetal \
+dhcp-all-interfaces \
+os-collect-config \
+heat-config-puppet \
+puppet-modules \
+hiera \
+os-net-config \
+delorean-repo \
+"
+
+export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
+$PUPPET_COMMON_ELEMENTS
+overcloud-controller \
 "}
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
-baremetal \
-base \
-common-venv \
-dhcp-all-interfaces \
-hosts \
-neutron-openvswitch-agent \
-nova-compute \
-nova-kvm \
-nfs-client \
-ntp \
-os-collect-config \
-pip-cache \
-pypi-openstack \
-snmpd \
-stable-interface-names \
-use-ephemeral \
-sysctl \
+$PUPPET_COMMON_ELEMENTS
+overcloud-compute
 "}
 
 
