@@ -32,7 +32,7 @@ export no_proxy=$no_proxy,$OVERCLOUD_IP
 # tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
 if ! glance image-show user 2>&1 1>/dev/null; then
-	glance image-create --name user --public --disk-format qcow2 \
+	glance image-create --name user --is-public True --disk-format qcow2 \
 	    --container-format bare --file $IMAGE_PATH/fedora-user.qcow2
 fi
 
