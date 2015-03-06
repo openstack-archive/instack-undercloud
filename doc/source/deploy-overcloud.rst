@@ -31,6 +31,7 @@ Create the necessary flavors::
 
     instack-ironic-deployment --setup-flavors
 
-Deploy the the *openstack-full* image to 3 nodes::
+Deploy the the *openstack-full* image (default of 1 compute and 1 control)::
 
-    COMPUTE_COUNT=3 CONTROL_COUNT=0 instack-ironic-deployment --deploy-nodes
+    instack-deploy-overcloud
+
