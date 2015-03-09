@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+
+# Installing this here because it's a dependency of the Ironic
+# config JSON in this element.
+install-packages openwsman-python
