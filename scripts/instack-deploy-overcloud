@@ -94,6 +94,7 @@ export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal_compute"}
 # for now.
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal_compute"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal_compute"}
+export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal_compute"}
 
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
@@ -220,6 +221,7 @@ else
     -P OvercloudComputeFlavor=${OVERCLOUD_COMPUTE_FLAVOR} \
     -P OvercloudBlockStorageFlavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR} \
     -P OvercloudSwiftStorageFlavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR} \
+    -P OvercloudCephStorageFlavor=${OVERCLOUD_CEPHSTORAGE_FLAVOR} \
     -P NtpServer=${NtpServer} \
     "}
 
