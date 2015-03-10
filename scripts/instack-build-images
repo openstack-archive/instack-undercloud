@@ -12,8 +12,14 @@ if [ ! -d $INSTACKUNDERCLOUDELEMENTS ]; then
     INSTACKUNDERCLOUDELEMENTS=$(dirname $0)/../elements
 fi
 
+TRIPLEOPUPPETELEMENTS=/usr/share/tripleo-puppet-elements
+if [ ! -d $TRIPLEOPUPPETELEMENTS ]; then
+    # Assume it's checked out in the current directory
+    TRIPLEOPUPPETELEMENTS=$PWD/tripleo-puppet-elements/elements
+fi
+
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
-$(pwd)/tripleo-puppet-elements/elements:\
+$TRIPLEOPUPPETELEMENTS:\
 $INSTACKUNDERCLOUDELEMENTS:\
 /usr/share/tripleo-image-elements:\
 /usr/share/diskimage-builder/elements:\
@@ -40,7 +46,7 @@ if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
     export DIB_COMMON_ELEMENTS=rhos-release
     export REG_HALT_UNREGISTER=1
     export DELOREAN=1
-    export DELOREAN_REPO="http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35/delorean.repo"
+    export DELOREAN_REPO_URL="http://104.130.230.24/centos70/4a/1d/4a1d1169acdf6b63239b60a898a33caf428acb5c_291a4aa4/"
 elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
     export NODE_DIST=${NODE_DIST:-centos7}
 elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
@@ -68,7 +74,8 @@ if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
     export FS_TYPE=${FS_TYPE:-xfs}
 
     if [ "$RHOS" = "0" ]; then
-        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-juno rdo-release"
+        export RDO_RELEASE=kilo
+        export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS epel rdo-release"
     elif [ ! "$RHOS_RELEASE" = "0" ]; then
         export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS rhos-release"
     fi
@@ -85,7 +92,6 @@ if [ "$PACKAGES" = "1" ]; then
 fi
 
 # Puppet overcloud-specific configuration
-export DELOREAN_REPO_URL="http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35"
 export PUPPET_COMMON_ELEMENTS="\
 sysctl \
 hosts \
@@ -264,8 +270,8 @@ function os-disk-config {
 if [ "$image_build" = "all" ]; then
     deploy-ramdisk
     discovery-ramdisk
-    overcloud-compute
     overcloud-control
+    overcloud-compute
 else
     eval "$image_build"
 fi

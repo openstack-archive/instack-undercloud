@@ -41,8 +41,14 @@ if [ ! -d $INSTACKUNDERCLOUDELEMENTS ]; then
     INSTACKUNDERCLOUDELEMENTS=$(dirname $0)/../elements
 fi
 
+TRIPLEOPUPPETELEMENTS=/usr/share/tripleo-puppet-elements
+if [ ! -d $TRIPLEOPUPPETELEMENTS ]; then
+    # Assume it's checked out in the current directory
+    TRIPLEOPUPPETELEMENTS=$PWD/tripleo-puppet-elements/elements
+fi
+
 export ELEMENTS_PATH=${ELEMENTS_PATH:-"\
-$(pwd)/tripleo-puppet-elements/elements:\
+$TRIPLEOPUPPETELEMENTS:\
 $INSTACKUNDERCLOUDELEMENTS:\
 /usr/share/tripleo-image-elements:\
 /usr/share/diskimage-builder/elements"}

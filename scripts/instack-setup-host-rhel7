@@ -6,7 +6,7 @@ set -o pipefail
 # Install repo file for Delorean master packages
 # Pin to an older repo for now because newer openstack-keystone requires a
 # newer and not yet avaialable python-pycadf.
-export DELOREAN_REPO=${DELOREAN_REPO:-"http://104.130.230.24/centos70/05/d8/05d8a6b82bf1f16c064bbee84d95c88b73030fae_3ea5fe35/delorean.repo"}
+export DELOREAN_REPO=${DELOREAN_REPO:-"http://104.130.230.24/centos70/4a/1d/4a1d1169acdf6b63239b60a898a33caf428acb5c_291a4aa4/delorean.repo"}
 sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
 
 # Install repo file for Delorean el7 midstream packages built from
@@ -18,7 +18,7 @@ sudo sed -i 's/delorean/delorean-rdo-management/' /etc/yum.repos.d/delorean-rdo-
 
 # Delorean requires RDO
 if ! rpm -q rdo-release; then
-    sudo yum install -y https://rdo.fedorapeople.org/rdo-release.rpm
+    sudo yum install -y https://rdo.fedorapeople.org/openstack-kilo/rdo-release-kilo-0.noarch.rpm
 fi
 
 if ! rpm -q epel-release; then
@@ -38,14 +38,6 @@ sudo yum-config-manager --disable rhelosp-6.0-poodle
 # We need openwsman-python from the optional repo
 sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 
-sudo yum -y install git
-
-# os-cloud-config is broken in Delorean packaging right now, b/c it's missing
-# the patch to remove the pbr requirements, yet doesn't actually Require it, so
-# just install it manually for now.
-sudo yum -y install os-cloud-config
-sudo yum -y install python-pbr
-
 # newer openstack-keystone requires python-zope-interface, but that is not
 # avaiable anywhere for EL7. So just install the Fedora package for now. We can
 # add this dep to Delorean going forward.
@@ -54,12 +46,7 @@ if ! rpm -q python-zope-interface; then
 fi
 
 # Required for building puppet-based images
+# We can remove these once we add a corresponding Requires:
+# to the instack-undercloud spec file.
 sudo yum install -y openstack-heat-templates
-
-# tripleo-puppet-elements is not yet in Delorean, so just git clone for now
-if [ ! -d "tripleo-puppet-elements" ]; then
-    git clone http://git.openstack.org/openstack/tripleo-puppet-elements
-else
-    echo "WARNING##################################:"
-    echo "tripleo-puppet-elements directory already exists, not recloning"
-fi
+sudo yum install -y openstack-tripleo-puppet-elements
