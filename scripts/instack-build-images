@@ -263,7 +263,8 @@ function os-disk-config {
 if [ "$image_build" = "all" ]; then
     deploy-ramdisk
     discovery-ramdisk
-    openstack-full
+    overcloud-compute
+    overcloud-control
 else
     eval "$image_build"
 fi

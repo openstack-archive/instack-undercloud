@@ -17,12 +17,9 @@ non-root user that was used to install the undercloud.
     curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
     export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
 
-#. Build the 3 image types::
+#. Build the required images.::
 
-    instack-build-images deploy-ramdisk
-    instack-build-images discovery-ramdisk
-    instack-build-images overcloud-control
-    instack-build-images overcloud-compute
+    instack-build-images
 
 #. Load the images into Glance::
 
