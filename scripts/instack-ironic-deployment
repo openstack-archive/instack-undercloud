@@ -58,6 +58,10 @@ DELETE_NODES=
 CONFIG_TOOLS_PROVISION=
 STDERR=/dev/null
 
+# NOTE(bnemec): Can be removed once Ironic is updated to fix the
+# novaclient.v1_1 deprecation warning
+export PYTHONWARNINGS="ignore"
+
 DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
 IRONIC=$(keystone endpoint-get --service baremetal | grep publicURL | awk '{ print $4; }')
 IRONIC=${IRONIC%/}
