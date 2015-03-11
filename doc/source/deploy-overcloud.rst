@@ -35,3 +35,26 @@ Deploy the the *openstack-full* image (default of 1 compute and 1 control)::
 
     instack-deploy-overcloud
 
+
+Redeploying the Overcloud
+-------------------------
+
+The overcloud can be redeployed when desired.
+
+#. First, delete any existing Overcloud::
+
+    heat stack-delete overcloud
+
+#. Confirm the Overcloud has deleted. It may take a few minutes to delete::
+
+    # This command should show no stack once the Delete has completed
+    heat stack-list
+
+#. Although not required, discovery can be rerun. Reset the state file and then rediscover nodes::
+
+    sudo cp /usr/libexec/os-apply-config/templates/etc/edeploy/state /etc/edeploy/state
+    instack-ironic-deployment --discover-nodes
+
+#. Deploy the Overcloud again::
+
+    instack-deploy-overcloud
