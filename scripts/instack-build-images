@@ -97,6 +97,7 @@ puppet-modules \
 hiera \
 os-net-config \
 delorean-repo \
+stable-interface-names \
 "
 
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
