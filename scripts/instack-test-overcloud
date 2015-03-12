@@ -44,7 +44,7 @@ tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host 
 
 NET_ID=$(neutron net-list -f csv --quote none | grep default-net | cut -d, -f1)
 
-if ! nova keypair-show default 2>&1 1>/dev/null; then
+if ! nova keypair-show default 2>/dev/null; then
 	tripleo user-config
 fi
 
