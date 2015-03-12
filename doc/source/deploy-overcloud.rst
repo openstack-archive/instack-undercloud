@@ -31,6 +31,11 @@ Create the necessary flavors::
 
     instack-ironic-deployment --setup-flavors
 
+If installing on baremetal, copy the sample overcloudrc file and edit to reflect your environment. Then source this file::
+
+    cp /usr/share/instack-undercloud/deploy-baremetal-overcloudrc ~/deploy-overcloudrc
+    source deploy-overcloudrc
+
 Deploy the the *openstack-full* image (default of 1 compute and 1 control)::
 
     instack-deploy-overcloud
