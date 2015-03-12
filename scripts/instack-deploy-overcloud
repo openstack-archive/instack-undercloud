@@ -54,8 +54,6 @@ export NODES_JSON=${NODES_JSON:-"instackenv.json"}
 export USE_IRONIC=1
 export ROOT_DISK=${ROOT_DISK:-10}
 
-register-nodes --service-host undercloud --nodes <(jq '.nodes' $NODES_JSON)
-
 # Must wait for baremetal nodes to register as nova hypervisors
 expected_nodes=$(jq ".nodes | length" $NODES_JSON)
 expected_memory=$(jq ".nodes | map(.memory | tonumber) | add" $NODES_JSON)
