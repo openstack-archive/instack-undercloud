@@ -2,32 +2,8 @@
 
 set -eux
 
-if [ -d /etc/tripleo ]; then
-    TRIPLEO_ROOT=/etc/tripleo
-else
-    TRIPLEO_ROOT=$INSTACK_ROOT/tripleo-incubator
-fi
-
-OS_AUTH_URL=${OS_AUTH_URL:-""}
-if [ -z "$OS_AUTH_URL" ]; then
-    echo "You must source a stackrc file for the Undercloud."
-    exit 1
-fi
-
-export NODES_JSON=${NODES_JSON:-"instackenv.json"}
-export TE_DATAFILE=$NODES_JSON
-
-echo "Sourcing answers file from instack.answers..."
-source ~/instack.answers
-
-source tripleo-overcloud-passwords
-
-export OVERCLOUD_IP=$(nova list | grep controller0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
-
-source $TRIPLEO_ROOT/overcloudrc
-
-export no_proxy=${no_proxy:-""}
-export no_proxy=$no_proxy,$OVERCLOUD_IP
+instack-create-overcloudrc
+source ~/overcloudrc
 
 # tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
