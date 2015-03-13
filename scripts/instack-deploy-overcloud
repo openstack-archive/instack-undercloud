@@ -99,6 +99,10 @@ export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal_compute"}
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal_compute"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal_compute"}
 export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal_compute"}
+# Same for images
+export OVERCLOUD_BLOCKSTORAGE_IMAGE=${OVERCLOUD_BLOCKSTORAGE_IMAGE:-"overcloud-compute"}
+export OVERCLOUD_SWIFTSTORAGE_IMAGE=${OVERCLOUD_SWIFTSTORAGE_IMAGE:-"overcloud-compute"}
+export OVERCLOUD_CEPHSTORAGE_IMAGE=${OVERCLOUD_CEPHSTORAGE_IMAGE:-"overcloud-compute"}
 
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
@@ -107,57 +111,69 @@ if [ -n "$TUSKAR" ]; then
 
     export TUSKAR_PARAMETERS=${TUSKAR_PARAMETERS:-"
     -A NeutronControlPlaneID=${NeutronControlPlaneID}
-    -A controller-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
-    -A controller-1::AdminToken=${OVERCLOUD_ADMIN_TOKEN}
-    -A cinder-storage-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
-    -A compute-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
-    -A controller-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
-    -A cinder-storage-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
-    -A swift-storage-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
-    -A compute-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
-    -A controller-1::CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD}
-    -A controller-1::CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET}
-    -A compute-1::CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD}
-    -A compute-1::CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET}
-    -A controller-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
-    -A cinder-storage-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
-    -A controller-1::GlancePassword=${OVERCLOUD_GLANCE_PASSWORD}
-    -A controller-1::HeatPassword=${OVERCLOUD_HEAT_PASSWORD}
-    -A controller-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
-    -A compute-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
-    -A controller-1::NovaPassword=${OVERCLOUD_NOVA_PASSWORD}
-    -A compute-1::NovaPassword=${OVERCLOUD_NOVA_PASSWORD}
-    -A controller-1::SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}
-    -A controller-1::SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}
-    -A controller-1::CinderISCSIHelper=lioadm
-    -A cinder-storage-1::CinderISCSIHelper=lioadm
-    -A controller-1::CloudName=overcloud
-    -A controller-1::NeutronPublicInterface=$NeutronPublicInterface
-    -A compute-1::NeutronPublicInterface=$NeutronPublicInterface
-    -A compute-1::NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE
-    -A controller-1::NtpServer=${NtpServer}
-    -A compute-1::NtpServer=${NtpServer}
-    -A controller-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
-    -A compute-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
-    -A swift-storage-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
-    -A controller-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
-    -A compute-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
-    -A controller-1::count=${CONTROLSCALE}
-    -A compute-1::count=${COMPUTESCALE}
-    -A swift-storage-1::count=${SWIFTSTORAGESCALE}
-    -A cinder-storage-1::count=${BLOCKSTORAGESCALE}
-    -A controller-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
-    -A compute-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
-    -A swift-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
-    -A cinder-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A Controller-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
+    -A Controller-1::AdminToken=${OVERCLOUD_ADMIN_TOKEN}
+    -A Compute-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
+    -A Controller-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A Cinder-Storage-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A Swift-Storage-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A Compute-1::SnmpdReadonlyUserPassword=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}
+    -A Controller-1::CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD}
+    -A Controller-1::CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET}
+    -A Compute-1::CeilometerPassword=${OVERCLOUD_CEILOMETER_PASSWORD}
+    -A Compute-1::CeilometerMeteringSecret=${OVERCLOUD_CEILOMETER_SECRET}
+    -A Controller-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
+    -A Controller-1::GlancePassword=${OVERCLOUD_GLANCE_PASSWORD}
+    -A Controller-1::HeatPassword=${OVERCLOUD_HEAT_PASSWORD}
+    -A Controller-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
+    -A Compute-1::NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD}
+    -A Controller-1::NovaPassword=${OVERCLOUD_NOVA_PASSWORD}
+    -A Compute-1::NovaPassword=${OVERCLOUD_NOVA_PASSWORD}
+    -A Controller-1::SwiftHashSuffix=${OVERCLOUD_SWIFT_HASH}
+    -A Controller-1::SwiftPassword=${OVERCLOUD_SWIFT_PASSWORD}
+    -A Controller-1::CinderISCSIHelper=lioadm
+    -A Cinder-Storage-1::CinderISCSIHelper=lioadm
+    -A Controller-1::CloudName=overcloud
+    -A Controller-1::NeutronPublicInterface=$NeutronPublicInterface
+    -A Compute-1::NeutronPublicInterface=$NeutronPublicInterface
+    -A Compute-1::NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE
+    -A Controller-1::NtpServer=${NtpServer}
+    -A Compute-1::NtpServer=${NtpServer}
+    -A Controller-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    -A Compute-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    -A Controller-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
+    -A Compute-1::NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
+    -A Controller-1::count=${CONTROLSCALE}
+    -A Compute-1::count=${COMPUTESCALE}
+    -A Swift-Storage-1::count=${SWIFTSTORAGESCALE}
+    -A Cinder-Storage-1::count=${BLOCKSTORAGESCALE}
+    -A Controller-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A Compute-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A Cinder-Storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    -A Cinder-Storage-1::Flavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR}
+    -A Compute-1::Flavor=${OVERCLOUD_COMPUTE_FLAVOR}
+    -A Controller-1::Flavor=${OVERCLOUD_CONTROL_FLAVOR}
+    -A Swift-Storage-1::Flavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR}
+    -A Ceph-Storage-1::Flavor=${OVERCLOUD_CEPHSTORAGE_FLAVOR}
+    -A Ceph-Storage-1::Image=${OVERCLOUD_CEPHSTORAGE_IMAGE}
+    -A Swift-Storage-1::Image=${OVERCLOUD_SWIFTSTORAGE_IMAGE}
+    -A Cinder-Storage-1::Image=${OVERCLOUD_BLOCKSTORAGE_IMAGE}
     "}
 
     if [ $CONTROLSCALE -gt 1 ]; then
         export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
-        -A controller-1::NeutronL3HA=True
-        -A compute-1::NeutronL3HA=True
+        -A Controller-1::NeutronL3HA=True
+        -A Compute-1::NeutronL3HA=True
         "
     fi
+
+    # unsure if these should be present with puppet
+    #export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
+    #-A cinder-storage-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
+    #-A swift-storage-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
+    #-A cinder-storage-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
+    #-A swift-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
+    #"
 
     # These attributes can't be changed in Tuskar-UI, so this is the only
     # difference to deploying through UI
@@ -165,7 +181,7 @@ if [ -n "$TUSKAR" ]; then
     # -A NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
     # -A NeutronTunnelTypes=${NEUTRON_TUNNEL_TYPES}
 
-    tuskar plan-patch $TUSKAR_PARAMETERS $PLAN_ID
+    tuskar plan-update $TUSKAR_PARAMETERS $PLAN_ID
 
     # Generate keystone certificates
     HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
@@ -180,9 +196,9 @@ if [ -n "$TUSKAR" ]; then
     KeystoneSigningKey=$(os-apply-config -m $HEAT_ENV --key parameters.KeystoneSigningKey --type raw)
 
     # Sending the Certificates one by one, otherwise there are problems with escaping
-    tuskar plan-patch -A controller-1::KeystoneCACertificate="${KeystoneCACertificate}" $PLAN_ID
-    tuskar plan-patch -A controller-1::KeystoneSigningCertificate="${KeystoneSigningCertificate}" $PLAN_ID
-    tuskar plan-patch -A controller-1::KeystoneSigningKey="${KeystoneSigningKey}" $PLAN_ID
+    tuskar plan-update -A Controller-1::KeystoneCACertificate="${KeystoneCACertificate}" $PLAN_ID
+    tuskar plan-update -A Controller-1::KeystoneSigningCertificate="${KeystoneSigningCertificate}" $PLAN_ID
+    tuskar plan-update -A Controller-1::KeystoneSigningKey="${KeystoneSigningKey}" $PLAN_ID
 
     # Get templates from tuskar
     tuskar plan-templates -O tuskar_templates $PLAN_ID
