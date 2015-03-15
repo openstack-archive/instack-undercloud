@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+# svc-map expects this directory to exist
+sudo mkdir -p $TMP_MOUNT_PATH/tmp

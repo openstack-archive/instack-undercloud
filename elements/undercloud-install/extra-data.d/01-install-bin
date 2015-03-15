@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -eux
+
+sudo cp $(dirname $0)/../bin/* /usr/local/bin/
