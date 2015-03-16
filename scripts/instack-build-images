@@ -48,7 +48,7 @@ if [ -z "$NODE_DIST" ]; then
     elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
         export NODE_DIST=${NODE_DIST:-fedora}
     else
-        echo "Could not detect distritubion from /etc/redhat-release!"
+        echo "Could not detect distribution from /etc/redhat-release!"
         exit 1
     fi
 fi

@@ -27,7 +27,7 @@ non-root user that was used to install the undercloud.
 
   .. note:: If building images for **RHEL 7.1**, download the RHEL 7.1 cloud image or copy
      it over from a different location, and define the needed environment variable
-     to use the image prior to running the above ``instack-build-images`` commands::
+     to use the image prior to running the below ``instack-build-images`` commands::
 
         curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
         export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
