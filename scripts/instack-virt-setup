@@ -18,8 +18,8 @@ fi
 
 if $(grep -Eqs 'Red Hat Enterprise Linux' /etc/redhat-release); then
     export NODE_DIST=${NODE_DIST:-rhel7}
-    export REG_METHOD=disable
-    export REG_HALT_UNREGISTER=1
+    export REG_METHOD=${REG_METHOD:-disable}
+    export REG_HALT_UNREGISTER=${REG_HALT_UNREGISTER:-1}
 elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
     export NODE_DIST=${NODE_DIST:-centos7}
 elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
