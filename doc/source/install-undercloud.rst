@@ -52,4 +52,4 @@ The installed packages can be upgraded on the Undercloud.
 #. Use yum to update the installed packages. No services should need to be
    restarted after updating::
 
-    sudo yum update
+    sudo yum update -y
