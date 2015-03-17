@@ -1,7 +1,7 @@
 Undercloud Install via instack
 ==============================
 
-instack-undercloud can be used to setup Juno in an virtual environment.
+instack-undercloud can be used to setup Juno in a virtual environment.
 
 To use instack-undercloud in an all virtual environment using instack-undercloud from git, perform the setup at
 [README-source](README-source.md).
