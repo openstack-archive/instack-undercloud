@@ -21,7 +21,7 @@ non-root user that was used to install the undercloud.
         # To choose CentOS 7:
         export NODE_DIST=centos7
         # To choose RHEL 7.1:
-        exoprt NODE_DIST=rhel7
+        export NODE_DIST=rhel7
 
 2. Build the required images::
 
