@@ -64,7 +64,7 @@ Preparing the Host Machine
         # To choose CentOS 7:
         export NODE_DIST=centos7
         # To choose RHEL 7.1:
-        exoprt NODE_DIST=rhel7
+        export NODE_DIST=rhel7
 
 
 8. Run the script to setup your virtual environment.::
