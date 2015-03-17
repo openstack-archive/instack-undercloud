@@ -69,7 +69,7 @@ fi
 export NODE_COUNT=${NODE_COUNT:-4}
 export NODE_CNT=$NODE_COUNT
 
-export NODE_ARCH=${NODE_ARCH:-x86_64}
+export NODE_ARCH=x86_64
 export NODE_MEM=${NODE_MEM:-4096}
 export NODE_CPU=${NODE_CPU:-1}
 
@@ -101,12 +101,15 @@ sudo chown -R $USER: ~/.ssh
 
 sudo virsh undefine --remove-all-storage seed
 
-MACS=$(for i in $(seq 0 3); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; done)
+# Save number of overcloud VMs to make following two "for" cycles flexible
+VM_LAST_NUMBER=$((NODE_COUNT-1))
+
+MACS=$(for i in $(seq 0 VM_LAST_NUMBER); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; done)
 cp $RCFILE /tmp/deploy-virt-overcloudrc
 sed -i "s/MACS=\"\"/MACS=\"$MACS\"/" /tmp/deploy-virt-overcloudrc
 
 # Attach disks for os-disk-config testing
-for i in $(seq 0 3); do
+for i in $(seq 0 VM_LAST_NUMBER); do
     qcow_file=/var/lib/libvirt/images/baremetal_extra_${i}.qcow2
     sudo rm -f $qcow_file
     sudo qemu-img create $qcow_file 10G
@@ -131,14 +134,18 @@ else
     sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 30G
 fi
 
+export UNDERCLOUD_NODE_ARCH=x86_64
+export UNDERCLOUD_NODE_MEM=${UNDERCLOUD_NODE_MEM:-$NODE_MEM}
+export UNDERCLOUD_NODE_CPU=${UNDERCLOUD_NODE_CPU:-$NODE_CPU}
+
 sudo tripleo configure-vm \
     --name $UNDERCLOUD_VM_NAME \
     --image /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 \
     --seed \
     --libvirt-nic-driver virtio \
-    --arch x86_64 \
-    --memory $((1024 * $NODE_MEM)) \
-    --cpus $NODE_CPU
+    --arch $UNDERCLOUD_NODE_ARCH \
+    --memory $((1024 * $UNDERCLOUD_NODE_MEM)) \
+    --cpus $UNDERCLOUD_NODE_CPU
 
 sudo virsh start $UNDERCLOUD_VM_NAME
 
