@@ -10,10 +10,6 @@ use the stack user.
 For a baremetal setup this will be the host you selected for the Undercloud
 while preparing the environment.
 
-#. Install yum-utils (required by the instack-setup-host script)::
-
-    sudo yum install -y yum-utils
-
 #. Download and execute the instack-undercloud setup script::
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x

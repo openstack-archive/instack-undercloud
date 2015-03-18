@@ -34,6 +34,7 @@ if $(grep -Eqs 'Red Hat Enterprise Linux Server' /etc/redhat-release); then
         sudo rhos-release 6
     fi
     # We need openwsman-python from the optional repo
+    sudo yum install -y yum-utils
     sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 fi
 
