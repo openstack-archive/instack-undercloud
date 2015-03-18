@@ -70,6 +70,13 @@ export DISCOVERY_INTERFACE
 export DISCOVERY_IPRANGE
 export DISCOVERY_PXEIP
 
+# Reuse any existing defined passwords. This is important since any users
+# defined in Keystone already have passwords set. So we don't want to generate
+# new ones that end up as values in configuration files.
+if sudo bash -c '[[ -f /root/tripleo-undercloud-passwords ]]'; then
+    source <(sudo cat /root/tripleo-undercloud-passwords)
+fi
+
 export UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD=${UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_RABBIT_COOKIE=${UNDERCLOUD_RABBIT_COOKIE:-$(tripleo os-make-password)}
 export UNDERCLOUD_RABBIT_PASSWORD=${UNDERCLOUD_RABBIT_PASSWORD:-guest}
