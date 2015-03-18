@@ -5,13 +5,13 @@ iptables -t nat -D POSTROUTING -j BOOTSTACK_MASQ_NEW || true
 iptables -t nat -X BOOTSTACK_MASQ_NEW || true
 iptables -t nat -N BOOTSTACK_MASQ_NEW
 # Build the chain we want.
-{{#bootstack.masquerade_networks}}
+{{#masquerade_networks}}
 NETWORK={{.}}
 # Workaround iptables not permitting two -d parameters in one call.
 iptables -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK -d 192.168.122.1 -j RETURN
 iptables -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK ! -d $NETWORK -j MASQUERADE
 iptables -t nat -A POSTROUTING -s $NETWORK -o eth0 -j MASQUERADE
-{{/bootstack.masquerade_networks}}
+{{/masquerade_networks}}
 # Link it in.
 iptables -t nat -I POSTROUTING -j BOOTSTACK_MASQ_NEW
 # Delete the old chain if present.

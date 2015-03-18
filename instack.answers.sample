@@ -109,7 +109,47 @@ UNDERCLOUD_TUSKAR_PASSWORD=
 # If left unset, one will be automatically generated
 UNDERCLOUD_CEILOMETER_PASSWORD=
 
+### Ceilometer metering secret ###
+# Ceilometer metering secret
+# If left unset, one will be automatically generated
+UNDERCLOUD_CEILOMETER_METERING_SECRET=
+
+### Ceilometer snmpd user ###
+# Ceilometer snmpd user
+# If left unset, one will be automatically generated
+UNDERCLOUD_CEILOMETER_SNMPD_USER=
+
 ### Ceilometer snmpd password ###
 # Ceilometer snmpd password
 # If left unset, one will be automatically generated
 UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD=
+
+### Swift password ###
+# Swift password
+# If left unset, one will be automatically generated
+UNDERCLOUD_SWIFT_PASSWORD=
+
+### Rabbit Cookie ###
+# Rabbit Cookie
+# If left unset, one will be automatically generated
+UNDERCLOUD_RABBIT_COOKIE=
+
+### Rabbit Password ###
+# Rabbit Password
+# If left unset, one will be automatically generated
+UNDERCLOUD_RABBIT_PASSWORD=
+
+### Rabbit Username ###
+# Rabbit Username
+# If left unset, one will be automatically generated
+UNDERCLOUD_RABBIT_USERNAME=
+
+### Heat Stack Domain Admin Password ###
+# Heat Stack Domain Admin Password
+# If left unset, one will be automatically generated
+UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD=
+
+### Swift Hash Suffix ###
+# Swift Hash Suffix
+# If left unset, one will be automatically generated
+UNDERCLOUD_SWIFT_HASH_SUFFIX=

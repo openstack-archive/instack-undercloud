@@ -8,7 +8,7 @@ export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 TFTP_ROOT=${TFTP_ROOT:-/tftpboot}
 
-command $(sudo cat /root/stackrc | xargs)
+source <(sudo cat /root/stackrc)
 
 OS_AUTH_URL=${OS_AUTH_URL:-""}
 if [ -z "$OS_AUTH_URL" ]; then

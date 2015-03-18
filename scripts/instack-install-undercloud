@@ -57,17 +57,10 @@ $INSTACKUNDERCLOUDELEMENTS:\
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
-export DEPLOYMENT_MODE
 export IMAGE_PATH
-export LOCAL_IP
-export DNSMASQ_START
-export DNSMASQ_END
 export LOCAL_INTERFACE
+export LOCAL_IP
 export MASQUERADE_NETWORK
-export POWER_DRIVER
-export VIRTUAL_POWER_USER
-
-export VIRTUAL_POWER_HOST
 export DHCP_START
 export DHCP_END
 export NETWORK_CIDR
@@ -76,19 +69,24 @@ export DISCOVERY_INTERFACE
 export DISCOVERY_IPRANGE
 export DISCOVERY_PXEIP
 
-export UNDERCLOUD_DB_PASSWORD=${UNDERCLOUD_DB_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_ADMIN_TOKEN=${UNDERCLOUD_ADMIN_TOKEN:-$(tripleo os-make-password)}
+export UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD=${UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_RABBIT_COOKIE=${UNDERCLOUD_RABBIT_COOKIE:-$(tripleo os-make-password)}
+export UNDERCLOUD_RABBIT_PASSWORD=${UNDERCLOUD_RABBIT_PASSWORD:-guest}
+export UNDERCLOUD_RABBIT_USERNAME=${UNDERCLOUD_RABBIT_USERNAME:-guest}
+export UNDERCLOUD_SWIFT_HASH_SUFFIX=${UNDERCLOUD_SWIFT_HASH_SUFFIX:-$(tripleo os-make-password)}
 export UNDERCLOUD_ADMIN_PASSWORD=${UNDERCLOUD_ADMIN_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_GLANCE_PASSWORD=${UNDERCLOUD_GLANCE_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_HEAT_PASSWORD=${UNDERCLOUD_HEAT_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_NEUTRON_PASSWORD=${UNDERCLOUD_NEUTRON_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_NOVA_PASSWORD=${UNDERCLOUD_NOVA_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_IRONIC_PASSWORD=${UNDERCLOUD_IRONIC_PASSWORD:-$(tripleo os-make-password)}
-export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_ADMIN_TOKEN=${UNDERCLOUD_ADMIN_TOKEN:-$(tripleo os-make-password)}
+export UNDERCLOUD_CEILOMETER_METERING_SECRET=${UNDERCLOUD_CEILOMETER_METERING_SECRET:-$(tripleo os-make-password)}
 export UNDERCLOUD_CEILOMETER_PASSWORD=${UNDERCLOUD_CEILOMETER_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD=${UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD:-$(tripleo os-make-password)}
-
-export TUSKAR_ROLE_DIRECTORY=${TUSKAR_ROLE_DIRECTORY:-/usr/share/openstack-tripleo-heat-templates}
+export UNDERCLOUD_CEILOMETER_SNMPD_USER=${UNDERCLOUD_CEILOMETER_SNMPD_USER:-$(tripleo os-make-password)}
+export UNDERCLOUD_GLANCE_PASSWORD=${UNDERCLOUD_GLANCE_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_HEAT_PASSWORD=${UNDERCLOUD_HEAT_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_IRONIC_PASSWORD=${UNDERCLOUD_IRONIC_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_NEUTRON_PASSWORD=${UNDERCLOUD_NEUTRON_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_NOVA_PASSWORD=${UNDERCLOUD_NOVA_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_SWIFT_PASSWORD=${UNDERCLOUD_SWIFT_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-make-password)}
 
 sudo -E instack \
   -p $ELEMENTS_PATH \
@@ -104,7 +102,7 @@ if [ "$RUN_ORC" = "1" ]; then
       ssh-keygen -t rsa -N ""  -f ~/.ssh/id_rsa
     fi
 
-    command $(sudo cat /root/stackrc | xargs)
+    source <(sudo cat /root/stackrc)
     if ! nova keypair-show default 2>/dev/null; then
         tripleo user-config
     fi

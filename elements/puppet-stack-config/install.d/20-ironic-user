@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -eux
+
+# Ironic conductor requires that we run install.d/69-ironic-tftp-support
+# from the tripleo-image-element ironic-conductor element. This is actually
+# a big gap in functionaliity for the ironic puppet module. Since we still have
+# to include the ironic-conductor element here, but the package is not yet
+# installed, we must pre-create the ironic user
+if ! id ironic; then
+    useradd ironic
+fi

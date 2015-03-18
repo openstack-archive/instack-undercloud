@@ -42,7 +42,6 @@
       "ceilometer-undercloud-config",
       "ironic-discoverd",
       "element-manifest",
-      "fix-undercloud-package-installs",
       "os-cloud-config",
       "install-server",
       "selinux-permissive",

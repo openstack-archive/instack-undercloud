@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+mkdir -p /etc/puppet/manifests
+cp $(dirname $0)/../puppet-stack-config.pp /etc/puppet/manifests/puppet-stack-config.pp
