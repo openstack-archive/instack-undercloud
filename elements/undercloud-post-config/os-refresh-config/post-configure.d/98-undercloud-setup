@@ -58,12 +58,16 @@ ENDPOINT_LIST="--glance-password $UNDERCLOUD_GLANCE_PASSWORD
 REGISTER_SERVICE_OPTS=
 
 # Needed by ceilometer user in register-endpoint
-keystone role-create --name=ResellerAdmin
+if ! keystone role-get ResellerAdmin; then
+    keystone role-create --name=ResellerAdmin
+fi
 
 # TODO: this needs to be switched over to use os-cloud-config's setup-endpoints
 tripleo setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
 
-keystone role-create --name heat_stack_user
+if ! keystone role-get heat_stack_user; then
+    keystone role-create --name heat_stack_user
+fi
 
 DHCP_START=$(os-apply-config --key neutron.dhcp_start --type netaddress)
 DHCP_END=$(os-apply-config --key neutron.dhcp_end --type netaddress)
