@@ -1,50 +1,25 @@
 [
   {
-    "name": "Initialization",
-    "element": [
-      "base",
-      "dib-run-parts",
-      "centos7-distro",
-      "undercloud-package-install"
-    ],
-    "hook": [
-      "extra-data",
-      "root",
-      "pre-install"
-    ],
-    "blacklist": [
-      "01-ccache"
-    ]
-  },
-  {
     "name": "Installation",
     "element": [
       "base",
+      "yum",
+      "iptables",
+      "redhat-common",
       "undercloud-install",
-      "boot-stack",
-      "centos7",
-      "centos7-distro",
-      "nova-ironic",
       "os-collect-config",
       "horizon",
-      "neutron-dhcp-agent",
       "undercloud-stack-config",
-      "rabbitmq-server",
-      "mariadb-rpm",
-      "os-refresh-config-reboot",
       "common-venv",
       "undercloud-post-config",
       "undercloud-package-install",
-      "ceilometer-collector",
-      "ceilometer-api",
-      "ceilometer-agent-central",
-      "ceilometer-agent-notification",
-      "ceilometer-undercloud-config",
       "ironic-discoverd",
       "element-manifest",
       "tuskar",
-      "fix-undercloud-package-installs",
+      "ironic-conductor",
       "os-cloud-config",
+      "os-net-config",
+      "puppet-stack-config",
       "selinux-permissive",
       "selinux-setenforce-0"
     ],
@@ -56,9 +31,8 @@
       "finalise"
     ],
     "exclude-element": [
-      "dkms",
-      "openvswitch-datapath",
       "pip-and-virtualenv",
+      "ironic",
       "selinux"
     ],
     "blacklist": [
@@ -67,9 +41,9 @@
       "99-dkms",
       "99-up-to-date",
       "01-yum-keepcache",
-      "15-remove-grub",
       "05-fstab-rootfs-label",
       "15-fedora-remove-grub",
+      "15-remove-grub",
       "00-load-selinux-policy",
       "00-install-and-load-selinux-policy",
       "00-rhel-registration"

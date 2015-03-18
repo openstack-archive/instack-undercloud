@@ -29,7 +29,8 @@ elif $(grep -Eqs 'CentOS' /etc/redhat-release); then
     export JSONFILE=${JSONFILE:-$JSONFILEDIR/centos-7-undercloud-packages.json}
 elif $(grep -Eqs 'Fedora' /etc/redhat-release); then
     export NODE_DIST=${NODE_DIST:-fedora}
-    export JSONFILE=${JSONFILE:-$JSONFILEDIR/fedora-20-undercloud-packages.json}
+    echo "Fedora not currently supported"
+    exit 1
 else
     echo "Could not detect distritubion from /etc/redhat-release!"
     exit 1
