@@ -6,12 +6,10 @@ export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 if [ ! -d "/usr/share/instack-undercloud" ]; then
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
-    export RCFILE=$(dirname $0)/../deploy-virt-overcloudrc
     export ANSWERSFILE=$(dirname $0)/../instack.answers.sample
     export ELEMENTS_PATH="$(realpath $(dirname $0)/../elements):/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 else
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
-    export RCFILE=/usr/share/instack-undercloud/deploy-virt-overcloudrc
     export ANSWERSFILE=/usr/share/instack-undercloud/instack.answers.sample
     export ELEMENTS_PATH="/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 fi
@@ -101,12 +99,8 @@ sudo chown -R $USER: ~/.ssh
 
 sudo virsh undefine --remove-all-storage seed
 
-# Save number of overcloud VMs to make following two "for" cycles flexible
+# Save number of overcloud VMs to make the following for loop flexible
 VM_LAST_NUMBER=$((NODE_COUNT-1))
-
-MACS=$(for i in $(seq 0 VM_LAST_NUMBER); do echo -n $(tripleo get-vm-mac baremetal_$i)" "; done)
-cp $RCFILE /tmp/deploy-virt-overcloudrc
-sed -i "s/MACS=\"\"/MACS=\"$MACS\"/" /tmp/deploy-virt-overcloudrc
 
 # Attach disks for os-disk-config testing
 for i in $(seq 0 VM_LAST_NUMBER); do
