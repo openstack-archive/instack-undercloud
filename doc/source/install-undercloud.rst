@@ -29,6 +29,14 @@ while preparing the environment.
 
 #. Run script to install the undercloud::
 
+  .. note:: Ensure that there is an entry for the system's full hostname in /etc/hosts.
+     For example, if the system is named *myhost.mydomain*, /etc/hosts should have
+     an entry like::
+
+        127.0.0.1   myhost.mydomain
+
+  ::
+
     instack-install-undercloud
 
 Once the install script has run to completion, you should take note of the
