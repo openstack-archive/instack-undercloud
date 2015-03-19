@@ -58,9 +58,14 @@ $INSTACKUNDERCLOUDELEMENTS:\
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
+# Munge up LOCAL_IP.  Keep in sync with instack-apply-config
+export PUBLIC_INTERFACE_IP="$LOCAL_IP"
+export LOCAL_IP="${LOCAL_IP%/*}"
+
+
+
 export IMAGE_PATH
 export LOCAL_INTERFACE
-export LOCAL_IP
 export MASQUERADE_NETWORK
 export DHCP_START
 export DHCP_END

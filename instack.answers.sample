@@ -16,8 +16,9 @@ IMAGE_PATH=.
 ### LOCAL_IP ###
 # IP address to assign to the interface on the Undercloud that will
 # be handling the PXE boots and DHCP for Overcloud instances.
-# LOCAL_IP will be assigned to LOCAL_INTERFACE
-LOCAL_IP=192.0.2.1
+# LOCAL_IP will be assigned to LOCAL_INTERFACE, and must be in
+# IP/PREFIX format.
+LOCAL_IP=192.0.2.1/24
 
 ### LOCAL_INTERFACE ###
 # Network interface on the Undercloud that will be handling the PXE boots and

@@ -33,7 +33,7 @@
       ],
       "addresses": [
         {
-          "ip_netmask": "{{LOCAL_IP}}/24"
+          "ip_netmask": "{{PUBLIC_INTERFACE_IP}}"
         }
       ]
     }
