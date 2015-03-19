@@ -12,7 +12,6 @@ fi
 
 file_list="$HOME/.ssh/id_rsa_virt_power
 $HOME/.ssh/id_rsa_virt_power.pub
-/tmp/deploy-virt-overcloudrc
 $ANSWERSFILE
 $TE_DATAFILE"
 
