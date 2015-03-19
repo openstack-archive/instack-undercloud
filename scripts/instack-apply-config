@@ -13,9 +13,13 @@ vi ~/instack.answers
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
+# Munge up LOCAL_IP.  Keep in sync with instack-install-undercloud
+export PUBLIC_INTERFACE_IP="$LOCAL_IP"
+export LOCAL_IP="${LOCAL_IP%/*}"
+
+
 export DEPLOYMENT_MODE
 export IMAGE_PATH
-export LOCAL_IP
 export DNSMASQ_START
 export DNSMASQ_END
 export LOCAL_INTERFACE
