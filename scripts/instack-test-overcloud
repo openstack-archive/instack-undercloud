@@ -4,6 +4,7 @@ set -eux
 
 instack-create-overcloudrc
 source ~/overcloudrc
+source ~/instack.answers
 
 # tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
