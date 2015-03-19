@@ -32,8 +32,6 @@ function show_options () {
     echo "                             deployed node."
     echo "      --delete-stack      -- Wait until the stack has deleted."
     echo "      --delete-nodes      -- Delete all nodes."
-    echo "      --config-tools-provision"
-    echo "                          -- Run provision.sh for config-tools"
     echo "      -x                  -- enable tracing"        
     echo "      --help, -h          -- Print this help message."
     echo
@@ -55,7 +53,6 @@ SHOW_PROFILE=
 CHECK_SSH=
 DELETE_STACK=
 DELETE_NODES=
-CONFIG_TOOLS_PROVISION=
 STDERR=/dev/null
 
 # NOTE(bnemec): Can be removed once Ironic is updated to fix the
@@ -77,7 +74,6 @@ while true ; do
         --check-ssh) CHECK_SSH="1"; shift 1;;
         --delete-stack) DELETE_STACK="1"; shift 1;;
         --delete-nodes) DELETE_NODES="1"; shift 1;;
-        --config-tools-provision) CONFIG_TOOLS_PROVISION="1"; shift 1;;
         -x) set -x; STDERR=/dev/stderr; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
@@ -261,26 +257,6 @@ function delete_nodes {
     done
 }
 
-function config_tools_provision {
-    pushd /opt/stack/config-tools/
-    sudo mkdir -p /var/www/install
-    if [ -d /opt/stack/config-tools/env ] ; then
-        pushd /opt/stack/config-tools/env
-        sudo git reset --hard HEAD
-        popd
-    else
-        sudo bash -x ./provision.sh master https://github.com/agroup/spinalstack-env.git/etest.yml version=master
-    fi
-    for x in 0 1 2; do
-        sudo sed -i -e "s/SERVER$x/$(nova show openstack$x | grep ctlplane | grep -Eo "192[^ ]+")/g" env/etest.yml
-        # Clean up certs from previous runs
-        sudo puppet cert clean openstack$x.etest
-    done
-    sudo bash -x ./provision.sh -l master https://github.com/agroup/spinalstack-env.git/etest.yml version=master
-    sudo rm -f /etc/config-tools/step
-    popd
-}
-
 echo "Preparing for deployment..."
 
 if [ "$REGISTER_NODES" = 1 ]; then
@@ -309,10 +285,6 @@ fi
 
 if [ "$DELETE_NODES" = 1 ]; then
     delete_nodes
-fi
-
-if [ "$CONFIG_TOOLS_PROVISION" = 1 ]; then
-    config_tools_provision
 fi
 
 echo "Prepared."
