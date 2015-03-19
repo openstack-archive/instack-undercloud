@@ -299,3 +299,8 @@ ironic_config {
   'DEFAULT/my_ip':                value => hiera('controller_host');
   'glance/host':                  value => hiera('glance::api::bind_host');
 }
+
+class { 'horizon':
+  secret_key   => hiera('horizon_secret_key'),
+  keystone_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
+}
