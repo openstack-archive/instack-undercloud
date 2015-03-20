@@ -28,7 +28,10 @@ fi
 if $(grep -Eqs 'Red Hat Enterprise Linux Server' /etc/redhat-release); then
     # rhos-release is also required, otherwise we have no base RHEL repositories to
     # pull any dependencies from (without using subscription-manager anyway).
-    sudo rpm -Uvh --force http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+    if rpm -q rhos-release; then
+        sudo yum remove -y rhos-release
+    fi
+    sudo yum install -y http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
     export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"1"}
     if [ "$RUN_RHOS_RELEASE" = "1" ]; then
         sudo rhos-release 6
