@@ -172,6 +172,9 @@ rabbitmq::wipe_db_on_cookie_change: true
 rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 rabbit_username: {{UNDERCLOUD_RABBIT_USERNAME}}
 
+# Horizon
+horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}
+
 # service tenant
 ceilometer::api::keystone_tenant: 'service'
 cinder::api::keystone_tenant: 'service'

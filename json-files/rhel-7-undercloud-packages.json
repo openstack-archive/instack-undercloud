@@ -8,7 +8,6 @@
       "redhat-common",
       "undercloud-install",
       "os-collect-config",
-      "horizon",
       "undercloud-stack-config",
       "common-venv",
       "undercloud-post-config",
