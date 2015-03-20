@@ -110,9 +110,7 @@ function discover_nodes {
         # throughput. As a workaround, sleep for some time in between sending
         # each node to discovery to give each node enough time to download the
         # kernel/ramdisk before the next node is powered on.
-        #
-        # This seems to only affect certain environments, so don't use it for now.
-        # sleep 10
+        sleep 15
         echo "DONE."
     done
 
