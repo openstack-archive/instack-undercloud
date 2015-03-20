@@ -1,5 +1,5 @@
 #!/bin/bash
-export NeutronPublicInterface=em2
+export NeutronPublicInterface=nic1
 export OVERCLOUD_LIBVIRT_TYPE=kvm
 export NETWORK_CIDR="10.0.0.0/8"
 export FLOATING_IP_START="172.17.0.45"

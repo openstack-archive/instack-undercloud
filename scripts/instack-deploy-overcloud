@@ -69,7 +69,7 @@ source tripleo-undercloud-passwords
 
 # Define the interface that will be bridged onto the Neutron defined
 # network.
-NeutronPublicInterface=${NeutronPublicInterface:-eth0}
+NeutronPublicInterface=${NeutronPublicInterface:-nic1}
 HypervisorNeutronPublicInterface=${HypervisorNeutronPublicInterface:-$NeutronPublicInterface}
 NEUTRON_NETWORK_TYPE=${NEUTRON_NETWORK_TYPE:-gre}
 NEUTRON_TUNNEL_TYPES=${NEUTRON_TUNNEL_TYPES:-gre}
