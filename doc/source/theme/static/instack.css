@@ -1,0 +1,9 @@
+@import url("default.css");
+
+.rhel-tag {background-color: #fee; border: 1px solid #ccc;}
+
+.centos-tag {background-color: #fef; border: 1px solid #ccc;}
+
+.baremetal-tag {background-color: #eef; border: 1px solid #ccc;}
+
+.virt-tag {background-color: #efe; border: 1px solid #ccc;}

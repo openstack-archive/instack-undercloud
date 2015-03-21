@@ -20,7 +20,8 @@ The setup requires baremetal machines with the following minimum specifications:
 * 4GB memory
 * 60GB free disk space
 
-The undercloud machine needs to run RHEL 7.1 x86_64, which is discussed more below.
+The undercloud machine needs to run RHEL 7.1 x86_64 or CentOS 7 x86_64,
+which is discussed more below.
 
 Preparing the Baremetal Environment
 -----------------------------------
@@ -62,7 +63,7 @@ Setting Up The Undercloud Machine
 
 #. Select a machine within the baremetal environment on which to install the
    undercloud.
-#. Install RHEL 7.1 x86_64 on this machine.
+#. Install RHEL 7.1 x86_64 or CentOS 7 x86_64 on this machine.
 #. If needed, create a non-root user with sudo access to use for installing the
    Undercloud::
 
