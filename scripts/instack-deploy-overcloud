@@ -259,12 +259,6 @@ tripleo wait_for_stack_ready 220 10 overcloud
 
 echo "Overcloud CREATE_COMPLETE"
 
-if [ -d /etc/tripleo ]; then
-    TRIPLEO_ROOT=/etc/tripleo
-else
-    TRIPLEO_ROOT=$INSTACK_ROOT/tripleo-incubator
-fi
-
 OVERCLOUD_ENDPOINT=$(heat output-show overcloud KeystoneURL|sed 's/^"\(.*\)"$/\1/')
 export OVERCLOUD_IP=$(echo $OVERCLOUD_ENDPOINT | awk -F '[/:]' '{print $4}')
 
@@ -272,15 +266,17 @@ touch ~/.ssh/known_hosts
 chmod 600 ~/.ssh/known_hosts
 ssh-keygen -R $OVERCLOUD_IP
 
-export no_proxy=${no_proxy:-""}
-export no_proxy=$no_proxy,$OVERCLOUD_IP
-
 NEW_JSON=$(jq '.overcloud.password="'${OVERCLOUD_ADMIN_PASSWORD}'" | .overcloud.endpoint="'${OVERCLOUD_ENDPOINT}'" | .overcloud.endpointhost="'${OVERCLOUD_IP}'"' $NODES_JSON)
 
 echo $NEW_JSON > $NODES_JSON
 
 export TE_DATAFILE=$NODES_JSON
-source $TRIPLEO_ROOT/overcloudrc
+
+# We're done with TRIPLEO_ROOT at this point, and the value set above doesn't
+# work for creating the overcloudrc file.
+unset TRIPLEO_ROOT
+instack-create-overcloudrc
+source ~/overcloudrc
 
 init-keystone -o $OVERCLOUD_IP -t $OVERCLOUD_ADMIN_TOKEN \
 -e admin.example.com -p $OVERCLOUD_ADMIN_PASSWORD -u heat-admin \

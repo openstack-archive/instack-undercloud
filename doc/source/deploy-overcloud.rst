@@ -46,13 +46,15 @@ Deploy the the *openstack-full* image (default of 1 compute and 1 control)::
 Working with the Overcloud
 --------------------------
 
-To generate an appropriate rc file for interacting the overcloud, run::
+``instack-deploy-overcloud`` generates an overcloudrc file appropriate for
+interacting with the deployed overcloud in the current user's home directory.
+To use it, simply source the file::
 
-    instack-create-overcloudrc
+    source ~/overcloudrc
 
-This will create an `overcloudrc` file in the current user's home directory
-which can be sourced to set up the client environment for the overcloud.
+To return to working with the undercloud, source the stackrc file again::
 
+    source ~/stackrc
 
 Redeploying the Overcloud
 -------------------------
