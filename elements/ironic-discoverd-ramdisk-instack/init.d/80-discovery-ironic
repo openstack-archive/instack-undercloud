@@ -162,7 +162,7 @@ log_n() {
 }
 
 run_edeploy_detect() {
-    hardware-detect > /hw.json || give_up "Failed to detect hardware"
+    hardware-detect --benchmark cpu disk mem > /hw.json || give_up "Failed to detect hardware"
 }
 
 run_standard_detect() {

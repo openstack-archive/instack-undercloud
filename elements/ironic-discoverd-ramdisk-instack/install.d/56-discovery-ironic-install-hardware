@@ -3,10 +3,9 @@
 set -eu
 set -o pipefail
 
-install-packages hdparm ipmitool lshw ethtool lldpad hdparm sdparm pciutils mcelog smartmontools util-linux lvm2 jq
+install-packages hdparm ipmitool lshw ethtool lldpad hdparm sdparm pciutils mcelog smartmontools util-linux lvm2 jq fio sysbench python-hardware
 
-# python-hardware package is missing requires on python-psutil
-# and also should have a requirement on python-ptyprocess which does not appear
-# packaged anywhere, so we have to fall back to pip for now.
+# We still need python-pip until we can get python-ptyprocess packaged
 yum -y install python-pip
-pip install hardware
+
+pip install ptyprocess
