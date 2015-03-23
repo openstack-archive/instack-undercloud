@@ -15,26 +15,38 @@ non-root user that was used to install the undercloud.
    undercloud. See the Note below to choose a different OS::
 
   .. note:: To build images with a base OS different from the undercloud,
-     set the ``$NODE_DIST`` environment variable prior to running the
-     ``instack-build-images`` command::
+     set the ``$NODE_DIST`` environment variable prior to running
+     ``instack-build-images``:
 
-        # To choose CentOS 7:
-        export NODE_DIST=centos7
-        # To choose RHEL 7.1:
-        export NODE_DIST=rhel7
+     .. admonition:: CentOS
+        :class: centos-tag
 
-2. Build the required images::
+        ::
 
-  .. note:: If building images for **RHEL 7.1**, download the RHEL 7.1 cloud image or copy
-     it over from a different location, and define the needed environment variable
-     to use the image prior to running the below ``instack-build-images`` commands::
+            export NODE_DIST=centos7
 
-        curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-        export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+     .. admonition:: RHEL
+        :class: rhel-tag
 
-  ::
+        ::
+
+            export NODE_DIST=rhel7
+
+2. Build the required images:
+
+   .. admonition:: RHEL
+      :class: rhel-tag
+
+      Download the RHEL 7.1 cloud image or copy it over from a different location,
+      and define the needed environment variable for RHEL 7.1 prior to running
+      ``instack-build-images``::
+
+          curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+          export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+
+   ::
   
-    instack-build-images
+      instack-build-images
 
 #. Load the images into Glance::
 

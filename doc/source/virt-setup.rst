@@ -59,27 +59,38 @@ Preparing the Host Machine
 
   .. note:: To setup the undercloud vm with a base OS different from the host,
      set the ``$NODE_DIST`` environment variable prior to running
-     ``instack-virt-setup``::
+     ``instack-virt-setup``:
 
-        # To choose CentOS 7:
-        export NODE_DIST=centos7
-        # To choose RHEL 7.1:
-        export NODE_DIST=rhel7
+     .. admonition:: CentOS
+        :class: centos-tag
 
+        ::
 
-8. Run the script to setup your virtual environment.::
+            export NODE_DIST=centos7
 
-  .. note:: If building a **RHEL 7.1** undercloud, download the RHEL 7.1 cloud image or copy
-     it over from a different location, and define the needed environment variables
-     for RHEL 7.1 prior to running ``instack-virt-setup``::
+     .. admonition:: RHEL
+        :class: rhel-tag
 
-        curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-        export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-        export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
+        ::
 
-  ::
+            export NODE_DIST=rhel7
 
-    instack-virt-setup
+8. Run the script to setup your virtual environment:
+
+   .. admonition:: RHEL
+      :class: rhel-tag
+
+      Download the RHEL 7.1 cloud image or copy it over from a different location,
+      and define the needed environment variables for RHEL 7.1 prior to running
+      ``instack-virt-setup``::
+
+          curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+          export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+          export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
+
+   ::
+
+      instack-virt-setup
 
 When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.
