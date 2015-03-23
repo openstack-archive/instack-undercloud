@@ -32,7 +32,7 @@ function show_options () {
     echo "                             deployed node."
     echo "      --delete-stack      -- Wait until the stack has deleted."
     echo "      --delete-nodes      -- Delete all nodes."
-    echo "      -x                  -- enable tracing"        
+    echo "      -x                  -- enable tracing"
     echo "      --help, -h          -- Print this help message."
     echo
     exit $1
@@ -94,9 +94,17 @@ function register_nodes {
     if [ "$NULL_STATS" = "1" ]; then
         rm -f $tmp_json
     fi
+
+    # Add the local boot capability
+    node_list=$(ironic node-list --limit 0)
+    node_ids=$(echo "$node_list" | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    for node_id in $node_ids; do
+        ironic node-update $node_id add properties/capabilities="boot_option:local" 1> /dev/null
+    done
+
     echo "  Nodes registered."
     echo
-    ironic node-list
+    echo "$node_list"
     echo
 }
 
@@ -193,7 +201,7 @@ function setup_flavors {
         "cpu_arch"="x86_64" \
         "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
         "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
-        "baremetal:localboot"="true" \
+        "capabilities:boot_option"="local" \
         "profile=control"
     nova flavor-show baremetal_control
 
@@ -202,7 +210,7 @@ function setup_flavors {
         "cpu_arch"="x86_64" \
         "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
         "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
-        "baremetal:localboot"="true" \
+        "capabilities:boot_option"="local" \
         "profile=compute"
     nova flavor-show baremetal_compute
 }
