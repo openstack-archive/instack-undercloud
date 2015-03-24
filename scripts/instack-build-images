@@ -121,6 +121,7 @@ hiera \
 os-net-config \
 delorean-repo \
 stable-interface-names \
+grub2 \
 "
 
 # There are new deps on python-psutil and python-debtcollector but the Nova and Cinder
