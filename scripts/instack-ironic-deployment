@@ -32,7 +32,7 @@ function show_options () {
     echo "                             deployed node."
     echo "      --delete-stack      -- Wait until the stack has deleted."
     echo "      --delete-nodes      -- Delete all nodes."
-    echo "      -x                  -- enable tracing"        
+    echo "      -x                  -- enable tracing"
     echo "      --help, -h          -- Print this help message."
     echo
     exit $1
@@ -94,9 +94,20 @@ function register_nodes {
     if [ "$NULL_STATS" = "1" ]; then
         rm -f $tmp_json
     fi
+
+    deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
+    deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
+
+    # Add the local boot capability and deploy_{kernel, ramdisk} parameters
+    node_list=$(ironic node-list --limit 0)
+    node_ids=$(echo "$node_list" | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    for node_id in $node_ids; do
+        ironic node-update $node_id add properties/capabilities="boot_option:local" driver_info/deploy_ramdisk=$deploy_ramdisk_id driver_info/deploy_kernel=$deploy_kernel_id 1> /dev/null
+    done
+
     echo "  Nodes registered."
     echo
-    ironic node-list
+    echo "$node_list"
     echo
 }
 
@@ -181,9 +192,6 @@ function setup_flavors {
         echo "  baremetal_compute flavor already exists."
     fi
 
-    deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
-    deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
-
     echo
     nova flavor-list
     echo
@@ -191,18 +199,14 @@ function setup_flavors {
     echo "  Setting baremetal_control flavor keys ... "
     nova flavor-key baremetal_control set \
         "cpu_arch"="x86_64" \
-        "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
-        "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
-        "baremetal:localboot"="true" \
+        "capabilities:boot_option"="local" \
         "profile=control"
     nova flavor-show baremetal_control
 
     echo "  Setting baremetal_compute flavor keys ... "
     nova flavor-key baremetal_compute set \
         "cpu_arch"="x86_64" \
-        "baremetal:deploy_kernel_id"="$deploy_kernel_id" \
-        "baremetal:deploy_ramdisk_id"="$deploy_ramdisk_id" \
-        "baremetal:localboot"="true" \
+        "capabilities:boot_option"="local" \
         "profile=compute"
     nova flavor-show baremetal_compute
 }
