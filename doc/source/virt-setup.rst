@@ -12,7 +12,8 @@ Minimum System Requirements
 ---------------------------
 
 By default, this setup creates 3 virtual machines consisting of 4GB of memory
-and 40GB of disk space on each. The virtual machine disk files are thinly
+and 40GB of disk space on each; one to be used for the deployment of the
+undercloud and two for the overcloud. The virtual machine disk files are thinly
 provisioned and will not take up the full 40GB initially.
 
 The minimum system requirements for the virtual host machine are:
@@ -80,7 +81,6 @@ Preparing the Host Machine
 
     sudo yum install -y instack-undercloud
 
-
 #. The virt setup automatically sets up a vm for the Undercloud installed with
    the same base OS as the host. See the Note below to choose a different
    OS.::
@@ -137,6 +137,15 @@ Preparing the Host Machine
             export REG_POOL_ID="[pool id]"
             export REG_REPOS="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-ha-for-rhel-7-server-rpms \
                 rhel-7-server-optional-rpms rhel-7-server-openstack-6.0-rpms"
+
+   .. admonition:: Ceph
+      :class: ceph-tag
+
+      To use Ceph you will need at least one additional virtual machine to be
+      provisioned as a Ceph OSD; set the ``NODE_COUNT`` variable to 3, from a
+      default of 2, so that the overcloud will have exactly one more::
+
+          export NODE_COUNT=3
 
    ::
 
