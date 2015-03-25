@@ -44,6 +44,7 @@ export UNDERCLOUD_NEUTRON_PASSWORD=${UNDERCLOUD_NEUTRON_PASSWORD:-$(tripleo os-m
 export UNDERCLOUD_NOVA_PASSWORD=${UNDERCLOUD_NOVA_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_IRONIC_PASSWORD=${UNDERCLOUD_IRONIC_PASSWORD:-$(tripleo os-make-password)}
 export UNDERCLOUD_TUSKAR_PASSWORD=${UNDERCLOUD_TUSKAR_PASSWORD:-$(tripleo os-make-password)}
+export UNDERCLOUD_SWIFT_PASSWORD=${UNDERCLOUD_SWIFT_PASSWORD:-$(tripleo os-make-password)}
 
 if [ -z "$INSTACK_ROOT" ]; then
     sudo -E /usr/share/instack-undercloud/undercloud-stack-config/install.d/02-undercloud-stack-heat-metadata    
