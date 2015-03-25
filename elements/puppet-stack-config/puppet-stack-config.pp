@@ -304,7 +304,7 @@ class { 'nova::network::neutron':
 include ::ironic::conductor
 
 class { 'ironic':
-  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh']
+  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac']
 }
 
 class { 'ironic::api':

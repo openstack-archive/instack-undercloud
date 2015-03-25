@@ -5,18 +5,6 @@
   ]},
   "local-ip": "{{LOCAL_IP}}",
   "masquerade_networks": ["{{MASQUERADE_NETWORK}}"],
-  "ironic": {
-    "config" : [
-      {
-        "section": "DEFAULT",
-        "values": [
-            { "option": "enabled_drivers",
-              "value": "pxe_ssh,pxe_ipmitool,pxe_drac"
-            }
-        ]
-      }
-    ]
-  },
   "neutron": {
     "dhcp_start": "{{DHCP_START}}",
     "dhcp_end": "{{DHCP_END}}",
