@@ -148,6 +148,7 @@ elapsed_seconds=0
 while true; do
     IP=$(cat /var/lib/libvirt/dnsmasq/default.leases | grep $(tripleo get-vm-mac $UNDERCLOUD_VM_NAME) | awk '{print $3;}')
     if [ -n "$IP" ]; then
+        set +x
         echo "$UNDERCLOUD_VM_NAME vm IP address is $IP"
         echo "You can connect by running:"
         echo "ssh root@$IP"
@@ -158,6 +159,7 @@ while true; do
     sleep 3
     (( elapsed_seconds += 3 ))
     if [ $elapsed_seconds -ge $timeout_seconds ]; then
+        set +x
         echo "$UNDERCLOUD_VM_NAME never got an IP address from the libvirt default network."
     fi
 done
