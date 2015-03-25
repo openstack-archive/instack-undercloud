@@ -14,7 +14,17 @@ node on which you want to install the undercloud.
 
    This will be the host you selected for the Undercloud while preparing the environment.
 
-#. Download and execute the instack-undercloud setup script::
+#. Download and execute the instack-undercloud setup script:
+
+   .. only:: internal
+
+      .. admonition:: RHEL
+         :class: rhel-tag
+
+          Enable rhos-release::
+
+              export RUN_RHOS_RELEASE=1
+   ::
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
 
