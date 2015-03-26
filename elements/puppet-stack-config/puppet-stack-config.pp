@@ -21,7 +21,8 @@ if count(hiera('ntp::servers')) > 0 {
 class { 'mysql::server':
   override_options => {
     'mysqld' => {
-      'bind-address' => hiera('controller_host')
+      'bind-address' => hiera('controller_host'),
+      'max_connections' => 500,
     }
   }
 }
