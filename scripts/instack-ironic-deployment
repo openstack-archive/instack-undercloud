@@ -270,6 +270,13 @@ function setup_flavors {
         echo "  baremetal_compute flavor already exists."
     fi
 
+    if ! nova flavor-show baremetal_ceph-storage 2>$STDERR 1>/dev/null; then
+        echo "  Creating baremetal_ceph-storage flavor ... "
+        nova flavor-create baremetal_ceph-storage auto 4096 40 1
+    else
+        echo "  baremetal_ceph-storage flavor already exists."
+    fi
+
     echo
     nova flavor-list
     echo
@@ -285,6 +292,12 @@ function setup_flavors {
         "cpu_arch"="x86_64" \
         "profile=compute"
     nova flavor-show baremetal_compute
+
+    echo "  Setting baremetal_ceph-storage flavor keys ... "
+    nova flavor-key baremetal_ceph-storage set \
+        "cpu_arch"="x86_64" \
+        "profile=ceph-storage"
+    nova flavor-show baremetal_ceph-storage
 }
 
 function show_profile {
