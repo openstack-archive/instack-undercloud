@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ $EUID -eq 0 ]; then
+    echo "This script cannot be run as root."
+    exit 1
+fi
+
 set -ex
 
 export LIBVIRT_DEFAULT_URI="qemu:///system"
