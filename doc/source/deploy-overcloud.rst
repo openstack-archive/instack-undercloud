@@ -39,7 +39,7 @@ Create the necessary flavors::
       cp /usr/share/instack-undercloud/deploy-baremetal-overcloudrc ~/deploy-overcloudrc
       source deploy-overcloudrc
 
-Deploy the the *openstack-full* image (default of 1 compute and 1 control)::
+Deploy the overcloud (default of 1 compute and 1 control)::
 
     instack-deploy-overcloud
 
