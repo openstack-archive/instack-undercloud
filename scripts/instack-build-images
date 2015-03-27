@@ -68,7 +68,8 @@ if [ "$NODE_DIST" = "rhel7" ]; then
 elif [ "$NODE_DIST" = "centos7" ]; then
     export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL
     # SELinux permissive for CentOS for now
-    export DIB_COMMON_ELEMENTS=selinux-permissive
+    # lshw has moved from EPEL to the CentOS cr repo
+    export DIB_COMMON_ELEMENTS="selinux-permissive centos-cr"
 fi
 
 export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
