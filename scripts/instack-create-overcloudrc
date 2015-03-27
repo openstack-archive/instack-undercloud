@@ -18,7 +18,8 @@ source ~/instack.answers
 
 source tripleo-overcloud-passwords
 
-export OVERCLOUD_IP=$(nova list | grep controller0.*ctlplane | sed  -e "s/.*=\\([0-9.]*\\).*/\1/")
+OVERCLOUD_ENDPOINT=$(heat output-show overcloud KeystoneURL|sed 's/^"\(.*\)"$/\1/')
+export OVERCLOUD_IP=$(echo $OVERCLOUD_ENDPOINT | awk -F '[/:]' '{print $4}')
 
 source $TRIPLEO_ROOT/overcloudrc
 
