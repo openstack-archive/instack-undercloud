@@ -298,6 +298,8 @@ if [ "$image_build" = "all" ]; then
     discovery-ramdisk
     overcloud-control
     overcloud-compute
+    echo "Successfully built all necessary images."
 else
     eval "$image_build"
+    echo "Successfully built $image_build image."
 fi
