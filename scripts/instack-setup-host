@@ -8,6 +8,8 @@ set -o pipefail
 # newer and not yet avaialable python-pycadf.
 export DELOREAN_REPO=${DELOREAN_REPO:-"http://trunk.rdoproject.org/centos70/77/67/77671d5de0e40da08f31b91823dc93a0c1d39c31_1b51cbaf/delorean.repo"}
 sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
+# We need to have the main delorean repo have a lower priority than ours to ensure our changes get installed
+sudo sed -i 's/priority=1/priority=10/' /etc/yum.repos.d/delorean.repo
 
 # Install repo file for Delorean el7 midstream packages built from
 # rdo-management.
@@ -38,6 +40,7 @@ if $(grep -Eqs 'Red Hat Enterprise Linux Server' /etc/redhat-release); then
     fi
     # We need openwsman-python from the optional repo
     sudo yum install -y yum-utils
+    sudo yum install -y yum-plugin-priorities
     sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 fi
 
