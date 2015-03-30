@@ -11,9 +11,9 @@ environment.
 Minimum System Requirements
 ---------------------------
 
-This setup creates 5 virtual machines consisting of 4GB of memory and 40GB of
-disk space on each. The virtual machine disk files are thinly provisioned and
-will not take up the full 40GB initially.
+By default, this setup creates 3 virtual machines consisting of 4GB of memory
+and 40GB of disk space on each. The virtual machine disk files are thinly
+provisioned and will not take up the full 40GB initially.
 
 The minimum system requirements for the virtual host machine are:
 
