@@ -60,8 +60,14 @@ if [ "$NODE_DIST" = "rhel7" ]; then
     # We need to set RHOS=0 so that epel/rdo get enabled.
     export RHOS=0
     # But we still actually need it to enable base RHEL repos.
-    export RHOS_RELEASE=${RHOS_RELEASE:-6}
-    export DIB_COMMON_ELEMENTS=rhos-release
+    export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"0"}
+    if [ "${RUN_RHOS_RELEASE}" = "1" ]; then
+        export RHOS_RELEASE=${RHOS_RELEASE:-6}
+        export DIB_COMMON_ELEMENTS=rhos-release
+    else
+        # SELinux permissive for RHEL without rhos-release
+        export DIB_COMMON_ELEMENTS=selinux-permissive
+    fi
     export REG_HALT_UNREGISTER=${REG_HALT_UNREGISTER:-1}
     export DELOREAN=1
     export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL

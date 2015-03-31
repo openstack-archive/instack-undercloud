@@ -34,19 +34,42 @@ non-root user that was used to install the undercloud.
 
 2. Build the required images:
 
-   .. admonition:: RHEL
-      :class: rhel-tag
+   .. only:: internal
 
-      Download the RHEL 7.1 cloud image or copy it over from a different location,
-      and define the needed environment variable for RHEL 7.1 prior to running
-      ``instack-build-images``::
+      .. admonition:: RHEL
+         :class: rhel-tag
 
-          curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-          export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+         Download the RHEL 7.1 cloud image or copy it over from a different location,
+         and define the needed environment variable for RHEL 7.1 prior to running
+         ``instack-build-images``::
 
+             curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+             export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+             # Enable rhos-release
+             export RUN_RHOS_RELEASE=1
+
+   .. only:: external
+
+      .. admonition:: RHEL
+         :class: rhel-tag
+
+         Download the RHEL 7.1 cloud image or copy it over from a different location,
+         for example:
+         https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.1/x86_64/product-downloads,
+         and define the needed environment variables for RHEL 7.1 prior to running
+         ``instack-build-images``::
+
+             export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150224.0.x86_64.qcow2
+             export REG_METHOD=portal
+             export REG_USER="[your username]"
+             export REG_PASSWORD="[your password]"
+             # Find this with `sudo subscription-manager list --available`
+             export REG_POOL_ID="[pool id]"
+             export REG_REPOS="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-ha-for-rhel-7-server-rpms \
+                 rhel-7-server-optional-rpms rhel-7-server-openstack-6.0-rpms"
    ::
-  
-      instack-build-images
+
+          instack-build-images
 
 #. Load the images into Glance::
 

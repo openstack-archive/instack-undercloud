@@ -26,20 +26,20 @@ if ! rpm -q epel-release; then
 fi
 
 if $(grep -Eqs 'Red Hat Enterprise Linux Server' /etc/redhat-release); then
+    export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"0"}
     # rhos-release is also required, otherwise we have no base RHEL repositories to
     # pull any dependencies from (without using subscription-manager anyway).
-    if rpm -q rhos-release; then
-        sudo yum remove -y rhos-release
-    fi
-    sudo yum install -y http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
-    export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"1"}
     if [ "$RUN_RHOS_RELEASE" = "1" ]; then
+        if rpm -q rhos-release; then
+            sudo yum remove -y rhos-release
+        fi
+        sudo yum install -y http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
         sudo rhos-release 6
+        # We need openwsman-python from the optional repo
+        sudo yum install -y yum-utils
+        sudo yum install -y yum-plugin-priorities
+        sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
     fi
-    # We need openwsman-python from the optional repo
-    sudo yum install -y yum-utils
-    sudo yum install -y yum-plugin-priorities
-    sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 fi
 
 # newer openstack-keystone requires python-zope-interface, but that is not

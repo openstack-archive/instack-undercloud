@@ -117,3 +117,19 @@ Setting Up The Undercloud Machine
             }
         ]
     }
+.. only:: external
+
+   .. admonition:: RHEL
+      :class: rhel-tag
+
+       Register the host machine using Subscription Management::
+
+          sudo subscription-manager register --username="[your username]" --password="[your password]"
+          # Find this with `subscription-manager list --available`
+          sudo subscription-manager attach --pool="[pool id]"
+          # Verify repositories are available
+          sudo subscription-manager repos --list
+          # Enable repositories needed
+          sudo subscription-manager repos --enable=rhel-7-server-rpms \
+              --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
+              --enable=rhel-7-server-openstack-6.0-rpms

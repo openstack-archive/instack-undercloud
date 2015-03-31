@@ -30,6 +30,24 @@ Preparing the Host Machine
 --------------------------
 
 #. Install RHEL 7.1 Server x86_64 or CentOS 7 x86_64.
+
+   .. only:: external
+
+     .. admonition:: RHEL
+        :class: rhel-tag
+
+        Register the host machine using Subscription Management::
+
+            sudo subscription-manager register --username="[your username]" --password="[your password]"
+            # Find this with `subscription-manager list --available`
+            sudo subscription-manager attach --pool="[pool id]"
+            # Verify repositories are available
+            sudo subscription-manager repos --list
+            # Enable repositories needed
+            sudo subscription-manager repos --enable=rhel-7-server-rpms \
+                 --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
+                 --enable=rhel-7-server-openstack-6.0-rpms
+
 #. Make sure sshd service is installed and running.
 #. The user performing all of the installation steps on the virt host needs to
    have sudo enabled. You can use an existing user or use the following commands
@@ -44,7 +62,17 @@ Preparing the Host Machine
         sudo chmod 0440 /etc/sudoers.d/stack
 
 #. Make sure you are logged in as the non-root user you intend to use.
-#. Download and execute the instack-undercloud setup script::
+#. Download and execute the instack-undercloud setup script:
+
+   .. only:: internal
+
+      .. admonition:: RHEL
+         :class: rhel-tag
+
+          Enable rhos-release::
+
+              export RUN_RHOS_RELEASE=1
+   ::
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
 
@@ -77,16 +105,38 @@ Preparing the Host Machine
 
 8. Run the script to setup your virtual environment:
 
-   .. admonition:: RHEL
-      :class: rhel-tag
+   .. only:: internal
 
-      Download the RHEL 7.1 cloud image or copy it over from a different location,
-      and define the needed environment variables for RHEL 7.1 prior to running
-      ``instack-virt-setup``::
+     .. admonition:: RHEL
+        :class: rhel-tag
 
-          curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-          export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-          export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
+        Download the RHEL 7.1 cloud image or copy it over from a different location,
+        and define the needed environment variables for RHEL 7.1 prior to running
+        ``instack-virt-setup``::
+
+             curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+             export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
+             export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
+
+   .. only:: external
+
+     .. admonition:: RHEL
+        :class: rhel-tag
+
+        Download the RHEL 7.1 cloud image or copy it over from a different location,
+        for example:
+        https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.1/x86_64/product-downloads,
+        and define the needed environment variables for RHEL 7.1 prior to running
+        ``instack-virt-setup``::
+
+            export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150224.0.x86_64.qcow2
+            export REG_METHOD=portal
+            export REG_USER="[your username]"
+            export REG_PASSWORD="[your password]"
+            # Find this with `sudo subscription-manager list --available`
+            export REG_POOL_ID="[pool id]"
+            export REG_REPOS="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-ha-for-rhel-7-server-rpms \
+                rhel-7-server-optional-rpms rhel-7-server-openstack-6.0-rpms"
 
    ::
 
