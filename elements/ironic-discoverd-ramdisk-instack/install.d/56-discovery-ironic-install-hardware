@@ -4,8 +4,3 @@ set -eu
 set -o pipefail
 
 install-packages hdparm ipmitool lshw ethtool lldpad hdparm sdparm pciutils mcelog smartmontools util-linux lvm2 jq fio sysbench python-hardware
-
-# We still need python-pip until we can get python-ptyprocess packaged
-yum -y install python-pip
-
-pip install ptyprocess
