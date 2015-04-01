@@ -43,6 +43,11 @@ fi
 
 # Delorean uses repo priorities to ensure we get the right packages
 sudo yum install -y yum-plugin-priorities
+if [[ -f /etc/centos-release ]]; then
+    # Use the Centos cloud repo to pull in its updated package lists
+    cd /etc/yum.repos.d
+    sudo curl -O http://buildlogs.centos.org/centos/7/cloud/openstack-rdo/centos-cloud-rdo.repo
+fi
 
 # newer openstack-keystone requires python-zope-interface, but that is not
 # avaiable anywhere for EL7. So just install the Fedora package for now. We can

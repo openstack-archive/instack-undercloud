@@ -74,7 +74,7 @@ if [ "$NODE_DIST" = "rhel7" ]; then
 elif [ "$NODE_DIST" = "centos7" ]; then
     export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL
     # SELinux permissive for CentOS for now
-    export DIB_COMMON_ELEMENTS="selinux-permissive"
+    export DIB_COMMON_ELEMENTS="selinux-permissive centos-cloud-repo"
     # lshw has moved from EPEL to the CentOS cr repo.  However, at this time adding
     # the cr repo to the overcloud images results in openvswitch crashes, so we can
     # only add it to the discovery image.

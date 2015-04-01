@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Use the Centos cloud repo to pull in its updated package lists
+cd /etc/yum.repos.d
+curl -O http://buildlogs.centos.org/centos/7/cloud/openstack-rdo/centos-cloud-rdo.repo
