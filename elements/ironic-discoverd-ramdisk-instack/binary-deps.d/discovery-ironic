@@ -45,6 +45,7 @@ sort
 ssh-keygen
 sshd
 sync
+taskset
 umount
 uname
 vgcreate
