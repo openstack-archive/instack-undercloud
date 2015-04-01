@@ -1,4 +1,4 @@
-debug: false
+debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 ntp::servers:
   -

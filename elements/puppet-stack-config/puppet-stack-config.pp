@@ -130,7 +130,9 @@ rabbitmq_user_permissions {[
 # pre-install swift here so we can build rings
 include ::swift
 
-include ::keystone
+class { 'keystone':
+  debug => hiera('debug'),
+}
 
 #TODO: need a cleanup-keystone-tokens.sh solution here
 keystone_config {
@@ -165,13 +167,18 @@ file { '/etc/keystone/ssl/certs/ca.pem':
 }
 
 # TODO: notifications, scrubber, etc.
-include ::glance::api
-include ::glance::registry
+class { '::glance::api':
+  debug => hiera('debug'),
+}
+class { '::glance::registry':
+  debug => hiera('debug'),
+}
 include ::glance::backend::file
 
 class { 'nova':
   rabbit_hosts           => [hiera('controller_host')],
   glance_api_servers     => join([hiera('glance_protocol'), '://', hiera('controller_host'), ':', hiera('glance_port')]),
+  debug                  => hiera('debug'),
 }
 
 include ::nova::api
@@ -183,6 +190,7 @@ include ::nova::scheduler
 
 class {'neutron':
   rabbit_hosts => [hiera('controller_host')],
+  debug        => hiera('debug'),
 }
 
 include ::neutron::server
@@ -260,7 +268,9 @@ class { 'ceilometer::agent::auth':
 Cron <| title == 'ceilometer-expirer' |> { command => "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
 
 # Heat
-include ::heat
+class {'heat':
+  debug => hiera('debug'),
+}
 include ::heat::api
 include ::heat::api_cfn
 include ::heat::api_cloudwatch
@@ -304,7 +314,8 @@ class { 'nova::network::neutron':
 include ::ironic::conductor
 
 class { 'ironic':
-  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac']
+  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac'],
+  debug           => hiera('debug'),
 }
 
 class { 'ironic::api':
