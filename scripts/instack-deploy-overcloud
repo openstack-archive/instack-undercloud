@@ -272,6 +272,7 @@ else
     -P BlockStorageImage=${OVERCLOUD_BLOCKSTORAGE_IMAGE} \
     -P SwiftStorageImage=${OVERCLOUD_SWIFTSTORAGE_IMAGE} \
     -P CephStorageImage=${OVERCLOUD_SWIFTSTORAGE_IMAGE} \
+    -P Debug=True \
     "}
 
 
