@@ -58,7 +58,7 @@ $INSTACKUNDERCLOUDELEMENTS:\
 echo "Sourcing answers file from instack.answers..."
 source ~/instack.answers
 
-# Munge up LOCAL_IP.  Keep in sync with instack-apply-config
+# Munge up LOCAL_IP.
 export PUBLIC_INTERFACE_IP="$LOCAL_IP"
 export LOCAL_IP="${LOCAL_IP%/*}"
 
