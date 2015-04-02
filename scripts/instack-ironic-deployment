@@ -258,7 +258,7 @@ function deploy_nodes {
 function setup_flavors {
     if ! nova flavor-show baremetal_control 2>$STDERR 1>/dev/null; then
         echo "  Creating baremetal_control flavor ... "
-        nova flavor-create baremetal_control auto 2048 40 1
+        nova flavor-create baremetal_control auto 4096 40 1
     else
         echo "  baremetal_control flavor already exists."
     fi
