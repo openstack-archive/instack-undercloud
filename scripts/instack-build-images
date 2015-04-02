@@ -3,7 +3,7 @@
 set -eux
 set -o pipefail
 
-export image_build=${1:-"all"}
+export image_build=${1:-"default"}
 
 # Attempt to be smart about detecting the path to the instack-undercloud
 # elements
@@ -139,6 +139,7 @@ export OVERCLOUD_FULL_DIB_EXTRA_ARGS=${OVERCLOUD_FULL_DIB_EXTRA_ARGS:-"\
 $PUPPET_COMMON_ELEMENTS \
 overcloud-controller \
 overcloud-compute \
+overcloud-ceph-storage \
 "}
 
 # There are new deps on python-psutil and python-debtcollector but the Nova and Cinder
@@ -153,6 +154,11 @@ $PUPPET_COMMON_ELEMENTS
 overcloud-compute
 "}
 
+
+export OVERCLOUD_CEPHSTORAGE_DIB_EXTRA_ARGS=${OVERCLOUD_CEPHSTORAGE_DIB_EXTRA_ARGS:-"\
+$PUPPET_COMMON_ELEMENTS
+overcloud-ceph-storage \
+"}
 
 export OVERCLOUD_CINDER_DIB_EXTRA_ARGS=${OVERCLOUD_CINDER_DIB_EXTRA_ARGS:-"\
 baremetal \
@@ -239,6 +245,18 @@ function overcloud-compute {
     fi
 }
 
+function overcloud-ceph-storage {
+    if [ ! -f overcloud-ceph-storage.qcow2 ]; then
+        disk-image-create \
+            -a $NODE_ARCH \
+            -o overcloud-ceph-storage \
+            $NODE_DIST  \
+            $OVERCLOUD_CEPHSTORAGE_DIB_EXTRA_ARGS \
+            $DIB_COMMON_ELEMENTS \
+            2>&1 | tee dib-overcloud-ceph-storage.log
+    fi
+}
+
 function overcloud-cinder-volume {
     if [ ! -f overcloud-cinder-volume.qcow2 ]; then
         disk-image-create \
@@ -304,7 +322,7 @@ function os-disk-config {
     fi
 }
 
-if [ "$image_build" = "all" ]; then
+if [ "$image_build" = "default" ]; then
     deploy-ramdisk
     discovery-ramdisk
     overcloud-full

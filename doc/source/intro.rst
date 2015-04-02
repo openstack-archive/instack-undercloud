@@ -34,5 +34,10 @@ steps are marked as follows:
 
    Step that should only be run when deploying to virtual machines
 
+.. admonition:: Ceph
+   :class: ceph-tag
+
+   Step that should only be run when deploying Ceph for use by the Overcloud
+
 Any such steps should *not* be run if the target environment does not match
 the section marking.
