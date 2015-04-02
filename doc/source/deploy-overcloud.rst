@@ -16,7 +16,18 @@ Register nodes for your deployment with Ironic::
 Discovering Nodes
 -----------------
 
-Discover hardware attributes of nodes and match them to a deployment profile::
+Discover hardware attributes of nodes and match them to a deployment profile:
+
+.. admonition:: Ceph
+   :class: ceph-tag
+
+   When deploying Ceph, you will need to configure the ``edeploy`` plugin so
+   that it will assign the ``ceph-storage`` profile to at least one system. To
+   do so, you need to **prepend** the following ``('ceph-storage', '1')`` into
+   the list of profiles defined in ``/etc/edeploy/state``, before initiating the
+   nodes discovery. [#]_
+
+::
 
     instack-ironic-deployment --discover-nodes
 
@@ -78,3 +89,8 @@ The overcloud can be redeployed when desired.
 #. Deploy the Overcloud again::
 
     instack-deploy-overcloud
+
+.. rubric:: Footnotes
+
+.. [#]  In the ``('ceph-storage', '1')`` setting, 1 represent the number of
+        systems to be tagged with such a profile, not a boolean value.
