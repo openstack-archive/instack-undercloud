@@ -132,18 +132,23 @@ os-net-config \
 delorean-repo \
 stable-interface-names \
 grub2 \
+-p python-psutil,python-debtcollector \
 "
+
+export OVERCLOUD_FULL_DIB_EXTRA_ARGS=${OVERCLOUD_FULL_DIB_EXTRA_ARGS:-"\
+$PUPPET_COMMON_ELEMENTS \
+overcloud-controller \
+overcloud-compute \
+"}
 
 # There are new deps on python-psutil and python-debtcollector but the Nova and Cinder
 # packages are not updated yet to actually require them.
 export OVERCLOUD_CONTROL_DIB_EXTRA_ARGS=${OVERCLOUD_CONTROL_DIB_EXTRA_ARGS:-"\
--p python-psutil,python-debtcollector \
 $PUPPET_COMMON_ELEMENTS
 overcloud-controller \
 "}
 
 export OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS=${OVERCLOUD_COMPUTE_DIB_EXTRA_ARGS:-"\
--p python-psutil,python-debtcollector \
 $PUPPET_COMMON_ELEMENTS
 overcloud-compute
 "}
@@ -273,15 +278,15 @@ function fedora-user {
     fi
 }
 
-function openstack-full {
-    if [ ! -f openstack-full.qcow2 ]; then
+function overcloud-full {
+    if [ ! -f overcloud-full.qcow2 ]; then
         disk-image-create \
             -a $NODE_ARCH \
-            -o openstack-full \
+            -o overcloud-full \
             $NODE_DIST \
+            $OVERCLOUD_FULL_DIB_EXTRA_ARGS \
             $DIB_COMMON_ELEMENTS \
-            openstack-full \
-            baremetal \
+            $PUPPET_COMMON_ELEMENTS \
             2>&1 | tee dib-openstack-full.log
     fi
 }
@@ -302,8 +307,7 @@ function os-disk-config {
 if [ "$image_build" = "all" ]; then
     deploy-ramdisk
     discovery-ramdisk
-    overcloud-control
-    overcloud-compute
+    overcloud-full
     echo "Successfully built all necessary images."
 else
     eval "$image_build"
