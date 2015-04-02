@@ -338,6 +338,10 @@ class { 'horizon':
 # Install python-tuskarclient so we can deploy a stack with tuskar
 package{'python-tuskarclient': }
 
+class { 'tuskar::ui':
+  extras => true
+}
+
 # tempest
 # TODO: when puppet-tempest supports install by package, do that instead
 package{'openstack-tempest-juno': }
