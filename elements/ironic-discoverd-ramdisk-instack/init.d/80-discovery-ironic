@@ -25,6 +25,7 @@ eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^IP=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^UPLOAD_LOG=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^discoverd_callback_url=")
 eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^BOOTIF=")
+eval $(cat /proc/cmdline | tr ' ' "\n" | egrep "^RUNBENCH=")
 
 if [[ "$DEBUG" = "1" ]]; then
     log "DEBUG param deprecated, please use ONFAILURE=console"
@@ -161,8 +162,12 @@ log_n() {
     echo -n "$@"
 }
 
-run_edeploy_detect() {
+run_edeploy_detect_bm() {
     hardware-detect --benchmark cpu disk mem > /hw.json || give_up "Failed to detect hardware"
+}
+
+run_edeploy_detect_no_bm() {
+    hardware-detect > /hw.json || give_up "Failed to detect hardware"
 }
 
 run_standard_detect() {
@@ -586,7 +591,11 @@ probe_network_devices
 ip a
 
 run_standard_detect
-run_edeploy_detect
+if [ "$RUNBENCH" = 1 ]; then
+    run_edeploy_detect_bm
+else
+    run_edeploy_detect_no_bm
+fi
 run_block_device_detect
 echo "{\"data\": $(cat /hw.json)}" > /discoverd.json
 jq -s '.[0] + .[1] + .[2]' /standard.json /discoverd.json /block_devices.json > /node_data.json

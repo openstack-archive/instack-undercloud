@@ -60,6 +60,11 @@ DISCOVERY_IPRANGE=192.0.2.100,192.0.2.120
 # IP address of TFTP server for discovery, chances are high that it is LOCAL_IP
 DISCOVERY_PXEIP=192.0.2.1
 
+### DISCOVERY_RUNBENCH ###
+# Determines whether benchmarks are run when discovering nodes
+# Set to 1 to enable
+DISCOVERY_RUNBENCH=0
+
 ### UNDERCLOUD_DEBUG ###
 # Whether to enable the debug log level for OpenStack services
 UNDERCLOUD_DEBUG=true
