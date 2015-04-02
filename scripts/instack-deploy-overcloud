@@ -67,6 +67,9 @@ source tripleo-overcloud-passwords
 # of $UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD below
 source tripleo-undercloud-passwords
 
+NeutronFlatNetworks=${NeutronFlatNetworks:-'datacentre'}
+NeutronPhysicalBridge=${NeutronPhysicalBridge:-'br-ex'}
+NeutronBridgeMappings=${NeutronBridgeMappings:-'datacentre:br-ex'}
 # Define the interface that will be bridged onto the Neutron defined
 # network.
 NeutronPublicInterface=${NeutronPublicInterface:-nic1}
@@ -112,7 +115,25 @@ function create_cephx_key() {
 }
 
 if [ -n "$TUSKAR" ]; then
-    PLAN_ID=$( tuskar plan-show overcloud | awk '$2=="uuid" {print $4}' )
+    PLAN_ID=$(tuskar plan-show overcloud | awk '$2=="uuid" {print $4}')
+    if [ -n "$PLAN_ID" ]; then
+        tuskar plan-delete $PLAN_ID
+    fi
+
+    tuskar plan-create overcloud
+    PLAN_ID=$(tuskar plan-show overcloud | awk '$2=="uuid" {print $4}')
+
+    CONTROLLER_ID=$(tuskar role-list | awk '$4=="Controller" {print $2}')
+    COMPUTE_ID=$(tuskar role-list | awk '$4=="Compute" {print $2}')
+    SWIFT_ID=$(tuskar role-list | awk '$4=="Swift-Storage" {print $2}')
+    CINDER_ID=$(tuskar role-list | awk '$4=="Cinder-Storage" {print $2}')
+    CEPH_ID=$(tuskar role-list | awk '$4=="Ceph-Storage" {print $2}')
+
+    tuskar plan-add-role $PLAN_ID -r $CONTROLLER_ID
+    tuskar plan-add-role $PLAN_ID -r $COMPUTE_ID
+    tuskar plan-add-role $PLAN_ID -r $SWIFT_ID
+    tuskar plan-add-role $PLAN_ID -r $CINDER_ID
+    tuskar plan-add-role $PLAN_ID -r $CEPH_ID
 
     export TUSKAR_PARAMETERS=${TUSKAR_PARAMETERS:-"
     -A NeutronControlPlaneID=${NeutronControlPlaneID}
@@ -140,6 +161,11 @@ if [ -n "$TUSKAR" ]; then
     -A Cinder-Storage-1::CinderISCSIHelper=lioadm
     -A Controller-1::CloudName=overcloud
     -A Controller-1::NeutronPublicInterface=$NeutronPublicInterface
+    -A Controller-1::NeutronBridgeMappings=$NeutronBridgeMappings
+    -A Compute-1::NeutronBridgeMappings=$NeutronBridgeMappings
+    -A Controller-1::NeutronFlatNetworks=$NeutronFlatNetworks
+    -A Compute-1::NeutronFlatNetworks=$NeutronFlatNetworks
+    -A Compute-1::NeutronPhysicalBridge=$NeutronPhysicalBridge
     -A Compute-1::NeutronPublicInterface=$NeutronPublicInterface
     -A Compute-1::NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE
     -A Controller-1::NtpServer=${NtpServer}
@@ -253,6 +279,9 @@ else
     -P NeutronDnsmasqOptions=dhcp-option-force=26,1400 \
     -P NeutronPassword=${OVERCLOUD_NEUTRON_PASSWORD} \
     -P NeutronPublicInterface=$NeutronPublicInterface \
+    -P NeutronBridgeMappings=$NeutronBridgeMappings \
+    -P NeutronFlatNetworks=$NeutronFlatNetworks \
+    -P HypervisorNeutronPhysicalBridge=$NeutronPhysicalBridge \
     -P HypervisorNeutronPublicInterface=$HypervisorNeutronPublicInterface \
     -P NovaComputeLibvirtType=$OVERCLOUD_LIBVIRT_TYPE \
     -P NovaPassword=${OVERCLOUD_NOVA_PASSWORD} \
