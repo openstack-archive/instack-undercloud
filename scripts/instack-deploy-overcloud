@@ -81,6 +81,7 @@ OVERCLOUD_EXTRA_CONFIG=${OVERCLOUD_EXTRA_CONFIG:-"{}"}
 
 CONTROLSCALE=${CONTROLSCALE:-1}
 COMPUTESCALE=${COMPUTESCALE:-1}
+CEPHSTORAGESCALE=${CEPHSTORAGESCALE:-0}
 BLOCKSTORAGESCALE=${BLOCKSTORAGESCALE:-0}
 SWIFTSTORAGESCALE=${SWIFTSTORAGESCALE:-0}
 
@@ -89,22 +90,26 @@ OVERCLOUD_CONTROLLER_IMAGE=${OVERCLOUD_CONTROLLER_IMAGE:-overcloud-full}
 OVERCLOUD_COMPUTE_IMAGE=${OVERCLOUD_COMPUTE_IMAGE:-overcloud-full}
 OVERCLOUD_BLOCKSTORAGE_IMAGE=${OVERCLOUD_BLOCKSTORAGE_IMAGE:-overcloud-full}
 OVERCLOUD_SWIFTSTORAGE_IMAGE=${OVERCLOUD_SWIFTSTORAGE_IMAGE:-overcloud-full}
+OVERCLOUD_CEPHSTORAGE_IMAGE=${OVERCLOUD_CEPHSTORAGE_IMAGE:-overcloud-full}
 
 # Default flavor parameters
 export OVERCLOUD_CONTROL_FLAVOR=${OVERCLOUD_CONTROL_FLAVOR:-"baremetal_control"}
 export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal_compute"}
+export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal_ceph-storage"}
 # Even though we are not deploying nodes with these roles, the templates will
 # still validate that a flavor exists, so just use the baremetal_compute flavor
 # for now.
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal_compute"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal_compute"}
-export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal_compute"}
-# Same for images
-export OVERCLOUD_BLOCKSTORAGE_IMAGE=${OVERCLOUD_BLOCKSTORAGE_IMAGE:-"overcloud-compute"}
-export OVERCLOUD_SWIFTSTORAGE_IMAGE=${OVERCLOUD_SWIFTSTORAGE_IMAGE:-"overcloud-compute"}
-export OVERCLOUD_CEPHSTORAGE_IMAGE=${OVERCLOUD_CEPHSTORAGE_IMAGE:-"overcloud-compute"}
 
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
+
+# NOTE(gfidente): Taken from
+# https://github.com/ceph/ceph-deploy/blob/master/ceph_deploy/new.py#L21
+function create_cephx_key() {
+     local KEY=$(python -c 'import base64,os,struct,time;key = os.urandom(16);header = struct.pack("<hiih", 1, int(time.time()), 0, len(key));print(base64.b64encode(header + key))')
+     echo $KEY
+}
 
 if [ -n "$TUSKAR" ]; then
     PLAN_ID=$( tuskar plan-show overcloud | awk '$2=="uuid" {print $4}' )
@@ -147,6 +152,7 @@ if [ -n "$TUSKAR" ]; then
     -A Compute-1::count=${COMPUTESCALE}
     -A Swift-Storage-1::count=${SWIFTSTORAGESCALE}
     -A Cinder-Storage-1::count=${BLOCKSTORAGESCALE}
+    -A Ceph-Storage-1::count=${CEPHSTORAGESCALE}
     -A Controller-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     -A Compute-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     -A Cinder-Storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
@@ -155,9 +161,11 @@ if [ -n "$TUSKAR" ]; then
     -A Controller-1::Flavor=${OVERCLOUD_CONTROL_FLAVOR}
     -A Swift-Storage-1::Flavor=${OVERCLOUD_SWIFTSTORAGE_FLAVOR}
     -A Ceph-Storage-1::Flavor=${OVERCLOUD_CEPHSTORAGE_FLAVOR}
-    -A Ceph-Storage-1::Image=${OVERCLOUD_CEPHSTORAGE_IMAGE}
     -A Swift-Storage-1::Image=${OVERCLOUD_SWIFTSTORAGE_IMAGE}
     -A Cinder-Storage-1::Image=${OVERCLOUD_BLOCKSTORAGE_IMAGE}
+    -A Ceph-Storage-1::Image=${OVERCLOUD_BLOCKSTORAGE_IMAGE}
+    -A Controller-1::Image=${OVERCLOUD_CONTROLLER_IMAGE}
+    -A Compute-1::Image=${OVERCLOUD_COMPUTE_IMAGE}
     "}
 
     if [ $CONTROLSCALE -gt 1 ]; then
@@ -174,6 +182,22 @@ if [ -n "$TUSKAR" ]; then
     #-A cinder-storage-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
     #-A swift-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     #"
+
+    if [ $CEPHSTORAGESCALE -gt 0 ]; then
+        FSID=$(uuidgen)
+        MON_KEY=$(create_cephx_key)
+        ADMIN_KEY=$(create_cephx_key)
+        export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
+        -A Controller-1::CephClusterFSID=$FSID
+        -A Controller-1::CephMonKey=$MON_KEY
+        -A Controller-1::CephAdminKey=$ADMIN_KEY
+        -A Controller-1::CinderEnableRbdBackend=True
+        -A Ceph-Storage-1::CephClusterFSID=$FSID
+        -A Ceph-Storage-1::CephMonKey=$MON_KEY
+        -A Ceph-Storage-1::CephAdminKey=$ADMIN_KEY
+        -A Compute-1::NovaEnableRbdBackend=True
+        "
+    fi
 
     # These attributes can't be changed in Tuskar-UI, so this is the only
     # difference to deploying through UI
@@ -247,12 +271,26 @@ else
     -P NovaImage=${OVERCLOUD_COMPUTE_IMAGE} \
     -P BlockStorageImage=${OVERCLOUD_BLOCKSTORAGE_IMAGE} \
     -P SwiftStorageImage=${OVERCLOUD_SWIFTSTORAGE_IMAGE} \
+    -P CephStorageImage=${OVERCLOUD_SWIFTSTORAGE_IMAGE} \
     "}
 
 
     if [ $CONTROLSCALE -gt 1 ]; then
         export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
         -P NeutronL3HA=True \
+        "
+    fi
+
+    if [ $CEPHSTORAGESCALE -gt 0 ]; then
+        FSID=$(uuidgen)
+        MON_KEY=$(create_cephx_key)
+        ADMIN_KEY=$(create_cephx_key)
+        export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
+        -P CephClusterFSID=$FSID \
+        -P CephMonKey=$MON_KEY \
+        -P CephAdminKey=$ADMIN_KEY \
+        -P CinderEnableRbdBackend=True \
+        -P NovaEnableRbdBackend=True \
         "
     fi
 
@@ -264,6 +302,7 @@ else
     ENV_JSON=$(jq '.parameters = .parameters + {
         "ControllerCount": '${CONTROLSCALE}',
         "ComputeCount": '${COMPUTESCALE}',
+        "CephStorageCount": '${CEPHSTORAGESCALE}',
         "BlockStorageCount": '${BLOCKSTORAGESCALE}',
         "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
       }' <<< $ENV_JSON)

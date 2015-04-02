@@ -50,7 +50,17 @@ Create the necessary flavors::
       cp /usr/share/instack-undercloud/deploy-baremetal-overcloudrc ~/deploy-overcloudrc
       source deploy-overcloudrc
 
-Deploy the overcloud (default of 1 compute and 1 control)::
+Deploy the overcloud (default of 1 compute and 1 control):
+
+.. admonition:: Ceph
+   :class: ceph-tag
+
+   When deploying Ceph, specify the number of Ceph OSD nodes to be deployed
+   with::
+
+       export CEPHSTORAGESCALE=1
+
+::
 
     instack-deploy-overcloud
 
@@ -92,5 +102,6 @@ The overcloud can be redeployed when desired.
 
 .. rubric:: Footnotes
 
-.. [#]  In the ``('ceph-storage', '1')`` setting, 1 represent the number of
-        systems to be tagged with such a profile, not a boolean value.
+.. [#]  In the ``('ceph-storage', '1')`` setting, 1 represents the number of
+        systems to be tagged with such a profile as opposed to a boolean
+        value.
