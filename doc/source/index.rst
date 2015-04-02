@@ -15,6 +15,7 @@ Contents:
    Installing the Undercloud <install-undercloud>
    Building Images <build-images>
    Deploying the Overcloud <deploy-overcloud>
+   Vendor-Specific Setup <vendor-specific>
 
 Indices and tables
 ==================

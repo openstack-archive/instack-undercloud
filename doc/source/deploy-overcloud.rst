@@ -35,6 +35,15 @@ Check what profiles were matched for the discovered nodes::
 
     instack-ironic-deployment --show-profile
 
+Ready-state configuration
+-------------------------
+
+.. admonition:: Baremetal
+   :class: baremetal-tag
+
+   Some hardware has additional setup available, using its vendor-specific management
+   interface.  See the :doc:`/vendor-specific` for details.
+
 Deploying Nodes
 ---------------
 
