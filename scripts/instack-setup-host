@@ -50,9 +50,3 @@ sudo yum install -y yum-plugin-priorities
 if ! rpm -q python-zope-interface; then
     sudo yum install -y http://mirrors.kernel.org/fedora//releases/20/Everything/x86_64/os/Packages/p/python-zope-interface-4.0.5-2.fc20.x86_64.rpm
 fi
-
-# Required for building puppet-based images
-# We can remove these once we add a corresponding Requires:
-# to the instack-undercloud spec file.
-sudo yum install -y openstack-heat-templates
-sudo yum install -y openstack-tripleo-puppet-elements
