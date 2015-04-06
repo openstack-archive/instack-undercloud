@@ -60,6 +60,10 @@ DISCOVERY_IPRANGE=192.0.2.100,192.0.2.120
 # IP address of TFTP server for discovery, chances are high that it is LOCAL_IP
 DISCOVERY_PXEIP=192.0.2.1
 
+### UNDERCLOUD_DEBUG ###
+# Whether to enable the debug log level for OpenStack services
+UNDERCLOUD_DEBUG=true
+
 ### Database password ###
 # Password used for MySQL databases
 # If left unset, one will be automatically generated
