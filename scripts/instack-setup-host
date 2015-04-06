@@ -37,10 +37,12 @@ if $(grep -Eqs 'Red Hat Enterprise Linux Server' /etc/redhat-release); then
         sudo rhos-release 6
         # We need openwsman-python from the optional repo
         sudo yum install -y yum-utils
-        sudo yum install -y yum-plugin-priorities
         sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
     fi
 fi
+
+# Delorean uses repo priorities to ensure we get the right packages
+sudo yum install -y yum-plugin-priorities
 
 # newer openstack-keystone requires python-zope-interface, but that is not
 # avaiable anywhere for EL7. So just install the Fedora package for now. We can
