@@ -17,6 +17,14 @@ Contents:
    Deploying the Overcloud <deploy-overcloud>
    Vendor-Specific Setup <vendor-specific>
 
+Appendices
+==========
+
+.. toctree::
+
+   Frequently Asked Questions (FAQ) <faq>
+   Troubleshooting a Failed Overcloud Deployment <troubleshooting-overcloud>
+
 Indices and tables
 ==================
 
