@@ -48,10 +48,3 @@ if [[ -f /etc/centos-release ]]; then
     cd /etc/yum.repos.d
     sudo curl -O http://buildlogs.centos.org/centos/7/cloud/openstack-rdo/centos-cloud-rdo.repo
 fi
-
-# newer openstack-keystone requires python-zope-interface, but that is not
-# avaiable anywhere for EL7. So just install the Fedora package for now. We can
-# add this dep to Delorean going forward.
-if ! rpm -q python-zope-interface; then
-    sudo yum install -y http://mirrors.kernel.org/fedora//releases/20/Everything/x86_64/os/Packages/p/python-zope-interface-4.0.5-2.fc20.x86_64.rpm
-fi

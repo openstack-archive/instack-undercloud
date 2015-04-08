@@ -108,11 +108,6 @@ if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
     fi
 fi
 
-export DELOREAN=${DELOREAN:-"0"}
-if [ "$DELOREAN" = "1" ]; then
-    export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS delorean"
-fi
-
 export PACKAGES=${PACKAGES:-"1"}
 if [ "$PACKAGES" = "1" ]; then
     export DIB_COMMON_ELEMENTS="$DIB_COMMON_ELEMENTS undercloud-package-install pip-and-virtualenv-override"
