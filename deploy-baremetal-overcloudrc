@@ -1,13 +1,30 @@
 #!/bin/bash
+# Interface where external network is attached to controller(s).
 export NeutronPublicInterface=nic1
+
+# OVERCLOUD_LIBVIRT_TYPE may be either kvm or qemu (if using nested virt).
 export OVERCLOUD_LIBVIRT_TYPE=kvm
+
+# Network CIDR to use when creating "default-net" tenant network.
 export NETWORK_CIDR="10.0.0.0/8"
+
+# Range of IP addresses to add to Neutron floating ip pool.
 export FLOATING_IP_START="172.17.0.45"
 export FLOATING_IP_END="172.17.0.64"
+
+# Network subnet for external network.
 export FLOATING_IP_CIDR="172.17.0.0/16"
+
+# Network gateway on external network.
 export BM_NETWORK_GATEWAY="172.17.0.1"
+
+# Network type may be gre or vxlan.
 export NEUTRON_NETWORK_TYPE=gre
+
+# Should match the NEURTRON_NETWORK_TYPE above.
 export NEUTRON_TUNNEL_TYPES=gre
+
+# Set the number of nodes to provision for each class of server.
 export COMPUTESCALE=1
 export BLOCKSTORAGESCALE=0
 export SWIFTSTORAGESCALE=0
