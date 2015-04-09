@@ -11,6 +11,9 @@ if [ -z "$OS_AUTH_URL" ]; then
     exit 1
 fi
 
+# NOTE(dtantsur): last working API version
+export IRONIC_API_VERSION="1.6"
+
 function show_options () {
     echo "Usage: $SCRIPT_NAME [options]"
     echo
@@ -127,6 +130,8 @@ function discover_nodes {
     echo "  Discovering nodes."
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
     for node_id in $node_ids; do
+        # NOTE(dtantsur): ||true is in case nodes are already MANAGEABLE
+        ironic node-set-provision-state $node_id manage || true
         echo -n "    Sending node ID $node_id to discoverd for discovery ... "
         openstack baremetal introspection start $node_id
         # tftpd chokes when serving 4 or more clients. Seeing less than 3Mb/s
@@ -149,6 +154,7 @@ function discover_nodes {
                 else
                     echo "ERROR: $error"
                 fi
+                ironic node-set-provision-state $node_id provide
                 break
             fi
             sleep 15
