@@ -278,12 +278,12 @@ function overcloud-swift-storage {
 
 function fedora-user {
     if [ ! -f fedora-user.qcow2 ]; then
-        if [ -f ~/.cache/image-create/fedora-20.x86_64.qcow2 ]; then
+        if [ -f ~/.cache/image-create/fedora-21.x86_64.qcow2 ]; then
             # Just copy the already downloaded Fedora cloud image as fedora-user.qcow2
-            cp ~/.cache/image-create/fedora-20.x86_64.qcow2 fedora-user.qcow2
+            cp ~/.cache/image-create/fedora-21.x86_64.qcow2 fedora-user.qcow2
         else
             # Download the image
-            curl -o fedora-user.qcow2 -L http://cloud.fedoraproject.org/fedora-20.x86_64.qcow2
+            curl -o fedora-user.qcow2 -L http://cloud.fedoraproject.org/fedora-21.x86_64.qcow2
         fi
         # The perms always seem to be wrong when copying out of the cache, so
         # fix them
@@ -318,6 +318,7 @@ function os-disk-config {
 }
 
 if [ "$image_build" = "default" ]; then
+    fedora-user
     deploy-ramdisk
     discovery-ramdisk
     overcloud-full
