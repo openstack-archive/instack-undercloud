@@ -6,6 +6,8 @@
   ]},
   "local-ip": "{{LOCAL_IP}}",
   "masquerade_networks": ["{{MASQUERADE_NETWORK}}"],
+  "service_certificate": "{{UNDERCLOUD_SERVICE_CERTIFICATE}}",
+  "public_vip": "{{UNDERCLOUD_PUBLIC_VIP}}",
   "neutron": {
     "dhcp_start": "{{DHCP_START}}",
     "dhcp_end": "{{DHCP_END}}",

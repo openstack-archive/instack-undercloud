@@ -94,8 +94,17 @@ allowed_hosts => $allowed_hosts,
 # pre-install swift here so we can build rings
 include ::swift
 
+if hiera('service_certificate', undef) {
+  $keystone_public_endpoint = join(['https://', hiera('controller_public_vip'), ':13000'])
+} else {
+  $keystone_public_endpoint = undef
+}
+
 class { '::keystone':
-  debug => hiera('debug'),
+  debug            => hiera('debug'),
+  public_bind_host => hiera('controller_host'),
+  admin_bind_host  => hiera('controller_host'),
+  public_endpoint  => $keystone_public_endpoint,
 }
 
 include ::keystone::roles::admin
@@ -270,7 +279,11 @@ ceilometer_config {
 
 # Heat
 class { '::heat':
-  debug => hiera('debug'),
+  debug            => hiera('debug'),
+  keystone_ec2_uri => join(['http://', hiera('controller_host'), ':5000/v2.0/ec2tokens']),
+}
+heat_config {
+  'clients/endpoint_type': value => 'internal',
 }
 include ::heat::api
 include ::heat::api_cfn
@@ -362,6 +375,29 @@ if str2bool(hiera('enable_tuskar', true)) {
 
   class { '::tuskar::ui':
     extras => true,
+  }
+}
+
+if hiera('service_certificate', undef) {
+  class { '::tripleo::loadbalancer':
+    controller_virtual_ip     => hiera('controller_admin_vip'),
+    controller_hosts          => [hiera('controller_host')],
+    control_virtual_interface => 'br-ctlplane',
+    public_virtual_ip         => hiera('controller_public_vip'),
+    public_virtual_interface  => 'br-ctlplane',
+    service_certificate       => hiera('service_certificate', undef),
+    keystone_admin            => true,
+    keystone_public           => true,
+    neutron                   => true,
+    glance_api                => true,
+    glance_registry           => true,
+    nova_osapi                => true,
+    nova_metadata             => true,
+    swift_proxy_server        => true,
+    heat_api                  => true,
+    ceilometer                => true,
+    ironic                    => true,
+    rabbitmq                  => true,
   }
 }
 

@@ -5,6 +5,9 @@ keystone_region: 'regionOne'
 
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
+controller_admin_vip: {{UNDERCLOUD_ADMIN_VIP}}
+controller_public_vip: {{UNDERCLOUD_PUBLIC_VIP}}
+service_certificate: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
 ntp::servers:
   -
 
@@ -28,9 +31,9 @@ swift::swift_hash_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
 swift::proxy::account_autocreate: true
 swift::proxy::authtoken::admin_password: {{UNDERCLOUD_SWIFT_PASSWORD}}
 swift::keystone::auth::tenant: 'service'
-swift::keystone::auth::public_url: http://{{LOCAL_IP}}:8080/v1/AUTH_%(tenant_id)s
-swift::keystone::auth::internal_url: http://{{LOCAL_IP}}:8080/v1/AUTH_%(tenant_id)s
-swift::keystone::auth::admin_url: http://{{LOCAL_IP}}:8080/
+swift::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC}}
+swift::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_SWIFT_INTERNAL}}
+swift::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_SWIFT_ADMIN}}
 swift::keystone::auth::password: {{UNDERCLOUD_SWIFT_PASSWORD}}
 swift::keystone::auth::region: "%{hiera('keystone_region')}"
 swift::keystone::auth::configure_s3_endpoint: false
@@ -79,15 +82,16 @@ glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::registry::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::registry::registry_host: {{LOCAL_IP}}
+glance::registry::bind_host: {{LOCAL_IP}}
 glance::registry::manage_service: true
 glance::registry::pipeline: 'keystone'
 glance::registry::auth_host: false
 glance::registry::auth_port: false
 glance::registry::auth_protocol: false
 glance::keystone::auth::tenant: 'service'
-glance::keystone::auth::public_url: http://{{LOCAL_IP}}:9292
-glance::keystone::auth::internal_url: http://{{LOCAL_IP}}:9292
-glance::keystone::auth::admin_url: http://{{LOCAL_IP}}:9292
+glance::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_GLANCE_PUBLIC}}
+glance::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
+glance::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_GLANCE_ADMIN}}
 glance::keystone::auth::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::keystone::auth::region: "%{hiera('keystone_region')}"
 
@@ -120,9 +124,9 @@ heat::database_connection: mysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}
 heat_dsn: mysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat::rpc_response_timeout: 600
 heat::keystone::auth::tenant: 'service'
-heat::keystone::auth::public_url: http://{{LOCAL_IP}}:8004/v1/%(tenant_id)s
-heat::keystone::auth::internal_url: http://{{LOCAL_IP}}:8004/v1/%(tenant_id)s
-heat::keystone::auth::admin_url: http://{{LOCAL_IP}}:8004/v1/%(tenant_id)s
+heat::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_HEAT_PUBLIC}}
+heat::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_HEAT_INTERNAL}}
+heat::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_HEAT_ADMIN}}
 heat::keystone::auth::password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::keystone::auth::region: "%{hiera('keystone_region')}"
 
@@ -139,8 +143,8 @@ keystone::roles::admin::service_tenant: 'service'
 keystone::public_bind_host: 0.0.0.0
 keystone::admin_bind_host: 0.0.0.0
 keystone::token_expiration: 14400
-keystone::endpoint::public_url: http://{{LOCAL_IP}}:5000
-keystone::endpoint::internal_url: http://{{LOCAL_IP}}:5000
+keystone::endpoint::public_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
+keystone::endpoint::internal_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL}}
 keystone::endpoint::admin_url: "%{hiera('keystone_identity_uri')}"
 keystone::endpoint::region: "%{hiera('keystone_region')}"
 
@@ -178,9 +182,9 @@ neutron::server::notifications::auth_url: "%{hiera('nova_admin_auth_url')}"
 neutron::server::notifications::tenant_name: service
 neutron::server::notifications::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 neutron::keystone::auth::tenant: 'service'
-neutron::keystone::auth::public_url: http://{{LOCAL_IP}}:9696
-neutron::keystone::auth::internal_url: http://{{LOCAL_IP}}:9696
-neutron::keystone::auth::admin_url: http://{{LOCAL_IP}}:9696
+neutron::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
+neutron::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_INTERNAL}}
+neutron::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_ADMIN}}
 neutron::keystone::auth::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::keystone::auth::region: "%{hiera('keystone_region')}"
 
@@ -199,9 +203,9 @@ ceilometer_compute_agent: ''
 snmpd_readonly_user_name: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
 snmpd_readonly_user_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}
 ceilometer::keystone::auth::tenant: 'service'
-ceilometer::keystone::auth::public_url: http://{{LOCAL_IP}}:8777
-ceilometer::keystone::auth::internal_url: http://{{LOCAL_IP}}:8777
-ceilometer::keystone::auth::admin_url: http://{{LOCAL_IP}}:8777
+ceilometer::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_PUBLIC}}
+ceilometer::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_INTERNAL}}
+ceilometer::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_ADMIN}}
 ceilometer::keystone::auth::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::auth::region: "%{hiera('keystone_region')}"
 
@@ -235,12 +239,12 @@ nova::compute::ironic::admin_url: "http://{{LOCAL_IP}}:35357/v2.0"
 nova::scheduler::filter::ram_allocation_ratio: '1.0'
 nova::scheduler::filter::scheduler_host_manager: 'nova.scheduler.ironic_host_manager.IronicHostManager'
 nova::keystone::auth::tenant: 'service'
-nova::keystone::auth::public_url: http://{{LOCAL_IP}}:8774/v2/%(tenant_id)s
-nova::keystone::auth::internal_url: http://{{LOCAL_IP}}:8774/v2/%(tenant_id)s
-nova::keystone::auth::admin_url: http://{{LOCAL_IP}}:8774/v2/%(tenant_id)s
-nova::keystone::auth::public_url_v3: http://{{LOCAL_IP}}:8774/v3
-nova::keystone::auth::internal_url_v3: http://{{LOCAL_IP}}:8774/v3
-nova::keystone::auth::admin_url_v3: http://{{LOCAL_IP}}:8774/v3
+nova::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_NOVA_PUBLIC}}
+nova::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_NOVA_INTERNAL}}
+nova::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NOVA_ADMIN}}
+nova::keystone::auth::public_url_v3: {{UNDERCLOUD_ENDPOINT_NOVAV3_PUBLIC}}
+nova::keystone::auth::internal_url_v3: {{UNDERCLOUD_ENDPOINT_NOVAV3_INTERNAL}}
+nova::keystone::auth::admin_url_v3: {{UNDERCLOUD_ENDPOINT_NOVAV3_ADMIN}}
 nova::keystone::auth::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::keystone::auth::configure_ec2_endpoint: false
@@ -256,9 +260,9 @@ ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ironic::conductor::force_power_state_during_sync: false
 ironic::conductor::clean_nodes: false
 ironic::keystone::auth::tenant: 'service'
-ironic::keystone::auth::public_url: http://{{LOCAL_IP}}:6385
-ironic::keystone::auth::internal_url: http://{{LOCAL_IP}}:6385
-ironic::keystone::auth::admin_url: http://{{LOCAL_IP}}:6385
+ironic::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}
+ironic::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
+ironic::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_IRONIC_ADMIN}}
 ironic::keystone::auth::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::keystone::auth::region: "%{hiera('keystone_region')}"
 
