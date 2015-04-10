@@ -21,6 +21,21 @@
 # masquerading. (string value)
 #network_gateway = 192.0.2.1
 
+# Virtual IP address to use for the public endpoints of Undercloud
+# services.  Only used if undercloud_service_certficate is set.
+# (string value)
+#undercloud_public_vip = 192.0.2.2
+
+# Virtual IP address to use for the admin endpoints of Undercloud
+# services.  Only used if undercloud_service_certficate is set.
+# (string value)
+#undercloud_admin_vip = 192.0.2.3
+
+# Certificate file to use for OpenStack service SSL connections.
+# Setting this enables SSL for the OpenStack API endpoints, leaving it
+# unset disables SSL. (string value)
+#undercloud_service_certificate =
+
 # Network interface on the Undercloud that will be handling the PXE
 # boots and DHCP for Overcloud instances. (string value)
 #local_interface = eth1

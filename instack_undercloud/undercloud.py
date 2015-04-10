@@ -97,6 +97,24 @@ _opts = [
                      'Overcloud instances. This should match the local_ip '
                      'above when using masquerading.')
                ),
+    cfg.StrOpt('undercloud_public_vip',
+               default='192.0.2.2',
+               help=('Virtual IP address to use for the public endpoints of '
+                     'Undercloud services.  Only used if '
+                     'undercloud_service_certficate is set.')
+               ),
+    cfg.StrOpt('undercloud_admin_vip',
+               default='192.0.2.3',
+               help=('Virtual IP address to use for the admin endpoints of '
+                     'Undercloud services.  Only used if '
+                     'undercloud_service_certficate is set.')
+               ),
+    cfg.StrOpt('undercloud_service_certificate',
+               default='',
+               help=('Certificate file to use for OpenStack service SSL '
+                     'connections.  Setting this enables SSL for the '
+                     'OpenStack API endpoints, leaving it unset disables SSL.')
+               ),
     cfg.StrOpt('local_interface',
                default='eth1',
                help=('Network interface on the Undercloud that will be '
@@ -372,6 +390,128 @@ def _generate_password(length=40):
     return hashlib.sha1(uuid_str).hexdigest()[:length]
 
 
+def _generate_endpoints(instack_env):
+    local_host = instack_env['LOCAL_IP']
+    public_host = local_host
+    proto = 'http'
+    heat_public_port = 8004
+    neutron_public_port = 9696
+    glance_public_port = 9292
+    nova_public_port = 8774
+    ceilo_public_port = 8777
+    keystone_public_port = 5000
+    swift_public_port = 8080
+    ironic_public_port = 6385
+
+    if CONF.undercloud_service_certificate:
+        public_host = CONF.undercloud_public_vip
+        proto = 'https'
+        heat_public_port = 13004
+        neutron_public_port = 13696
+        glance_public_port = 13292
+        nova_public_port = 13774
+        ceilo_public_port = 13777
+        keystone_public_port = 13000
+        swift_public_port = 13808
+        ironic_public_port = 13385
+
+    heat_public_params = (proto, public_host, heat_public_port)
+    heat_internal_params = ('http', local_host, 8004)
+    heat_admin_params = heat_internal_params
+    neutron_public_params = (proto, public_host, neutron_public_port)
+    neutron_internal_params = ('http', local_host, 9696)
+    neutron_admin_params = neutron_internal_params
+    glance_public_params = (proto, public_host, glance_public_port)
+    glance_internal_params = ('http', local_host, 9292)
+    glance_admin_params = glance_internal_params
+    nova_public_params = (proto, public_host, nova_public_port)
+    nova_internal_params = ('http', local_host, 8774)
+    nova_admin_params = nova_internal_params
+    ceilo_public_params = (proto, public_host, ceilo_public_port)
+    ceilo_internal_params = ('http', local_host, 8777)
+    ceilo_admin_params = ceilo_internal_params
+    keystone_public_params = (proto, public_host, keystone_public_port)
+    keystone_internal_params = ('http', local_host, 5000)
+    keystone_admin_params = ('http', local_host, 35357)
+    swift_public_params = (proto, public_host, swift_public_port)
+    swift_internal_params = ('http', local_host, 8080)
+    swift_admin_params = swift_internal_params
+    ironic_public_params = (proto, public_host, ironic_public_port)
+    ironic_internal_params = ('http', local_host, 6385)
+    ironic_admin_params = ironic_internal_params
+
+    endpoints = {}
+
+    def add_endpoint(name, format_str, public, internal, admin):
+        upper_name = name.upper()
+        endpoints['UNDERCLOUD_ENDPOINT_%s_PUBLIC' % upper_name] = (format_str %
+                                                                   public)
+        endpoints['UNDERCLOUD_ENDPOINT_%s_INTERNAL' % upper_name] = (
+            format_str % internal)
+        endpoints['UNDERCLOUD_ENDPOINT_%s_ADMIN' % upper_name] = (format_str %
+                                                                  admin)
+
+    add_endpoint('heat',
+                 '%s://%s:%d/v1/%%(tenant_id)s',
+                 heat_public_params,
+                 heat_internal_params,
+                 heat_admin_params,
+                 )
+    add_endpoint('neutron',
+                 '%s://%s:%d',
+                 neutron_public_params,
+                 neutron_internal_params,
+                 neutron_admin_params,
+                 )
+    add_endpoint('glance',
+                 '%s://%s:%d',
+                 glance_public_params,
+                 glance_internal_params,
+                 glance_admin_params,
+                 )
+    add_endpoint('nova',
+                 '%s://%s:%d/v2/%%(tenant_id)s',
+                 nova_public_params,
+                 nova_internal_params,
+                 nova_admin_params,
+                 )
+    add_endpoint('novav3',
+                 '%s://%s:%d/v3',
+                 nova_public_params,
+                 nova_internal_params,
+                 nova_admin_params,
+                 )
+    add_endpoint('ceilometer',
+                 '%s://%s:%d',
+                 ceilo_public_params,
+                 ceilo_internal_params,
+                 ceilo_admin_params,
+                 )
+    add_endpoint('keystone',
+                 '%s://%s:%d',
+                 keystone_public_params,
+                 keystone_internal_params,
+                 keystone_admin_params,
+                 )
+    add_endpoint('swift',
+                 '%s://%s:%d/v1/AUTH_%%(tenant_id)s',
+                 swift_public_params,
+                 swift_internal_params,
+                 swift_admin_params,
+                 )
+    # The swift admin endpoint has a different format from the others
+    endpoints['UNDERCLOUD_ENDPOINT_SWIFT_ADMIN'] = ('%s://%s:%s' %
+                                                    swift_admin_params)
+    add_endpoint('ironic',
+                 '%s://%s:%d',
+                 ironic_public_params,
+                 ironic_internal_params,
+                 ironic_admin_params,
+                 )
+
+    instack_env.update(endpoints)
+
+
 def _write_password_file(answers_parser, instack_env):
     with open(PATHS.PASSWORD_PATH, 'w') as password_file:
         password_file.write('[auth]\n')
@@ -477,6 +617,11 @@ def _generate_environment(instack_root):
                                               else '0')
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
+    if instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
+        instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = os.path.abspath(
+            instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+
+    _generate_endpoints(instack_env)
 
     _write_password_file(answers_parser, instack_env)
 

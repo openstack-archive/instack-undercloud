@@ -209,6 +209,58 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         self.assertEqual('eno1', env['LOCAL_INTERFACE'])
 
+    def test_generate_endpoints(self):
+        env = undercloud._generate_environment('.')
+        endpoint_vars = {k: v for (k, v) in env.items()
+                         if k.startswith('UNDERCLOUD_ENDPOINT')}
+        self.assertEqual(27, len(endpoint_vars))
+        # Spot check one service
+        self.assertEqual('http://192.0.2.1:5000',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
+        self.assertEqual('http://192.0.2.1:5000',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
+        self.assertEqual('http://192.0.2.1:35357',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
+        # Also check that the tenant id part is preserved
+        self.assertEqual('http://192.0.2.1:8080/v1/AUTH_%(tenant_id)s',
+                         env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
+
+    def test_generate_endpoints_ssl(self):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_service_certificate='test.pem')
+        env = undercloud._generate_environment('.')
+        # Spot check one service
+        self.assertEqual('https://192.0.2.2:13000',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
+        self.assertEqual('http://192.0.2.1:5000',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
+        self.assertEqual('http://192.0.2.1:35357',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
+        # Also check that the tenant id part is preserved
+        self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
+                         env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
+
+    def test_absolute_cert_path(self):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_service_certificate='/home/stack/test.pem')
+        env = undercloud._generate_environment('.')
+        self.assertEqual('/home/stack/test.pem',
+                         env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+
+    def test_relative_cert_path(self):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_service_certificate='test.pem')
+        env = undercloud._generate_environment('.')
+        self.assertEqual(os.path.join(os.getcwd(), 'test.pem'),
+                         env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+
+    def test_no_cert_path(self):
+        env = undercloud._generate_environment('.')
+        self.assertEqual('', env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+
 
 class TestWritePasswordFile(BaseTestCase):
     def test_normal(self):
@@ -344,7 +396,6 @@ class TestConfigureSshKeys(base.BaseTestCase):
 
     def _test_configure_ssh_keys(self, mock_eui, exists=True):
         id_path = self._create_test_id()
-
         mock_client_instance = mock.Mock()
         if not exists:
             get = mock_client_instance.keypairs.get

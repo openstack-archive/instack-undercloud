@@ -28,6 +28,9 @@ context = {
     'DISCOVERY_RUNBENCH': os.environ.get('DISCOVERY_RUNBENCH', '0'),
     'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
     'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
+    'UNDERCLOUD_SERVICE_CERTIFICATE': os.environ.get('UNDERCLOUD_SERVICE_CERTIFICATE', ''),
+    'UNDERCLOUD_PUBLIC_VIP': os.environ.get('UNDERCLOUD_PUBLIC_VIP', ''),
+    'UNDERCLOUD_ADMIN_VIP': os.environ.get('UNDERCLOUD_ADMIN_VIP', ''),
 }
 
 with open(template) as f:
