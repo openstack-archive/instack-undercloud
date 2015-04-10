@@ -333,3 +333,7 @@ class { 'horizon':
   allowed_hosts => [hiera('controller_host'), $::fqdn, 'localhost'],
   server_aliases => [hiera('controller_host'), $::fqdn, 'localhost'],
 }
+
+# tempest
+# TODO: when puppet-tempest supports install by package, do that instead
+package{'openstack-tempest-juno': }
