@@ -35,6 +35,11 @@ Check what profiles were matched for the discovered nodes::
 
     instack-ironic-deployment --show-profile
 
+If you have problems with discovery step, please check `ironic-discoverd
+troubleshooting documentation`_.
+
+.. _ironic-discoverd troubleshooting documentation: https://github.com/stackforge/ironic-discoverd#troubleshooting
+
 Ready-state configuration
 -------------------------
 
