@@ -60,7 +60,18 @@ expected_memory=$(jq ".nodes | map(.memory | tonumber) | add" $NODES_JSON)
 expected_vcpus=$(jq ".nodes | map(.cpu | tonumber) | add" $NODES_JSON)
 tripleo wait_for 180 1 wait_for_hypervisor_stats $expected_nodes $expected_memory  $expected_vcpus
 
-tripleo setup-overcloud-passwords -o tripleo-overcloud-passwords
+if heat stack-show overcloud > /dev/null; then
+    HEAT_OP=${HEAT_OP:-stack-update}
+else
+    HEAT_OP=${HEAT_OP:-stack-create}
+fi
+
+if [ "$HEAT_OP" = "stack-create" ]; then
+    tripleo setup-overcloud-passwords -o tripleo-overcloud-passwords
+else
+    tripleo setup-overcloud-passwords tripleo-overcloud-passwords
+fi
+
 source tripleo-overcloud-passwords
 
 # Undercloud passwords must all be sourced into this script since we make use
@@ -230,13 +241,21 @@ if [ -n "$TUSKAR" ]; then
 
     tuskar plan-update $TUSKAR_PARAMETERS $PLAN_ID
 
-    # Generate keystone certificates
+
     HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
-    ENV_JSON='{"parameters":{}}'
+
+    if [ -f $HEAT_ENV -a "$HEAT_OP" = "stack-update" ]; then
+        ENV_JSON=$(cat $HEAT_ENV)
+    else
+        ENV_JSON='{"parameters":{}}'
+    fi
 
     jq . > "${HEAT_ENV}" <<< $ENV_JSON
     chmod 0600 "${HEAT_ENV}"
-    generate-keystone-pki --heatenv $HEAT_ENV
+
+    if [ "$HEAT_OP" = "stack-create" ]; then
+        generate-keystone-pki --heatenv $HEAT_ENV
+    fi
 
     KeystoneCACertificate=$(os-apply-config -m $HEAT_ENV --key parameters.KeystoneCACertificate --type raw)
     KeystoneSigningCertificate=$(os-apply-config -m $HEAT_ENV --key parameters.KeystoneSigningCertificate --type raw)
@@ -253,7 +272,7 @@ if [ -n "$TUSKAR" ]; then
     OVERCLOUD_YAML_PATH="tuskar_templates/plan.yaml"
     ENVIROMENT_YAML_PATH="tuskar_templates/environment.yaml"
 
-    heat stack-create -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
+    heat $HEAT_OP -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
         -e $ENVIROMENT_YAML_PATH \
         overcloud
 
@@ -322,8 +341,12 @@ else
     fi
 
     HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
-    ENV_JSON='{"parameters":{}}'
 
+    if [ -f $HEAT_ENV -a "$HEAT_OP" = "stack-update" ]; then
+        ENV_JSON=$(cat $HEAT_ENV)
+    else
+        ENV_JSON='{"parameters":{}}'
+    fi
 
     RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
     ENV_JSON=$(jq '.parameters = .parameters + {
@@ -336,11 +359,14 @@ else
 
     jq . > "${HEAT_ENV}" <<< $ENV_JSON
     chmod 0600 "${HEAT_ENV}"
-    generate-keystone-pki --heatenv $HEAT_ENV
+
+    if [ "$HEAT_OP" = "stack-create" ]; then
+        generate-keystone-pki --heatenv $HEAT_ENV
+    fi
+
     HEAT_ENVIRONMENT="-e ${HEAT_ENV}"
 
-
-    heat stack-create -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
+    heat $HEAT_OP -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
         $RESOURCE_REGISTRY \
         $OVERCLOUD_PARAMETERS \
         $HEAT_ENVIRONMENT \
@@ -349,7 +375,12 @@ fi
 
 tripleo wait_for_stack_ready 220 10 overcloud
 
-echo "Overcloud CREATE_COMPLETE"
+if [ "$HEAT_OP" = "stack-create" ]; then
+    echo "Overcloud CREATE_COMPLETE"
+else
+    echo "Overcloud UPDATE_COMPLETE"
+    exit 0
+fi
 
 OVERCLOUD_ENDPOINT=$(heat output-show overcloud KeystoneURL|sed 's/^"\(.*\)"$/\1/')
 export OVERCLOUD_IP=$(echo $OVERCLOUD_ENDPOINT | awk -F '[/:]' '{print $4}')
