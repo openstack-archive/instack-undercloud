@@ -53,10 +53,10 @@ Preparing the Virtual Environment (Automated)
 
    .. only:: external
 
-     .. admonition:: RHEL
-        :class: rhel
+     .. admonition:: RHEL Portal Registration
+        :class: portal
 
-        Register the host machine using Subscription Management::
+        Register the host machine using Subscription Management.::
 
             sudo subscription-manager register --username="[your username]" --password="[your password]"
             # Find this with `subscription-manager list --available`
@@ -67,6 +67,23 @@ Preparing the Virtual Environment (Automated)
             sudo subscription-manager repos --enable=rhel-7-server-rpms \
                  --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
                  --enable=rhel-7-server-openstack-6.0-rpms
+
+     .. admonition:: RHEL Satellite Registration
+        :class: satellite
+
+        To register the host machine to a Satellite, the following repos must
+        be synchronized on the Satellite::
+
+            rhel-7-server-rpms
+            rhel-7-server-optional-rpms
+            rhel-7-server-extras-rpms
+            rhel-7-server-openstack-6.0-rpms
+
+
+        See the `Red Hat Satellite User Guide`_ for how to configure the system to
+        register with a Satellite server. It is suggested to use an activation
+        key that automatically enables the above repos for registered systems.
+
 
 #. Make sure sshd service is installed and running.
 #. The user performing all of the installation steps on the virt host needs to
@@ -142,23 +159,50 @@ Preparing the Virtual Environment (Automated)
 
    .. only:: external
 
-     .. admonition:: RHEL
-        :class: rhel
+   .. admonition:: RHEL
+      :class: rhel
 
-        Download the RHEL 7.1 cloud image or copy it over from a different location,
-        for example:
-        https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.1/x86_64/product-downloads,
-        and define the needed environment variables for RHEL 7.1 prior to running
-        ``instack-virt-setup``::
+      Download the RHEL 7.1 cloud image or copy it over from a different location,
+      for example:
+      https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.1/x86_64/product-downloads,
+      and define the needed environment variables for RHEL 7.1 prior to running
+      ``instack-virt-setup``::
 
             export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150224.0.x86_64.qcow2
-            export REG_METHOD=portal
-            export REG_USER="[your username]"
-            export REG_PASSWORD="[your password]"
-            # Find this with `sudo subscription-manager list --available`
-            export REG_POOL_ID="[pool id]"
-            export REG_REPOS="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-ha-for-rhel-7-server-rpms \
-                rhel-7-server-optional-rpms rhel-7-server-openstack-6.0-rpms"
+
+   .. admonition:: RHEL Portal Registration
+      :class: portal
+
+      To register the Undercloud vm to the Red Hat Portal define the following variables::
+
+              export REG_METHOD=portal
+              export REG_USER="[your username]"
+              export REG_PASSWORD="[your password]"
+              # Find this with `sudo subscription-manager list --available`
+              export REG_POOL_ID="[pool id]"
+              export REG_REPOS="rhel-7-server-rpms rhel-7-server-extras-rpms rhel-ha-for-rhel-7-server-rpms \
+                  rhel-7-server-optional-rpms rhel-7-server-openstack-6.0-rpms"
+
+   .. admonition:: RHEL Satellite Registration
+      :class: satellite
+
+      To register the Undercloud vm to a Satellite define the following
+      variables. Only using an activation key is supported when registering to
+      Satellite, username/password is not supported for security reasons. The
+      activation key must enable the repos shown::
+
+              export REG_METHOD=satellite
+              # REG_SAT_URL should be in the format of:
+              # http://<satellite-hostname>
+              export REG_SAT_URL="[satellite url]"
+              export REG_ORG="[satellite org]"
+              # Activation key must enable these repos:
+              # rhel-7-server-rpms
+              # rhel-7-server-optional-rpms
+              # rhel-7-server-extras-rpms
+              # rhel-7-server-openstack-6.0-rpms
+              export REG_ACTIVATION_KEY="[activation key]"
+
 
    .. admonition:: Ceph
       :class: ceph
@@ -206,3 +250,5 @@ Continue with :doc:`../install-undercloud`.
     desktop environment session if wanting to use virt-manager) before this
     change will be fully applied. To avoid having to re-login, you can use
     ``sudo virsh``.
+
+.. _Red Hat Satellite User Guide: https://access.redhat.com/documentation/en-US/Red_Hat_Satellite/

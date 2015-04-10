@@ -129,19 +129,42 @@ Setting Up The Undercloud Machine
             }
         ]
     }
+
 .. only:: external
 
-   .. admonition:: RHEL
-      :class: rhel
+.. admonition:: RHEL
+   :class: rhel
 
-       Register the host machine using Subscription Management::
+   If using RHEL, reigster the Undercloud for package installations/updates.
 
-          sudo subscription-manager register --username="[your username]" --password="[your password]"
-          # Find this with `subscription-manager list --available`
-          sudo subscription-manager attach --pool="[pool id]"
-          # Verify repositories are available
-          sudo subscription-manager repos --list
-          # Enable repositories needed
-          sudo subscription-manager repos --enable=rhel-7-server-rpms \
-              --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
-              --enable=rhel-7-server-openstack-6.0-rpms
+     .. admonition:: RHEL Portal Registration
+        :class: portal
+
+        Register the host machine using Subscription Management::
+
+            sudo subscription-manager register --username="[your username]" --password="[your password]"
+            # Find this with `subscription-manager list --available`
+            sudo subscription-manager attach --pool="[pool id]"
+            # Verify repositories are available
+            sudo subscription-manager repos --list
+            # Enable repositories needed
+            sudo subscription-manager repos --enable=rhel-7-server-rpms \
+                 --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
+                 --enable=rhel-7-server-openstack-6.0-rpms
+
+     .. admonition:: RHEL Satellite Registration
+        :class: satellite
+
+        To register the host machine to a Satellite, the following repos must
+        be synchronized on the Satellite and enabled for registered systems::
+
+            rhel-7-server-rpms
+            rhel-7-server-optional-rpms
+            rhel-7-server-extras-rpms
+            rhel-7-server-openstack-6.0-rpms
+
+        See the `Red Hat Satellite User Guide`_ for how to configure the system to
+        register with a Satellite server. It is suggested to use an activation
+        key that automatically enables the above repos for registered systems.
+
+.. _Red Hat Satellite User Guide: https://access.redhat.com/documentation/en-US/Red_Hat_Satellite/

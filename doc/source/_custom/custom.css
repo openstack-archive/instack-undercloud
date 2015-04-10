@@ -92,6 +92,8 @@ footer p {
 
 /* tags */
 .rhel {background: #fee;}
+.portal {background-color: #ded;}
+.satellite {background-color: #dee;}
 .centos {background: #fef;}
 .baremetal {background: #eef;}
 .virtual {background: #efe;}
@@ -159,6 +161,8 @@ footer p {
   color: inherit;
   text-decoration: underline dotted;
 }
+
+
 
 /* LINKS */
 a.external:after {

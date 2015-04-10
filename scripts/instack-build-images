@@ -309,7 +309,7 @@ function overcloud-full {
             $OVERCLOUD_FULL_DIB_EXTRA_ARGS \
             $DIB_COMMON_ELEMENTS \
             $PUPPET_COMMON_ELEMENTS \
-            2>&1 | tee dib-openstack-full.log
+            2>&1 | tee dib-overcloud-full.log
     fi
 }
 

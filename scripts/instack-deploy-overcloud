@@ -91,7 +91,6 @@ NEUTRON_TUNNEL_TYPES=${NEUTRON_TUNNEL_TYPES:-gre}
 # baremetal, qemu for an overcloud running in vm's.
 OVERCLOUD_LIBVIRT_TYPE=${OVERCLOUD_LIBVIRT_TYPE:-qemu}
 NtpServer=${NtpServer:-""}
-OVERCLOUD_EXTRA_CONFIG=${OVERCLOUD_EXTRA_CONFIG:-"{}"}
 
 CONTROLSCALE=${CONTROLSCALE:-1}
 COMPUTESCALE=${COMPUTESCALE:-1}
@@ -116,6 +115,22 @@ export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal"}
 export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal"}
 export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal"}
 
+# Satellite parameters
+export REG_ACTIVATION_KEY=${REG_ACTIVATION_KEY:-"''"}
+export REG_ORG=${REG_ORG:-"''"}
+export REG_FORCE=${REG_FORCE:-"1"}
+export REG_SAT_URL=${REG_SAT_URL:-"''"}
+export REG_METHOD=${REG_METHOD:-"''"}
+# The modified resource registry must exist under
+# /usr/share/openstack-tripleo-heat-templates for Tuskar's sake.
+sudo cp /usr/share/instack-undercloud/heat-templates/overcloud-resource-registry-puppet-satellite.yaml \
+        /usr/share/openstack-tripleo-heat-templates
+if [ "$REG_METHOD" = "satellite" ]; then
+    export OVERCLOUD_RESOURCE_REGISTRY=${OVERCLOUD_RESOURCE_REGISTRY:-"/usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet-satellite.yaml"}
+else
+    export OVERCLOUD_RESOURCE_REGISTRY=${OVERCLOUD_RESOURCE_REGISTRY:-"/usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"}
+fi
+
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
 # NOTE(gfidente): Taken from
@@ -126,6 +141,12 @@ function create_cephx_key() {
 }
 
 if [ -n "$TUSKAR" ]; then
+
+    # Reload the tuskar resource registry that includes the satellite
+    # registration resource.
+    export TUSKAR_RESOURCE_REGISTRY=$OVERCLOUD_RESOURCE_REGISTRY
+    sudo -E /usr/libexec/os-refresh-config/configure.d/90-tuskar-db-sync
+
     PLAN_ID=$(tuskar plan-show overcloud | awk '$2=="uuid" {print $4}')
     if [ -n "$PLAN_ID" ]; then
         tuskar plan-delete $PLAN_ID
@@ -190,9 +211,6 @@ if [ -n "$TUSKAR" ]; then
     -A Swift-Storage-1::count=${SWIFTSTORAGESCALE}
     -A Cinder-Storage-1::count=${BLOCKSTORAGESCALE}
     -A Ceph-Storage-1::count=${CEPHSTORAGESCALE}
-    -A Controller-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
-    -A Compute-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
-    -A Cinder-Storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     -A Cinder-Storage-1::Flavor=${OVERCLOUD_BLOCKSTORAGE_FLAVOR}
     -A Compute-1::Flavor=${OVERCLOUD_COMPUTE_FLAVOR}
     -A Controller-1::Flavor=${OVERCLOUD_CONTROL_FLAVOR}
@@ -217,7 +235,6 @@ if [ -n "$TUSKAR" ]; then
     #-A cinder-storage-1::CinderPassword=${OVERCLOUD_CINDER_PASSWORD}
     #-A swift-storage-1::NeutronNetworkType=${NEUTRON_NETWORK_TYPE}
     #-A cinder-storage-1::AdminPassword=${OVERCLOUD_ADMIN_PASSWORD}
-    #-A swift-storage-1::ExtraConfig=${OVERCLOUD_EXTRA_CONFIG}
     #"
 
     if [ $CEPHSTORAGESCALE -gt 0 ]; then
@@ -282,15 +299,27 @@ if [ -n "$TUSKAR" ]; then
     tuskar plan-templates -O tuskar_templates $PLAN_ID
 
     OVERCLOUD_YAML_PATH="tuskar_templates/plan.yaml"
-    ENVIROMENT_YAML_PATH="tuskar_templates/environment.yaml"
+    ENVIRONMENT_YAML_PATH="tuskar_templates/environment.yaml"
+
+    if [ "$REG_METHOD" = "satellite" ]; then
+        mkdir -p tuskar_templates/extraconfig/post_deploy
+        cp -r /usr/share/openstack-tripleo-heat-templates/extraconfig/post_deploy/scripts tuskar_templates/extraconfig/post_deploy
+
+        echo "parameter_defaults:" >> $ENVIRONMENT_YAML_PATH
+        echo "  rhel_reg_activation_key: $REG_ACTIVATION_KEY" >> $ENVIRONMENT_YAML_PATH
+        echo "  rhel_reg_sat_url: $REG_SAT_URL" >> $ENVIRONMENT_YAML_PATH
+        echo "  rhel_reg_org: $REG_ORG" >> $ENVIRONMENT_YAML_PATH
+        echo "  rhel_reg_method: $REG_METHOD" >> $ENVIRONMENT_YAML_PATH
+        echo "  rhel_reg_force: $REG_FORCE" >> $ENVIRONMENT_YAML_PATH
+
+    fi
 
     heat $HEAT_OP -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
-        -e $ENVIROMENT_YAML_PATH \
+        -e $ENVIRONMENT_YAML_PATH \
         overcloud
 
 else
     OVERCLOUD_YAML_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-without-mergepy.yaml"
-    RESOURCE_REGISTRY_PATH="$INSTACK_ROOT/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"
 
     export OVERCLOUD_PARAMETERS=${OVERCLOUD_PARAMETERS:-"\
     -P AdminPassword=${OVERCLOUD_ADMIN_PASSWORD} \
@@ -300,7 +329,6 @@ else
     -P CinderPassword=${OVERCLOUD_CINDER_PASSWORD} \
     -P CinderISCSIHelper=lioadm \
     -P CloudName=overcloud \
-    -P ExtraConfig=${OVERCLOUD_EXTRA_CONFIG} \
     -P GlancePassword=${OVERCLOUD_GLANCE_PASSWORD} \
     -P HeatPassword=${OVERCLOUD_HEAT_PASSWORD} \
     -P NeutronControlPlaneID=$NeutronControlPlaneID \
@@ -360,7 +388,7 @@ else
         ENV_JSON='{"parameters":{}}'
     fi
 
-    RESOURCE_REGISTRY="-e $RESOURCE_REGISTRY_PATH"
+    RESOURCE_REGISTRY="-e $OVERCLOUD_RESOURCE_REGISTRY"
     ENV_JSON=$(jq '.parameters = .parameters + {
         "ControllerCount": '${CONTROLSCALE}',
         "ComputeCount": '${COMPUTESCALE}',
@@ -368,6 +396,12 @@ else
         "BlockStorageCount": '${BLOCKSTORAGESCALE}',
         "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
       }' <<< $ENV_JSON)
+
+    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_activation_key = \"$REG_ACTIVATION_KEY\"" <<< $ENV_JSON)
+    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_sat_url = \"$REG_SAT_URL\"" <<< $ENV_JSON)
+    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_org = \"$REG_ORG\"" <<< $ENV_JSON)
+    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_method = \"$REG_METHOD\"" <<< $ENV_JSON)
+    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_force = \"$REG_FORCE\"" <<< $ENV_JSON)
 
     jq . > "${HEAT_ENV}" <<< $ENV_JSON
     chmod 0600 "${HEAT_ENV}"
