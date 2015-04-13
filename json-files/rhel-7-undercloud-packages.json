@@ -30,7 +30,8 @@
     ],
     "exclude-element": [
       "pip-and-virtualenv",
-      "ironic"
+      "ironic",
+      "openstack-clients"
     ],
     "blacklist": [
       "10-cloud-init",

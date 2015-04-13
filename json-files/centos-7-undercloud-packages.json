@@ -33,6 +33,7 @@
     "exclude-element": [
       "pip-and-virtualenv",
       "ironic",
+      "openstack-clients",
       "selinux"
     ],
     "blacklist": [
