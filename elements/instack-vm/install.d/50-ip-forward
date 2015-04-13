@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+# When using instack-virt-setup, it makes sense to always enable IP forwarding
+# so the Overcloud nodes can have external access.
+cat > /etc/sysctl.d/ip-forward.conf <<EOF
+net.ipv4.ip_forward=1
+EOF
