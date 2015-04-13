@@ -131,7 +131,7 @@ function discover_nodes {
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
     for node_id in $node_ids; do
         # NOTE(dtantsur): ||true is in case nodes are already MANAGEABLE
-        ironic node-set-provision-state $node_id manage || true
+        ironic node-set-provision-state $node_id manage 2> /dev/null || true
         echo -n "    Sending node ID $node_id to discoverd for discovery ... "
         openstack baremetal introspection start $node_id
         # tftpd chokes when serving 4 or more clients. Seeing less than 3Mb/s
