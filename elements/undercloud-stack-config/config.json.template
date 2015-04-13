@@ -14,7 +14,8 @@
   "discovery": {
     "interface": "{{DISCOVERY_INTERFACE}}",
     "iprange": "{{DISCOVERY_IPRANGE}}",
-    "pxeip": "{{DISCOVERY_PXEIP}}"
+    "pxeip": "{{DISCOVERY_PXEIP}}",
+    "runbench": "{{DISCOVERY_RUNBENCH}}"
   },
   "os_net_config": {
    "network_config": [

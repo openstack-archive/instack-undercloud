@@ -74,6 +74,7 @@ export NETWORK_GATEWAY
 export DISCOVERY_INTERFACE
 export DISCOVERY_IPRANGE
 export DISCOVERY_PXEIP
+export DISCOVERY_RUNBENCH
 export UNDERCLOUD_DEBUG
 
 # Reuse any existing defined passwords. This is important since any users

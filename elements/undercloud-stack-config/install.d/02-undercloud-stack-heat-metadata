@@ -14,7 +14,7 @@ template = os.path.join(os.path.dirname(__file__),
                         '..',
                         'config.json.template')
 
-context = { 
+context = {
     'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
     'PUBLIC_INTERFACE_IP': os.environ.get('PUBLIC_INTERFACE_IP', '192.0.2.1/24'),
     'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
@@ -26,6 +26,7 @@ context = {
     'DISCOVERY_INTERFACE': os.environ.get('DISCOVERY_INTERFACE', 'br-ctlplane'),
     'DISCOVERY_IPRANGE': os.environ.get('DISCOVERY_IPRANGE', '192.0.2.100,192.0.2.120'),
     'DISCOVERY_PXEIP': os.environ.get('DISCOVERY_PXEIP', '192.0.2.1'),
+    'DISCOVERY_RUNBENCH': os.environ.get('DISCOVERY_RUNBENCH', '0'),
     'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
     'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
 }
