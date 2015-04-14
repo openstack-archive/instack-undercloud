@@ -50,7 +50,6 @@ glance::api::registry_host: {{LOCAL_IP}}
 glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::api::known_stores:
   - glance.store.filesystem.Store
-  - glance.store.swift.Store
 glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_port: 9292

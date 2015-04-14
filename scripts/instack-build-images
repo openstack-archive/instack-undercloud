@@ -35,7 +35,7 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 # We must do this until tripleo-puppet-elements is packaged
 export DIB_INSTALLTYPE_puppet_modules=source
 
-export DELOREAN_EL7_REPO_URL="http://trunk.rdoproject.org/centos70/48/3d/483de6313fab5913f9e68eb24afe65c36bd9b623_e37f6f1a/"
+export DELOREAN_EL7_REPO_URL="http://trunk.rdoproject.org/centos70/2f/a5/2fa5839e2efc0f93c815aeff5ad0ddee1ba16830_d9a2ddd9"
 
 export NODE_DIST=${NODE_DIST:-""}
 
