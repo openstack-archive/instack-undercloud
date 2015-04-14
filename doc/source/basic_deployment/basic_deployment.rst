@@ -225,6 +225,20 @@ Deploy the overcloud (default of 1 compute and 1 control):
 
     instack-deploy-overcloud --tuskar
 
+.. admonition:: Deployment with post-install validation
+   :class: tempest
+
+    To deploy the overcloud **and** verify it by running Tempest::
+
+        instack-deploy-overcloud --tuskar --tempest
+
+    .. note:: The full Tempest test suite might take hours to run on a single CPU.
+
+    To run only a part of the Tempest test suite (eg. tests with ``gate`` tag)::
+
+        export TEMPEST_ARGS="gate"
+        instack-deploy-overcloud --tuskar --tempest
+
 
 Post-Deployment
 ---------------
