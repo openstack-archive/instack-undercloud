@@ -27,6 +27,10 @@ Discover hardware attributes of nodes and match them to a deployment profile:
    the list of profiles defined in ``/etc/edeploy/state``, before initiating the
    nodes discovery. [#]_
 
+   Example contents of ``/etc/edeploy/state``::
+
+       [('ceph-storage', '1'), ('control', '1'), ('compute', '*')]
+
 ::
 
     instack-ironic-deployment --discover-nodes
