@@ -214,14 +214,11 @@ if [ -n "$TUSKAR" ]; then
         MON_KEY=$(create_cephx_key)
         ADMIN_KEY=$(create_cephx_key)
         export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
-        -A Controller-1::CephClusterFSID=$FSID
-        -A Controller-1::CephMonKey=$MON_KEY
-        -A Controller-1::CephAdminKey=$ADMIN_KEY
-        -A Controller-1::CinderEnableRbdBackend=True
-        -A Ceph-Storage-1::CephClusterFSID=$FSID
-        -A Ceph-Storage-1::CephMonKey=$MON_KEY
-        -A Ceph-Storage-1::CephAdminKey=$ADMIN_KEY
-        -A Compute-1::NovaEnableRbdBackend=True
+            -A Controller-1::CinderEnableRbdBackend=True
+            -A CephClusterFSID=$FSID
+            -A CephMonKey=$MON_KEY
+            -A CephAdminKey=$ADMIN_KEY
+            -A Compute-1::NovaEnableRbdBackend=True
         "
     fi
 
