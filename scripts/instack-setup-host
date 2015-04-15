@@ -6,15 +6,15 @@ set -o pipefail
 # Install repo file for Delorean master packages
 # Pin to an older repo for now because newer openstack-keystone requires a
 # newer and not yet avaialable python-pycadf.
-export DELOREAN_REPO=${DELOREAN_REPO:-"http://trunk.rdoproject.org/centos70/2f/a5/2fa5839e2efc0f93c815aeff5ad0ddee1ba16830_d9a2ddd9/delorean.repo"}
-sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_REPO
+export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/centos70/latest-RDO-trunk-CI"}
+sudo curl -o /etc/yum.repos.d/delorean.repo $DELOREAN_TRUNK_REPO/delorean.repo
 # We need to have the main delorean repo have a lower priority than ours to ensure our changes get installed
 sudo sed -i 's/priority=1/priority=10/' /etc/yum.repos.d/delorean.repo
 
 # Install repo file for Delorean el7 midstream packages built from
 # rdo-management.
-export DELOREAN_RHEL7_REPO=${DELOREAN_RHEL7_REPO:-"http://trunk-mgt.rdoproject.org/repos/current/delorean-rdo-management.repo"}
-sudo curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_RHEL7_REPO
+export DELOREAN_TRUNK_MGT_REPO=${DELOREAN_TRUNK_MGT_REPO:-"http://trunk-mgt.rdoproject.org/repos/current-passed-ci"}
+sudo curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_TRUNK_MGT_REPO/delorean-rdo-management.repo
 
 # Delorean requires RDO
 if ! rpm -q rdo-release; then

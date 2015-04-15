@@ -35,7 +35,7 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 # We must do this until tripleo-puppet-elements is packaged
 export DIB_INSTALLTYPE_puppet_modules=source
 
-export DELOREAN_EL7_REPO_URL="http://trunk.rdoproject.org/centos70/2f/a5/2fa5839e2efc0f93c815aeff5ad0ddee1ba16830_d9a2ddd9"
+export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/centos70/latest-RDO-trunk-CI/"}
 
 export NODE_DIST=${NODE_DIST:-""}
 
@@ -70,9 +70,9 @@ if [ "$NODE_DIST" = "rhel7" ]; then
     fi
     export REG_HALT_UNREGISTER=${REG_HALT_UNREGISTER:-1}
     export DELOREAN=1
-    export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL
+    export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO
 elif [ "$NODE_DIST" = "centos7" ]; then
-    export DELOREAN_REPO_URL=$DELOREAN_EL7_REPO_URL
+    export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO
     # SELinux permissive for CentOS for now
     export DIB_COMMON_ELEMENTS="selinux-permissive centos-cloud-repo"
     # lshw has moved from EPEL to the CentOS cr repo.  However, at this time adding
