@@ -80,7 +80,7 @@ Deploy the overcloud (default of 1 compute and 1 control):
 
 ::
 
-    instack-deploy-overcloud
+    instack-deploy-overcloud --tuskar
 
 Working with the Overcloud
 --------------------------
@@ -116,7 +116,7 @@ The overcloud can be redeployed when desired.
 
 #. Deploy the Overcloud again::
 
-    instack-deploy-overcloud
+    instack-deploy-overcloud --tuskar
 
 .. rubric:: Footnotes
 
