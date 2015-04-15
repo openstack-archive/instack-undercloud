@@ -121,6 +121,7 @@ baremetal \
 dhcp-all-interfaces \
 os-collect-config \
 heat-config-puppet \
+heat-config-script \
 puppet-modules \
 hiera \
 os-net-config \
