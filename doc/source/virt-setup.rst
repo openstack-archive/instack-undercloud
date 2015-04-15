@@ -151,6 +151,8 @@ Preparing the Host Machine
 
       instack-virt-setup
 
+   If the script encounters problems, see :doc:`troubleshooting-virt-setup`.
+
 When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.
 
