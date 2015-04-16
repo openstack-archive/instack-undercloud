@@ -1,0 +1,112 @@
+@import url("css/theme.css");
+
+
+/* CUSTOM CSS OVERRIDES GO HERE */
+/* ============================ */
+
+
+/* LAYOUT */
+.wy-nav-content-wrap {
+  background: white;
+}
+
+.wy-nav-content {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.rst-content .section ol li p.first:last-child {
+    margin-bottom: 24px;
+}
+
+
+/* TYPOGRAPHY */
+p {
+  margin-bottom: 16px;
+}
+
+p + ul, p + ol.simple {
+  margin-top: -12px;
+}
+
+h1, h2, h3, h4, h5, h6, p.rubric {
+  margin-top: 48px;
+}
+
+h2 {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+footer {
+  font-size: 70%;
+  margin-top: 48px;
+}
+
+footer p {
+  font-size: inherit;
+}
+
+
+/* NOTES, ADMONITTIONS AND TAGS */
+.admonition {
+  font-size: 85%; /* match code size */
+  background: rgb(240, 240, 240);
+  color: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5em 1em 0.75em 1em;
+  margin-bottom: 24px;
+}
+
+.admonition p {
+  font-size: inherit;
+}
+
+.admonition p.last {
+  margin-bottom: 0;
+}
+
+.admonition p.first.admonition-title {
+  display: inline;
+  background: none;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+/* notes */
+.rst-content .note {
+  background: rgb(240, 240, 240);
+}
+.note > p.first.admonition-title {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* tags */
+.rhel-tag {background: #fee;}
+.centos-tag {background: #fef;}
+.baremetal-tag {background: #eef;}
+.virt-tag {background: #efe;}
+.ceph-tag {background: #eff;}
+
+
+/* LINKS */
+a.external:after {
+  font-family: FontAwesome;
+  content: '';
+  visibility: visible;
+  display: inline-block;
+  font-size: 70%;
+  position: relative;
+  padding-left: 0.5em;
+  top: -0.5em;
+}
+
+
+/* LIST */
+.wy-plain-list-decimal li ul,
+.rst-content .section ol li ul,
+.rst-content ol.arabic li ul,
+article ol li ul {
+    margin-bottom: 24px;
+}
