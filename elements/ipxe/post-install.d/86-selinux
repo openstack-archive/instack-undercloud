@@ -1,0 +1,12 @@
+#!/bin/bash
+set -eux
+set -o pipefail
+
+# Install the selinux policy
+[ -x /usr/sbin/semanage ] || exit 0
+
+mkdir -p /opt/stack/selinux-policy
+
+# Compile the selinux policy
+checkmodule -M -m -o /tmp/ipxe.mod $(dirname $0)/../selinux/ipxe.te
+sudo semodule_package -m /tmp/ipxe.mod -o /opt/stack/selinux-policy/ipxe.pp

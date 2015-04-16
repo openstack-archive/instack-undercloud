@@ -1,0 +1,16 @@
+Listen 8088
+<VirtualHost *:8088>
+    DocumentRoot "/httpboot"
+    <Directory "/httpboot">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+        Require all granted
+    </Directory>
+
+    ## Logging
+    ErrorLog "/var/log/httpd/ironic_error.log"
+    ServerSignature Off
+    CustomLog "/var/log/httpd/ironic_access.log" combined
+</VirtualHost>

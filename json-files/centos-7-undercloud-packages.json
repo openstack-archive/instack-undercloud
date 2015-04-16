@@ -17,6 +17,7 @@
       "tuskar",
       "rdomanager-oscplugin",
       "ironic-conductor",
+      "ipxe",
       "os-cloud-config",
       "os-net-config",
       "puppet-stack-config",
