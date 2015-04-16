@@ -334,6 +334,9 @@ class { 'horizon':
   server_aliases => [hiera('controller_host'), $::fqdn, 'localhost'],
 }
 
+# Install python-tuskarclient so we can deploy a stack with tuskar
+package{'python-tuskarclient': }
+
 # tempest
 # TODO: when puppet-tempest supports install by package, do that instead
 package{'openstack-tempest-juno': }
