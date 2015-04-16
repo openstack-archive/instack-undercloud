@@ -16,6 +16,7 @@ Contents:
    Building Images <build-images>
    Deploying the Overcloud <deploy-overcloud>
    Vendor-Specific Setup <vendor-specific>
+   How to Contribute <contributions/contributions>
 
 Appendices
 ==========
