@@ -140,6 +140,7 @@ grub2 \
 
 export OVERCLOUD_FULL_DIB_EXTRA_ARGS=${OVERCLOUD_FULL_DIB_EXTRA_ARGS:-"\
 $PUPPET_COMMON_ELEMENTS \
+overcloud-full \
 overcloud-controller \
 overcloud-compute \
 overcloud-ceph-storage \
