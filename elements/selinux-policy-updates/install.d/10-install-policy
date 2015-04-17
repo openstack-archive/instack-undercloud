@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-mkdir -p /opt/stack/selinux-policy
-
-cp $(dirname $0)/../*.pp /opt/stack/selinux-policy
-cp $(dirname $0)/../*.te /opt/stack/selinux-policy

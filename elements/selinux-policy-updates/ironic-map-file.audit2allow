@@ -1,7 +1,0 @@
-type=AVC msg=audit(1406815389.458:128232): avc:  denied  { read } for  pid=15291 comm="in.tftpd" name="map-file" dev="vda3" ino=1545220 scontext=system_u:system_r:tftpd_t:s0-s0:c0.c1023 tcontext=unconfined_u:object_r:default_t:s0 tclass=file
-type=AVC msg=audit(1406815586.318:128850): avc:  denied  { open } for  pid=16162 comm="in.tftpd" path="/tftpboot/map-file" dev="vda3" ino=1545220 scontext=system_u:system_r:tftpd_t:s0-s0:c0.c1023 tcontext=unconfined_u:object_r:default_t:s0 tclass=file
-type=AVC msg=audit(1406815587.087:128851): avc:  denied  { open } for  pid=16163 comm="in.tftpd" path="/tftpboot/map-file" dev="vda3" ino=1545220 scontext=system_u:system_r:tftpd_t:s0-s0:c0.c1023 tcontext=unconfined_u:object_r:default_t:s0 tclass=file
-type=AVC msg=audit(1406815645.923:129066): avc:  denied  { getattr } for  pid=16430 comm="in.tftpd" path="/tftpboot/map-file" dev="vda3" ino=1545220 scontext=system_u:system_r:tftpd_t:s0-s0:c0.c1023 tcontext=unconfined_u:object_r:default_t:s0 tclass=file
-type=AVC msg=audit(1406815646.004:129067): avc:  denied  { read } for  pid=16433 comm="in.tftpd" name="01-00-aa-57-ce-26-0b" dev="vda3" ino=1545223 scontext=system_u:system_r:tftpd_t:s0-s0:c0.c1023 tcontext=system_u:object_r:default_t:s0 tclass=lnk_file
-type=AVC msg=audit(1406815711.453:129400): avc:  denied  { lock } for  pid=16743 comm="in.tftpd" path="/tftpboot/237b3994-a853-4a74-b7a6-7e5944220003/config" dev="vda3" ino=1545222 scontext=system_u:system_r:tftpd_t:s0-s0:c0.c1023 tcontext=system_u:object_r:default_t:s0 tclass=file
-

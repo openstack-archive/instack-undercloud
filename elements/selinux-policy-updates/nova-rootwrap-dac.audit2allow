@@ -1,2 +1,0 @@
-type=AVC msg=audit(1406754843.602:9981): avc:  denied  { dac_override } for  pid=21038 comm="nova-rootwrap" capability=1  scontext=system_u:system_r:nova_api_t:s0 tcontext=system_u:system_r:nova_api_t:s0 tclass=capability
-type=AVC msg=audit(1406754843.602:9981): avc:  denied  { dac_read_search } for  pid=21038 comm="nova-rootwrap" capability=2  scontext=system_u:system_r:nova_api_t:s0 tcontext=system_u:system_r:nova_api_t:s0 tclass=capability

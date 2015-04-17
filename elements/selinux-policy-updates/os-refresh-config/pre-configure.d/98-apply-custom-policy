@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-semodule -i /opt/stack/selinux-policy/*.pp
