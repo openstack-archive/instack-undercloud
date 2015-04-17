@@ -33,6 +33,10 @@ nosetests.xml
 .project
 .pydevproject
 
+# Mr Mac User
+.DS_Store
+._.DS_Store
+
 # tarballs
 *.tar.gz
 
