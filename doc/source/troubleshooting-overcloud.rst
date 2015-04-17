@@ -127,7 +127,7 @@ are all run on the Undercloud and assume a stackrc file has been sourced.
 
   ::
 
-    $ ssh head-admin@192.0.2.14
+    $ ssh heat-admin@192.0.2.14
 
   While logged in to the controller node, examine the log for the
   ``os-collect-config`` log for a possible reason for the failure.
