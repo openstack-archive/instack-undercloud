@@ -1,36 +1,55 @@
-Virtual Environment Setup
-=========================
+Virtual Environment
+===================
 
-instack-undercloud can be deployed in a virtual environment using virtual
-machines instead of actual baremetal. One baremetal machine is still needed to
-act as the host for the virtual machines.
+RDO-Manager can be used in a virtual environment using virtual machines instead
+of actual baremetal. However, one baremetal machine is still
+needed to act as the host for the virtual machines.
 
-instack-undercloud contains the necessary tooling to create and configure the
-environment.
 
 Minimum System Requirements
 ---------------------------
+By default, this setup creates 3 virtual machines:
 
-By default, this setup creates 3 virtual machines consisting of 4GB of memory
-and 40GB of disk space on each; one to be used for the deployment of the
-undercloud and two for the overcloud. The virtual machine disk files are thinly
-provisioned and will not take up the full 40GB initially.
+* 1 Undercloud
+* 1 Overcloud Controller
+* 1 Overcloud Compute
 
-The minimum system requirements for the virtual host machine are:
+Each virtual machine must consist of at least 4 GB of memory and 40 GB of disk
+space [#]_.
 
-* A baremetal machine with virtualization hardware extenstions enabled.
-  Nested KVM is **not** supported.
-* At least (1) quad core CPU
-* 12GB free memory
-* 120GB disk space [#]_
+.. note::
+   The virtual machine disk files are thinly provisioned and will not take up
+   the full 40GB initially.
 
-If you want to increase the scaling of one or more overcloud nodes, you will
-need to ensure you have enough memory and disk space.
+The baremetal machine must meet the following minimum system requirements:
 
-Preparing the Host Machine
---------------------------
+* Virtualization hardware extenstions enabled (nested KVM is **not** supported)
+* 1 quad core CPU
+* 12 GB free memory
+* 120 GB disk space
 
-#. Install RHEL 7.1 Server x86_64 or CentOS 7 x86_64.
+..
+    <REMOVE WHEN HA IS AVAILABLE>
+
+    For minimal **HA (high availability)** deployment you need at least 3 Overcloud
+    Controllers and 2 Overcloud Computes which increases the minimum system
+    requirements up to:
+
+    * 24 GB free memory
+    * 240 GB disk space.
+
+RDO-Manager is supporting only the following operating systems:
+
+* RHEL 7.1 x86_64 or
+* CentOS 7 x86_64
+
+
+.. _preparing_virtual_environment:
+
+Preparing the Virtual Environment (Automated)
+---------------------------------------------
+
+#. Install RHEL 7.1 Server x86_64 or CentOS 7 x86_64 on your host machine.
 
    .. only:: external
 
@@ -73,6 +92,7 @@ Preparing the Host Machine
           Enable rhos-release::
 
               export RUN_RHOS_RELEASE=1
+
    ::
 
     curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
@@ -83,7 +103,7 @@ Preparing the Host Machine
 
 #. The virt setup automatically sets up a vm for the Undercloud installed with
    the same base OS as the host. See the Note below to choose a different
-   OS.::
+   OS.:
 
   .. note:: To setup the undercloud vm with a base OS different from the host,
      set the ``$NODE_DIST`` environment variable prior to running
@@ -151,7 +171,7 @@ Preparing the Host Machine
 
       instack-virt-setup
 
-   If the script encounters problems, see :doc:`troubleshooting-virt-setup`.
+   If the script encounters problems, see :doc:`../troubleshooting-virt-setup`.
 
 When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.
@@ -166,9 +186,7 @@ You can ssh to the instack vm as the root user::
 The vm contains a ``stack`` user to be used for installing the undercloud. You
 can ``su - stack`` to switch to the stack user account.
 
-Continue with `Installing the Undercloud`_
-
-.. _`Installing the Undercloud`: install-undercloud.html
+Continue with :doc:`../install-undercloud`.
 
 .. rubric:: Footnotes
 

@@ -12,7 +12,7 @@ Contents:
    :maxdepth: 2
 
    Introduction <introduction/introduction>
-   Setup <setup>
+   Environments <environments/environments>
    Installing the Undercloud <install-undercloud>
    Building Images <build-images>
    Deploying the Overcloud <deploy-overcloud>
