@@ -224,6 +224,7 @@ if [ -n "$TUSKAR" ]; then
         FSID=$(uuidgen)
         MON_KEY=$(create_cephx_key)
         ADMIN_KEY=$(create_cephx_key)
+        CINDER_ISCSI=${CINDER_ISCSI:-0}
         export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
             -A Controller-1::CinderEnableRbdBackend=True
             -A CephClusterFSID=$FSID
@@ -231,6 +232,17 @@ if [ -n "$TUSKAR" ]; then
             -A CephAdminKey=$ADMIN_KEY
             -A Compute-1::NovaEnableRbdBackend=True
         "
+
+        if [ $CINDER_ISCSI -eq 0 ]; then
+            export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
+                -A Controller-1::CinderEnableIscsiBackend=false
+            "
+        else
+            # (this is the default parameter value)
+            export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
+                -A Controller-1::CinderEnableIscsiBackend=true
+            "
+        fi
     fi
 
     # These attributes can't be changed in Tuskar-UI, so this is the only

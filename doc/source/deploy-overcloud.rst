@@ -102,6 +102,10 @@ Deploy the overcloud (default of 1 compute and 1 control):
 
        export CEPHSTORAGESCALE=1
 
+   By default when Ceph is enabled the Cinder iSCSI back-end is disabled. This
+   behavior may be changed by setting the environment variable::
+
+       export CINDER_ISCSI=1
 ::
 
     instack-deploy-overcloud --tuskar
