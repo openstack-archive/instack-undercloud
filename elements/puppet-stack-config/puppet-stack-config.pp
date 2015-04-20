@@ -325,6 +325,7 @@ class { 'ironic::api':
 ironic_config {
   'DEFAULT/my_ip':                value => hiera('controller_host');
   'glance/host':                  value => hiera('glance::api::bind_host');
+  'discoverd/enabled':            value => 'true';
 }
 
 class { 'horizon':
