@@ -31,7 +31,7 @@ are all run on the Undercloud and assume a stackrc file has been sourced.
 
   ::
 
-    $ heat resource-list
+    $ heat resource-list overcloud
 
     +-----------------------------------+-----------------------------------------------+---------------------------------------------------+-----------------+----------------------+
     | resource_name                     | physical_resource_id                          | resource_type                                     | resource_status | updated_time         |
