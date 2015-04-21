@@ -71,6 +71,13 @@ non-root user that was used to install the undercloud.
 
           instack-build-images
 
+
+   .. note::
+      This script will build **overcloud-full** images (\*.qcow2, \*.initrd,
+      \*.vmlinuz), **deploy-ramdisk-ironic** images (\*.initramfs, \*.kernel),
+      **discovery-ramdisk** images (\*.initramfs, \*.kernel) and **testing**
+      fedora-user.qcow2 (which is always Fedora based).
+
 #. Load the images into Glance::
 
     instack-prepare-for-overcloud
