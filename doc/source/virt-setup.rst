@@ -157,7 +157,7 @@ When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.
 
 Running ``sudo virsh list --all`` [#]_ will show you now have one virtual machine called
-*instack* and 4 called *baremetal[0-3]*.
+*instack* and 2 called *baremetal[0-1]*.
 
 You can ssh to the instack vm as the root user::
 
