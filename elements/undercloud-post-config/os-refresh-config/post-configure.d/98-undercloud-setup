@@ -46,25 +46,50 @@ export UNDERCLOUD_IP=$(os-apply-config --key local-ip --type netaddress)
 init-keystone -o $UNDERCLOUD_IP -t $UNDERCLOUD_ADMIN_TOKEN \
     -e admin@example.com -p $UNDERCLOUD_ADMIN_PASSWORD -u root
 
-# Create service endpoints and optionally include Ceilometer for UI support
-ENDPOINT_LIST="--glance-password $UNDERCLOUD_GLANCE_PASSWORD
-    --heat-password $UNDERCLOUD_HEAT_PASSWORD
-    --neutron-password $UNDERCLOUD_NEUTRON_PASSWORD
-    --nova-password $UNDERCLOUD_NOVA_PASSWORD
-    --tuskar-password $UNDERCLOUD_TUSKAR_PASSWORD
-    --ironic-password $UNDERCLOUD_IRONIC_PASSWORD
-    --ceilometer-password $UNDERCLOUD_CEILOMETER_PASSWORD
-    --swift-password $UNDERCLOUD_SWIFT_PASSWORD"
-
-REGISTER_SERVICE_OPTS=
-
 # Needed by ceilometer user in register-endpoint
 if ! openstack role show ResellerAdmin; then
     openstack role create ResellerAdmin
 fi
 
-# TODO: this needs to be switched over to use os-cloud-config's setup-endpoints
-tripleo setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
+# Create service endpoints and optionally include Ceilometer for UI support
+ENDPOINTS_FILE=$(mktemp)
+cat > $ENDPOINTS_FILE << EOF
+{
+    "heat": {
+        "password": "$UNDERCLOUD_HEAT_PASSWORD"
+    },
+    "neutron": {
+        "password": "$UNDERCLOUD_NEUTRON_PASSWORD"
+    },
+    "glance": {
+        "password": "$UNDERCLOUD_GLANCE_PASSWORD"
+    },
+    "nova": {
+        "password": "$UNDERCLOUD_NOVA_PASSWORD"
+    },
+    "novav3": {
+        "password": "$UNDERCLOUD_NOVA_PASSWORD"
+    },
+    "ceilometer": {
+        "password": "$UNDERCLOUD_CEILOMETER_PASSWORD"
+    },
+    "swift": {
+        "password": "$UNDERCLOUD_SWIFT_PASSWORD"
+    },
+    "ironic": {
+        "password": "$UNDERCLOUD_IRONIC_PASSWORD"
+    },
+    "tuskar": {
+        "password": "$UNDERCLOUD_TUSKAR_PASSWORD",
+        "path": "/v2"
+    }
+}
+EOF
+
+REGISTER_SERVICE_OPTS=
+
+setup-endpoints -s $ENDPOINTS_FILE $REGISTER_SERVICE_OPTS
+rm $ENDPOINTS_FILE
 
 if ! openstack role show heat_stack_user; then
     openstack role create heat_stack_user
