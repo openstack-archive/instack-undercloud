@@ -141,15 +141,67 @@ Deployment & Orchestration
 --------------------------
 heat
 ^^^^
-TBD
+
+Heat is OpenStack's orchestration tool. It reads YAML files describing
+the OpenStack deployment's resources (machines, their configurations
+etc.) and gets those resources into the desired state, often by
+talking to other components (e.g. Nova).
+
+**How to contribute**
+
+* Use `devstack with Heat
+  <http://docs.openstack.org/developer/heat/getting_started/on_devstack.html>`_
+  to set up a development environment. Submit your changes via
+  OpenStack Gerrit (see `OpenStack Developer's Guide
+  <http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Upstream Project: https://wiki.openstack.org/wiki/Heat
+* Bugs: https://bugs.launchpad.net/heat
+* Blueprints: https://blueprints.launchpad.net/heat
 
 heat-templates
 ^^^^^^^^^^^^^^
-TBD
+
+The heat-templates repository contains additional image elements for
+producing disk images ready to be configured by Puppet via Heat.
+
+**How to contribute**
+
+* Use `devtest with Puppet
+  <http://docs.openstack.org/developer/tripleo-incubator/puppet.html>`_
+  to set up a development environment. Submit your changes via
+  OpenStack Gerrit (see `OpenStack Developer's Guide
+  <http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Upstream Project: https://git.openstack.org/cgit/openstack/heat-templates
+* Bugs: https://bugs.launchpad.net/heat-templates
+* Blueprints: https://blueprints.launchpad.net/heat-templates
 
 tripleo-heat-templates
 ^^^^^^^^^^^^^^^^^^^^^^
-TBD
+
+The tripleo-heat-templates describe the OpenStack deployment in Heat
+Orchestration Template YAML files and Puppet manifests. The templates
+are processed through Tuskar and materialized into an actual
+deployment via Heat.
+
+**How to contribute**
+
+* Use `devtest with Puppet
+  <http://docs.openstack.org/developer/tripleo-incubator/puppet.html>`_
+  to set up a development environment. Submit your changes via
+  OpenStack Gerrit (see `OpenStack Developer's Guide
+  <http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Upstream Project: https://git.openstack.org/cgit/openstack/tripleo-heat-templates
+* Bugs: https://bugs.launchpad.net/tripleo
+* Blueprints: https://blueprints.launchpad.net/tripleo
 
 nova
 ^^^^
@@ -157,11 +209,45 @@ TBD
 
 puppet-\*
 ^^^^^^^^^
-TBD
+
+The OpenStack Puppet modules are used to configure the OpenStack
+deployment (write configuration, start services etc.). They are used
+via the tripleo-heat-templates.
+
+**How to contribute**
+
+* Use `devtest with Puppet
+  <http://docs.openstack.org/developer/tripleo-incubator/puppet.html>`_
+  to set up a development environment. Submit your changes via
+  OpenStack Gerrit (see `OpenStack Developer's Guide
+  <http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Upstream Project: https://wiki.openstack.org/wiki/Puppet
+
 
 tripleo-puppet-elements
 ^^^^^^^^^^^^^^^^^^^^^^^
-TBD
+
+The tripleo-puppet-elements describe the contents of disk images which
+RDO-Manager uses to deploy OpenStack. It's the same kind of elements
+as in tripleo-image-elements, but tripleo-puppet-elements are specific
+for Puppet-enabled images.
+
+**How to contribute**
+
+* Use `devtest with Puppet
+  <http://docs.openstack.org/developer/tripleo-incubator/puppet.html>`_
+  to set up a development environment. Submit your changes via
+  OpenStack Gerrit (see `OpenStack Developer's Guide
+  <http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Upstream Project: https://git.openstack.org/cgit/openstack/tripleo-puppet-elements
+* Bugs: https://bugs.launchpad.net/tripleo
+* Blueprints: https://blueprints.launchpad.net/tripleo
 
 
 User Interfaces
