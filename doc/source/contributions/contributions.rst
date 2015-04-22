@@ -13,10 +13,8 @@ development is happening in OpenStack upstream.
 Learn `how to contribute into OpenStack's upstream <https://wiki.openstack.org/
 wiki/How_To_Contribute>`_.
 
-..
-    <TODO: UNCOMMENT AFTER INTRODUCTION SECTION IS MERGED>
-    See :ref:`components` which RDO-Manager uses to find out how to contribute
-    there.
+See :doc:`../introduction/components` to find out how to contribute into
+individual projects.
 
 
 ..
@@ -42,10 +40,8 @@ upstream projects, please follow OpenStack's process of filing bugs.
 * Learn `how to create Bugs in OpenStack
   <https://wiki.openstack.org/wiki/Bugs>`_.
 
-..
-    <TODO: UNCOMMENT AFTER INTRODUCTION SECTION IS MERGED>
-    * If you want to file a bug against targeted project, you can find useful link
-    in our list of :ref:`components`.
+* If you want to file a bug against upstream project, you can find useful links
+  in our list of :doc:`../introduction/components`.
 
 
 **RDO-Manager**: If the bug impacts RDO-Manager as a distribution of the TripleO
@@ -72,10 +68,8 @@ all the features are being requested upstream via Blueprints.
 * Learn `how to create Blueprints in OpenStack
   <https://wiki.openstack.org/wiki/Blueprints>`_.
 
-..
-    <TODO: UNCOMMENT AFTER INTRODUCTION SECTION IS MERGED>
-    * If you want to file a bug against targeted project, you can find useful link
-    in our list of :ref:`components`.
+* If you want to file a bug against upstream project, you can find useful links
+  in our list of :doc:`../introduction/components`.
 
 
 **RDO-Manager**: If the feature concerns our community distribution named
