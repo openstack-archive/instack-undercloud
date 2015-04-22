@@ -83,8 +83,8 @@ RDO-Manager, you can use Bugzilla to enter new RFE (Request For Enhancement):
 
 #. Display Advanced fields and enter new Kewyord 'RFE'
 
-#. Fill in needed information (If you filed also upstream bug, please provide
-   its URL in advanced fields)
+#. Fill in needed information (If you filed also upstream blueprint, please
+   provide its URL in advanced fields)
 
 #. Submit "bug"
 
