@@ -95,7 +95,8 @@ Preparing the Virtual Environment (Automated)
 
    ::
 
-    curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
+       curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
+
 
 #. Install instack-undercloud::
 
@@ -105,7 +106,8 @@ Preparing the Virtual Environment (Automated)
    the same base OS as the host. See the Note below to choose a different
    OS.:
 
-  .. note:: To setup the undercloud vm with a base OS different from the host,
+  .. note::
+     To setup the undercloud vm with a base OS different from the host,
      set the ``$NODE_DIST`` environment variable prior to running
      ``instack-virt-setup``:
 
@@ -171,7 +173,8 @@ Preparing the Virtual Environment (Automated)
 
       instack-virt-setup
 
-   If the script encounters problems, see :doc:`../troubleshooting-virt-setup`.
+   If the script encounters problems, see
+   :doc:`../troubleshooting/troubleshooting-virt-setup`.
 
 When the script has completed successfully it will output the IP address of the
 instack vm that has now been installed with a base OS.

@@ -17,18 +17,9 @@ Contents:
    Building Images <build-images>
    Deploying the Overcloud <deploy-overcloud>
    Vendor-Specific Setup <vendor-specific>
-   How to Contribute <contributions/contributions>
-
-
-Appendices
-==========
-
-.. toctree::
-
-   Frequently Asked Questions (FAQ) <faq>
    AHC (Automated Health Check) Workflow <ahc-workflow>
-   Troubleshooting instack-virt-setup Failures <troubleshooting-virt-setup>
-   Troubleshooting a Failed Overcloud Deployment <troubleshooting-overcloud>
+   Troubleshooting <troubleshooting/troubleshooting>
+   How to Contribute <contributions/contributions>
 
 
 Documentation Conventions

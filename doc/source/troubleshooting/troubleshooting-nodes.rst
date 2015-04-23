@@ -1,8 +1,8 @@
-Frequently Asked Questions
-==========================
+Troubleshooting Node Management Failures
+========================================
 
-Where are the logs?
-~~~~~~~~~~~~~~~~~~~
+Where Are the Logs?
+-------------------
 
 Some logs are stored in *journald*, but most are stored as text files in
 ``/var/log``.  Ironic and ironic-discoverd logs are stored in journald. Note
@@ -13,8 +13,36 @@ for example to get all ironic-discoverd logs use::
 
     sudo journalctl -u openstack-ironic-discoverd -u openstack-ironic-discoverd-dnsmasq
 
-Discovery FAQ
-~~~~~~~~~~~~~
+
+.. _node_registration_problems:
+
+Node Registration Problems
+--------------------------
+
+Any problems with node data registered into Ironic can be fixed using the
+Ironic CLI.
+
+For example, a wrong MAC can be fixed in two steps:
+
+* Find out the assigned port UUID by running
+  ::
+
+    ironic node-port-list <NODE UUID>
+
+* Update the MAC address by running
+  ::
+
+    ironic port-update <PORT UUID> replace address=<NEW MAC>
+
+A Wrong IPMI address can be fixed with the following command::
+
+    ironic node-update <NODE UUID> replace driver_info/ipmi_address=<NEW IPMI ADDRESS>
+
+
+.. _introspection_problems:
+
+Hardware Introspection Problems
+--------------------------------
 
 Discovery hangs and times out
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -32,12 +60,9 @@ Refusing to introspect node with provision state "available"
 If you're running discovery directly using ironic-discoverd CLI (or in case of
 bugs in our scripts), a node can be in the "AVAILABLE" state, which is meant for
 deployment, not for discovery. You should advance node to the "MANAGEABLE" state
-before discovery and move it back before deployment. While our scripts
-generally do it, they suffer from `bug 1212134
-<https://bugzilla.redhat.com/show_bug.cgi?id=1212134>`_ which may cause nodes
-to be in the wrong state. Please refer to `upstream node states documentation
-<https://github.com/stackforge/ironic-discoverd#node-states>`_ for information
-on how to fix it.
+before discovery and move it back before deployment. Please refer to `upstream
+node states documentation <https://github.com/stackforge/ironic-discoverd
+#node-states>`_ for information on how to fix it.
 
 How can discovery be stopped?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
