@@ -288,6 +288,7 @@ class { 'snmp':
 
 class { 'nova::compute':
   enabled => true,
+  reserved_host_memory => 0,
 }
 
 nova_config {
