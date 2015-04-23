@@ -132,10 +132,35 @@ TBD
 
 Deployment Planning
 -------------------
-tuskar
+Tuskar
 ^^^^^^
-TBD
+The Tuskar project is responsible for planning of deployments through the use
+of two main concepts: Role (unit of functionality, e.g. 'Compute') and Plan.
+A given Role is associated with a number of Heat templates and extra
+data files and Tuskar allows the user to provide values for a Role's template
+attributes.
 
+Once a Plan is specified in terms of Roles (and any desired
+template attributes have been set) Tuskar can assemble and generate the
+corresponding Heat deployment files and return these to the caller
+(ready to be passed to Heat).
+
+**How to contribute**
+
+The Tuskar project uses the usual OpenStack code review process with gerrit
+reviews (see links below). Tuskar is a sub-project falling under TripleO
+and as such you can use the #tripleo irc channel (freenode) or the weekly
+TripleO meeting to bring up issues about Tuskar, as well as the openstack-dev
+mailing list of course.
+
+**Useful links**
+
+* Upstream Project: https://github.com/openstack/tuskar
+* PyPI: https://pypi.python.org/pypi/tuskar
+* Bugs: https://bugs.launchpad.net/tuskar
+* Blueprints: https://blueprints.launchpad.net/tuskar
+* REST API http://specs.openstack.org/openstack/tripleo-specs/specs/juno/tripleo-juno-tuskar-rest-api.html
+* Reviews: https://review.openstack.org/#/q/status:open+project:openstack/tuskar,n,z
 
 Deployment & Orchestration
 --------------------------
