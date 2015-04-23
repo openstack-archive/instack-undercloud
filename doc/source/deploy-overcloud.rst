@@ -24,33 +24,14 @@ Register nodes for your deployment with Ironic::
 Introspecting Nodes
 -------------------
 
-Introspect hardware for attributes of nodes and match them to a deployment
-profile:
-
-.. admonition:: Ceph
-   :class: ceph-tag
-
-   When deploying Ceph, you will need to configure the ``edeploy`` plugin so
-   that it will assign the ``ceph-storage`` profile to at least one system. To
-   do so, you need to **prepend** the following ``('ceph-storage', '1')`` into
-   the list of profiles defined in ``/etc/edeploy/state``, before initiating the
-   nodes discovery. [#]_
-
-   Example contents of ``/etc/edeploy/state``::
-
-       [('ceph-storage', '1'), ('control', '1'), ('compute', '*')]
-
-::
+Introspect hardware attributes of nodes::
 
     instack-ironic-deployment --discover-nodes
-
-Check what profiles were matched for the discovered nodes::
-
-    instack-ironic-deployment --show-profile
 
 .. note:: **Introspection has to finish without errors.**
    The process can take up to 5 minutes for VM / 15 minutes for baremetal. If
    the process takes longer, see :ref:`introspection_problems`.
+
 
 Ready-state configuration
 -------------------------
@@ -130,9 +111,3 @@ The overcloud can be redeployed when desired.
 #. Deploy the Overcloud again::
 
     instack-deploy-overcloud --tuskar
-
-.. rubric:: Footnotes
-
-.. [#]  In the ``('ceph-storage', '1')`` setting, 1 represents the number of
-        systems to be tagged with such a profile as opposed to a boolean
-        value.

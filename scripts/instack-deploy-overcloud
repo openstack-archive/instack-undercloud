@@ -107,14 +107,14 @@ OVERCLOUD_SWIFTSTORAGE_IMAGE=${OVERCLOUD_SWIFTSTORAGE_IMAGE:-overcloud-full}
 OVERCLOUD_CEPHSTORAGE_IMAGE=${OVERCLOUD_CEPHSTORAGE_IMAGE:-overcloud-full}
 
 # Default flavor parameters
-export OVERCLOUD_CONTROL_FLAVOR=${OVERCLOUD_CONTROL_FLAVOR:-"baremetal_control"}
-export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal_compute"}
-export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal_ceph-storage"}
+export OVERCLOUD_CONTROL_FLAVOR=${OVERCLOUD_CONTROL_FLAVOR:-"baremetal"}
+export OVERCLOUD_COMPUTE_FLAVOR=${OVERCLOUD_COMPUTE_FLAVOR:-"baremetal"}
+export OVERCLOUD_CEPHSTORAGE_FLAVOR=${OVERCLOUD_CEPHSTORAGE_FLAVOR:-"baremetal"}
 # Even though we are not deploying nodes with these roles, the templates will
 # still validate that a flavor exists, so just use the baremetal_compute flavor
 # for now.
-export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal_compute"}
-export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal_compute"}
+export OVERCLOUD_BLOCKSTORAGE_FLAVOR=${OVERCLOUD_BLOCKSTORAGE_FLAVOR:-"baremetal"}
+export OVERCLOUD_SWIFTSTORAGE_FLAVOR=${OVERCLOUD_SWIFTSTORAGE_FLAVOR:-"baremetal"}
 
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
 
