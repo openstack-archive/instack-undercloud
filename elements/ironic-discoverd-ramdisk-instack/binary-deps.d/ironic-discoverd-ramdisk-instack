@@ -12,6 +12,7 @@ hardware-detect
 hdparm
 ip
 ipmitool
+ironic-discoverd-ramdisk
 jq
 killall
 lldpad

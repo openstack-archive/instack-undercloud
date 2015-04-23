@@ -13,6 +13,10 @@ for example to get all ironic-discoverd logs use::
 
     sudo journalctl -u openstack-ironic-discoverd -u openstack-ironic-discoverd-dnsmasq
 
+If something fails during the discovery ramdisk run, ironic-discoverd
+stores the ramdisk logs in ``/var/log/ironic-discoverd/ramdisk/`` as
+gz-compressed tar files. File names contain date, time and IPMI address of the
+node if it was detected (only for bare metal).
 
 .. _node_registration_problems:
 
