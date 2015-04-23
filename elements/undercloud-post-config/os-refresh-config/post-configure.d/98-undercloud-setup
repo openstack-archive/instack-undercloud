@@ -59,15 +59,15 @@ ENDPOINT_LIST="--glance-password $UNDERCLOUD_GLANCE_PASSWORD
 REGISTER_SERVICE_OPTS=
 
 # Needed by ceilometer user in register-endpoint
-if ! keystone role-get ResellerAdmin; then
-    keystone role-create --name=ResellerAdmin
+if ! openstack role show ResellerAdmin; then
+    openstack role create ResellerAdmin
 fi
 
 # TODO: this needs to be switched over to use os-cloud-config's setup-endpoints
 tripleo setup-endpoints $UNDERCLOUD_IP $ENDPOINT_LIST $REGISTER_SERVICE_OPTS
 
-if ! keystone role-get heat_stack_user; then
-    keystone role-create --name heat_stack_user
+if ! openstack role show heat_stack_user; then
+    openstack role create heat_stack_user
 fi
 
 DHCP_START=$(os-apply-config --key neutron.dhcp_start --type netaddress)
@@ -102,7 +102,7 @@ for flavor in m1.tiny m1.small m1.medium m1.large m1.xlarge; do
 done
 
 # Disable nova quotas
-nova quota-update --cores -1 --instances -1 --ram -1 $(keystone tenant-get admin | awk '$2=="id" {print $4}')
+nova quota-update --cores -1 --instances -1 --ram -1 $(openstack project show admin | awk '$2=="id" {print $4}')
 
 # instack-prepare-for-overcloud
 rm -rf $HOME/.novaclient

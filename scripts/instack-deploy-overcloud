@@ -420,8 +420,8 @@ ${SSLBASE:+-s $PUBLIC_API_URL}
 # REGISTER_SERVICE_OPTS="--ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD "
 REGISTER_SERVICE_OPTS=""
 
-keystone role-create --name=swiftoperator
-keystone role-create --name=ResellerAdmin
+openstack role create swiftoperator
+openstack role create ResellerAdmin
 
 tripleo setup-endpoints $OVERCLOUD_IP \
     --cinder-password $OVERCLOUD_CINDER_PASSWORD \
@@ -432,7 +432,7 @@ tripleo setup-endpoints $OVERCLOUD_IP \
     --swift-password $OVERCLOUD_SWIFT_PASSWORD \
     $REGISTER_SERVICE_OPTS \
     ${SSLBASE:+--ssl $PUBLIC_API_URL}
-keystone role-create --name heat_stack_user
+openstack role create heat_stack_user
 # setup-neutron "" "" 10.0.0.0/8 "" "" "" "" 192.0.2.45 192.0.2.64 192.0.2.0/24
 NETWORK_CIDR=${NETWORK_CIDR:-"10.0.0.0/8"}
 FLOATING_IP_START=${FLOATING_IP_START:-"192.0.2.45"}

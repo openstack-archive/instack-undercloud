@@ -72,7 +72,7 @@ STDERR=/dev/null
 export PYTHONWARNINGS="ignore"
 
 DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
-IRONIC=$(keystone endpoint-get --service baremetal | grep publicURL | awk '{ print $4; }')
+IRONIC=$(openstack endpoint show baremetal | grep publicurl | awk '{ print $4; }')
 IRONIC=${IRONIC%/}
 
 while true ; do
@@ -308,7 +308,7 @@ function setup_flavors {
 
 function show_profile {
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
-    token=$(keystone token-get | grep ' id ' | awk '{print $4}')
+    token=$(openstack token issue | grep ' id ' | awk '{print $4}')
     echo "  Querying assigned profiles ... "
     echo
     for node_id in $node_ids; do
@@ -328,7 +328,7 @@ function wait_for_hypervisor_stats {
     expected_memory=0
     expected_vcpus=0
 
-    token=$(keystone token-get | grep ' id ' | awk '{print $4}')
+    token=$(openstack token issue | grep ' id ' | awk '{print $4}')
     echo -n "  Wating for nova hypervisor stats ... "
     for node_id in $node_ids; do
         mem=$(curl -s -H "x-auth-token: $token" $IRONIC/v1/nodes/$node_id | jq '.properties.memory_mb | tonumber')
