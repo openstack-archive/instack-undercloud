@@ -1,27 +1,39 @@
-Baremetal Environment Setup
-===========================
+Baremetal Environment
+=====================
 
-instack-undercloud can be deployed in an all baremetal environment. One
-baremetal node will be used as the undercloud, and other available baremetal
-nodes will be used for the Overcloud deployment.
+RDO-Manager can be used in an all baremetal environment. One machine will be
+used for Undercloud, the others will be used for your Overcloud.
+
 
 Minimum System Requirements
 ---------------------------
+To deploy a minimal RDO cloud with RDO-Manager you need the following baremetal
+machines:
 
-In order to produce a usable OpenStack install this setup requires five
-baremetal machines: one machine for the undercloud, and one machine for each
-Overcloud node.
+* 1 Undercloud (where RDO-Manager lives)
+* 1 Overcloud Controller
+* 1 Overcloud Compute
 
-.. image:: images/InstackSetup.png
+For each additional Overcloud role, such as Block Storage or Object Storage,
+you need an additional baremetal machine.
 
-The setup requires baremetal machines with the following minimum specifications:
+..
+    <REMOVE WHEN HA IS AVAILABLE>
+
+    For minimal **HA (high availability)** deployment you need at least 3 Overcloud
+    Controller machines and 2 Overcloud Compute machines.
+
+The baremetal machines must meet the following minimum specifications:
 
 * multi-core CPU
-* 4GB memory
-* 60GB free disk space
+* 4 GB memory
+* 60 GB free disk space
 
-The undercloud machine needs to run RHEL 7.1 x86_64 or CentOS 7 x86_64,
-which is discussed more below.
+RDO-Manager is supporting only the following operating systems:
+
+* RHEL 7.1 x86_64 or
+* CentOS 7 x86_64
+
 
 Preparing the Baremetal Environment
 -----------------------------------
@@ -56,7 +68,7 @@ The overcloud nodes will be deployed from the undercloud machine and therefore t
 
 Refer to the following diagram for more information
 
-.. image:: images/TripleO_Network_Diagram_.jpg
+.. image:: ../_images/TripleO_Network_Diagram_.jpg
 
 Setting Up The Undercloud Machine
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
