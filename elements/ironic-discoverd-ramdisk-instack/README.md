@@ -12,7 +12,8 @@ The hardware information collected by the ramdisk are:
 * CPU count and architecture
 * Memory amount in MiB
 * Hard drive size in GiB
-* IP and mac addresses for all NICs except the loopback
+* IP and MAC addresses for all NICs except the loopback
+* Various hardware data detected by python-hardware library
 
 The machine is halted at the end of the process.
 

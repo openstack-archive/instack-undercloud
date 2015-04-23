@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eu
-set -o pipefail
-
-install-packages hdparm ipmitool lshw ethtool lldpad hdparm sdparm pciutils mcelog smartmontools util-linux lvm2 jq fio sysbench python-hardware
