@@ -14,33 +14,18 @@ Register nodes for your deployment with Ironic::
     instack-ironic-deployment --nodes-json instackenv.json --register-nodes
 
 .. note::
-    It's not recommended to delete nodes and/or rerun this command after
-    you've proceeded to the next steps. Particularly, if you start discovery
-    and then re-register nodes, you won't be able to retry discovery until
-    the previous one times out (1 hour by default).
+   It's not recommended to delete nodes and/or rerun this command after
+   you have proceeded to the next steps. Particularly, if you start discovery
+   and then re-register nodes, you won't be able to retry discovery until
+   the previous one times out (1 hour by default). If you are having issues
+   with nodes after registration, please follow
+   :ref:`node_registration_problems`.
 
-    Any problems with node data registered into Ironic on this step can be
-    fixed using the Ironic CLI.  For example, a wrong MAC can be fixed in two
-    steps:
+Introspecting Nodes
+-------------------
 
-    * Find out the assigned port UUID by running
-      ::
-
-        ironic node-port-list <NODE UUID>
-
-    * Update the MAC address by running
-      ::
-
-        ironic port-update <PORT UUID> replace address=<NEW MAC>
-
-    * A Wrong IPMI address can be fixed with the following command::
-
-        ironic node-update <NODE UUID> replace driver_info/ipmi_address=<NEW IPMI ADDRESS>
-
-Discovering Nodes
------------------
-
-Discover hardware attributes of nodes and match them to a deployment profile:
+Introspect hardware for attributes of nodes and match them to a deployment
+profile:
 
 .. admonition:: Ceph
    :class: ceph-tag
@@ -63,10 +48,9 @@ Check what profiles were matched for the discovered nodes::
 
     instack-ironic-deployment --show-profile
 
-If you have problems with discovery step, please check `ironic-discoverd
-troubleshooting documentation`_.
-
-.. _ironic-discoverd troubleshooting documentation: https://github.com/stackforge/ironic-discoverd#troubleshooting
+.. note:: **Introspection has to finish without errors.**
+   The process can take up to 5 minutes for VM / 15 minutes for baremetal. If
+   the process takes longer, see :ref:`introspection_problems`.
 
 Ready-state configuration
 -------------------------
@@ -106,6 +90,7 @@ Deploy the overcloud (default of 1 compute and 1 control):
    behavior may be changed by setting the environment variable::
 
        export CINDER_ISCSI=1
+
 ::
 
     instack-deploy-overcloud --tuskar
