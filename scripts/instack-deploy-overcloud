@@ -343,6 +343,7 @@ else
         FSID=$(uuidgen)
         MON_KEY=$(create_cephx_key)
         ADMIN_KEY=$(create_cephx_key)
+        CINDER_ISCSI=${CINDER_ISCSI:-0}
         export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
         -P CephClusterFSID=$FSID \
         -P CephMonKey=$MON_KEY \
@@ -350,6 +351,17 @@ else
         -P CinderEnableRbdBackend=True \
         -P NovaEnableRbdBackend=True \
         "
+
+        if [ $CINDER_ISCSI -eq 0 ]; then
+            export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
+            -P CinderEnableIscsiBackend=False
+            "
+        else
+            # (this is the default parameter value)
+            export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
+            -P CinderEnableIscsiBackend=True
+            "
+        fi
     fi
 
     HEAT_ENV=${HEAT_ENV:-"overcloud-env.json"}
