@@ -4,13 +4,13 @@ Installing the Undercloud
 Make sure you are logged in as a non-root user (such as the stack user) on the
 node on which you want to install the undercloud.
 
-.. admonition:: Virt
-   :class: virt-tag
+.. admonition:: Virtual
+   :class: virtual
 
    This node will be a VM called *instack* and you can use the stack user.
 
 .. admonition:: Baremetal
-   :class: baremetal-tag
+   :class: baremetal
 
    This will be the host you selected for the Undercloud while preparing the environment.
 
@@ -19,7 +19,7 @@ node on which you want to install the undercloud.
    .. only:: internal
 
       .. admonition:: RHEL
-         :class: rhel-tag
+         :class: rhel
 
           Enable rhos-release::
 
@@ -41,7 +41,7 @@ node on which you want to install the undercloud.
         127.0.0.1   myhost.mydomain
 
   .. admonition:: Baremetal
-     :class: baremetal-tag
+     :class: baremetal
 
      Copy in the sample answers file and edit it to reflect your environment::
 

@@ -54,7 +54,7 @@ Preparing the Virtual Environment (Automated)
    .. only:: external
 
      .. admonition:: RHEL
-        :class: rhel-tag
+        :class: rhel
 
         Register the host machine using Subscription Management::
 
@@ -87,7 +87,7 @@ Preparing the Virtual Environment (Automated)
    .. only:: internal
 
       .. admonition:: RHEL
-         :class: rhel-tag
+         :class: rhel
 
           Enable rhos-release::
 
@@ -112,14 +112,14 @@ Preparing the Virtual Environment (Automated)
      ``instack-virt-setup``:
 
      .. admonition:: CentOS
-        :class: centos-tag
+        :class: centos
 
         ::
 
             export NODE_DIST=centos7
 
      .. admonition:: RHEL
-        :class: rhel-tag
+        :class: rhel
 
         ::
 
@@ -130,7 +130,7 @@ Preparing the Virtual Environment (Automated)
    .. only:: internal
 
      .. admonition:: RHEL
-        :class: rhel-tag
+        :class: rhel
 
         Download the RHEL 7.1 cloud image or copy it over from a different location,
         and define the needed environment variables for RHEL 7.1 prior to running
@@ -143,7 +143,7 @@ Preparing the Virtual Environment (Automated)
    .. only:: external
 
      .. admonition:: RHEL
-        :class: rhel-tag
+        :class: rhel
 
         Download the RHEL 7.1 cloud image or copy it over from a different location,
         for example:
@@ -161,7 +161,7 @@ Preparing the Virtual Environment (Automated)
                 rhel-7-server-optional-rpms rhel-7-server-openstack-6.0-rpms"
 
    .. admonition:: Ceph
-      :class: ceph-tag
+      :class: ceph
 
       To use Ceph you will need at least one additional virtual machine to be
       provisioned as a Ceph OSD; set the ``NODE_COUNT`` variable to 3, from a

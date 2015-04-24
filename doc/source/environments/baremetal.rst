@@ -132,7 +132,7 @@ Setting Up The Undercloud Machine
 .. only:: external
 
    .. admonition:: RHEL
-      :class: rhel-tag
+      :class: rhel
 
        Register the host machine using Subscription Management::
 

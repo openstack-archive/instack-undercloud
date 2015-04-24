@@ -37,7 +37,7 @@ Ready-state configuration
 -------------------------
 
 .. admonition:: Baremetal
-   :class: baremetal-tag
+   :class: baremetal
 
    Some hardware has additional setup available, using its vendor-specific management
    interface.  See the :doc:`/vendor-specific` for details.
@@ -50,7 +50,7 @@ Create the necessary flavors::
     instack-ironic-deployment --setup-flavors
 
 .. admonition:: Baremetal
-   :class: baremetal-tag
+   :class: baremetal
 
    Copy the sample overcloudrc file and edit to reflect your environment. Then source this file::
 
@@ -60,7 +60,7 @@ Create the necessary flavors::
 Deploy the overcloud (default of 1 compute and 1 control):
 
 .. admonition:: Ceph
-   :class: ceph-tag
+   :class: ceph
 
    When deploying Ceph, specify the number of Ceph OSD nodes to be deployed
    with::

@@ -26,32 +26,32 @@ Documentation Conventions
 =========================
 
 Some steps in the following instructions only apply to certain environments,
-such as deployments to real baremetal and deployments using RHEL.  These
+such as deployments to real baremetal and deployments using RHEL. These
 steps are marked as follows:
 
 .. admonition:: RHEL
-   :class: rhel-tag
+   :class: rhel
 
    Step that should only be run when using RHEL
 
 .. admonition:: CentOS
-   :class: centos-tag
+   :class: centos
 
    Step that should only be run when using CentOS
 
 
 .. admonition:: Baremetal
-   :class: baremetal-tag
+   :class: baremetal
 
    Step that should only be run when deploying to baremetal
 
-.. admonition:: Virt
-   :class: virt-tag
+.. admonition:: Virtual
+   :class: virtual
 
    Step that should only be run when deploying to virtual machines
 
 .. admonition:: Ceph
-   :class: ceph-tag
+   :class: ceph
 
    Step that should only be run when deploying Ceph for use by the Overcloud
 

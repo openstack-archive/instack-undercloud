@@ -19,14 +19,14 @@ non-root user that was used to install the undercloud.
      ``instack-build-images``:
 
      .. admonition:: CentOS
-        :class: centos-tag
+        :class: centos
 
         ::
 
             export NODE_DIST=centos7
 
      .. admonition:: RHEL
-        :class: rhel-tag
+        :class: rhel
 
         ::
 
@@ -37,7 +37,7 @@ non-root user that was used to install the undercloud.
    .. only:: internal
 
       .. admonition:: RHEL
-         :class: rhel-tag
+         :class: rhel
 
          Download the RHEL 7.1 cloud image or copy it over from a different location,
          and define the needed environment variable for RHEL 7.1 prior to running
@@ -51,7 +51,7 @@ non-root user that was used to install the undercloud.
    .. only:: external
 
       .. admonition:: RHEL
-         :class: rhel-tag
+         :class: rhel
 
          Download the RHEL 7.1 cloud image or copy it over from a different location,
          for example:
