@@ -208,7 +208,9 @@ if [ -n "$TUSKAR" ]; then
     if [ $CONTROLSCALE -gt 1 ]; then
         export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
         -A Controller-1::NeutronL3HA=True
+        -A Controller-1::NeutronAllowL3AgentFailover=False
         -A Compute-1::NeutronL3HA=True
+        -A Compute-1::NeutronAllowL3AgentFailover=False
         "
     fi
 
@@ -336,6 +338,7 @@ else
     if [ $CONTROLSCALE -gt 1 ]; then
         export OVERCLOUD_PARAMETERS="$OVERCLOUD_PARAMETERS \
         -P NeutronL3HA=True \
+        -P NeutronAllowL3AgentFailover=False \
         "
     fi
 
