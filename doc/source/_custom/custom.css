@@ -1,5 +1,5 @@
 @import url("css/theme.css");
-
+@import url("rdo_styling.css");
 
 /* CUSTOM CSS OVERRIDES GO HERE */
 /* ============================ */
@@ -45,6 +45,28 @@ h2 {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
+
+/* BREADCRUMBS */
+
+.wy-breadcrumbs {
+  font-size: 85%;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.wy-breadcrumbs a {
+  text-decoration: underline;
+  color: inherit;
+}
+
+.wy-breadcrumbs a:hover,
+.wy-breadcrumbs a:focus {
+  color: rgba(0, 0, 0, 0.75);
+  text-decoration: none;
+}
+
+
+/* FOOTER */
+
 footer {
   font-size: 70%;
   margin-top: 48px;
@@ -84,6 +106,7 @@ footer p {
 .rst-content .note {
   background: rgb(240, 240, 240);
 }
+
 .note > p.first.admonition-title {
   display: inline-block;
   background: rgba(0, 0, 0, 0.55);
@@ -106,7 +129,6 @@ footer p {
   line-height: 1.4;
   background: #2980b9;
   border-top: 1px solid rgba(255, 255, 255, 0.4);
-  margin-bottom: 0.5em;
 }
 
 .trigger {
