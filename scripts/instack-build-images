@@ -42,7 +42,8 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 # We must do this until tripleo-puppet-elements is packaged
 export DIB_INSTALLTYPE_puppet_modules=source
 
-export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/centos70/latest-RDO-trunk-CI/"}
+export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/kilo/centos7/latest-RDO-kilo-CI/"}
+export DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean-kilo.repo"}
 
 export NODE_DIST=${NODE_DIST:-""}
 
@@ -76,7 +77,6 @@ if [ "$NODE_DIST" = "rhel7" ]; then
         export DIB_COMMON_ELEMENTS=selinux-permissive
     fi
     export REG_HALT_UNREGISTER=${REG_HALT_UNREGISTER:-1}
-    export DELOREAN=1
     export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO
 elif [ "$NODE_DIST" = "centos7" ]; then
     export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO
