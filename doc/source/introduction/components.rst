@@ -265,8 +265,7 @@ for Puppet-enabled images.
 * Use `devtest with Puppet
   <http://docs.openstack.org/developer/tripleo-incubator/puppet.html>`_
   to set up a development environment. Submit your changes via
-  OpenStack Gerrit (see `OpenStack Developer's Guide
-  <http://docs.openstack.org/infra/manual/developers.html>`_).
+  OpenStack Gerrit (see `OpenStack Developer's Guide`_).
 
 **Useful links**
 
@@ -293,4 +292,4 @@ TBD
 ..
     <GLOBAL_LINKS>
 
-.. _OpenStack Developer's Guide: http://docs.openstack.org/developer/openstack-projects.html
+.. _OpenStack Developer's Guide: http://docs.openstack.org/infra/manual/developers.html

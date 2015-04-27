@@ -1,5 +1,5 @@
-AHC (Automated Health Check) Workflow
-=====================================
+Automated Health Check (AHC)
+============================
 
 Additional setup steps to take advantage of the AHC features.
 

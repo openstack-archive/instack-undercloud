@@ -1,10 +1,9 @@
+Ready-State (BIOS, RAID)
+========================
+
+
 Dell DRAC Setup
-===============
-
-Additional setup steps available for Dell hardware with a DRAC.
-
-Ready-state configuration
--------------------------
+---------------
 
 Configure BIOS based on the deployment profile::
 
