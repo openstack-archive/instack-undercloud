@@ -17,12 +17,25 @@ body {
 
 
 /* page header */
-.wy-side-nav-search {
+.wy-side-nav-search,
+.wy-nav-top {
   background: rgba(0, 0, 0, 0.05) !important;
 }
 
-.wy-side-nav-search a {
+.wy-nav-top {
+  line-height: 40px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.wy-side-nav-search a,
+.wy-nav-top a,
+.wy-nav-top i {
   color: rgb(160, 0, 0) !important;
+}
+
+.wy-nav-top i {
+  position: relative;
+  top: 0.1em;
 }
 
 .wy-side-nav-search input[type="text"] {
