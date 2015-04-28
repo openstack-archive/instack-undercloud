@@ -76,7 +76,6 @@ if [ "$NODE_DIST" = "rhel7" ]; then
         # SELinux permissive for RHEL without rhos-release
         export DIB_COMMON_ELEMENTS=selinux-permissive
     fi
-    export REG_HALT_UNREGISTER=${REG_HALT_UNREGISTER:-1}
     export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO
 elif [ "$NODE_DIST" = "centos7" ]; then
     export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO

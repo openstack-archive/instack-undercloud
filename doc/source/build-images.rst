@@ -93,7 +93,6 @@ non-root user that was used to install the undercloud.
               # rhel-7-server-extras-rpms
               # rhel-7-server-openstack-6.0-rpms
               export REG_ACTIVATION_KEY="[activation key]"
-              export REG_HALT_UNREGISTER=""
    ::
 
           instack-build-images
