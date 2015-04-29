@@ -7,6 +7,14 @@
 {% set script_files = script_files + ["_static/jquery.nav.js"] %}
 {% set script_files = script_files + ["_static/menu.js"] %}
 
+{% block sidebartitle %}
+
+  <a href="{{ pathto(master_doc) }}">
+    {# Not strictly valid HTML, but it's the only way to display/scale it properly, without weird scripting or heaps of work #}
+    <img src="{{ pathto('_static/' + 'rdo-manager-logo.png', 1) }}" class="logo" />
+  </a>
+{% endblock %}
+
 
 {% block menu %}
   <div id="admonition_selector">
