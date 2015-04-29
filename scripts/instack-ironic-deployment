@@ -275,7 +275,8 @@ function setup_flavors {
 
     echo "  Setting baremetal flavor keys ... "
     nova flavor-key baremetal set \
-        "cpu_arch"="x86_64"
+        "cpu_arch"="x86_64" \
+        "capabilities:boot_option"="local"
     nova flavor-show baremetal
 }
 
