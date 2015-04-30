@@ -13,7 +13,7 @@ Contents:
 
    Introduction <introduction/introduction>
    Environments <environments/environments>
-   Installing the Undercloud <install-undercloud>
+   Installation <installation/installation>
    Building Images <build-images>
    Deploying the Overcloud <deploy-overcloud>
    Vendor-Specific Setup <vendor-specific>
