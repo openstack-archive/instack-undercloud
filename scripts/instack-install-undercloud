@@ -147,7 +147,9 @@ These files are needed to interact with the OpenStack services, and should be
 secured. For convenience, they can be copied to the current directory:
 
 sudo cp /root/tripleo-undercloud-passwords .
+sudo chown $USER: tripleo-undercloud-passwords
 sudo cp /root/stackrc .
+sudo chown $USER: stackrc
 
 #############################################################################"}
 

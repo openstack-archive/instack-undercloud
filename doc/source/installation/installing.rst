@@ -69,4 +69,6 @@ these files will be needed to interact with the installed undercloud. Copy them
 to the home directory for easier use later::
 
     sudo cp /root/tripleo-undercloud-passwords .
+    sudo chown $USER: tripleo-undercloud-passwords
     sudo cp /root/stackrc .
+    sudo chown $USER: stackrc
