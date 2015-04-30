@@ -2,9 +2,10 @@
 
 set -eux
 
-instack-create-overcloudrc
 source ~/overcloudrc
-source ~/instack.answers
+# TODO(bnemec): Hard-coding this to . for now because it's tricky to extract
+# the value from the new conf file when not using oslo.config.
+IMAGE_PATH='.'
 
 # tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 

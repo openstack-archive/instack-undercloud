@@ -11,11 +11,11 @@ export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 if [ ! -d "/usr/share/instack-undercloud" ]; then
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
-    export ANSWERSFILE=$(dirname $0)/../instack.answers.sample
+    export ANSWERSFILE=$(dirname $0)/../undercloud.conf.sample
     export ELEMENTS_PATH="$(realpath $(dirname $0)/../elements):/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 else
     DEVTEST_VARIABLES=/usr/libexec/openstack-tripleo/devtest_variables.sh
-    export ANSWERSFILE=/usr/share/instack-undercloud/instack.answers.sample
+    export ANSWERSFILE=/usr/share/instack-undercloud/undercloud.conf.sample
     export ELEMENTS_PATH="/usr/share/instack-undercloud:/usr/share/tripleo-image-elements:/usr/share/diskimage-builder/elements"
 fi
 

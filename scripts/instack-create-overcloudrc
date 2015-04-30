@@ -13,9 +13,6 @@ export TRIPLEO_ROOT=${TRIPLEO_ROOT:-"/etc/tripleo"}
 export NODES_JSON=${NODES_JSON:-"instackenv.json"}
 export TE_DATAFILE=$NODES_JSON
 
-echo "Sourcing answers file from instack.answers..."
-source ~/instack.answers
-
 source tripleo-overcloud-passwords
 
 OVERCLOUD_ENDPOINT=$(heat output-show overcloud KeystoneURL|sed 's/^"\(.*\)"$/\1/')

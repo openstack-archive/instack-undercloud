@@ -17,7 +17,7 @@ visudo -c
 mkdir -p /home/stack/.ssh
 cp /tmp/in_target.d/id_rsa_virt_power /home/stack/.ssh/id_rsa_virt_power
 cp /tmp/in_target.d/id_rsa_virt_power.pub /home/stack/.ssh/id_rsa_virt_power.pub
-cp /tmp/in_target.d/instack.answers.sample /home/stack/instack.answers
+cp /tmp/in_target.d/undercloud.conf.sample /home/stack/undercloud.conf
 cp /tmp/in_target.d/$TE_DATAFILE /home/stack/instackenv.json
 
 chown -R stack:stack /home/stack

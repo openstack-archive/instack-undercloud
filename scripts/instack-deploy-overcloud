@@ -74,9 +74,9 @@ fi
 
 source tripleo-overcloud-passwords
 
-# Undercloud passwords must all be sourced into this script since we make use
-# of $UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD below
-source tripleo-undercloud-passwords
+# NOTE(bnemec): Hopefully this script will eventually be converted to
+# Python and then we can kill this sort of hackery.
+UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD=$(python -c "import ConfigParser; p = ConfigParser.ConfigParser(); p.read('undercloud-passwords.conf'); print(p.get('auth', 'undercloud_ceilometer_snmpd_password'))")
 
 NeutronFlatNetworks=${NeutronFlatNetworks:-'datacentre'}
 NeutronPhysicalBridge=${NeutronPhysicalBridge:-'br-ex'}

@@ -28,7 +28,6 @@ Installing the Undercloud
 
           sudo hostnamectl set-hostname myhost.mydomain
           sudo hostnamectl set-hostname --transient myhost.mydomain
-          export HOSTNAME=myhost.mydomain
 
       An entry for the system's FQDN hostname is also needed in /etc/hosts. For
       example, if the system is named *myhost.mydomain*, /etc/hosts should have
@@ -72,9 +71,9 @@ Installing the Undercloud
   .. admonition:: Baremetal
      :class: baremetal
 
-     Copy in the sample answers file and edit it to reflect your environment::
+     Copy in the sample configuration file and edit it to reflect your environment::
 
-        cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
+        cp /usr/share/instack-undercloud/undercloud.conf.sample ~/undercloud.conf
 
 
   Install the undercloud::
@@ -82,12 +81,13 @@ Installing the Undercloud
       openstack undercloud install
 
 
-Once the install script has run to completion, you should take note of the
-files ``/root/stackrc`` and ``/root/tripleo-undercloud-passwords``. Both of
-these files will be needed to interact with the installed undercloud. Copy them
-to the home directory for easier use later::
+Once the install has completed, you should take note of the files ``stackrc`` and
+``undercloud-passwords.conf``.  You can source ``stackrc`` to interact with the
+undercloud via the OpenStack command-line client.  ``undercloud-passwords.conf``
+contains the passwords used for each service in the undercloud.  These passwords
+will be automatically reused if the undercloud is reinstalled on the same system,
+so it is not necessary to copy them to ``undercloud.conf``.
 
-    sudo cp /root/tripleo-undercloud-passwords .
-    sudo chown $USER: tripleo-undercloud-passwords
-    sudo cp /root/stackrc .
-    sudo chown $USER: stackrc
+.. note::
+    Any passwords set in ``undercloud.conf`` will take precedence over the ones in
+    ``undercloud-passwords.conf``.
