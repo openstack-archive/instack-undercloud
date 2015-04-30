@@ -5,13 +5,6 @@ set -o pipefail
 
 export image_build=${1:-"default"}
 
-# Commit 9970cc6550735370666553cb043656bb945bef7b to puppetlabs-concat is
-# causing the following error:
-# Error: Could not find class ::concat::setup for localhost on node localhost
-# during the puppet apply.
-# Pin to an earlier commit for now.
-export DIB_REPOREF_puppetlabs_concat=15ecb98dc3a551024b0b92c6aafdefe960a4596f
-
 # Attempt to be smart about detecting the path to the instack-undercloud
 # elements
 INSTACKUNDERCLOUDELEMENTS=/usr/share/instack-undercloud
@@ -37,10 +30,11 @@ $INSTACKUNDERCLOUDELEMENTS:\
 # use a tmpfs on it's own if there is enough free RAM.
 export TMP_DIR=${TMP_DIR:-/var/tmp}
 
-export NODE_ARCH=${NODE_ARCH:-amd64}
+# We need to define this here, see:
+# https://review.openstack.org/179502
+export DIB_DEFAULT_INSTALLTYPE=${DIB_DEFAULT_INSTALLTYPE:-package}
 
-# We must do this until tripleo-puppet-elements is packaged
-export DIB_INSTALLTYPE_puppet_modules=source
+export NODE_ARCH=${NODE_ARCH:-amd64}
 
 export USE_DELOREAN_TRUNK=${USE_DELOREAN_TRUNK:-1}
 export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/kilo/centos7/latest-RDO-kilo-CI/"}
