@@ -1,5 +1,5 @@
-Installing Undercloud
-=====================
+Installing the Undercloud
+==========================
 
 #. Log in to your machine (baremetal or VM) where you want to install the
    undercloud as a non-root user (such as the stack user)::
@@ -50,11 +50,12 @@ Installing Undercloud
 
 #. Run the script to install the undercloud:
 
+  .. admonition:: Baremetal
+     :class: baremetal
 
-  Copy in the sample answers file and edit it to reflect your environment (keep
-  the defaults if you used instack-virt-setup)::
+     Copy in the sample answers file and edit it to reflect your environment::
 
-      cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
+        cp /usr/share/instack-undercloud/instack.answers.sample ~/instack.answers
 
 
   Install the undercloud::

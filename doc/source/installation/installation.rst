@@ -6,5 +6,5 @@ update components after installation.
 
 .. toctree::
 
-   Installing Undercloud <installing>
+   Installing the Undercloud <installing>
    Updating Undercloud Components <updating>
