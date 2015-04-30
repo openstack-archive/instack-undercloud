@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+set -o pipefail
+
+echo "$UNDERCLOUD_VM_NAME.localdomain" > /etc/hostname
+echo "127.0.0.1   $UNDERCLOUD_VM_NAME $UNDERCLOUD_VM_NAME.localdomain" >> /etc/hosts
