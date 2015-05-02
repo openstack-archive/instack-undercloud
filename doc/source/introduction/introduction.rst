@@ -18,4 +18,5 @@ Useful links:
 .. toctree::
    :hidden:
 
+   Architecture <architecture>
    Components <components>
