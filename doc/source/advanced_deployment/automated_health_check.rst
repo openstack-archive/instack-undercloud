@@ -255,6 +255,8 @@ After discovery has completed, we can do analysis on the benchmark data.
   However we can see that the variance of the "standalone_randread_4k_KBps"
   metric was above the threshold, so the group is marked as unstable.
 
+.. _ahc_matching:
+
 Exclude outliers from deployment
 --------------------------------
 
