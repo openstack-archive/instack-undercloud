@@ -32,7 +32,7 @@ Installing the Undercloud
    .. only:: internal
 
       .. admonition:: RHEL
-         :class: rhel-tag
+         :class: rhel
 
           Enable rhos-release::
 
