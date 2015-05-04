@@ -6,11 +6,14 @@ set -o pipefail
 # Install repo file for Delorean master packages
 # Pin to an older repo for now because newer openstack-keystone requires a
 # newer and not yet avaialable python-pycadf.
-export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/kilo/centos7/latest-RDO-kilo-CI/"}
-export DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean-kilo.repo"}
-sudo curl -o /etc/yum.repos.d/$DELOREAN_REPO_FILE $DELOREAN_TRUNK_REPO/$DELOREAN_REPO_FILE
-# We need to have the main delorean repo have a lower priority than ours to ensure our changes get installed
-sudo sed -i 's/priority=1/priority=10/' /etc/yum.repos.d/$DELOREAN_REPO_FILE
+export USE_DELOREAN_TRUNK=${USE_DELOREAN_TRUNK:-1}
+if [ "$USE_DELOREAN_TRUNK" = "1" ]; then
+    export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/kilo/centos7/latest-RDO-kilo-CI/"}
+    export DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean-kilo.repo"}
+    sudo curl -o /etc/yum.repos.d/$DELOREAN_REPO_FILE $DELOREAN_TRUNK_REPO/$DELOREAN_REPO_FILE
+    # We need to have the main delorean repo have a lower priority than ours to ensure our changes get installed
+    sudo sed -i 's/priority=1/priority=10/' /etc/yum.repos.d/$DELOREAN_REPO_FILE
+fi
 
 # Install repo file for Delorean el7 midstream packages built from
 # rdo-management.

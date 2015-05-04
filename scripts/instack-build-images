@@ -42,6 +42,7 @@ export NODE_ARCH=${NODE_ARCH:-amd64}
 # We must do this until tripleo-puppet-elements is packaged
 export DIB_INSTALLTYPE_puppet_modules=source
 
+export USE_DELOREAN_TRUNK=${USE_DELOREAN_TRUNK:-1}
 export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/kilo/centos7/latest-RDO-kilo-CI/"}
 export DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean-kilo.repo"}
 
@@ -131,11 +132,14 @@ heat-config-script \
 puppet-modules \
 hiera \
 os-net-config \
-delorean-repo \
 stable-interface-names \
 grub2 \
 -p python-psutil,python-debtcollector \
 "
+
+if [ "$USE_DELOREAN_TRUNK" = "1" ]; then
+    export PUPPET_COMMON_ELEMENTS="$PUPPET_COMMON_ELEMENTS delorean-repo"
+fi
 
 export OVERCLOUD_FULL_DIB_EXTRA_ARGS=${OVERCLOUD_FULL_DIB_EXTRA_ARGS:-"\
 $PUPPET_COMMON_ELEMENTS \
