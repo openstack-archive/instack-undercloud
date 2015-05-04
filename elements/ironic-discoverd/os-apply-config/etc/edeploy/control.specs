@@ -1,5 +1,0 @@
-[
- ('disk', '$disk', 'size', 'gt(4)'),
- ('network', '$eth', 'ipv4', 'network({{neutron.network_cidr}})'),
- ('memory', 'total', 'size', 'ge(4294967296)'),
-]

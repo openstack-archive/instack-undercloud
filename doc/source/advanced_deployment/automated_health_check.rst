@@ -15,16 +15,16 @@ Analyze the collected benchmark data
 
 After discovery has completed, we can do analysis on the benchmark data.
 
-* Install the rdo-ramdisk-tools package::
+* Install the ahc-tools package::
 
-    sudo yum install -y rdo-ramdisk-tools
+    sudo yum install -y ahc-tools
 
-* Run the ironic-cardiff script to see a general overview of the hardware
+* Run the ahc-report script to see a general overview of the hardware
 
   ::
 
     $ source stackrc
-    $ ironic-cardiff --categories
+    $ ahc-report --categories
     ##### HPA Controller #####
     3 identical systems :
     [u'7F8831F1-0D81-464E-A767-7577DF49AAA5', u'B9FE637A-5B97-4A52-BFDA-9244CEA65E23', u'7884BC95-6EF8-4447-BDE5-D19561718B29']
@@ -164,7 +164,7 @@ After discovery has completed, we can do analysis on the benchmark data.
 
   ::
 
-    $ ironic-cardiff --outliers
+    $ ahc-report --outliers
 
     Group 0 : Checking logical disks perf
     standalone_randread_4k_KBps       : INFO    : sda          : Group performance : min=45296.00, mean=53604.67, max=67923.00, stddev=12453.21
@@ -260,7 +260,7 @@ Exclude outliers from deployment
 
 We will use the sample reports above to construct some matching rules for our deployment. These matching rules will determine what profile gets assigned to each node.
 
-* Open the /etc/edeploy/control.specs file. By default it will look close to this
+* Open the /etc/ahc-tools/edeploy/control.specs file. By default it will look close to this
 
   ::
 
@@ -284,7 +284,7 @@ We will use the sample reports above to construct some matching rules for our de
 
     ('disk', 'sda', 'size', '40')
 
-    This would match the first rule in the above compute.specs file, and we would store "disk": "sda".
+    This would match the first rule in the above control.specs file, and we would store "disk": "sda".
 
 * Add a rule to the control.specs file to match the system with two CPUs
 
@@ -309,9 +309,8 @@ We will use the sample reports above to construct some matching rules for our de
        ('memory', 'total', 'size', 'ge(4294967296)'),
       ]
 
-* After changing the matching rules, re-run discovery to match to the intended profiles
+* After changing the matching rules, we are ready to do the matching
 
   ::
 
-      sudo cp /usr/libexec/os-apply-config/templates/etc/edeploy/state /etc/edeploy/state
-      instack-ironic-deployment --discover-nodes
+      sudo -E ahc-match
