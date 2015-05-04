@@ -10,3 +10,4 @@ help with troubleshooting when using RDO-Manager.
    Virtual Setup Problems <troubleshooting-virt-setup>
    Node Management Problems <troubleshooting-nodes>
    Failed Overcloud Deployment <troubleshooting-overcloud>
+   Tripleo Heat Templates <troubleshooting-tripleo-heat-templates>
