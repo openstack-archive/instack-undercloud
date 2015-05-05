@@ -12,12 +12,10 @@ Contents:
    :maxdepth: 2
 
    Introduction <introduction/introduction>
-   Environments <environments/environments>
-   Installation <installation/installation>
-   Building Images <build-images>
-   Deploying the Overcloud <deploy-overcloud>
-   Vendor-Specific Setup <vendor-specific>
-   AHC (Automated Health Check) Workflow <ahc-workflow>
+   Environment Setup <environments/environments>
+   Undercloud Installation <installation/installation>
+   Basic Deployment <basic_deployment/basic_deployment>
+   Advanced Deployment <advanced_deployment/advanced_deployment>
    Troubleshooting <troubleshooting/troubleshooting>
    How to Contribute <contributions/contributions>
 

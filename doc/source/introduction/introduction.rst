@@ -6,6 +6,10 @@ RDO-Manager is an OpenStack Deployment & Management tool for RDO. It is based on
 philosophy is inspired by `SpinalStack <http://spinal-stack.readthedocs.org/en/
 latest/>`_.
 
+TripleO architecture is based on the **undercloud** and **overcloud** concept.
+To learn more about it, visit `TripleO Documentation <http://docs.openstack.org/
+developer/tripleo-incubator/README.html>`_.
+
 Useful links:
 
 * `RDO-Manager Home Page <http://rdoproject.org/RDO-Manager>`_
