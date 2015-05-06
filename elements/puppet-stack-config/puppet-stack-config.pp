@@ -94,10 +94,6 @@ if $::osfamily == 'RedHat' {
   $rabbit_provider = undef
 }
 
-Class['rabbitmq'] -> Rabbitmq_vhost <| |>
-Class['rabbitmq'] -> Rabbitmq_user <| |>
-Class['rabbitmq'] -> Rabbitmq_user_permissions <| |>
-
 # TODO Rabbit HA
 class { 'rabbitmq':
   package_provider  => $rabbit_provider,
@@ -108,18 +104,16 @@ class { 'rabbitmq':
 rabbitmq_vhost { '/':
   provider => 'rabbitmqctl',
 }
-rabbitmq_user { ['nova','glance','neutron','ceilometer','heat']:
+rabbitmq_user {[
+  hiera(rabbit_username)
+]:
   admin    => true,
   password => hiera('rabbit_password'),
   provider => 'rabbitmqctl',
 }
 
 rabbitmq_user_permissions {[
-  'nova@/',
-  'glance@/',
-  'neutron@/',
-  'ceilometer@/',
-  'heat@/',
+  join([hiera(rabbit_username), '@/'])
 ]:
   configure_permission => '.*',
   write_permission     => '.*',
