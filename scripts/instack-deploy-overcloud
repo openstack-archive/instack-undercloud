@@ -246,6 +246,7 @@ if [ -n "$TUSKAR" ]; then
         CINDER_ISCSI=${CINDER_ISCSI:-0}
         export TUSKAR_PARAMETERS="$TUSKAR_PARAMETERS
             -A Controller-1::CinderEnableRbdBackend=True
+            -A Controller-1::GlanceBackend=rbd
             -A CephClusterFSID=$FSID
             -A CephMonKey=$MON_KEY
             -A CephAdminKey=$ADMIN_KEY
@@ -381,6 +382,7 @@ else
         -P CephAdminKey=$ADMIN_KEY \
         -P CinderEnableRbdBackend=True \
         -P NovaEnableRbdBackend=True \
+        -P GlanceBackend=rbd \
         "
 
         if [ $CINDER_ISCSI -eq 0 ]; then
