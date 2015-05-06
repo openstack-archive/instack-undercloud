@@ -284,10 +284,48 @@ tuskar-ui-extras
 ^^^^^^^^^^^^^^^^
 TBD
 
+python-openstackclient
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The python-openstackclient is an upstream CLI tool which can manage multiple
+openstack services. It wraps openstack clients like glance, nova, etc. and maps
+them under intuitive names like openstack image, compute, etc.
+
+The main value is that all services can be controlled by a single (openstack)
+command with consistent syntax and behaviour.
+
+**How to contribute**
+
+* python-openstackclient uses `tox <https://tox.readthedocs.org/en/latest/>`_
+  to manage the development environment, see `upstream documentation
+  <https://github.com/openstack/python-openstackclient/blob/master/README.rst>`_
+  for details. Submit your changes via OpenStack Gerrit
+  (see `OpenStack Developer's Guide`_).
+
+**Useful links**
+
+* Upstream Project: http://git.openstack.org/cgit/openstack/python-openstackclient
+* Bugs: https://bugs.launchpad.net/python-openstackclient
+* Blueprints: https://blueprints.launchpad.net/python-openstackclient
+* Human interface guide: http://docs.openstack.org/developer/python-openstackclient/humaninterfaceguide.html
+
 python-rdomanager-oscplugin
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-TBD
+The python-rdomanager-oscplugin is a CLI tool embedded into
+python-openstackclient. It provides functions related to instack
+installation and initial configuration like node discovery, overcloud image
+building and uploading, etc.
 
+**How to contribute**
+
+* python-rdomanager-oscplugin uses `tox <https://tox.readthedocs.org/en/latest/>`_
+  to manage the development environment, see `documentation
+  <https://github.com/rdo-management/python-rdomanager-oscplugin/blob/master/CONTRIBUTING.rst>`_
+  for details. Submit your changes via
+  `Gerrithub <https://review.gerrithub.io/#/q/project:rdo-management/python-rdomanager-oscplugin>`_).
+
+**Useful links**
+
+* Project: https://github.com/rdo-management/python-rdomanager-oscplugin
 
 ..
     <GLOBAL_LINKS>
