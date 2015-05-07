@@ -106,7 +106,7 @@ neutron::bind_host: {{LOCAL_IP}}
 neutron::core_plugin: ml2
 neutron::dhcp_agents_per_network: 2
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USER}}
+neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 neutron::server::auth_host: {{LOCAL_IP}}
 neutron::server::database_connection: mysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
 neutron::server::sync_db: true
