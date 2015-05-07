@@ -1,0 +1,23 @@
+#!/bin/bash
+set -eux
+set -o pipefail
+
+add-rule INPUT -p tcp --dport 8088 -j ACCEPT
+
+# Create the apache vHOST for Ironic
+mkdir -p /etc/httpd/conf.d
+sudo cp -r $(dirname $0)/ipxe-vhost.template /etc/httpd/conf.d/10-ipxe_vhost.conf
+
+os-svc-enable -n apache2
+os-svc-restart -n apache2 || true
+
+[ -x /usr/sbin/semanage ] || exit 0
+
+semanage fcontext -a -t httpd_sys_content_t "/httpboot(/.*)?"
+restorecon -Rv /httpboot/
+
+# Try to delete port if present
+semanage port -d -t http_port_t -p tcp 8088 || true
+
+# Add port
+semanage port -a -t http_port_t -p tcp 8088

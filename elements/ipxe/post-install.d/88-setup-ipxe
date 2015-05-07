@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eux
+set -o pipefail
+
+mkdir -p /httpboot
+chown ironic:ironic -R /httpboot
+
+# Copy the iPXE binary to the TFTP directory for chainloading
+install -o ironic -g ironic -m 744 /usr/share/ipxe/undionly.kpxe /tftpboot/undionly.kpxe

@@ -6,7 +6,7 @@ IMAGE_PATH=${IMAGE_PATH:-"."}
 
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
-TFTP_ROOT=${TFTP_ROOT:-/tftpboot}
+HTTP_ROOT=${HTTP_ROOT:-/httpboot}
 
 source <(sudo cat /root/stackrc)
 
@@ -50,5 +50,5 @@ glance image-create --name bm-deploy-ramdisk --is-public true \
 deploy_kernel_id=$(glance image-show bm-deploy-kernel | awk ' / id / {print $4}')
 deploy_ramdisk_id=$(glance image-show bm-deploy-ramdisk | awk ' / id / {print $4}')
 
-sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.kernel" "$TFTP_ROOT/discovery.kernel"
-sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.initramfs" "$TFTP_ROOT/discovery.ramdisk"
+sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.kernel" "$HTTP_ROOT/discovery.kernel"
+sudo cp -f "$IMAGE_PATH/$DISCOVERY_NAME.initramfs" "$HTTP_ROOT/discovery.ramdisk"
