@@ -10,6 +10,31 @@ exec 2>&1
 
 echo "Running $0"
 
+echo "Checking for a FQDN hostname..."
+detected_static_hostname=$(sudo hostnamectl --static)
+echo "static hostname detected as...$detected_static_hostname"
+detected_transient_hostname=$(sudo hostnamectl --transient)
+echo "transient hostname detected as...$detected_transient_hostname"
+echo "\$HOSTNAME detected as...$HOSTNAME"
+
+if [ ! "$detected_static_hostname" = "$detected_transient_hostname" ]; then
+    echo "static hostname does not match transient hostname"
+    echo "Use hostnamectl to set matching hostnames."
+    exit 1
+fi
+
+if [ ! "$detected_static_hostname" = "$HOSTNAME" ]; then
+    echo "static hostname does not match \$HOSTNAME"
+    echo "Set \$HOSTNAME to match or relogin so $HOSTNAME is redefined."
+    exit 1
+fi
+
+if ! grep -E "\s+$detected_static_hostname(\s|$)+" /etc/hosts; then
+    echo "static hostname not set in /etc/hosts"
+    echo "Please add a line to /etc/hosts for the static hostname."
+    exit 1
+fi
+
 # We must do this until tripleo-puppet-elements is packaged
 export DIB_INSTALLTYPE_puppet_modules=source
 # Commit 9970cc6550735370666553cb043656bb945bef7b to puppetlabs-concat is
