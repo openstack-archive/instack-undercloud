@@ -20,34 +20,30 @@ function show_options () {
     echo "Deploys instances via Ironic in preparation for an Overcloud deployment."
     echo
     echo "Options:"
-    echo "      --register-nodes                    -- register nodes from a nodes json file"
-    echo "      --nodes-json                        -- nodes json file containing node data"
-    echo "                                             for registration."
-    echo "                                             Default: nodes.json in the current directory"
-    echo "      --discover-nodes                    -- Perform discovery of registered nodes."
-    echo "                                             Powers on registered nodes to complete"
-    echo "                                             the discovery process."
-    echo "      --configure-bios                    -- Configure BIOS settings of "
-    echo "                                             registered nodes."
-    echo "      --configure-root-raid-volume        -- Configure RAID volumes of registered"
-    echo "                                             nodes."
-    echo "      --configure-nonroot-raid-volumes    -- Configure RAID volumes of registered"
-    echo "                                             nodes."
-    echo "      --setup-flavors                     -- Setup Nova flavors to match discovered"
-    echo "                                             profiles"
-    echo "      --show-profile                      -- Show matching profile of nodes"
-    echo "      --deploy-nodes                      -- Deploy nodes"
-    echo "      --check-ssh                         -- Check the root ssh connection to each"
-    echo "                                             deployed node."
-    echo "      --delete-stack                      -- Wait until the stack has deleted."
-    echo "      --delete-nodes                      -- Delete all nodes."
-    echo "      -x                                  -- enable tracing"
-    echo "      --help, -h                          -- Print this help message."
+    echo "      --register-nodes     -- register nodes from a nodes json file"
+    echo "      --nodes-json         -- nodes json file containing node data"
+    echo "                              for registration."
+    echo "                              Default: nodes.json in the current directory"
+    echo "      --discover-nodes     -- Perform discovery of registered nodes."
+    echo "                              Powers on registered nodes to complete"
+    echo "                              the discovery process."
+    echo "      --configure-nodes    -- Configure BIOS and RAID volumes of "
+    echo "                              registered nodes."
+    echo "      --setup-flavors      -- Setup Nova flavors to match discovered"
+    echo "                              profiles"
+    echo "      --show-profile       -- Show matching profile of nodes"
+    echo "      --deploy-nodes       -- Deploy nodes"
+    echo "      --check-ssh          -- Check the root ssh connection to each"
+    echo "                              deployed node."
+    echo "      --delete-stack       -- Wait until the stack has deleted."
+    echo "      --delete-nodes       -- Delete all nodes."
+    echo "      -x                   -- enable tracing"
+    echo "      --help, -h           -- Print this help message."
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,configure-bios,configure-root-raid-volume,configure-nonroot-raid-volumes,deploy-nodes,help,setup-flavors,show-profile,check-ssh,delete-stack,delete-nodes,config-tools-provision -o,x,h -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,register-nodes,nodes-json:,discover-nodes,configure-nodes,deploy-nodes,help,setup-flavors,show-profile,check-ssh,delete-stack,delete-nodes,config-tools-provision -o,x,h -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -56,9 +52,7 @@ eval set -- "$TEMP"
 REGISTER_NODES=
 NODES_JSON=
 DISCOVER_NODES=
-CONFIGURE_BIOS=
-CONFIGURE_RAID_ROOT_VOLUMES=
-CONFIGURE_RAID_NONROOT_VOLUMES=
+CONFIGURE_NODES=
 DEPLOY_NODES=
 SETUP_FLAVORS=
 SHOW_PROFILE=
@@ -80,9 +74,7 @@ while true ; do
         --register-nodes) REGISTER_NODES="1"; shift 1;;
         --nodes-json) NODES_JSON="$2"; shift 2;;
         --discover-nodes) DISCOVER_NODES="1"; shift 1;;
-        --configure-bios) CONFIGURE_BIOS="1"; shift 1;;
-        --configure-root-raid-volume) CONFIGURE_RAID_ROOT_VOLUMES="1"; shift 1;;
-        --configure-nonroot-raid-volumes) CONFIGURE_RAID_NONROOT_VOLUMES="1"; shift 1;;
+        --configure-nodes) CONFIGURE_NODES="1"; shift 1;;
         --show-profile) SHOW_PROFILE="1"; shift 1;;
         --deploy-nodes) DEPLOY_NODES="1"; shift 1;;
         --setup-flavors) SETUP_FLAVORS="1"; shift 1;;
@@ -166,16 +158,17 @@ function discover_nodes {
 function configure_bios {
     echo "  Configuring BIOS."
     node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+
     for node_id in $node_ids; do
-
         driver=$(ironic node-show $node_id | grep 'driver[ \t]' | awk -F "|" '{print $3}' | xargs)
-
         if [ "$driver" == "pxe_drac" ]; then
             echo -n "    Configuring BIOS for node ID $node_id ... "
             ironic node-vendor-passthru $node_id --http_method POST configure_bios_settings
-            echo "DONE. You might need to reboot the machine to apply the changes."
+            echo "DONE."
         fi
     done
+    # NOTE(ifarkas): wait until Ironic processes the request
+    sleep 15
     echo
 }
 
@@ -191,16 +184,15 @@ function configure_raid_volumes {
 
         if [ "$driver" == "pxe_drac" ]; then
             echo -n "    Configuring RAID volumes for node ID $node_id ... "
-            ironic node-vendor-passthru $node_id --http_method POST prepare_for_ready_state
             ironic node-vendor-passthru $node_id --http_method POST create_raid_configuration \
                                         create_root_volume=$create_root_volume \
                                         create_nonroot_volumes=$create_nonroot_volumes
             echo "DONE."
         fi
     done
+    # NOTE(ifarkas): wait until Ironic processes the request
+    sleep 15
     echo
-
-    wait_for_drac_config_jobs
 }
 
 function wait_for_drac_config_jobs {
@@ -212,7 +204,7 @@ function wait_for_drac_config_jobs {
         driver=$(ironic node-show $node_id | grep 'driver[ \t]' | awk -F "|" '{print $3}' | xargs)
 
         if [ "$driver" == "pxe_drac" ]; then
-            echo -n "       Waiting for node $node_id ... "
+            echo -n "    Waiting for node $node_id ... "
 
             while true; do
                 jobs=$(ironic node-vendor-passthru $node_id --http_method GET list_unfinished_jobs)
@@ -226,6 +218,21 @@ function wait_for_drac_config_jobs {
             echo "DONE."
         fi
     done
+    echo
+}
+
+function change_power_state {
+    requested_state=$1
+
+    echo "  Changing power states."
+    node_ids=$(ironic node-list | tail -n +4 | head -n -1 | awk -F "| " '{print $2}')
+    for node_id in $node_ids; do
+        echo -n "    Changing power state for node ID $node_id ... "
+        ironic node-set-power-state $node_id $requested_state
+        echo "DONE."
+    done
+    # NOTE(ifarkas): wait until Ironic processes the request
+    sleep 15
     echo
 }
 
@@ -338,20 +345,26 @@ if [ "$DISCOVER_NODES" = 1 ]; then
     discover_nodes
 fi
 
-if [ "$CONFIGURE_BIOS" = 1 ]; then
+if [ "$CONFIGURE_NODES" = 1 ]; then
     configure_bios
-fi
 
-if [ "$CONFIGURE_RAID_ROOT_VOLUMES" = 1 ]; then
     create_root_volume=true
     create_nonroot_volumes=false
     configure_raid_volumes $create_root_volume $create_nonroot_volumes
-fi
 
-if [ "$CONFIGURE_RAID_NONROOT_VOLUMES" = 1 ]; then
+    change_power_state reboot
+    wait_for_drac_config_jobs
+    change_power_state off
+
+    discover_nodes
+
     create_root_volume=false
     create_nonroot_volumes=true
     configure_raid_volumes $create_root_volume $create_nonroot_volumes
+
+    change_power_state reboot
+    wait_for_drac_config_jobs
+    change_power_state off
 fi
 
 if [ "$SETUP_FLAVORS" = 1 ]; then
