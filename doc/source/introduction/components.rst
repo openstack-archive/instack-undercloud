@@ -278,14 +278,40 @@ User Interfaces
 ---------------
 tuskar-ui
 ^^^^^^^^^
-TBD
+Tuskar-UI provides a GUI to install and manage OpenStack. It is implemented as
+a plugin to Horizon.
+
+**How to contribute**
+
+* See `upstream documentation <http://tuskar-ui.readthedocs.org/en/latest/install.html>`_
+  for instuctions on how to set up a development environment. Submit your
+  changes via OpenStack Gerrit (see `OpenStack Developer's Guide`_).
+
+**Useful links**
+
+* Upstream Project: https://git.openstack.org/cgit/openstack/tuskar-ui
+* Documentation: http://tuskar-ui.readthedocs.org
+* Bugs: https://bugs.launchpad.net/tuskar-ui
+* Blueprints: https://blueprints.launchpad.net/tuskar-ui
 
 tuskar-ui-extras
 ^^^^^^^^^^^^^^^^
-TBD
+Tuskar-UI extras provides GUI enhancements for Tuskar-UI. It is implemented as
+a plugin to Horizon.
+
+**How to contribute**
+
+* See `upstream documentation <http://tuskar-ui-extras.readthedocs.org/en/latest/install.html#development-install-instructions>`_
+  for instuctions on how to set up a development environment. Submit your
+  changes via `Gerrithub <https://review.gerrithub.io/#/q/project:rdo-management/tuskar-ui-extras>`_.
+
+**Useful links**
+
+* Project: https://github.com/rdo-management/tuskar-ui-extras
+* Documentation: http://tuskar-ui-extras.readthedocs.org
 
 python-openstackclient
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
 The python-openstackclient is an upstream CLI tool which can manage multiple
 openstack services. It wraps openstack clients like glance, nova, etc. and maps
 them under intuitive names like openstack image, compute, etc.
@@ -321,7 +347,7 @@ building and uploading, etc.
   to manage the development environment, see `documentation
   <https://github.com/rdo-management/python-rdomanager-oscplugin/blob/master/CONTRIBUTING.rst>`_
   for details. Submit your changes via
-  `Gerrithub <https://review.gerrithub.io/#/q/project:rdo-management/python-rdomanager-oscplugin>`_).
+  `Gerrithub <https://review.gerrithub.io/#/q/project:rdo-management/python-rdomanager-oscplugin>`_.
 
 **Useful links**
 
