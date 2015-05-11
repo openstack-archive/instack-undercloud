@@ -5,6 +5,10 @@ set -eux
 export DIB_DEFAULT_INSTALLTYPE=${DIB_DEFAULT_INSTALLTYPE:-package}
 export DIB_INSTALLTYPE_os_cloud_config=package
 
+# Must define this manually, see:
+# https://review.openstack.org/179101
+export DIB_INSTALLTYPE_puppet_modules=${DIB_INSTALLTYPE_puppet_modules:-package}
+
 # OpenStack projects
 export DIB_INSTALLTYPE_heat=${DIB_INSTALLTYPE_heat:-package}
 export DIB_INSTALLTYPE_keystone=${DIB_INSTALLTYPE_keystone:-package}

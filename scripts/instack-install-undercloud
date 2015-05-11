@@ -35,16 +35,6 @@ if ! grep -E "\s+$detected_static_hostname(\s|$)+" /etc/hosts; then
     exit 1
 fi
 
-# We must do this until tripleo-puppet-elements is packaged
-export DIB_INSTALLTYPE_puppet_modules=source
-# Commit 9970cc6550735370666553cb043656bb945bef7b to puppetlabs-concat is
-# causing the following error:
-# Error: Could not find class ::concat::setup for localhost on node localhost
-# during the puppet apply.
-# Pin to an earlier commit for now.
-export DIB_REPOREF_puppetlabs_concat=15ecb98dc3a551024b0b92c6aafdefe960a4596f
-
-
 # Attempt to be smart about detecting the path to the json files.
 JSONFILEDIR=/usr/share/instack-undercloud/json-files
 if [ ! -d "$JSONFILEDIR" ]; then
