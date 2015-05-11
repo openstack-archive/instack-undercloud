@@ -7,8 +7,8 @@ Enable running benchmarks during discovery
 ------------------------------------------
 
 By default, the benchmark tests do not run during the discovery process.
-We can enable this feature by setting RUNBENCH=1 in the instack.answer file
-prior to running instack-install-undercloud.
+We can enable this feature by setting DISCOVERY_RUNBENCH=1 in the
+instack.answer file prior to running instack-install-undercloud.
 
 Analyze the collected benchmark data
 ------------------------------------
