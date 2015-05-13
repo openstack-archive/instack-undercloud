@@ -22,7 +22,7 @@ sudo curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_TRUNK_MGT_R
 
 # Delorean requires RDO
 if ! rpm -q rdo-release; then
-    sudo yum install -y https://rdo.fedorapeople.org/openstack-kilo/rdo-release-kilo-0.noarch.rpm
+    sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
 fi
 
 if ! rpm -q epel-release; then
