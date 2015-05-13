@@ -36,7 +36,7 @@ export DIB_DEFAULT_INSTALLTYPE=${DIB_DEFAULT_INSTALLTYPE:-package}
 
 export NODE_ARCH=${NODE_ARCH:-amd64}
 
-export USE_DELOREAN_TRUNK=${USE_DELOREAN_TRUNK:-1}
+export USE_DELOREAN_TRUNK=${USE_DELOREAN_TRUNK:-0}
 export DELOREAN_TRUNK_REPO=${DELOREAN_TRUNK_REPO:-"http://trunk.rdoproject.org/kilo/centos7/latest-RDO-kilo-CI/"}
 export DELOREAN_REPO_FILE=${DELOREAN_REPO_FILE:-"delorean-kilo.repo"}
 

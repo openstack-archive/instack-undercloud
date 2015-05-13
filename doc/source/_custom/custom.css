@@ -127,6 +127,11 @@ footer p {
   color: rgba(255, 255, 255, 0.95);
 }
 
+/* optional */
+.rst-content .optional {
+  background: white;
+}
+
 /* tags */
 .rhel {background: #fee;}
 .portal {background-color: #ded;}

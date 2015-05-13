@@ -37,8 +37,7 @@ Installing the Undercloud
          127.0.0.1   myhost.mydomain
 
 
-#. Download and execute the instack-undercloud setup script which will enable
-   the needed repositories for you:
+#. Enable needed repositories:
 
    .. only:: internal
 
@@ -47,11 +46,20 @@ Installing the Undercloud
 
           Enable rhos-release::
 
-              export RUN_RHOS_RELEASE=1
+              sudo yum install -y http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+              sudo rhos-release 6
+
+              # We need openwsman-python from the optional repo
+              sudo yum install -y yum-utils
+              sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 
    ::
 
-       curl https://raw.githubusercontent.com/rdo-management/instack-undercloud/master/scripts/instack-setup-host | bash -x
+       # Enable RDO Kilo
+       sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
+
+       # Enable RDO-Manager Trunk
+       sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
 
 
 #. Install the unified CLI (also installs instack-undercloud as a dependency)::

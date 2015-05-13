@@ -3,9 +3,12 @@ Updating Undercloud Components
 
 You can upgrade any packages that are installed on the undercloud machine.
 
-#. Re-run the setup script to update the list of defined yum repositories::
+#. Update the RDO-Manager Trunk repository::
 
-    instack-setup-host
+
+       # Remove old and enable new RDO-Manager Trunk
+       sudo rm /etc/yum.repos.d/rdo-management-trunk.repo
+       sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
 
 #. Use yum to update all installed packages::
 
