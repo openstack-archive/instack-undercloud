@@ -7,7 +7,6 @@
       "iptables",
       "redhat-common",
       "undercloud-install",
-      "os-collect-config",
       "undercloud-stack-config",
       "common-venv",
       "undercloud-post-config",
@@ -32,6 +31,7 @@
     "exclude-element": [
       "pip-and-virtualenv",
       "ironic",
+      "os-collect-config",
       "openstack-clients"
     ],
     "blacklist": [
