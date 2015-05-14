@@ -35,21 +35,90 @@ Shared Libraries
 ----------------
 diskimage-builder
 ^^^^^^^^^^^^^^^^^
-TBD
+
+diskimage-builder is an image building tool. It is used by
+``instack-build-images``.
+
+**How to contribute**
+
+See the diskimage-builder `README.rst
+<https://git.openstack.org/cgit/openstack/diskimage-builder/tree/README.rst>`_
+for a further explanation of the tooling. Submit your changes via
+OpenStack Gerrit (see `OpenStack Developer's Guide
+<http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Upstream Project Documentation: http://docs.openstack.org/developer/diskimage-builder/
+* Bugs: https://bugs.launchpad.net/diskimage-builder
+* Git repository: https://git.openstack.org/cgit/openstack/diskimage-builder/
 
 
 dib-utils
 ^^^^^^^^^
-TBD
+
+dib-utils contains tools that are used by diskimage-builder.
+
+**How to contribute**
+
+Submit your changes via OpenStack Gerrit (see `OpenStack Developer's Guide
+<http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Bugs: https://bugs.launchpad.net/diskimage-builder
+* Git repository: https://git.openstack.org/cgit/openstack/dib-utils/
 
 
 os-\*-config
 ^^^^^^^^^^^^
-TBD
+
+The os-\*-config projects are a suite of tools used to configure instances
+deployed via TripleO. They include:
+
+* os-collect-config
+* os-refresh-config
+* os-apply-config
+* os-net-config
+
+**How to contribute**
+
+Each tool uses `tox <https://tox.readthedocs.org/en/latest/>`_ to manage the
+development environment. Submit your changes via OpenStack Gerrit (see
+`OpenStack Developer's Guide
+<http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Bugs:
+
+  * os-collect-config: https://bugs.launchpad.net/os-collect-config
+  * os-refresh-config: https://bugs.launchpad.net/os-refresh-config
+  * os-apply-config: https://bugs.launchpad.net/os-apply-config
+  * os-net-config: https://bugs.launchpad.net/os-net-config
+
+* Git repositories:
+
+  * os-collect-config: https://git.openstack.org/cgit/openstack/os-collect-config
+  * os-refresh-config https://git.openstack.org/cgit/openstack/os-refresh-config
+  * os-apply-config https://git.openstack.org/cgit/openstack/os-apply-config
+  * os-net-config https://git.openstack.org/cgit/openstack/os-net-config
 
 tripleo-image-elements
 ^^^^^^^^^^^^^^^^^^^^^^
-TBD
+
+tripleo-image-elements is a repository of diskimage-builder style elements used
+for installing various software components.
+
+**How to contribute**
+
+Submit your changes via OpenStack Gerrit (see
+`OpenStack Developer's Guide
+<http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Git repository: https://git.openstack.org/cgit/openstack/tripleo-image-elements
 
 
 Installer
@@ -57,17 +126,50 @@ Installer
 
 instack
 ^^^^^^^
-TBD
+instack executes diskimage-builder style elements on the current system. This
+enables a current running system to have an element applied in the same way
+that diskimage-builder applies the element to an image build.
 
+instack, in its current form, should be considered low level tooling. It is
+meant to be used by higher level scripting that understands what elements and
+hook scripts need execution. Using instack requires a rather in depth knowledge
+of the elements within diskimage-builder and tripleo-image-elements.
+
+**How to contribute**
+
+Submit patches to gerrithub https://review.gerrithub.io/#/q/project:rdo-management/instack
+
+**Useful links**
+
+* Bugs: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&classification=Community&component=instack
 
 instack-undercloud
 ^^^^^^^^^^^^^^^^^^
-TBD
+instack-undercloud is a TripleO style undercloud installer based around
+instack.
 
+**How to contribute**
+
+Submit patches to gerrithub https://review.gerrithub.io/#/q/project:rdo-management/instack-undercloud
+
+**Useful links**
+
+* Bugs: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&classification=Community&component=instack-undercloud
 
 tripleo-incubator
 ^^^^^^^^^^^^^^^^^
-TBD
+tripleo-incubator contains various scripts to aid in deploying a TripleO cloud.
+
+**How to contribute**
+
+Submit your changes via OpenStack Gerrit (see
+`OpenStack Developer's Guide
+<http://docs.openstack.org/infra/manual/developers.html>`_).
+
+**Useful links**
+
+* Documentation: http://docs.openstack.org/developer/tripleo-incubator/index.html
+* Git repository: https://git.openstack.org/cgit/openstack/tripleo-incubator
 
 
 Node Management
@@ -121,13 +223,6 @@ for details.
 * PyPI: https://pypi.python.org/pypi/ironic-discoverd
 * Bugs: https://bugs.launchpad.net/ironic-discoverd
 * Blueprints: https://blueprints.launchpad.net/ironic-discoverd
-
-
-Networking
-----------
-os-net-config
-^^^^^^^^^^^^^
-TBD
 
 
 Deployment Planning
