@@ -468,7 +468,6 @@ init-keystone -o $OVERCLOUD_IP -t $OVERCLOUD_ADMIN_TOKEN \
 -e admin.example.com -p $OVERCLOUD_ADMIN_PASSWORD -u heat-admin \
 ${SSLBASE:+-s $PUBLIC_API_URL}
 
-# REGISTER_SERVICE_OPTS="--ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD "
 REGISTER_SERVICE_OPTS=""
 
 openstack role create swiftoperator
@@ -481,6 +480,7 @@ tripleo setup-endpoints $OVERCLOUD_IP \
     --neutron-password $OVERCLOUD_NEUTRON_PASSWORD \
     --nova-password $OVERCLOUD_NOVA_PASSWORD \
     --swift-password $OVERCLOUD_SWIFT_PASSWORD \
+    --ceilometer-password $OVERCLOUD_CEILOMETER_PASSWORD \
     $REGISTER_SERVICE_OPTS \
     ${SSLBASE:+--ssl $PUBLIC_API_URL}
 openstack role create heat_stack_user
