@@ -331,6 +331,29 @@ def _generate_password(length=40):
     return hashlib.sha1(uuid_str).hexdigest()[:length]
 
 
+def _write_password_file(answers_parser, instack_env):
+    with open(PASSWORD_PATH, 'w') as password_file:
+        password_file.write('[auth]\n')
+        for opt in _auth_opts:
+            env_name = opt.name.upper()
+            if answers_parser.has_option('answers', env_name):
+                LOG.warning('Using value for %s from instack.answers. This '
+                            'behavior is deprecated.  undercloud.conf should '
+                            'now be used for configuration.', env_name)
+                value = answers_parser.get('answers', env_name)
+            else:
+                value = CONF.auth[opt.name]
+            if not value:
+                # Heat requires this encryption key to be a specific length
+                if env_name == 'UNDERCLOUD_HEAT_ENCRYPTION_KEY':
+                    value = _generate_password(32)
+                else:
+                    value = _generate_password()
+                LOG.info('Generated new password for %s', opt.name)
+            instack_env[env_name] = value
+            password_file.write('%s=%s\n' % (opt.name, value))
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -340,7 +363,7 @@ def _generate_environment(instack_root):
     :param instack_root: The path containing the instack-undercloud elements
         and json files.
     """
-    instack_env = os.environ
+    instack_env = dict(os.environ)
     # Rabbit uses HOSTNAME, so we need to make sure it's right
     instack_env['HOSTNAME'] = socket.gethostname()
 
@@ -383,9 +406,9 @@ def _generate_environment(instack_root):
         )
     elif distro.startswith('Fedora'):
         instack_env['NODE_DIST'] = os.environ.get('NODE_DIST') or 'fedora'
-        raise Exception('Fedora is not currently supported')
+        raise RuntimeError('Fedora is not currently supported')
     else:
-        raise Exception('%s is not supported' % distro)
+        raise RuntimeError('%s is not supported' % distro)
 
     # Do some fiddling to retain answers file support for now
     answers_parser = ConfigParser.ConfigParser()
@@ -413,26 +436,8 @@ def _generate_environment(instack_root):
                                              else '0')
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
-    with open(PASSWORD_PATH, 'w') as password_file:
-        password_file.write('[auth]\n')
-        for opt in _auth_opts:
-            env_name = opt.name.upper()
-            if answers_parser.has_option('answers', env_name):
-                LOG.warning('Using value for %s from instack.answers. This '
-                            'behavior is deprecated.  undercloud.conf should '
-                            'now be used for configuration.', env_name)
-                value = answers_parser.get('answers', env_name)
-            else:
-                value = CONF.auth[opt.name]
-            if not value:
-                # Heat requires this encryption key to be a specific length
-                if env_name == 'UNDERCLOUD_HEAT_ENCRYPTION_KEY':
-                    value = _generate_password(32)
-                else:
-                    value = _generate_password()
-                LOG.info('Generated new password for %s', opt.name)
-            instack_env[env_name] = value
-            password_file.write('%s=%s\n' % (opt.name, value))
+
+    _write_password_file(answers_parser, instack_env)
 
     return instack_env
 
