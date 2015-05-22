@@ -60,8 +60,8 @@ fi
 if [ "$NODE_DIST" = "rhel7" ]; then
     export REG_METHOD=${REG_METHOD:-disable}
 
-    # We need to set RHOS=0 so that epel/rdo get enabled.
-    export RHOS=0
+    # EPEL/rdo get enabled when RHOS=0
+    export RHOS=${RHOS:-"0"}
     # But we still actually need it to enable base RHEL repos.
     export RUN_RHOS_RELEASE=${RUN_RHOS_RELEASE:-"0"}
     if [ "${RUN_RHOS_RELEASE}" = "1" ]; then
@@ -95,7 +95,6 @@ element-manifest \
 network-gateway \
 "
 
-export RHOS=${RHOS:-"0"}
 export RHOS_RELEASE=${RHOS_RELEASE:-"0"}
 if [[ "rhel7 centos7" =~ "$NODE_DIST" ]]; then
     # Default filesystem type is XFS for RHEL 7
