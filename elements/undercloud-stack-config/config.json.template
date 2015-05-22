@@ -39,6 +39,9 @@
     }
    ]
   },
+  "keystone": {
+    "host": "{{LOCAL_IP}}"
+  },
   "ironic": {
     "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
   },
