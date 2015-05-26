@@ -11,8 +11,6 @@ smartmontools:
 util-linux:
 lvm2:
 jq:
-fio:
-sysbench:
-python-hardware:
 util-linux:
+python-hardware:
 openstack-ironic-discoverd-ramdisk:
