@@ -61,7 +61,7 @@ Installing the Undercloud
        sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
 
 
-#. Install the unified CLI (also installs instack-undercloud as a dependency)::
+#. Install the RDO Manager CLI, which will pull in all other necessary packages as dependencies::
 
     sudo yum install -y python-rdomanager-oscplugin
 
