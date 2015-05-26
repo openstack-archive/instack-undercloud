@@ -45,12 +45,22 @@ Installing the Undercloud
 
           Enable rhos-release::
 
-              sudo yum install -y http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
-              sudo rhos-release 6
+              sudo rpm -ivh http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+
+              # Enable either poodles or puddles:
+              # To enable poodles:
+              sudo rhos-release 7-director -d
+              # To enable puddles:
+              sudo rhos-release 7-director
+
 
               # We need openwsman-python from the optional repo
               sudo yum install -y yum-utils
               sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
+
+          .. note::
+             If testing only RHOS as opposed to RDO, all the needed repositories are
+             now enabled. Skip the step to enable RDO and RDO-Manager below.
 
    ::
 

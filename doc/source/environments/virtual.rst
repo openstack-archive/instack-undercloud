@@ -117,12 +117,21 @@ Preparing the Virtual Environment (Automated)
 
           Enable rhos-release::
 
-              sudo yum install -y http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
-              sudo rhos-release 6
+              sudo rpm -ivh http://rhos-release.virt.bos.redhat.com/repos/rhos-release/rhos-release-latest.noarch.rpm
+
+              # Enable either poodles or puddles:
+              # To enable poodles:
+              sudo rhos-release 7-director -d
+              # To enable puddles:
+              sudo rhos-release 7-director
 
               # We need openwsman-python from the optional repo
               sudo yum install -y yum-utils
               sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
+
+          .. note::
+             If testing only RHOS as opposed to RDO, all the needed repositories are
+             now enabled. Skip the step to enable RDO, epel, and RDO-Manager below.
 
    ::
 
@@ -177,7 +186,7 @@ Preparing the Virtual Environment (Automated)
 
              curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
              export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-             export DIB_YUM_REPO_CONF=/etc/yum.repos.d/rhos-release-6-rhel-7.1.repo
+             export DIB_YUM_REPO_CONF="/etc/yum.repos.d/rhos-release-7-director-rhel-7.1.repo /etc/yum.repos.d/rhos-release-7-rhel-7.1.repo"
 
 
    .. only:: external
