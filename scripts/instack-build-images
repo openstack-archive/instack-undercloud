@@ -86,7 +86,11 @@ export DEPLOY_IMAGE_ELEMENT=${DEPLOY_IMAGE_ELEMENT:-deploy-ironic}
 export DEPLOY_NAME=${DEPLOY_NAME:-deploy-ramdisk-ironic}
 # Include delorean-rdo-management with the discovery ramdisk build so that we
 # can install python-hardware from somewhere.
-export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-"delorean-rdo-management ironic-discoverd-ramdisk-instack"}
+if [ "${RHOS:-0}" = "0" ]; then
+    export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-"delorean-rdo-management ironic-discoverd-ramdisk-instack"}
+else
+    export DISCOVERY_IMAGE_ELEMENT=${DISCOVERY_IMAGE_ELEMENT:-"ironic-discoverd-ramdisk-instack"}
+fi
 export DISCOVERY_NAME=${DISCOVERY_NAME:-discovery-ramdisk}
 
 export DIB_COMMON_ELEMENTS=${DIB_COMMON_ELEMENTS:-""}
