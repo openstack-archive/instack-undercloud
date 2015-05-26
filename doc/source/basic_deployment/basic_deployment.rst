@@ -73,8 +73,10 @@ non-root user that was used to install the undercloud.
 
              curl -O http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150203.1/images/rhel-guest-image-7.1-20150203.1.x86_64.qcow2
              export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150203.1.x86_64.qcow2
-             # Enable rhos-release
-             export RUN_RHOS_RELEASE=1
+             # Enable RHOS
+             export USE_DELOREAN_TRUNK=0
+             export RHOS=1
+             export DIB_YUM_REPO_CONF="/etc/yum.repos.d/rhos-release-7-director-rhel-7.1.repo /etc/yum.repos.d/rhos-release-7-rhel-7.1.repo"
 
    .. only:: external
 
