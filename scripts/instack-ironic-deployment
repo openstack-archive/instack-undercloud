@@ -130,11 +130,8 @@ function discover_nodes {
         ironic node-set-provision-state $node_id manage 2> /dev/null || true
         echo -n "    Sending node ID $node_id to discoverd for discovery ... "
         openstack baremetal introspection start $node_id
-        # tftpd chokes when serving 4 or more clients. Seeing less than 3Mb/s
-        # throughput. As a workaround, sleep for some time in between sending
-        # each node to discovery to give each node enough time to download the
-        # kernel/ramdisk before the next node is powered on.
-        sleep 15
+        # small sleep to avoid too many nodes DHCP'ing at once
+        sleep 5
         echo "DONE."
     done
 
