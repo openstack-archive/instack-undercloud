@@ -295,3 +295,19 @@ class TestRunCommand(BaseTestCase):
         env = {'BAR': 'bar'}
         undercloud._run_live_command(['env'], env)
         self.assertIn('BAR=bar', self.logger.output)
+
+
+class TestRunTools(base.BaseTestCase):
+    @mock.patch('instack_undercloud.undercloud._run_live_command')
+    def test_run_instack(self, mock_run):
+        instack_env = {'ELEMENTS_PATH': '.', 'JSONFILE': 'file.json'}
+        args = ['sudo', '-E', 'instack', '-p', '.', '-j', 'file.json']
+        undercloud._run_instack(instack_env)
+        mock_run.assert_called_with(args, instack_env, 'instack')
+
+    @mock.patch('instack_undercloud.undercloud._run_live_command')
+    def test_run_os_refresh_config(self, mock_run):
+        instack_env = {}
+        args = ['sudo', 'os-refresh-config']
+        undercloud._run_orc(instack_env)
+        mock_run.assert_called_with(args, instack_env, 'os-refresh-config')
