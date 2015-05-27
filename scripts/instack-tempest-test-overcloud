@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -eux
+
+source ~/overcloudrc
+
+TEMPEST_ARGS=${TEMPEST_ARGS:-}
+# e.g. TEMPEST_ARGS='tempest.api.compute.flavors tempest.api.network.admin'
+
+mkdir -p ~/tempest
+cd ~/tempest
+/usr/share/openstack-tempest-kilo/tools/configure-tempest-directory
+
+./tools/config_tempest.py --out etc/tempest.conf --debug --create \
+identity.uri $OS_AUTH_URL \
+compute.allow_tenant_isolation true \
+object-storage.operator_role SwiftOperator \
+identity.admin_password $OS_PASSWORD \
+compute.build_timeout 500 \
+compute.image_ssh_user cirros \
+compute.ssh_user cirros \
+network.build_timeout 500 \
+volume.build_timeout 500 \
+scenario.ssh_user cirros
+
+FULL_TEMPEST_ARGS="--no-virtual-env"
+if [ -n "$TEMPEST_ARGS" ]; then
+  FULL_TEMPEST_ARGS="$FULL_TEMPEST_ARGS -- $TEMPEST_ARGS"
+fi
+
+./run_tempest.sh $FULL_TEMPEST_ARGS 2>&1 | tee ~/tempest/tempest-run.log

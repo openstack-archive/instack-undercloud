@@ -12,6 +12,7 @@ if [ -z "$OS_AUTH_URL" ]; then
 fi
 
 TUSKAR=
+TEMPEST=
 
 # Default stack create timeout, in minutes
 # Note heat defaults to 60mins, which may not be enough when
@@ -27,11 +28,12 @@ function show_options () {
     echo "Options:"
     echo "      --tuskar       -- will use tuskar for building the heat Template"
     echo "      --timeout      -- create timeout in minutes, default $TIMEOUT"
+    echo "      --tempest      -- run tempest tests after deployment"
     echo
     exit $1
 }
 
-TEMP=$(getopt -o ,h -l,tuskar,timeout:,help -n $SCRIPT_NAME -- "$@")
+TEMP=$(getopt -o ,h -l,tuskar,timeout:,tempest,help -n $SCRIPT_NAME -- "$@")
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 
 # Note the quotes around `$TEMP': they are essential!
@@ -41,6 +43,7 @@ while true ; do
     case "$1" in
         --tuskar) TUSKAR="1"; shift 1;;
         --timeout) TIMEOUT="$2"; shift 2;;
+        --tempest) TEMPEST="1"; shift 1;;
         -h | --help) show_options 0;;
         --) shift ; break ;;
         *) echo "Error: unsupported option $1." ; exit 1 ;;
@@ -512,3 +515,8 @@ rm $NETWORK_JSON
 nova flavor-create m1.demo auto 512 10 1
 
 echo "Overcloud Deployed"
+
+if [ -n "$TEMPEST" ]; then
+  TEMPEST_ARGS=${TEMPEST_ARGS:-} $(dirname $0)/instack-tempest-test-overcloud
+  $(dirname $0)/instack-test-overcloud
+fi
