@@ -69,6 +69,10 @@ DEPLOY_NAME=${DEPLOY_NAME:-"ironic-discover"}
 IRONIC=$(openstack endpoint show baremetal | grep publicurl | awk '{ print $4; }')
 IRONIC=${IRONIC%/}
 
+# Raise retry time to 60 seconds
+export IRONIC_MAX_RETRIES=${IRONIC_MAX_RETRIES:-24}
+export IRONIC_RETRY_INTERVAL=${IRONIC_RETRY_INTERVAL:-5}
+
 while true ; do
     case "$1" in
         --register-nodes) REGISTER_NODES="1"; shift 1;;
@@ -146,11 +150,15 @@ function discover_nodes {
                 else
                     echo "ERROR: $error"
                 fi
-                ironic node-set-provision-state $node_id provide
                 break
             fi
             sleep 15
         done
+    done
+
+    echo "   Setting node states to AVAILABLE... "
+    for node_id in $node_ids; do
+        ironic node-set-provision-state $node_id provide
     done
     echo
 }
