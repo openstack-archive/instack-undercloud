@@ -121,17 +121,34 @@ export REG_ORG=${REG_ORG:-"''"}
 export REG_FORCE=${REG_FORCE:-"1"}
 export REG_SAT_URL=${REG_SAT_URL:-"''"}
 export REG_METHOD=${REG_METHOD:-"''"}
-# The modified resource registry must exist under
-# /usr/share/openstack-tripleo-heat-templates for Tuskar's sake.
-sudo cp /usr/share/instack-undercloud/heat-templates/overcloud-resource-registry-puppet-satellite.yaml \
-        /usr/share/openstack-tripleo-heat-templates
-if [ "$REG_METHOD" = "satellite" ]; then
-    export OVERCLOUD_RESOURCE_REGISTRY=${OVERCLOUD_RESOURCE_REGISTRY:-"/usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet-satellite.yaml"}
-else
-    export OVERCLOUD_RESOURCE_REGISTRY=${OVERCLOUD_RESOURCE_REGISTRY:-"/usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"}
-fi
-
+export OVERCLOUD_RESOURCE_REGISTRY=${OVERCLOUD_RESOURCE_REGISTRY:-"/usr/share/openstack-tripleo-heat-templates/overcloud-resource-registry-puppet.yaml"}
 NeutronControlPlaneID=$(neutron net-show ctlplane | grep ' id ' | awk '{print $4}')
+
+# $OVERCLOUD_EXTRA is for passing any additional arbitrary options to heat
+# stack-{create,update}
+export OVERCLOUD_EXTRA=${OVERCLOUD_EXTRA:-""}
+
+if [ "$REG_METHOD" = "satellite" ]; then
+
+    export OVERCLOUD_SATELLITE_ENV=${OVERCLOUD_SATELLITE_ENV:-overcloud-env-satellite.json}
+    if [ -f $OVERCLOUD_SATELLITE_ENV ]; then
+        SATELLITE_ENV_JSON=$(cat $OVERCLOUD_SATELLITE_ENV)
+    else
+        SATELLITE_ENV_JSON="{}"
+    fi
+
+    SATELLITE_ENV_JSON=$(jq ".parameter_defaults.rhel_reg_activation_key = \"$REG_ACTIVATION_KEY\"" <<< $SATELLITE_ENV_JSON)
+    SATELLITE_ENV_JSON=$(jq ".parameter_defaults.rhel_reg_sat_url = \"$REG_SAT_URL\"" <<< $SATELLITE_ENV_JSON)
+    SATELLITE_ENV_JSON=$(jq ".parameter_defaults.rhel_reg_org = \"$REG_ORG\"" <<< $SATELLITE_ENV_JSON)
+    SATELLITE_ENV_JSON=$(jq ".parameter_defaults.rhel_reg_method = \"$REG_METHOD\"" <<< $SATELLITE_ENV_JSON)
+    SATELLITE_ENV_JSON=$(jq ".parameter_defaults.rhel_reg_force = \"$REG_FORCE\"" <<< $SATELLITE_ENV_JSON)
+
+    echo $SATELLITE_ENV_JSON > $OVERCLOUD_SATELLITE_ENV
+    export OVERCLOUD_EXTRA="$OVERCLOUD_EXTRA -e /usr/share/openstack-tripleo-heat-templates/extraconfig/post_deploy/rhel-registration/rhel-registration-resource-registry.yaml"
+    export OVERCLOUD_EXTRA="$OVERCLOUD_EXTRA -e /usr/share/openstack-tripleo-heat-templates/extraconfig/post_deploy/rhel-registration/environment-rhel-registration.yaml"
+    export OVERCLOUD_EXTRA="$OVERCLOUD_EXTRA -e $OVERCLOUD_SATELLITE_ENV"
+
+fi
 
 # NOTE(gfidente): Taken from
 # https://github.com/ceph/ceph-deploy/blob/master/ceph_deploy/new.py#L21
@@ -141,11 +158,6 @@ function create_cephx_key() {
 }
 
 if [ -n "$TUSKAR" ]; then
-
-    # Reload the tuskar resource registry that includes the satellite
-    # registration resource.
-    export TUSKAR_RESOURCE_REGISTRY=$OVERCLOUD_RESOURCE_REGISTRY
-    sudo -E /usr/libexec/os-refresh-config/configure.d/90-tuskar-db-sync
 
     PLAN_ID=$(tuskar plan-show overcloud | awk '$2=="uuid" {print $4}')
     if [ -n "$PLAN_ID" ]; then
@@ -304,21 +316,9 @@ if [ -n "$TUSKAR" ]; then
     OVERCLOUD_YAML_PATH="tuskar_templates/plan.yaml"
     ENVIRONMENT_YAML_PATH="tuskar_templates/environment.yaml"
 
-    if [ "$REG_METHOD" = "satellite" ]; then
-        mkdir -p tuskar_templates/extraconfig/post_deploy
-        cp -r /usr/share/openstack-tripleo-heat-templates/extraconfig/post_deploy/scripts tuskar_templates/extraconfig/post_deploy
-
-        echo "parameter_defaults:" >> $ENVIRONMENT_YAML_PATH
-        echo "  rhel_reg_activation_key: $REG_ACTIVATION_KEY" >> $ENVIRONMENT_YAML_PATH
-        echo "  rhel_reg_sat_url: $REG_SAT_URL" >> $ENVIRONMENT_YAML_PATH
-        echo "  rhel_reg_org: $REG_ORG" >> $ENVIRONMENT_YAML_PATH
-        echo "  rhel_reg_method: $REG_METHOD" >> $ENVIRONMENT_YAML_PATH
-        echo "  rhel_reg_force: $REG_FORCE" >> $ENVIRONMENT_YAML_PATH
-
-    fi
-
     heat $HEAT_OP -t $TIMEOUT -f $OVERCLOUD_YAML_PATH \
         -e $ENVIRONMENT_YAML_PATH \
+        $OVERCLOUD_EXTRA \
         overcloud
 
 else
@@ -414,12 +414,6 @@ else
         "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
       }' <<< $ENV_JSON)
 
-    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_activation_key = \"$REG_ACTIVATION_KEY\"" <<< $ENV_JSON)
-    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_sat_url = \"$REG_SAT_URL\"" <<< $ENV_JSON)
-    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_org = \"$REG_ORG\"" <<< $ENV_JSON)
-    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_method = \"$REG_METHOD\"" <<< $ENV_JSON)
-    ENV_JSON=$(jq ".parameter_defaults.rhel_reg_force = \"$REG_FORCE\"" <<< $ENV_JSON)
-
     jq . > "${HEAT_ENV}" <<< $ENV_JSON
     chmod 0600 "${HEAT_ENV}"
 
@@ -433,6 +427,7 @@ else
         $RESOURCE_REGISTRY \
         $OVERCLOUD_PARAMETERS \
         $HEAT_ENVIRONMENT \
+        $OVERCLOUD_EXTRA \
         overcloud
 fi
 
