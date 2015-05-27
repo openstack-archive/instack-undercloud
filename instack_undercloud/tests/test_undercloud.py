@@ -66,6 +66,15 @@ class TestUndercloud(BaseTestCase):
         second = undercloud._generate_password()
         self.assertNotEqual(first, second)
 
+    def test_extract_from_stackrc(self):
+        with open(os.path.expanduser('~/stackrc'), 'w') as f:
+            f.write('OS_USERNAME=aturing\n')
+            f.write('OS_AUTH_URL=http://bletchley:5000/v2.0\n')
+        self.assertEqual('aturing',
+                         undercloud._extract_from_stackrc('OS_USERNAME'))
+        self.assertEqual('http://bletchley:5000/v2.0',
+                         undercloud._extract_from_stackrc('OS_AUTH_URL'))
+
 
 class TestCheckHostname(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_command')
