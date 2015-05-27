@@ -305,6 +305,8 @@ def _run_live_command(args, env=None, name=None):
     asynchronously so the output can be logged while the process is still
     running.
     """
+    if name is None:
+        name = args[0]
     process = subprocess.Popen(args, env=env,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
@@ -315,7 +317,7 @@ def _run_live_command(args, env=None, name=None):
         if line == '' and process.poll() is not None:
             break
     if process.returncode != 0:
-        raise RuntimeError('%s failed. See log for details.', name)
+        raise RuntimeError('%s failed. See log for details.' % name)
 
 
 def _check_hostname():

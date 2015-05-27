@@ -16,6 +16,7 @@ import ConfigParser
 import io
 import os
 import StringIO
+import subprocess
 
 import fixtures
 import mock
@@ -237,3 +238,54 @@ class TestWritePasswordFile(base.BaseTestCase):
         self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
                          'foo')
         self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'foo')
+
+
+class TestRunCommand(base.BaseTestCase):
+    def test_run_command(self):
+        output = undercloud._run_command(['echo', 'foo'])
+        self.assertEqual('foo\n', output)
+
+    def test_run_live_command(self):
+        undercloud._run_live_command(['echo', 'bar'])
+        self.assertIn('bar\n', self.logger.output)
+
+    @mock.patch('subprocess.check_output')
+    def test_run_command_fails(self, mock_check_output):
+        fake_exc = subprocess.CalledProcessError(1, 'nothing', 'fake failure')
+        mock_check_output.side_effect = fake_exc
+        self.assertRaises(subprocess.CalledProcessError,
+                          undercloud._run_command, ['nothing'])
+        self.assertIn('nothing failed', self.logger.output)
+        self.assertIn('fake failure', self.logger.output)
+
+    @mock.patch('subprocess.check_output')
+    def test_run_command_fails_with_name(self, mock_check_output):
+        fake_exc = subprocess.CalledProcessError(1, 'nothing', 'fake failure')
+        mock_check_output.side_effect = fake_exc
+        self.assertRaises(subprocess.CalledProcessError,
+                          undercloud._run_command, ['nothing'],
+                          name='fake_name')
+        self.assertIn('fake_name failed', self.logger.output)
+        self.assertIn('fake failure', self.logger.output)
+
+    def test_run_live_command_fails(self):
+        exc = self.assertRaises(RuntimeError, undercloud._run_live_command,
+                                ['ls', '/nonexistent/path'])
+        self.assertIn('ls failed', str(exc))
+        self.assertIn('ls', self.logger.output)
+
+    def test_run_live_command_fails_name(self):
+        exc = self.assertRaises(RuntimeError, undercloud._run_live_command,
+                                ['ls', '/nonexistent/path'],
+                                name='fake_name')
+        self.assertIn('fake_name failed', str(exc))
+
+    def test_run_command_env(self):
+        env = {'FOO': 'foo'}
+        output = undercloud._run_command(['env'], env)
+        self.assertIn('FOO=foo', output)
+
+    def test_run_live_command_env(self):
+        env = {'BAR': 'bar'}
+        undercloud._run_live_command(['env'], env)
+        self.assertIn('BAR=bar', self.logger.output)
