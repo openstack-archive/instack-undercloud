@@ -26,10 +26,13 @@ from oslotest import mockpatch
 from instack_undercloud import undercloud
 
 # TODO(bnemec): Test all the things
-# TODO(bnemec): Stop the code from logging to the real log file during tests
+
+
+undercloud._configure_logging(undercloud.DEFAULT_LOG_LEVEL, None)
 
 
 class TestUndercloud(base.BaseTestCase):
+    @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._check_hostname')
     @mock.patch('instack_undercloud.undercloud._run_command')
     @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
@@ -39,7 +42,8 @@ class TestUndercloud(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install(self, mock_load_config, mock_generate_environment,
                      mock_run_instack, mock_run_orc, mock_configure_ssh_keys,
-                     mock_run_command, mock_check_hostname):
+                     mock_run_command, mock_check_hostname,
+                     mock_configure_logging):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.')

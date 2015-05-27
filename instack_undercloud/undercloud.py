@@ -55,16 +55,7 @@ class Paths(object):
 PATHS = Paths()
 DEFAULT_LOG_LEVEL = logging.DEBUG
 DEFAULT_LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s'
-try:
-    os.makedirs(os.path.dirname(PATHS.LOG_FILE))
-except OSError as e:
-    if e.errno != errno.EEXIST:
-        raise
-logging.basicConfig(filename=PATHS.LOG_FILE,
-                    format=DEFAULT_LOG_FORMAT,
-                    level=DEFAULT_LOG_LEVEL)
-LOG = logging.getLogger(__name__)
-LOG.addHandler(logging.StreamHandler())
+LOG = None
 CONF = cfg.CONF
 COMPLETION_MESSAGE = """
 #############################################################################
@@ -254,6 +245,28 @@ def list_opts():
     return [(None, copy.deepcopy(_opts)),
             ('auth', copy.deepcopy(_auth_opts)),
             ]
+
+
+def _configure_logging(level, filename):
+    """Does the initial logging configuration
+
+    This should only ever be called once.  If further changes to the logging
+    config are needed they should be made directly on the LOG object.
+
+    :param level: The desired logging level
+    :param filename: The log file.  Set to None to disable file logging.
+    """
+    try:
+        os.makedirs(os.path.dirname(PATHS.LOG_FILE))
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+    logging.basicConfig(filename=filename,
+                        format=DEFAULT_LOG_FORMAT,
+                        level=level)
+    global LOG
+    LOG = logging.getLogger(__name__)
+    LOG.addHandler(logging.StreamHandler())
 
 
 def _load_config():
@@ -523,6 +536,7 @@ def install(instack_root):
     :param instack_root: The path containing the instack-undercloud elements
         and json files.
     """
+    _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
     LOG.info('Logging to %s', PATHS.LOG_FILE)
     _load_config()
     _check_hostname()
