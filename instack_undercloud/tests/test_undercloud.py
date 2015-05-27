@@ -12,12 +12,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import ConfigParser
 import io
 import os
-import tempfile
+import StringIO
 
 import fixtures
 import mock
+from oslo.config import fixture as config_fixture
 from oslotest import base
 from oslotest import mockpatch
 
@@ -184,17 +186,50 @@ class TestGenerateEnvironment(base.BaseTestCase):
         self.assertEqual('192.0.2.1', env['LOCAL_IP'])
 
     def test_answers_file_support(self):
-        fake_answers = tempfile.mkstemp()[1]
-        with open(fake_answers, 'w') as f:
+        with open(undercloud.PATHS.ANSWERS_PATH, 'w') as f:
             f.write('DEPLOYMENT_MODE=scale\n')
-        # NOTE(bnemec): For some reason, mocking ANSWERS_PATH with a
-        # PropertyMock isn't working.  This accomplishes the same thing.
-        save_path = undercloud.ANSWERS_PATH
-        undercloud.ANSWERS_PATH = fake_answers
-
-        def reset_answers():
-            undercloud.ANSWERS_PATH = save_path
-
-        self.addCleanup(reset_answers)
         env = undercloud._generate_environment('.')
         self.assertEqual('scale', env['DEPLOYMENT_MODE'])
+
+
+class TestWritePasswordFile(base.BaseTestCase):
+    def test_normal(self):
+        answers_parser = mock.Mock()
+        answers_parser.has_option.return_value = False
+        instack_env = {}
+        undercloud._write_password_file(answers_parser, instack_env)
+        test_parser = ConfigParser.ConfigParser()
+        test_parser.read(undercloud.PATHS.PASSWORD_PATH)
+        self.assertTrue(test_parser.has_option('auth',
+                                               'undercloud_db_password'))
+        self.assertIn('UNDERCLOUD_DB_PASSWORD', instack_env)
+        self.assertEqual(32,
+                         len(instack_env['UNDERCLOUD_HEAT_ENCRYPTION_KEY']))
+
+    def test_value_set(self):
+        answers_parser = mock.Mock()
+        answers_parser.has_option.return_value = False
+        instack_env = {}
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_db_password='test', group='auth')
+        undercloud._write_password_file(answers_parser, instack_env)
+        test_parser = ConfigParser.ConfigParser()
+        test_parser.read(undercloud.PATHS.PASSWORD_PATH)
+        self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
+                         'test')
+        self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'test')
+
+    def test_answers(self):
+        answers_parser = ConfigParser.ConfigParser()
+        fake_answers = StringIO.StringIO()
+        fake_answers.write('[answers]\nUNDERCLOUD_DB_PASSWORD=foo\n')
+        fake_answers.seek(0)
+        answers_parser.readfp(fake_answers)
+        instack_env = {}
+        undercloud._write_password_file(answers_parser, instack_env)
+        test_parser = ConfigParser.ConfigParser()
+        test_parser.read(undercloud.PATHS.PASSWORD_PATH)
+        self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
+                         'foo')
+        self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'foo')
