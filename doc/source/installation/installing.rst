@@ -18,6 +18,12 @@ Installing the Undercloud
 
           su - stack
 
+   .. note::
+      The undercloud is intended to work correctly with SELinux enforcing, and
+      cannot be installed to a system with SELinux disabled.  If SELinux
+      enforcement must be turned off for some reason, it should instead be set
+      to permissive.
+
    .. admonition:: Baremetal
       :class: baremetal
 
