@@ -327,7 +327,7 @@ def _generate_password(length=40):
     Copied from rdomanager-oscplugin.  This should eventually live in
     tripleo-common.
     """
-    uuid_str = six.text_type(uuid.uuid1()).encode("UTF-8")
+    uuid_str = six.text_type(uuid.uuid4()).encode("UTF-8")
     return hashlib.sha1(uuid_str).hexdigest()[:length]
 
 
