@@ -348,6 +348,9 @@ class { 'horizon':
   keystone_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
   allowed_hosts => [hiera('controller_host'), $::fqdn, 'localhost'],
   server_aliases => [hiera('controller_host'), $::fqdn, 'localhost'],
+  tuskar_ui => true,
+  tuskar_ui_ironic_discoverd_url => join(['http://', hiera('controller_host'), ':5050']),
+  tuskar_ui_undercloud_admin_password => hiera('admin_password')
 }
 
 # Install python-tuskarclient so we can deploy a stack with tuskar
