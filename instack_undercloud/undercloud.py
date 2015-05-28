@@ -164,6 +164,10 @@ _auth_opts = [
                help=('Glance service password. '
                      'If left unset, one will be automatically generated.')
                ),
+    cfg.StrOpt('undercloud_heat_encryption_key',
+               help=('Heat db encryption key(must be 8,16 or 32 characters. '
+                     'If left unset, one will be automatically generated.')
+               ),
     cfg.StrOpt('undercloud_heat_password',
                help=('Heat service password. '
                      'If left unset, one will be automatically generated.')
@@ -317,14 +321,14 @@ def _check_hostname():
             raise RuntimeError('Static hostname not set in /etc/hosts')
 
 
-def _generate_password():
+def _generate_password(length=40):
     """Create a random password
 
     Copied from rdomanager-oscplugin.  This should eventually live in
     tripleo-common.
     """
-    uuid_str = six.text_type(uuid.uuid1()).encode("UTF-8")
-    return hashlib.sha1(uuid_str).hexdigest()
+    uuid_str = six.text_type(uuid.uuid4()).encode("UTF-8")
+    return hashlib.sha1(uuid_str).hexdigest()[:length]
 
 
 def _generate_environment(instack_root):
@@ -421,7 +425,11 @@ def _generate_environment(instack_root):
             else:
                 value = CONF.auth[opt.name]
             if not value:
-                value = _generate_password()
+                # Heat requires this encryption key to be a specific length
+                if env_name == 'UNDERCLOUD_HEAT_ENCRYPTION_KEY':
+                    value = _generate_password(32)
+                else:
+                    value = _generate_password()
                 LOG.info('Generated new password for %s', opt.name)
             instack_env[env_name] = value
             password_file.write('%s=%s\n' % (opt.name, value))

@@ -72,7 +72,7 @@ heat::engine::heat_watch_server_url: http://{{LOCAL_IP}}:8003
 heat::engine::heat_metadata_server_url: http://{{LOCAL_IP}}:8000
 heat::engine::heat_waitcondition_server_url: http://{{LOCAL_IP}}:8000/v1/waitcondition
 heat::engine::trusts_delegated_roles: []
-heat::engine::auth_encryption_key: unset___________
+heat::engine::auth_encryption_key: {{UNDERCLOUD_HEAT_ENCRYPTION_KEY}}
 heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
