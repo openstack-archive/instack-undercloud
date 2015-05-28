@@ -20,14 +20,13 @@ import subprocess
 
 import fixtures
 import mock
+from novaclient import exceptions
 from oslo_config import fixture as config_fixture
 from oslotest import base
 from oslotest import log
 from oslotest import mockpatch
 
 from instack_undercloud import undercloud
-
-# TODO(bnemec): Test all the things
 
 
 undercloud._configure_logging(undercloud.DEFAULT_LOG_LEVEL, None)
@@ -320,3 +319,62 @@ class TestRunTools(base.BaseTestCase):
         args = ['sudo', 'os-refresh-config']
         undercloud._run_orc(instack_env)
         mock_run.assert_called_with(args, instack_env, 'os-refresh-config')
+
+
+@mock.patch('instack_undercloud.undercloud._run_command')
+class TestConfigureSshKeys(base.BaseTestCase):
+    def test_ensure_user_identity(self, mock_run):
+        id_path = os.path.expanduser('~/.ssh/id_rsa')
+        undercloud._ensure_user_identity(id_path)
+        mock_run.assert_called_with(['ssh-keygen', '-t', 'rsa', '-N', '',
+                                    '-f', id_path])
+
+    def _create_test_id(self):
+        id_path = os.path.expanduser('~/.ssh/id_rsa')
+        os.makedirs(os.path.expanduser('~/.ssh'))
+        with open(id_path, 'w') as id_rsa:
+            id_rsa.write('test private\n')
+        with open(id_path + '.pub', 'w') as id_pub:
+            id_pub.write('test public\n')
+        return id_path
+
+    def test_ensure_user_identity_exists(self, mock_run):
+        id_path = self._create_test_id()
+        undercloud._ensure_user_identity(id_path)
+        self.assertFalse(mock_run.called)
+
+    def _test_configure_ssh_keys(self, mock_eui, mock_extract, mock_client,
+                                 mock_run, exists=True):
+        id_path = self._create_test_id()
+        mock_run.side_effect = [None, None, '3nigma']
+        mock_extract.side_effect = ['aturing', 'http://bletchley:5000/v2.0',
+                                    'hut8']
+        mock_client_instance = mock.Mock()
+        mock_client.return_value = mock_client_instance
+        if not exists:
+            get = mock_client_instance.keypairs.get
+            get.side_effect = exceptions.NotFound('test')
+        undercloud._configure_ssh_keys()
+        mock_eui.assert_called_with(id_path)
+        mock_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
+                                       'http://bletchley:5000/v2.0')
+        mock_client_instance.keypairs.get.assert_called_with('default')
+        if not exists:
+            mock_client_instance.keypairs.create.assert_called_with(
+                'default', 'test public')
+
+    @mock.patch('novaclient.client.Client', autospec=True)
+    @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
+    @mock.patch('instack_undercloud.undercloud._ensure_user_identity')
+    def test_configure_ssh_keys_exists(self, mock_eui, mock_extract,
+                                       mock_client, mock_run):
+        self._test_configure_ssh_keys(mock_eui, mock_extract, mock_client,
+                                      mock_run)
+
+    @mock.patch('novaclient.client.Client', autospec=True)
+    @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
+    @mock.patch('instack_undercloud.undercloud._ensure_user_identity')
+    def test_configure_ssh_keys_missing(self, mock_eui, mock_extract,
+                                        mock_client, mock_run):
+        self._test_configure_ssh_keys(mock_eui, mock_extract, mock_client,
+                                      mock_run, False)

@@ -497,6 +497,13 @@ def _extract_from_stackrc(name):
                 return parts[1].rstrip()
 
 
+def _ensure_user_identity(id_path):
+    if not os.path.isfile(id_path):
+        args = ['ssh-keygen', '-t', 'rsa', '-N', '', '-f', id_path]
+        _run_command(args)
+        LOG.info('Generated new ssh key in ~/.ssh/id_rsa')
+
+
 def _configure_ssh_keys():
     """Configure default ssh keypair in Nova
 
@@ -504,10 +511,7 @@ def _configure_ssh_keys():
     exist, then uploads that to Nova as the 'default' keypair.
     """
     id_path = os.path.expanduser('~/.ssh/id_rsa')
-    if not os.path.isfile(id_path):
-        args = ['ssh-keygen', '-t', 'rsa', '-N', '', '-f', id_path]
-        _run_command(args)
-        LOG.info('Generated new ssh key in ~/.ssh/id_rsa')
+    _ensure_user_identity(id_path)
 
     args = ['sudo', 'cp', '/root/stackrc', os.path.expanduser('~')]
     _run_command(args, name='Copy stackrc')
