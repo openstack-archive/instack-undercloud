@@ -124,16 +124,23 @@ non-root user that was used to install the undercloud.
               # rhel-7-server-openstack-6.0-rpms
               export REG_ACTIVATION_KEY="[activation key]"
 
-   ::
+ .. note ::
+    By default, images are built with the latest RDO-Manager Trunk repo which has passed CI. If you need to manually test packages before CI has passed, you can use:
 
-          instack-build-images
+    ::
+
+      export DELOREAN_TRUNK_MGT_REPO="http://trunk-mgt.rdoproject.org/centos-kilo/current"
+
+ ::
+
+   instack-build-images
 
 
-   .. note::
-      This script will build **overcloud-full** images (\*.qcow2, \*.initrd,
-      \*.vmlinuz), **deploy-ramdisk-ironic** images (\*.initramfs, \*.kernel),
-      **discovery-ramdisk** images (\*.initramfs, \*.kernel) and **testing**
-      fedora-user.qcow2 (which is always Fedora based).
+ .. note::
+    This script will build **overcloud-full** images (\*.qcow2, \*.initrd,
+    \*.vmlinuz), **deploy-ramdisk-ironic** images (\*.initramfs, \*.kernel),
+    **discovery-ramdisk** images (\*.initramfs, \*.kernel) and **testing**
+    fedora-user.qcow2 (which is always Fedora based).
 
 
 #. Load the images into Glance::

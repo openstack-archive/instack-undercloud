@@ -76,6 +76,13 @@ Installing the Undercloud
        # Enable RDO-Manager Trunk
        sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
 
+   .. note ::
+     The above RDO-Manager Trunk repo is updated after a successful CI run. The following repo can be used instead if the newest packages are needed before a CI run has passed.
+
+     ::
+
+       sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current/delorean-rdo-management.repo
+
 
 #. Install the RDO Manager CLI, which will pull in all other necessary packages as dependencies::
 
