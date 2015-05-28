@@ -37,7 +37,7 @@ diskimage-builder
 ^^^^^^^^^^^^^^^^^
 
 diskimage-builder is an image building tool. It is used by
-``instack-build-images``.
+``openstack overcloud image build --all``.
 
 **How to contribute**
 

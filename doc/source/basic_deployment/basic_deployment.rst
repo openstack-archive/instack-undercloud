@@ -69,7 +69,7 @@ non-root user that was used to install the undercloud.
 
          Download the RHEL 7.1 cloud image or copy it over from a different location,
          and define the needed environment variable for RHEL 7.1 prior to running
-         ``instack-build-images``::
+         ``openstack overcloud image build --all``::
 
              IMAGE=http://download.devel.redhat.com/brewroot/packages/rhel-guest-image/7.1/20150224.0/images/rhel-guest-image-7.1-20150224.0.x86_64.qcow2
              curl -O $IMAGE
@@ -88,7 +88,7 @@ non-root user that was used to install the undercloud.
        for example:
        https://access.redhat.com/downloads/content/69/ver=/rhel---7/7.1/x86_64/product-downloads,
        and define the needed environment variables for RHEL 7.1 prior to running
-       ``instack-build-images``::
+       ``openstack overcloud image build --all``::
 
             export DIB_LOCAL_IMAGE=rhel-guest-image-7.1-20150224.0.x86_64.qcow2
 
@@ -134,7 +134,7 @@ non-root user that was used to install the undercloud.
 
  ::
 
-   instack-build-images
+   openstack overcloud image build --all
 
 
  .. note::
@@ -146,7 +146,7 @@ non-root user that was used to install the undercloud.
 
 #. Load the images into Glance::
 
-    instack-prepare-for-overcloud
+    openstack overcloud image upload
 
 
 Register Nodes
