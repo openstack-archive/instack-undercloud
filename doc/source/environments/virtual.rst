@@ -127,7 +127,7 @@ Preparing the Virtual Environment (Automated)
    ::
 
        # Enable extra packages
-       sudo yum install -y http://mirrors.einstein.yu.edu/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+       sudo yum install -y http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 
        # Enable RDO Kilo
        sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
