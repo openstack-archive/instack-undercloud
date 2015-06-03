@@ -5,25 +5,84 @@ If an Overcloud deployment has failed, the OpenStack clients and service log
 files can be used to troubleshoot the failed deployment. The following commands
 are all run on the Undercloud and assume a stackrc file has been sourced.
 
-* Identifying a failed deployment
+Identifying Failed Component
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  In most cases, Heat will show the failed overcloud stack when a deployment
-  has failed.
+In most cases, Heat will show the failed overcloud stack when a deployment
+has failed::
 
+ $ heat stack-list
+
+ +--------------------------------------+------------+--------------------+----------------------+
+ | id                                   | stack_name | stack_status       | creation_time        |
+ +--------------------------------------+------------+--------------------+----------------------+
+ | 7e88af95-535c-4a55-b78d-2c3d9850d854 | overcloud  | CREATE_FAILED      | 2015-04-06T17:57:16Z |
+ +--------------------------------------+------------+--------------------+----------------------+
+
+Occassionally, Heat is not even able to create the the stack, so the ``heat
+stack-list`` output will be empty. If this is the case, observe the message
+that was printed to the terminal when ``instack-deploy-overcloud`` or ``heat
+stack-create`` was run.
+
+Next, there are a few layers on which the deployment can fail:
+
+* Orchestration (Heat and Nova services)
+* Bare metal provisioning (Ironic service)
+* Post-deploy configuration (Puppet)
+
+As Ironic service is in the middle layer, you can use its shell to guess the
+failed layer. Issue ``ironic node-list`` command to see all registered nodes
+and their current status, you will see something like::
+
+    +--------------------------------------+------+---------------+-------------+-----------------+-------------+
+    | UUID                                 | Name | Instance UUID | Power State | Provision State | Maintenance |
+    +--------------------------------------+------+---------------+-------------+-----------------+-------------+
+    | f1e26112-5fbd-4fc4-9612-ecce7a1d86aa | None | None          | power off   | available       | False       |
+    | f0b8c105-f1d7-4059-a9a3-b050c3340340 | None | None          | power off   | available       | False       |
+    +--------------------------------------+------+---------------+-------------+-----------------+-------------+
+
+Pay close attention to **Provision State** and **Maintenance** columns
+in the resulting table.
+
+* If the command shows empty table or less nodes that you expect, or
+  **Maintenance** is ``True``, or **Provision State** is ``manageable``,
+  there was a problem during node enrolling and introspection.
+  Please go back to these steps.
+
+  For example, **Maintenance** goes to ``True`` automatically, if wrong power
+  credentials are provided.
+
+* If **Provision State** is ``available`` then the problem occured before
+  bare metal deployment has even started. Proceed with `Debugging Using Heat`_.
+
+* If **Provision State** is ``active`` and **Power State** is ``power on``,
+  then bare metal deployment has finished successfully, and problem happened
+  during the post-deployment configuration step. Again, refer to `Debugging
+  Using Heat`_.
+
+* If **Provision State** is ``wait call-back``, then bare metal deployment is
+  not finished for this node yet. You may want to wait until the status
+  changes.
+
+* If **Provision State** is ``error`` or ``deploy failed``, then bare metal
+  deployment has failed for this node. Issue
   ::
 
-     $ heat stack-list
+    ironic node-show <UUID>
 
-     +--------------------------------------+------------+--------------------+----------------------+
-     | id                                   | stack_name | stack_status       | creation_time        |
-     +--------------------------------------+------------+--------------------+----------------------+
-     | 7e88af95-535c-4a55-b78d-2c3d9850d854 | overcloud  | CREATE_FAILED      | 2015-04-06T17:57:16Z |
-     +--------------------------------------+------------+--------------------+----------------------+
+  and look for **last_error** field. It will contain error description.
 
-  Occassionally, Heat is not even able to create the the stack, so the ``heat
-  stack-list`` output will be empty. If this is the case, observe the message
-  that was printed to the terminal when ``instack-deploy-overcloud`` or ``heat
-  stack-create`` was run.
+  If the error message is vague, you can use logs to clarify it::
+
+    sudo journalctl -u openstack-ironic-conductor -u openstack-ironic-api
+
+  If you see wait timeout error, and node **Power State** is ``power on``,
+  then try to connect to the virtual console of the failed machine. Use
+  ``virt-manager`` tool for virtual machines and vendor-specific virtual
+  console (e.g. iDRAC for DELL) for bare metal machines.
+
+Debugging Using Heat
+~~~~~~~~~~~~~~~~~~~~
 
 * Identifying the failed Heat resource
 
