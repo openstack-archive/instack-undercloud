@@ -8,3 +8,4 @@ update components after installation.
 
    Installing the Undercloud <installing>
    Updating Undercloud Components <updating>
+   Accessing the GUI <accessing_gui>
