@@ -102,7 +102,7 @@ if ip link show | grep ' virbr0:'; then
 fi
 
 export TE_DATAFILE=instackenv.json
-sudo -H -E tripleo devtest_testenv.sh $TE_DATAFILE
+sudo -H -E tripleo devtest_testenv.sh ${TESTENV_ARGS} $TE_DATAFILE
 sudo mv /root/.ssh/id_rsa_virt_power $HOME/.ssh/
 sudo mv /root/.ssh/id_rsa_virt_power.pub $HOME/.ssh/
 sudo chown -R $USER: ~/.ssh
