@@ -6,6 +6,7 @@ In this chapter you will find advanced deployment of various RDO-Manager areas.
 
 .. toctree::
 
+   Advanced Profile Matching <profile_matching>
    Ready-States (BIOS, RAID) <ready_states>
    Automated Health Check <automated_health_check>
 

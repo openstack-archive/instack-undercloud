@@ -1,25 +1,26 @@
 Automated Health Check (AHC)
 ============================
 
-Additional setup steps to take advantage of the AHC features.
+Start with matching the nodes to profiles as described in
+:doc:`profile_matching`.
 
 Enable running benchmarks during discovery
 ------------------------------------------
 
 By default, the benchmark tests do not run during the discovery process.
-We can enable this feature by setting DISCOVERY_RUNBENCH=1 in the
-instack.answer file prior to running instack-install-undercloud.
+You can enable this feature by setting *discovery_runbench = true* in the
+**undercloud.conf** file prior to installing the undercloud.
+
+If you want to enable this feature after installing the undercloud, you can set
+*discovery_runbench = true* in **undercloud.conf**, and re-run
+``openstack undercloud install``
 
 Analyze the collected benchmark data
 ------------------------------------
 
 After discovery has completed, we can do analysis on the benchmark data.
 
-* Install the ahc-tools package::
-
-    sudo yum install -y ahc-tools
-
-* Run the ahc-report script to see a general overview of the hardware
+* Run the ``ahc-report`` script to see a general overview of the hardware
 
   ::
 
@@ -255,40 +256,13 @@ After discovery has completed, we can do analysis on the benchmark data.
   However we can see that the variance of the "standalone_randread_4k_KBps"
   metric was above the threshold, so the group is marked as unstable.
 
-.. _ahc_matching:
-
 Exclude outliers from deployment
 --------------------------------
 
-We will use the sample reports above to construct some matching rules for our deployment. These matching rules will determine what profile gets assigned to each node.
+We will use the sample reports above to construct some matching rules
+for our deployment. Refer to :doc:`profile_matching` for details.
 
-* Open the /etc/ahc-tools/edeploy/control.specs file. By default it will look close to this
-
-  ::
-
-      [
-       ('disk', '$disk', 'size', 'gt(4)'),
-       ('network', '$eth', 'ipv4', 'network(192.0.2.0/24)'),
-       ('memory', 'total', 'size', 'ge(4294967296)'),
-      ]
-
-  These rules match on the data collected during discovery. There is a set of helper functions to make matching more flexible.
-
-  * network() : the network interface shall be in the  specified network
-  * gt(), ge(), lt(), le() : greater than (or equal), lower than (or equal)
-  * in() : the item to match shall be in a specified set
-  * regexp() : match a regular expression
-  * or(), and(), not(): boolean functions. or() and and() take 2 parameters and not() one parameter.
-
-  There are also placeholders, '$disk' and '$eth' in the above example. These will store the value in that place for later use.
-
-  * For example if we had a "fact" from discovery:
-
-    ('disk', 'sda', 'size', '40')
-
-    This would match the first rule in the above control.specs file, and we would store "disk": "sda".
-
-* Add a rule to the control.specs file to match the system with two CPUs
+* Add a rule to the **control.specs** file to match the system with two CPUs
 
   ::
 
@@ -299,7 +273,8 @@ We will use the sample reports above to construct some matching rules for our de
        ('memory', 'total', 'size', 'ge(4294967296)'),
       ]
 
-* Add a rule to the control.specs file to exclude systems with below average disk performance from the control role
+* Add a rule to the **control.specs** file to exclude systems with below
+  average disk performance from the control role
 
   ::
 
@@ -311,8 +286,5 @@ We will use the sample reports above to construct some matching rules for our de
        ('memory', 'total', 'size', 'ge(4294967296)'),
       ]
 
-* After changing the matching rules, we are ready to do the matching
-
-  ::
-
-      sudo -E ahc-match
+* Now rerun the matching and proceed with remaining steps from
+  :doc:`profile_matching`.
