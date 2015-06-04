@@ -142,7 +142,12 @@ export UNDERCLOUD_NODE_ARCH=x86_64
 export UNDERCLOUD_NODE_MEM=${UNDERCLOUD_NODE_MEM:-$NODE_MEM}
 export UNDERCLOUD_NODE_CPU=${UNDERCLOUD_NODE_CPU:-$NODE_CPU}
 
-sudo tripleo configure-vm \
+UNDERCLOUD_NODE_EXTRAOPTS=
+if [[ ${DIB_COMMON_ELEMENTS:-} == *enable-serial-console* ]]; then
+    UNDERCLOUD_NODE_EXTRAOPTS="--enable-serial-console"
+fi
+
+sudo tripleo configure-vm $UNDERCLOUD_NODE_EXTRAOPTS \
     --name $UNDERCLOUD_VM_NAME \
     --image /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 \
     --seed \
