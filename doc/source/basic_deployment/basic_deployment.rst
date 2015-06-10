@@ -243,9 +243,9 @@ Deploy the overcloud (default of 1 compute and 1 control):
 
     .. note:: The full Tempest test suite might take hours to run on a single CPU.
 
-    To run only a part of the Tempest test suite (eg. tests with ``gate`` tag)::
+    To run only a part of the Tempest test suite (eg. tests with ``smoke`` tag)::
 
-        export TEMPEST_ARGS="gate"
+        export TEMPEST_ARGS="smoke"
         instack-deploy-overcloud --tuskar --tempest
 
 
