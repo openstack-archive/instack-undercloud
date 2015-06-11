@@ -8,6 +8,7 @@ help with troubleshooting when using RDO-Manager.
 .. toctree::
 
    Virtual Setup Problems <troubleshooting-virt-setup>
+   Image Building Problems <troubleshooting-image-build>
    Node Management Problems <troubleshooting-nodes>
    Failed Overcloud Deployment <troubleshooting-overcloud>
    Tripleo Heat Templates <troubleshooting-tripleo-heat-templates>
