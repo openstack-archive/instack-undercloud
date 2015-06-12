@@ -64,9 +64,10 @@ Refusing to introspect node with provision state "available"
 If you're running discovery directly using ironic-discoverd CLI (or in case of
 bugs in our scripts), a node can be in the "AVAILABLE" state, which is meant for
 deployment, not for discovery. You should advance node to the "MANAGEABLE" state
-before discovery and move it back before deployment. Please refer to `upstream
-node states documentation <https://github.com/stackforge/ironic-discoverd
-#node-states>`_ for information on how to fix it.
+before discovery and move it back before deployment.
+Please refer to `upstream node states documentation
+<https://github.com/openstack/ironic-inspector#node-states>`_ for information
+on how to fix it.
 
 How can discovery be stopped?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -87,4 +88,4 @@ then remove ironic-discoverd cache and restart it::
     sudo systemctl restart openstack-ironic-discoverd
 
 
-.. _ironic-discoverd troubleshooting documentation: https://github.com/stackforge/ironic-discoverd#troubleshooting
+.. _ironic-discoverd troubleshooting documentation: https://github.com/openstack/ironic-inspector#troubleshooting
