@@ -195,8 +195,6 @@ Deploy the Overcloud
       cp /usr/share/instack-undercloud/deploy-baremetal-overcloudrc ~/deploy-overcloudrc
       source deploy-overcloudrc
 
-Deploy the overcloud (default of 1 compute and 1 control):
-
 .. admonition:: RHEL Satellite Registration
    :class: satellite
 
@@ -232,7 +230,19 @@ Deploy the overcloud (default of 1 compute and 1 control):
 
 ::
 
-    instack-deploy-overcloud --tuskar
+To get the deployment plan UUID (plan name is "overcloud"), run::
+
+    openstack management plan list
+
+Deploy the overcloud (default of 1 compute and 1 control)::
+
+    openstack overcloud deploy --plan-uuid "[uuid]"
+
+The next command performs post-deployment configuration (initialization of
+Keystone and Neutron) in the overcloud::
+
+    source overcloudrc
+    openstack overcloud postconfig
 
 .. admonition:: Deployment with post-install validation
    :class: tempest
@@ -256,7 +266,7 @@ Post-Deployment
 Access the Overcloud
 ^^^^^^^^^^^^^^^^^^^^
 
-``instack-deploy-overcloud`` generates an overcloudrc file appropriate for
+``openstack overcloud deploy`` generates an overcloudrc file appropriate for
 interacting with the deployed overcloud in the current user's home directory.
 To use it, simply source the file::
 
@@ -287,4 +297,6 @@ The overcloud can be redeployed when desired.
 
 #. Deploy the Overcloud again::
 
-    instack-deploy-overcloud --tuskar
+    openstack overcloud deploy --plan-uuid "[uuid]"
+    source overcloudrc
+    openstack overcloud postconfig
