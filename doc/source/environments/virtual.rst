@@ -252,6 +252,12 @@ Preparing the Virtual Environment (Automated)
 
           export NODE_COUNT=3
 
+   .. note::
+      The ``TESTENV_ARGS`` environment variable can be used to customize the
+      virtual environment configuration.  For example, it could be used to
+      enable additional networks as follows::
+
+          export TESTENV_ARGS="--baremetal-bridge-names 'brbm brbm1 brbm2'"
 
    ::
 
