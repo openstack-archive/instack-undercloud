@@ -68,15 +68,6 @@ secured.
 # When adding new options to the lists below, make sure to regenerate the
 # sample config by running "tox -e genconfig" in the project root.
 _opts = [
-    cfg.StrOpt('deployment_mode',
-               default='poc',
-               choices=['poc', 'scale'],
-               help=('Deployment mode for this undercloud.  "poc" will allow '
-                     'deployment of a single role to heterogenous hardware. '
-                     '"scale" will allow deployment of a single role only to '
-                     'homogenous hardware.'
-                     )
-               ),
     cfg.StrOpt('image_path',
                default='.',
                help=('Local file path to the necessary images. The path '

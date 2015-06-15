@@ -4,13 +4,6 @@
 # From instack-undercloud
 #
 
-# Deployment mode for this undercloud.  "poc" will allow deployment of
-# a single role to heterogenous hardware. "scale" will allow
-# deployment of a single role only to homogenous hardware. (string
-# value)
-# Allowed values: poc, scale
-#deployment_mode = poc
-
 # Local file path to the necessary images. The path should be a
 # directory readable by the current user that contains the full set of
 # images. (string value)
