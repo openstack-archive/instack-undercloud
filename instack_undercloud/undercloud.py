@@ -204,12 +204,12 @@ _auth_opts = [
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_rabbit_password',
-               default='guest',
-               help='Rabbitmq password.'
+               help=('Rabbitmq password. '
+                    'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_rabbit_username',
-               default='guest',
-               help='Rabbitmq username.'
+               help=('Rabbitmq username. '
+                    'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_heat_stack_domain_admin_password',
                help=('Heat stack domain admin password. '

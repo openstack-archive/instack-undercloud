@@ -127,11 +127,13 @@
 # (string value)
 #undercloud_rabbit_cookie = <None>
 
-# Rabbitmq password. (string value)
-#undercloud_rabbit_password = guest
+# Rabbitmq password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_rabbit_password = <None>
 
-# Rabbitmq username. (string value)
-#undercloud_rabbit_username = guest
+# Rabbitmq username. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_rabbit_username = <None>
 
 # Heat stack domain admin password. If left unset, one will be
 # automatically generated. (string value)
