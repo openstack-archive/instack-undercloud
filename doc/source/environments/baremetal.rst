@@ -135,7 +135,7 @@ Setting Up The Undercloud Machine
 .. admonition:: RHEL
    :class: rhel
 
-   If using RHEL, reigster the Undercloud for package installations/updates.
+   If using RHEL, register the Undercloud for package installations/updates.
 
      .. admonition:: RHEL Portal Registration
         :class: portal
