@@ -7,6 +7,12 @@ fi
 
 set -ex
 
+mkdir -p ~/.instack
+LOGFILE=~/.instack/virt-setup.log
+
+exec > >(tee $LOGFILE)
+exec 2>&1
+
 export LIBVIRT_DEFAULT_URI="qemu:///system"
 
 if [ ! -d "/usr/share/instack-undercloud" ]; then
