@@ -296,7 +296,11 @@ Deploy the Overcloud
 
       openstack overcloud deploy --plan overcloud
 
+.. note::
 
+       To deploy the overcloud with network isolation, bonds, and/or custom
+       network interface configurations, instead follow the workflow here to
+       deploy: :doc:`../advanced_deployment/network_isolation`
 
 Post-Deployment
 ---------------
