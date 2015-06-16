@@ -149,6 +149,7 @@ nova::database_connection: mysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}
 nova::network::neutron::neutron_admin_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 nova::notify_on_state_change: 'vm_and_task_state'
 nova::scheduler::enabled: true
+nova::network::neutron::dhcp_domain: ''
 
 # Ironic
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
