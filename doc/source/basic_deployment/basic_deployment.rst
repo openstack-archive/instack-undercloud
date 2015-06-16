@@ -244,17 +244,6 @@ Deploy the overcloud (default of 1 compute and 1 control)::
 
     openstack overcloud deploy --plan-uuid "[uuid]"
 
-To get the Keystone authentication url use::
-
-    heat output-show overcloud KeystoneURL
-
-The next command performs post-deployment configuration (initialization of
-Keystone and Neutron) in the overcloud. The "[Overcloud IP]" is returned as
-part of the Keystone authentication url after the deploy above (for example
-192.0.2.16 in http://192.0.2.16:5000/v2.0/)::
-
-    source overcloudrc
-    openstack overcloud postconfig "[Overcloud IP]"
 
 
 Post-Deployment
@@ -312,5 +301,3 @@ The overcloud can be redeployed when desired.
 #. Deploy the Overcloud again::
 
     openstack overcloud deploy --plan-uuid "[uuid]"
-    source overcloudrc
-    openstack overcloud postconfig
