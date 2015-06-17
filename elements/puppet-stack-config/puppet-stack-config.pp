@@ -247,15 +247,15 @@ swift::storage::filter::recon { $swift_components : }
 swift::storage::filter::healthcheck { $swift_components : }
 
 $controller_host = hiera('controller_host')
-@@ring_object_device { "${controller_host}:6000/1":
+ring_object_device { "${controller_host}:6000/1":
   zone   => 1,
   weight => 1,
 }
-@@ring_container_device { "${controller_host}:6001/1":
+ring_container_device { "${controller_host}:6001/1":
   zone   => 1,
   weight => 1,
 }
-@@ring_account_device { "${controller_host}:6002/1":
+ring_account_device { "${controller_host}:6002/1":
   zone   => 1,
   weight => 1,
 }
