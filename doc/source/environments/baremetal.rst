@@ -132,10 +132,10 @@ Setting Up The Undercloud Machine
 
 .. only:: external
 
-.. admonition:: RHEL
-   :class: rhel
+  .. admonition:: RHEL
+  :class: rhel
 
-   If using RHEL, register the Undercloud for package installations/updates.
+     If using RHEL, register the Undercloud for package installations/updates.
 
      .. admonition:: RHEL Portal Registration
         :class: portal
