@@ -245,10 +245,12 @@ Deploy the overcloud (default of 1 compute and 1 control)::
     openstack overcloud deploy --plan-uuid "[uuid]"
 
 The next command performs post-deployment configuration (initialization of
-Keystone and Neutron) in the overcloud::
+Keystone and Neutron) in the overcloud. The "[Overcloud IP]" is returned as
+part of the 'Overcloud Endpoint' after the deploy above (for example
+192.0.2.16 in http://192.0.2.16:5000/v2.0/)::
 
     source overcloudrc
-    openstack overcloud postconfig
+    openstack overcloud postconfig "[Overcloud IP]"
 
 .. admonition:: Deployment with post-install validation
    :class: tempest
