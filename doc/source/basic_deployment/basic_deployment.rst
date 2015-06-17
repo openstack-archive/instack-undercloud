@@ -144,7 +144,10 @@ non-root user that was used to install the undercloud.
     fedora-user.qcow2 (which is always Fedora based).
 
 
-#. Load the images into Glance::
+Upload Images
+-------------
+
+Load the images into the undercloud Glance::
 
     openstack overcloud image upload
 
