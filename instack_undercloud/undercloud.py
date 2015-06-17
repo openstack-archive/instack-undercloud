@@ -92,7 +92,8 @@ _opts = [
     cfg.StrOpt('masquerade_network',
                default='192.0.2.0/24',
                help=('Network that will be masqueraded for external access, '
-                     'if required.')
+                     'if required. This should be the subnet used for PXE '
+                     'booting.')
                ),
     cfg.StrOpt('dhcp_start',
                default='192.0.2.5',
@@ -107,12 +108,14 @@ _opts = [
     cfg.StrOpt('network_cidr',
                default='192.0.2.0/24',
                help=('Network CIDR for the Neutron-managed network for '
-                     'Overcloud instances.')
+                     'Overcloud instances. This should be the subnet used '
+                     'for PXE booting.')
                ),
     cfg.StrOpt('network_gateway',
                default='192.0.2.1',
                help=('Network gateway for the Neutron-managed network for '
-                     'Overcloud instances.')
+                     'Overcloud instances. This should match the local_ip '
+                     'above when using masquerading.')
                ),
     cfg.StrOpt('discovery_interface',
                default='br-ctlplane',
