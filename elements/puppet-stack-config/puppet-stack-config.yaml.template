@@ -1,3 +1,6 @@
+keystone_identity_uri: http://{{LOCAL_IP}}::35357/
+keystone_auth_uri: http://{{LOCAL_IP}}::5000/v2.0/
+
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 ntp::servers:
@@ -14,7 +17,8 @@ ceilometer::agent::auth::auth_tenant_name: 'admin'
 
 # Swift
 swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
-swift::proxy::authtoken::auth_host: {{LOCAL_IP}}
+swift::proxy::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+swift::proxy::authtoken::identity_uri: "%{hiera('keystone_identity_uri')}"
 swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
 swift::swift_hash_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
 swift::proxy::account_autocreate: true
@@ -45,7 +49,8 @@ tripleo::ringbuilder::build_ring: True
 # Glance
 glance::api::bind_port: 9292
 glance::api::bind_host: {{LOCAL_IP}}
-glance::api::auth_host: {{LOCAL_IP}}
+glance::api::auth_uri: "%{hiera('keystone_auth_uri')}"
+glance::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::api::registry_host: {{LOCAL_IP}}
 glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::api::known_stores:
@@ -59,8 +64,8 @@ glance_log_file: ''
 glance::api::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::registry::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
-glance::registry::bind_host: {{LOCAL_IP}}
-glance::registry::auth_host: {{LOCAL_IP}}
+glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
+glance::registry::registry_host: {{LOCAL_IP}}
 glance::registry::manage_service: true
 glance::registry::pipeline: 'keystone'
 
@@ -77,7 +82,8 @@ heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 heat::rabbit_host: {{LOCAL_IP}}
-heat::keystone_host: {{LOCAL_IP}}
+heat::auth_uri: "%{hiera('keystone_auth_uri')}"
+heat::identity_uri: "%{hiera('keystone_identity_uri')}"
 heat::keystone_password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::api::bind_host: {{LOCAL_IP}}
 heat::api_cloudwatch::bind_host: {{LOCAL_IP}}
@@ -107,7 +113,8 @@ neutron::core_plugin: ml2
 neutron::dhcp_agents_per_network: 2
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
-neutron::server::auth_host: {{LOCAL_IP}}
+neutron::server::auth_uri: "%{hiera('keystone_auth_uri')}"
+neutron::server::identity_uri: "%{hiera('keystone_identity_uri')}"
 neutron::server::database_connection: mysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::enable_tunneling: True
@@ -127,7 +134,8 @@ ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ceilometer::rabbit_host: {{LOCAL_IP}}
 ceilometer::api::host: {{LOCAL_IP}}
 ceilometer::api::keystone_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
-ceilometer::api::keystone_host: {{LOCAL_IP}}
+ceilometer::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
+ceilometer::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
 ceilometer::db::database_connection: mysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer_compute_agent: ''
@@ -137,7 +145,8 @@ snmpd_readonly_user_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}
 # Nova
 nova::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 nova::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-nova::api::auth_host: {{LOCAL_IP}}
+nova::api::auth_uri: "%{hiera('keystone_auth_uri')}"
+nova::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 nova::api::api_bind_address: {{LOCAL_IP}}
 nova::api::enabled: true
 nova::api::metadata_listen: {{LOCAL_IP}}
