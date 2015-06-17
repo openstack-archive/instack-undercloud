@@ -1,7 +1,7 @@
 Advanced Deployment
 ===================
 
-In this chapter you will find advanced management of various RDO-Manager areas.
+In this chapter you will find advanced deployment of various RDO-Manager areas.
 
 
 .. toctree::
