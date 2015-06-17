@@ -28,6 +28,26 @@ Prepare Your Environment
 Get Images
 ----------
 
+.. note::
+
+       If you already have images built, perhaps from a previous installation of
+       RDO Manager, you can simply copy those image files into your regular user's
+       home directory and skip this section.
+
+       If you do this, be aware that sometimes newer versions of RDO Manager do not
+       work with older images, so if the deployment fails it may be necessary to
+       delete the older images and restart the process from this step.
+
+       The image files required are::
+
+           deploy-ramdisk-ironic.initramfs
+           deploy-ramdisk-ironic.kernel
+           discovery-ramdisk.initramfs
+           discovery-ramdisk.kernel
+           overcloud-full.initrd
+           overcloud-full.qcow2
+           overcloud-full.vmlinuz
+
 Images must be built prior to doing a deployment. A discovery ramdisk,
 deployment ramdisk, and openstack-full image can all be built using
 instack-undercloud.
