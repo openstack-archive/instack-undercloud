@@ -252,20 +252,6 @@ part of the 'Overcloud Endpoint' after the deploy above (for example
     source overcloudrc
     openstack overcloud postconfig "[Overcloud IP]"
 
-.. admonition:: Deployment with post-install validation
-   :class: tempest
-
-    To deploy the overcloud **and** verify it by running Tempest::
-
-        instack-deploy-overcloud --tuskar --tempest
-
-    .. note:: The full Tempest test suite might take hours to run on a single CPU.
-
-    To run only a part of the Tempest test suite (eg. tests with ``smoke`` tag)::
-
-        export TEMPEST_ARGS="smoke"
-        instack-deploy-overcloud --tuskar --tempest
-
 
 Post-Deployment
 ---------------
@@ -283,6 +269,22 @@ To use it, simply source the file::
 To return to working with the undercloud, source the stackrc file again::
 
     source ~/stackrc
+
+
+Validate the Overcloud
+^^^^^^^^^^^^^^^^^^^^^^
+To verify the Overcloud by running Tempest::
+
+    openstack overcloud validate --overcloud-auth-url $OS_AUTH_URL \
+                                 --overcloud-admin-password $OS_PASSWORD
+
+.. note:: The full Tempest test suite might take hours to run on a single CPU.
+
+To run only a part of the Tempest test suite (eg. tests with ``smoke`` tag)::
+
+    openstack overcloud validate --overcloud-auth-url $OS_AUTH_URL \
+                                 --overcloud-admin-password $OS_PASSWORD \
+                                 --tempest-args smoke
 
 
 Redeploy the Overcloud
