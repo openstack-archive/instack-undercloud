@@ -18,6 +18,7 @@ add-rule FORWARD -d 192.168.122.0/24 -j ACCEPT
 add-rule INPUT -p tcp --dport $(os-apply-config --key 'horizon.port' --type int --key-default 80) -j ACCEPT
 add-rule INPUT -p tcp --dport 5672  -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8000,8003,8004 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 8080 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8779 -j ACCEPT
 
 
