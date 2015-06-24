@@ -119,6 +119,7 @@ neutron_public_interface: {{LOCAL_INTERFACE}}
 neutron_physical_bridge: br-ctlplane
 neutron::server::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+neutron::agents::dhcp::dhcp_domain: ''
 
 # Ceilometer
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
