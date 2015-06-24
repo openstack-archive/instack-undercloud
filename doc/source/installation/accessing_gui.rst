@@ -13,7 +13,7 @@ machine, to access the UI in the browser, follow these steps:
 
 #. On host machine create ssh tunnel from instack vm to virt host::
 
-    ssh -g -L 8080:127.0.0.1:80 root@<undercloud_vm_ip>
+    ssh -g -N -L 8080:127.0.0.1:80 root@<undercloud_vm_ip>
 
 #. On instack VM edit ``/etc/openstack-dashboard/local_settings`` and add virt host ``hostname`` to ``ALLOWED_HOSTS`` array
 
