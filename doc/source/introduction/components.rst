@@ -203,26 +203,32 @@ and `OpenStack Developer's Guide`_ for details.
   * Approved Specs: http://specs.openstack.org/openstack/ironic-specs/
 
 
-ironic-discoverd
-^^^^^^^^^^^^^^^^
+ironic inspector (former ironic-discoverd)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-ironic-discoverd project is responsible for discovery of hardware properties
-for newly enrolled nodes (see also ironic_). Ironic uses drivers to hide
-hardware details behind a common API.
+Ironic Inspector project is responsible for inspection of hardware properties
+for newly enrolled nodes (see also ironic_).
+
+Ironic Inspector was called ironic-discoverd previously, and the RPM packages
+are still based on the old version, so they are using the old name for now.
 
 **How to contribute**
 
-ironic-discoverd uses `tox <https://tox.readthedocs.org/en/latest/>`_ to manage
+Ironic Inspector uses `tox <https://tox.readthedocs.org/en/latest/>`_ to manage
 the development environment, see `upstream documentation
-<https://github.com/stackforge/ironic-discoverd/blob/master/CONTRIBUTING.rst>`_
+<https://github.com/openstack/ironic-inspector/blob/master/CONTRIBUTING.rst>`_
 for details.
 
 **Useful links**
 
-* Upstream Project: https://github.com/stackforge/ironic-discoverd
-* PyPI: https://pypi.python.org/pypi/ironic-discoverd
-* Bugs: https://bugs.launchpad.net/ironic-discoverd
-* Blueprints: https://blueprints.launchpad.net/ironic-discoverd
+* Upstream Project: https://github.com/openstack/ironic-inspector
+* PyPI: https://pypi.python.org/pypi/ironic-inspector
+
+  Also https://pypi.python.org/pypi/ironic-discoverd for the old version which
+  RDO Manager currently uses.
+
+* Bugs: https://bugs.launchpad.net/ironic-inspector
+* Blueprints: https://blueprints.launchpad.net/ironic-inspector
 
 
 Deployment Planning
