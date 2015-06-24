@@ -285,6 +285,12 @@ include ::heat::api
 include ::heat::api_cfn
 include ::heat::api_cloudwatch
 include ::heat::engine
+include ::heat::keystone::domain
+
+# We're creating the admin role and heat domain user in puppet and need
+# to make sure they are done in order.
+include ::keystone::roles::admin
+Service['keystone'] -> Class['::keystone::roles::admin'] -> Exec['heat_domain_create']
 
 $snmpd_user = hiera('snmpd_readonly_user_name')
 snmp::snmpv3_user { $snmpd_user:
