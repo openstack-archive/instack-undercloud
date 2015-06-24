@@ -474,7 +474,7 @@ def _configure_ssh_keys():
     args = ['sudo', 'chown', getpass.getuser() + ':',
             os.path.expanduser('~/stackrc')]
     _run_command(args, name='Chown stackrc')
-    password = _run_command(['hiera', 'admin_password']).rstrip()
+    password = _run_command(['sudo', 'hiera', 'admin_password']).rstrip()
     user = _extract_from_stackrc('OS_USERNAME')
     auth_url = _extract_from_stackrc('OS_AUTH_URL')
     tenant = _extract_from_stackrc('OS_TENANT')

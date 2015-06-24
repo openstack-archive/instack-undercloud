@@ -73,3 +73,7 @@ if not os.path.exists(os.path.dirname(puppet_stack_config_yaml_path)):
     os.makedirs(os.path.dirname(puppet_stack_config_yaml_path))
 with open(puppet_stack_config_yaml_path, 'w') as f:
     f.write(puppet_stack_config_yaml)
+
+# Secure permissions
+os.chmod(os.path.dirname(puppet_stack_config_yaml_path), 0750)
+os.chmod(puppet_stack_config_yaml_path, 0600)
