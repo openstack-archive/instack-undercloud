@@ -93,6 +93,7 @@ keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
 keystone::database_connection: mysql://keystone:{{UNDERCLOUD_ADMIN_TOKEN}}@{{LOCAL_IP}}/keystone
 keystone::public_bind_host: 0.0.0.0
 keystone::admin_bind_host: 0.0.0.0
+keystone::token_expiration: 14400
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
