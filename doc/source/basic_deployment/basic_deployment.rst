@@ -193,14 +193,6 @@ Create the necessary flavor::
 Deploy the Overcloud
 --------------------
 
-.. admonition:: Baremetal
-   :class: baremetal
-
-   Copy the sample overcloudrc file and edit to reflect your environment. Then source this file::
-
-      cp /usr/share/instack-undercloud/deploy-baremetal-overcloudrc ~/deploy-overcloudrc
-      source deploy-overcloudrc
-
 .. admonition:: RHEL Satellite Registration
    :class: satellite
 
@@ -221,28 +213,35 @@ Deploy the Overcloud
           # rhel-7-server-extras-rpms
           # rhel-7-server-openstack-6.0-rpms
 
-.. admonition:: Ceph
-   :class: ceph
-
-   When deploying Ceph, specify the number of Ceph OSD nodes to be deployed
-   with::
-
-       export CEPHSTORAGESCALE=1
-
-   By default when Ceph is enabled the Cinder iSCSI back-end is disabled. This
-   behavior may be changed by setting the environment variable::
-
-       export CINDER_ISCSI=1
-
-::
-
-To get the deployment plan UUID (plan name is "overcloud"), run::
+#. To get the deployment plan UUID (plan name is "overcloud"), run::
 
     openstack management plan list
 
-Deploy the overcloud (default of 1 compute and 1 control)::
+#. Deploy the overcloud:
 
-    openstack overcloud deploy --plan-uuid "[uuid]"
+   By default 1 compute and 1 control node will be deployed, with networking
+   configured for the virtual environment.  To customize this, see the output of::
+
+        openstack help overcloud deploy
+
+   .. admonition:: Ceph
+      :class: ceph
+
+      When deploying Ceph, specify the number of Ceph OSD nodes to be deployed
+      by passing::
+
+          --ceph-storage-scale <number of nodes>
+
+      to the deploy command below.
+
+      By default when Ceph is enabled the Cinder LVM back-end is disabled. This
+      behavior may be changed by also passing::
+
+          --cinder-lvm
+
+   ::
+
+      openstack overcloud deploy --plan-uuid "[uuid]"
 
 
 
