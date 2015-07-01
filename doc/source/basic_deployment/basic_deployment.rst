@@ -212,6 +212,26 @@ Create the necessary flavor::
     openstack flavor create --id auto --ram 4096 --disk 40 --vcpus 1 baremetal
     openstack flavor set --property "cpu_arch"="x86_64" --property "capabilities:boot_option"="local" baremetal
 
+Configure a nameserver for the Overcloud
+----------------------------------------
+
+Overcloud nodes need to have a configured nameserver so that they can resolve
+hostnames via DNS. The nameserver is defined in the undercloud's neutron
+subnet. Define the nameserver to be used for the environment::
+
+    # List the available subnets
+    neutron subnet-list
+    neutron subnet-update <subnet-uuid> --dns-nameserver <nameserver-ip>
+
+.. note::
+   A public DNS server, such as 8.8.8.8 can be used if there is no internal DNS
+   server.
+
+.. admonition:: Virtual
+   :class: virtual
+
+   In virtual environments, the libvirt default network DHCP server address,
+   typically 192.168.122.1, can be used as the overcloud nameserver.
 
 Deploy the Overcloud
 --------------------
