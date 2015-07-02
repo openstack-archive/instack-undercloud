@@ -1,21 +1,29 @@
 #!/bin/bash
-# Interface where external network is attached to controller(s).
+# Interface where external network is attached to overcloud controller(s).
+# This interface will be used by the controller(s) for floating IPs.
 export NeutronPublicInterface=nic1
 
 # OVERCLOUD_LIBVIRT_TYPE may be either kvm or qemu (if using nested virt).
 export OVERCLOUD_LIBVIRT_TYPE=kvm
 
-# Network CIDR to use when creating "default-net" tenant network.
-export NETWORK_CIDR="10.0.0.0/8"
+# Network CIDR to use when creating "default-net" tenant network. This
+# will be used for the VM instances. This network should not overlap
+# with any other subnets used on the network.
+export NETWORK_CIDR="10.0.0.0/24"
 
-# Range of IP addresses to add to Neutron floating ip pool.
+# Range of IP addresses to add to Neutron floating ip pool. These should
+# be on the same network where NeutronPublicInterface is attached. This
+# range of IP addresses should not overlap with any addresses that are in
+# use or may be assigned by DHCP. 
 export FLOATING_IP_START="172.17.0.45"
 export FLOATING_IP_END="172.17.0.64"
 
-# Network subnet for external network.
-export FLOATING_IP_CIDR="172.17.0.0/16"
+# Network subnet for external network. This is the subnet that will be
+# used for floating IPs. In the form 172.17.0.0/24
+export FLOATING_IP_CIDR="172.17.0.0/24"
 
-# Network gateway on external network.
+# Network gateway on external network. This is the address of the gateway
+# that provides external access on the external network.
 export BM_NETWORK_GATEWAY="172.17.0.1"
 
 # Network type may be gre or vxlan.
