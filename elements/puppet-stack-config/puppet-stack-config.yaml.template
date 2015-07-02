@@ -161,6 +161,7 @@ ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
 ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+ironic::conductor::force_power_state_during_sync: false
 
 # Rabbit
 rabbit_client_port: 5672

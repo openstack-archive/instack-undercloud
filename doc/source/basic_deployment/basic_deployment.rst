@@ -187,6 +187,20 @@ Register nodes for your deployment with Ironic::
    with nodes after registration, please follow
    :ref:`node_registration_problems`.
 
+.. note::
+   By default Ironic will not sync the power state of the nodes,
+   because in our HA (high availability) model Pacemaker is the
+   one responsible for controlling the power state of the nodes
+   when fencing.  If you are using a non-HA setup and want Ironic
+   to take care of the power state of the nodes please change the
+   value of the "force_power_state_during_sync" configuration option
+   in the /etc/ironic/ironic.conf file to "True" and restart the
+   openstack-ironic-conductor service.
+
+   Also, note that if "openstack undercloud install" is re-run the value
+   of the "force_power_state_during_sync" configuration option will be
+   set back to the default, which is "False".
+
 Assign kernel and ramdisk to nodes::
 
     openstack baremetal configure boot
