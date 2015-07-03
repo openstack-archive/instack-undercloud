@@ -3,6 +3,7 @@ RDO-Manager Components
 
 .. contents::
    :depth: 2
+   :backlinks: none
 
 This section contains a list of components that RDO-Manager uses. The components
 are organized in categories, and include a basic description, useful links, and

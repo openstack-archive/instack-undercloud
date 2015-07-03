@@ -218,9 +218,9 @@ a.external:after {
 
 
 /* LIST */
-.wy-plain-list-decimal li ul,
-.rst-content .section ol li ul,
-.rst-content ol.arabic li ul,
-article ol li ul {
+.wy-plain-list-decimal > li > ul,
+.rst-content .section ol > li > ul,
+.rst-content ol.arabic > li > ul,
+article ol > li > ul {
     margin-bottom: 24px;
 }
