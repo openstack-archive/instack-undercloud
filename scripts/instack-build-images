@@ -67,9 +67,6 @@ if [ "$NODE_DIST" = "rhel7" ]; then
     if [ "${RUN_RHOS_RELEASE}" = "1" ]; then
         export RHOS_RELEASE=${RHOS_RELEASE:-6}
         export DIB_COMMON_ELEMENTS=rhos-release
-    else
-        # SELinux permissive for RHEL without rhos-release
-        export DIB_COMMON_ELEMENTS=selinux-permissive
     fi
     export DELOREAN_REPO_URL=$DELOREAN_TRUNK_REPO
 elif [ "$NODE_DIST" = "centos7" ]; then
