@@ -59,14 +59,19 @@ Installing the Undercloud
               # To enable puddles:
               sudo rhos-release 7-director
 
-
-              # We need openwsman-python from the optional repo
-              sudo yum install -y yum-utils
-              sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
-
           .. note::
              If testing only RHOS as opposed to RDO, all the needed repositories are
              now enabled. Skip the step to enable RDO and RDO-Manager below.
+
+   .. only:: external
+
+      .. admonition:: RHEL
+         :class: rhel
+
+         Enable optional repo::
+
+             sudo yum install -y yum-utils
+             sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 
    ::
 
