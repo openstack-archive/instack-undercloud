@@ -51,7 +51,7 @@ LOG.addHandler(logging.StreamHandler())
 CONF = cfg.CONF
 COMPLETION_MESSAGE = """
 #############################################################################
-instack-install-undercloud complete.
+Undercloud install complete.
 
 The file containing this installation's passwords is at
 %(password_path)s.
