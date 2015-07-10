@@ -84,6 +84,7 @@ heat::api_cloudwatch::bind_host: {{LOCAL_IP}}
 heat::api_cfn::bind_host: {{LOCAL_IP}}
 heat::database_connection: mysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat_dsn: mysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
+heat::rpc_response_timeout: 600
 
 # Keystone
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
