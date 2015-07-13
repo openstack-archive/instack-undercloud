@@ -84,10 +84,92 @@ Setting Up The Undercloud Machine
         echo "stack ALL=(root) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/stack
         sudo chmod 0440 /etc/sudoers.d/stack
 
-#. Create a json file describing your baremetal nodes.  For example::
+.. only:: external
+
+  .. admonition:: RHEL
+     :class: rhel
+
+     If using RHEL, register the Undercloud for package installations/updates.
+
+     .. admonition:: RHEL Portal Registration
+        :class: portal
+
+        Register the host machine using Subscription Management::
+
+            sudo subscription-manager register --username="[your username]" --password="[your password]"
+            # Find this with `subscription-manager list --available`
+            sudo subscription-manager attach --pool="[pool id]"
+            # Verify repositories are available
+            sudo subscription-manager repos --list
+            # Enable repositories needed
+            sudo subscription-manager repos --enable=rhel-7-server-rpms \
+                 --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
+                 --enable=rhel-7-server-openstack-6.0-rpms
+
+     .. admonition:: RHEL Satellite Registration
+        :class: satellite
+
+        To register the host machine to a Satellite, the following repos must
+        be synchronized on the Satellite and enabled for registered systems::
+
+            rhel-7-server-rpms
+            rhel-7-server-optional-rpms
+            rhel-7-server-extras-rpms
+            rhel-7-server-openstack-6.0-rpms
+
+        See the `Red Hat Satellite User Guide`_ for how to configure the system to
+        register with a Satellite server. It is suggested to use an activation
+        key that automatically enables the above repos for registered systems.
+
+.. _Red Hat Satellite User Guide: https://access.redhat.com/documentation/en-US/Red_Hat_Satellite/
+
+Configuration Files
+-------------------
+
+undercloud.conf
+^^^^^^^^^^^^^^^
+
+This is an undercloud configuration file. Copy example file from the RPM
+package::
+
+    cp /usr/share/instack-undercloud/undercloud.conf.sample undercloud.conf
+
+Modify it according to your environment. Usually you need to fix
+network-related options, follow comments in the example file for details.
+
+instackenv.json
+^^^^^^^^^^^^^^^
+
+Create a JSON file describing your baremetal nodes, call it
+``instackenv.json`` and place in your home directory. The file should contain
+a JSON object with the only field ``nodes`` containing list of node
+descriptions.
+
+Each node description should contains required fields:
+
+* ``pm_type`` - ``pxe_ipmitool`` for bare metal, ``pxe_ssh`` for virtual
+  environment
+
+* ``pm_addr`` - node BMC IP address
+
+* ``pm_user``, ``pm_password`` - node BMC credentials
+
+Some fields are optional if you're going to use introspection later:
+
+* ``mac`` - list of MAC addresses, optional for bare metal
+
+* ``cpu`` - number of CPU's in system
+
+* ``arch`` - CPU architecture (common values are ``i386`` and ``x86_64``)
+
+* ``memory`` - memory size in MiB
+
+* ``disk`` - hard driver size in GiB
+
+For example::
 
     {
-        "nodes":[
+        "nodes": [
             {
                 "pm_type":"pxe_ipmitool",
                 "mac":[
@@ -129,42 +211,3 @@ Setting Up The Undercloud Machine
             }
         ]
     }
-
-.. only:: external
-
-  .. admonition:: RHEL
-  :class: rhel
-
-     If using RHEL, register the Undercloud for package installations/updates.
-
-     .. admonition:: RHEL Portal Registration
-        :class: portal
-
-        Register the host machine using Subscription Management::
-
-            sudo subscription-manager register --username="[your username]" --password="[your password]"
-            # Find this with `subscription-manager list --available`
-            sudo subscription-manager attach --pool="[pool id]"
-            # Verify repositories are available
-            sudo subscription-manager repos --list
-            # Enable repositories needed
-            sudo subscription-manager repos --enable=rhel-7-server-rpms \
-                 --enable=rhel-7-server-optional-rpms --enable=rhel-7-server-extras-rpms \
-                 --enable=rhel-7-server-openstack-6.0-rpms
-
-     .. admonition:: RHEL Satellite Registration
-        :class: satellite
-
-        To register the host machine to a Satellite, the following repos must
-        be synchronized on the Satellite and enabled for registered systems::
-
-            rhel-7-server-rpms
-            rhel-7-server-optional-rpms
-            rhel-7-server-extras-rpms
-            rhel-7-server-openstack-6.0-rpms
-
-        See the `Red Hat Satellite User Guide`_ for how to configure the system to
-        register with a Satellite server. It is suggested to use an activation
-        key that automatically enables the above repos for registered systems.
-
-.. _Red Hat Satellite User Guide: https://access.redhat.com/documentation/en-US/Red_Hat_Satellite/
