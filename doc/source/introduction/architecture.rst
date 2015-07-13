@@ -255,7 +255,8 @@ unusable.
 
 This second mode allows users to ensure that their different hardware types end
 up running their intended role, though requires manual configuration of the role
-definitions and role matching via the ahc-match tool (:ref:`ahc_matching`).
+definitions and role matching via the ahc-match tool (see
+:doc:`../advanced_deployment/profile_matching`).
 
 
 
