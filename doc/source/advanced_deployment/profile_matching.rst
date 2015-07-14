@@ -118,6 +118,21 @@ Running advanced profile matching
   as a capability to the node. Next we will need to create flavors in Nova
   that actually map to these profiles.
 
+[Optional] Manually add the profiles to the nodes
+-------------------------------------------------
+
+In order to use the matching functionality without using the AHC tools. We can
+instead add the profile "tags" manually. The example below will add the
+"control" profile to a node::
+
+    ironic node-update <UUID> replace properties/capabilities='profile:control,boot_option:local'
+
+.. note::
+
+  We can not update only a single key from the capabilities dictionary, so we
+  need to specify both the profile and the boot_option above. Otherwise, the
+  boot_option key will get removed.
+
 Create flavors to use advanced matching
 ---------------------------------------
 
