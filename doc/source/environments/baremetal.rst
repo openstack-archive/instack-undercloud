@@ -126,17 +126,6 @@ Setting Up The Undercloud Machine
 Configuration Files
 -------------------
 
-undercloud.conf
-^^^^^^^^^^^^^^^
-
-This is an undercloud configuration file. Copy example file from the RPM
-package::
-
-    cp /usr/share/instack-undercloud/undercloud.conf.sample undercloud.conf
-
-Modify it according to your environment. Usually you need to fix
-network-related options, follow comments in the example file for details.
-
 instackenv.json
 ^^^^^^^^^^^^^^^
 
