@@ -250,28 +250,6 @@ subnet. Define the nameserver to be used for the environment::
 Deploy the Overcloud
 --------------------
 
-.. admonition:: RHEL Satellite Registration
-   :class: satellite
-
-   To register the Overcloud nodes to a Satellite define the following
-   variables. Only using an activation key is supported when registering to
-   Satellite, username/password is not supported for security reasons. The
-   activation key must enable the repos shown::
-
-          export REG_METHOD=satellite
-          # REG_SAT_URL should be in the format of:
-          # http://<satellite-hostname>
-          export REG_SAT_URL="[satellite url]"
-          export REG_ORG="[satellite org]"
-          export REG_ACTIVATION_KEY="[activation key]"
-          # Activation key must enable these repos:
-          # rhel-7-server-rpms
-          # rhel-7-server-optional-rpms
-          # rhel-7-server-extras-rpms
-          # rhel-7-server-openstack-6.0-rpms
-
-#. Deploy the overcloud:
-
    By default 1 compute and 1 control node will be deployed, with networking
    configured for the virtual environment.  To customize this, see the output of::
 
@@ -291,6 +269,28 @@ Deploy the Overcloud
       behavior may be changed by also passing::
 
           --cinder-lvm
+
+   .. admonition:: RHEL Satellite Registration
+      :class: satellite
+
+      To register the Overcloud nodes to a Satellite add the following flags
+      to the deploy command::
+
+             --rhel-reg --reg-method satellite --reg-org <ORG ID#> --reg-sat-url <satellite URL> --reg-activation-key <KEY>
+
+      .. note::
+
+          Only using an activation key is supported when registering to
+          Satellite, username/password is not supported for security reasons.
+          The activation key must enable the following repos:
+
+          rhel-7-server-rpms
+
+          rhel-7-server-optional-rpms
+
+          rhel-7-server-extras-rpms
+
+          rhel-7-server-openstack-6.0-rpms
 
    ::
 
