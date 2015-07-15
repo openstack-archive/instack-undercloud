@@ -5,6 +5,7 @@ It is possible to enable additional configuration during one of the
 following deployment phases:
 
 * firstboot - run once config (performed by cloud-init)
+* post-deploy - run after the services have been deployed and configured
 
 .. note::
 
@@ -102,3 +103,87 @@ SSH keys by accessing the nova metadata server, see
 on the undercloud node or the tripleo-heat-templates_ repo.
 
 .. _tripleo-heat-templates: https://github.com/rdo-management/tripleo-heat-templates/blob/mgt-master/firstboot/userdata_example.yaml
+
+Post-Deploy extra configuration
+-------------------------------
+
+Post-deploy additional configuration is possible via the
+`OS::TripleO::NodeExtraConfigPost` interface - this allows a heat template
+to be specified which performs additional configuration using standard
+heat SoftwareConfig_ resources.
+
+.. _SoftwareConfig: http://docs.openstack.org/developer/heat/template_guide/software_deployment.html
+
+.. note::
+
+  The `OS::TripleO::NodeExtraConfigPost` applies configuration to *all* nodes,
+  there is currently no per-role NodeExtraConfigPost interface.
+
+Below is an example of a post-deployment configuration template::
+
+    mkdir -p extraconfig/post-deploy/
+    cat > extraconfig/post-deploy/example.yaml << EOF
+    heat_template_version: 2014-10-16
+
+    parameters:
+      servers:
+        type: json
+
+      # Optional implementation specific parameters
+      some_extraparam:
+        type: string
+
+    resources:
+
+      ExtraConfig:
+        type: OS::Heat::SoftwareConfig
+        properties:
+          group: script
+          config:
+            str_replace:
+              template: |
+                #!/bin/sh
+                echo "extra _APARAM_" > /root/extra
+              parameters:
+                _APARAM_: {get_param: some_extraparam}
+
+      ExtraDeployments:
+        type: OS::Heat::SoftwareDeployments
+        properties:
+          servers:  {get_param: servers}
+          config: {get_resource: ExtraConfig}
+          actions: ['CREATE'] # Only do this on CREATE
+    EOF
+
+The "servers" parameter must be specified in all NodeExtraConfigPost
+templates, this is the server list to apply the configuration to,
+and is provided by the parent template.
+
+Optionally, you may define additional parameters which are consumed by the
+implementation.  These may then be provided via parameter_defaults in the
+environment which enables the configuration.
+
+.. note::
+
+    If the parameter_defaults approach is used, care must be used to avoid
+    unintended reuse of parameter names between multiple templates, because
+    parameter_defaults is applied globally.
+
+The "actions" property of the `OS::Heat::SoftwareDeployments` resource may be
+used to specify when the configuration should be applied, e.g only on CREATE,
+only on DELETE etc.  If this is ommitted, the heat default is to apply the
+config on CREATE and UPDATE, e.g on initial deployment and every subsequent
+update.
+
+The extra config may be enabled via an environment file::
+
+    cat > post_config_env.yaml << EOF
+    resource_registry:
+        OS::TripleO::NodeExtraConfigPost: extraconfig/post-deploy/example.yaml
+    parameter_defaults:
+        some_extraparam: avalue123
+    EOF
+
+You may then deploy your overcloud referencing the additional environment file::
+
+    openstack overcloud deploy --templates -e post_config_env.yaml
