@@ -10,12 +10,12 @@ number of nodes of the role::
    The role is specified including the role version. Both role names
    and role versions can be listed with command::
 
-       tuskar role-list
+       openstack role list
 
 
 And then re-deploy the Overcloud with the updated plan::
 
-    openstack overcloud deploy --plan-uuid $PLAN_UUID
+    openstack overcloud deploy --plan $PLAN_UUID
 
 .. note::
    Scaling out assumes that newly added nodes has already been

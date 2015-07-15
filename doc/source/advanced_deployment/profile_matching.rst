@@ -155,17 +155,17 @@ The RDO-Manager CLI has options to support more advanced role matching.
 
 Continuing with the example with only a control and compute profile:
 
-* Get the Tuskar plan id
+* Get the Tuskar plan name
 
   ::
 
-    tuskar plan-list
+    openstack management plan list
 
 * Deploy the overcloud
 
   ::
 
-    openstack overcloud deploy --control-flavor control --compute-flavor compute --plan-uuid <UUID from above>
+    openstack overcloud deploy --control-flavor control --compute-flavor compute --plan <Name or UUID from above>
 
 
 Use the flavors to scale
