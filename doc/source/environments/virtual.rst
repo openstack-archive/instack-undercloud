@@ -129,22 +129,18 @@ Preparing the Virtual Environment (Automated)
               sudo yum install -y yum-utils
               sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 
-          .. note::
-             If testing only RHOS as opposed to RDO, all the needed repositories are
-             now enabled. Skip the step to enable RDO, epel, and RDO-Manager below.
+   .. note::
+     If testing RDO as opposed to RHOS, you need to enable some extra
+     repositories:
 
-   ::
+     ::
 
-       # Enable extra packages
-       sudo yum install -y http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+         # Enable RDO Kilo
+         sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
 
-       # Enable RDO Kilo
-       sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
+         # Enable RDO-Manager Trunk
+         sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
 
-       # Enable RDO-Manager Trunk
-       sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
-
-   .. note ::
      The above RDO-Manager Trunk repo is updated after a successful CI run. The following repo can be used instead if the newest packages are needed before a CI run has passed.
 
      ::

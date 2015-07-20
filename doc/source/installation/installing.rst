@@ -59,10 +59,6 @@ Installing the Undercloud
               # To enable puddles:
               sudo rhos-release 7-director
 
-          .. note::
-             If testing only RHOS as opposed to RDO, all the needed repositories are
-             now enabled. Skip the step to enable RDO and RDO-Manager below.
-
    .. only:: external
 
       .. admonition:: RHEL
@@ -73,15 +69,19 @@ Installing the Undercloud
              sudo yum install -y yum-utils
              sudo yum-config-manager --enable rhelosp-rhel-7-server-opt
 
-   ::
 
-       # Enable RDO Kilo
-       sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
+   .. note::
+     If testing RDO as opposed to RHOS, you need to enable some extra
+     repositories:
 
-       # Enable RDO-Manager Trunk
-       sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
+     ::
 
-   .. note ::
+         # Enable RDO Kilo
+         sudo yum install -y https://rdoproject.org/repos/openstack-kilo/rdo-release-kilo.rpm
+
+         # Enable RDO-Manager Trunk
+         sudo curl -o /etc/yum.repos.d/rdo-management-trunk.repo http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci/delorean-rdo-management.repo
+
      The above RDO-Manager Trunk repo is updated after a successful CI run. The following repo can be used instead if the newest packages are needed before a CI run has passed.
 
      ::
