@@ -535,8 +535,8 @@ from both the External and Provisioning subnets. The neutron network type should
 be specified, along with the tunneling or VLAN parameters.
 
 To deploy with network isolation and include the network environment file, use
-the -e parameters with the ``openstack overcloud deploy`` command. For instance,
-to deploy VXLAN mode, the deployment command might be::
+the ``-e`` parameters with the ``openstack overcloud deploy`` command. For
+instance, to deploy VXLAN mode, the deployment command might be::
 
     openstack overcloud deploy -e /home/stack/network-environment.yaml \
     -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml \
@@ -550,3 +550,10 @@ used for tenant networks::
     -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml \
     --plan openstack --ntp-server pool.ntp.org --neutron-network-type vlan \
     --neutron-network-vlan-ranges datacentre:30:100 --neutron-disable-tunneling
+
+Note that you must also pass the environment files (again using the ``-e`` or
+``--environment-file`` option) whenever you make subsequent changes to the
+overcloud, such as `removing nodes`_ or performing `package updates`_.
+
+.. _removing nodes: <../post_deployment/delete_nodes>
+.. _package updates: <../post_deployment/package_update>

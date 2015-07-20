@@ -23,6 +23,13 @@ deleted.
 Deleting nodes without using Tuskar
 -----------------------------------
 If the overcloud was deployed from heat templates directly then use
-`--templates` parameter when deleting nodes::
+``--templates`` parameter when deleting nodes::
 
    openstack overcloud node delete --stack $STACK --templates [templates dir] <list of nova instance IDs>
+
+If you passed any extra environment files when you created the overcloud (for
+instance, in order to configure `network isolation`_), you must pass them again
+here using the ``-e`` or ``--environment-file`` option to avoid making
+undesired changes to the overcloud.
+
+.. _network isolation: <../advanced_deployment/network_isolation>

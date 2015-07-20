@@ -20,6 +20,13 @@ will prompt for removing breakpoint on next one.
 Updating Packages on Overcloud Nodes Without Using Tuskar
 ---------------------------------------------------------
 If the overcloud was deployed from heat templates directly then use
-`--templates` parameter when updating packages::
+``--templates`` parameter when updating packages::
 
     openstack overcloud update stack --templates [templates dir] -i overcloud
+
+If you passed any extra environment files when you created the overcloud (for
+instance, in order to configure `network isolation`_), you must pass them again
+here using the ``-e`` or ``--environment-file`` option to avoid making
+undesired changes to the overcloud.
+
+.. _network isolation: <../advanced_deployment/network_isolation>
