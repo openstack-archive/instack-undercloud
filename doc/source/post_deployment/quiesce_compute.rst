@@ -1,3 +1,5 @@
+.. _quiesce_compute:
+
 Quiescing a Compute Node
 ========================
 
@@ -77,4 +79,4 @@ running (but disabled) on the compute node from Nova altogether::
 
 You are now free to reboot or shut down the node (using the Ironic API), or
 even remove it from the overcloud altogether by scaling down the overcloud
-deployment.
+deployment, see :ref:`delete_nodes`.
