@@ -53,6 +53,8 @@ so the deployment uses the local version::
     duplicate keys are specified in the environment files, the last one takes
     precedence.
 
+.. _custom-template-location:
+
 Using a custom location for all templates
 -----------------------------------------
 
