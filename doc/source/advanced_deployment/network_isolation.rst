@@ -551,8 +551,10 @@ used for tenant networks::
     --plan openstack --ntp-server pool.ntp.org --neutron-network-type vlan \
     --neutron-network-vlan-ranges datacentre:30:100 --neutron-disable-tunneling
 
-Note that you must also pass the environment files (again using the ``-e`` or
-``--environment-file`` option) whenever you make subsequent changes to the
-overcloud, such as :doc:`../post_deployment/scale_roles`,
-:doc:`../post_deployment/delete_nodes` or
-:doc:`../post_deployment/package_update`.
+.. note::
+
+    You must also pass the environment files (again using the ``-e`` or
+    ``--environment-file`` option) whenever you make subsequent changes to the
+    overcloud, such as :doc:`../post_deployment/scale_roles`,
+    :doc:`../post_deployment/delete_nodes` or
+    :doc:`../post_deployment/package_update`.

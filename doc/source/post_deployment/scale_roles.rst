@@ -28,9 +28,10 @@ And then re-deploy the Overcloud with the updated plan::
 
 Scaling overcloud roles without using Tuskar
 --------------------------------------------
-If the overcloud was deployed from heat templates directly then you can
-just re-deploy the overcloud with ``--templates`` and ``--<role>-scale``
-parameters::
+
+If the overcloud was :doc:`deployed from heat templates directly
+<../advanced_deployment/template_deploy>` then you can just re-deploy the
+overcloud with ``--templates`` and ``--<role>-scale`` parameters::
 
    openstack overcloud deploy --templates [templates dir] --compute-scale 5
 
