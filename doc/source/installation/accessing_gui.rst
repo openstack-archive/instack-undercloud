@@ -23,7 +23,7 @@ machine, to access the UI in the browser, follow these steps:
 
 #. Allow port ``8080`` on host machine::
 
-    sudo iptables -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
+    sudo iptables -I INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 
 #. Navigate to ``http://<virt_host_hostname>:8080/dashboard`` in the browser
 
