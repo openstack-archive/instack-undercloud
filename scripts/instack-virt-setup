@@ -64,6 +64,7 @@ if [ "$TRIPLEO_OS_FAMILY" = "redhat" ]; then
 fi
 
 export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
+export UNDERCLOUD_BRIDGE=${UNDERCLOUD_BRIDGE:-"brbm"}
 # Set REG_MACHINE_NAME to match UNDERCLOUD_VM_NAME if it isn't already defined.
 # This will be the name used to register the system to satllite/portal. If
 # registration is not in use, this doesn't hurt anything.
@@ -151,6 +152,7 @@ export UNDERCLOUD_NODE_CPU=${UNDERCLOUD_NODE_CPU:-$NODE_CPU}
 sudo tripleo configure-vm \
     --name $UNDERCLOUD_VM_NAME \
     --image /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 \
+    --baremetal-interface $UNDERCLOUD_BRIDGE \
     --seed \
     --libvirt-nic-driver virtio \
     --arch $UNDERCLOUD_NODE_ARCH \
