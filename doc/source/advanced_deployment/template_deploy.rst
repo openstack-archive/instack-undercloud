@@ -64,17 +64,15 @@ usage where you wish to check the templates into a revision control system.
 
 .. note::
 
-    Use caution when using this approach as you will need to rebase any
-    local changes on updates to the openstack-tripleo-heat-templates package,
-    and care will be needed to avoid modifying anything in the tree which
-    the CLI tools rely on (such as top-level parameters).  In many cases
-    using the ExtraConfig_ interfaces or specific template overrides as
-    outlined above may be preferable.
+    Use caution when using this approach as you will need to rebase any local
+    changes on updates to the openstack-tripleo-heat-templates package, and
+    care will be needed to avoid modifying anything in the tree which the CLI
+    tools rely on (such as top-level parameters).  In many cases using the
+    :doc:`ExtraConfig <extra_config>` interfaces or specific template overrides
+    as outlined above may be preferable.
 
 Here is an example of copying the entire tripleo-heat-templates tree to a
 local directory and launching a deployment using the new location::
 
     cp -r /usr/share/openstack-tripleo-heat-templates /home/stack/
     openstack overcloud deploy --templates /home/stack/openstack-tripleo-heat-templates
-
-.. _ExtraConfig: extra_config.html
