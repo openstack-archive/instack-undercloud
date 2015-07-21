@@ -553,5 +553,6 @@ used for tenant networks::
 
 Note that you must also pass the environment files (again using the ``-e`` or
 ``--environment-file`` option) whenever you make subsequent changes to the
-overcloud, such as :doc:`../post_deployment/delete_nodes` or
+overcloud, such as :doc:`../post_deployment/scale_roles`,
+:doc:`../post_deployment/delete_nodes` or
 :doc:`../post_deployment/package_update`.
