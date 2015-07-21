@@ -241,11 +241,12 @@ great deal of RAM and CPU capacity are used to run Nova in the overcloud, and
 the smaller machines run less demanding services, such as Keystone.
 
 The version of TripleO included in RDO-Manager is capable of handling flavors in
-two different modes. The simpler PoC (Proof of Concept) mode is intended to
-enable new users to experiment, without worrying about matching hardware
-profiles. In the mode, there’s one single, global flavor, and any hardware can
-match it. That effectively removes flavor matching. Users can use whatever
-hardware they wish.
+two different modes.
+
+The simpler PoC (Proof of Concept) mode is intended to enable new users to
+experiment, without worrying about matching hardware profiles. In this mode,
+there’s one single, global flavor, and any hardware can match it. That
+effectively removes flavor matching. Users can use whatever hardware they wish.
 
 For the second mode, named Scale because it is suited to larger scale overcloud
 deployments, flavor matching is in full effect. A node will only be considered
@@ -310,9 +311,9 @@ To deploy the overcloud Tuskar needs gather all plan information it keeps and
 build a Heat templates which describe desired overcloud.
 
 This template is served to to Heat which will orchestrate the whole deployment
-and it will create a stack. Stak is Heat’s own term for the applications that it
-creates. The overcloud, in Heat terms, is a particularly complex instance of a
-stack.
+and it will create a stack. Stack is Heat’s own term for the applications that
+it creates. The overcloud, in Heat terms, is a particularly complex instance of
+a stack.
 
 In order to the stack to be deployed, Heat makes successive calls to Nova,
 OpenStack’s compute service controller. Nova depends upon Ironic, which, as
