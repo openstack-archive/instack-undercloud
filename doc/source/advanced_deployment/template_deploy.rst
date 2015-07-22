@@ -11,7 +11,7 @@ additions to the templates.
 Deploying an Overcloud without Tuskar
 -------------------------------------
 
-You may use the --templates option to enable deploying only using heat
+You may use the ``--templates`` option to enable deploying only using heat
 templates, e.g no tuskar plan::
 
     openstack overcloud deploy --templates
@@ -27,9 +27,10 @@ templates, e.g no tuskar plan::
 Overriding specific templates with local versions
 -------------------------------------------------
 
-You may use heat environment files (via the --environment-file or -e option),
-combined with the --templates option to override specific templates, e.g to
-test a bugfix outside of the location of the packaged templates.
+You may use heat environment files (via the ``--environment-file`` or ``-e``
+option), combined with the ``--templates`` option to override specific
+templates, e.g to test a bugfix outside of the location of the packaged
+templates.
 
 The mapping between heat resource types and the underlying templates can be
 found in
@@ -49,18 +50,18 @@ so the deployment uses the local version::
 
 .. note::
 
-    The --environment-file/-e option may be specified multiple times, if
-    duplicate keys are specified in the environment files, the last one takes
-    precedence.
+    The ``--environment-file``/``-e`` option may be specified multiple times,
+    if duplicate keys are specified in the environment files, the last one
+    takes precedence.
 
 .. _custom-template-location:
 
 Using a custom location for all templates
 -----------------------------------------
 
-You may specify a path to the --templates option, such that the packaged
-tree may be copied to another location, which is useful e.g for developer
-usage where you wish to check the templates into a revision control system.
+You may specify a path to the ``--templates`` option, such that the packaged
+tree may be copied to another location, which is useful e.g for developer usage
+where you wish to check the templates into a revision control system.
 
 .. note::
 
