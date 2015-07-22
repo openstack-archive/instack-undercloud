@@ -234,6 +234,7 @@ rabbitmq::default_pass: {{UNDERCLOUD_RABBIT_PASSWORD}}
 # Horizon
 horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}
 horizon::wsgi::apache::priority: 10
+horizon::openstack_endpoint_type: internalURL
 
 # service tenant
 ceilometer::api::keystone_tenant: 'service'
