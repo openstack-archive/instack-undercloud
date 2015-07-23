@@ -357,29 +357,18 @@ and VLAN id based on the environment::
 
 Validate the Overcloud
 ^^^^^^^^^^^^^^^^^^^^^^
-Source the ``overcloudrc`` file::
+To verify the Overcloud by running Tempest::
 
-    source ~/overcloudrc
+    openstack overcloud validate --overcloud-auth-url $OS_AUTH_URL \
+                                 --overcloud-admin-password $OS_PASSWORD
 
-The external network created in the previous step needs to be passed to Tempest.
-Show the network's UUID::
+.. note:: The full Tempest test suite might take hours to run on a single CPU.
 
-    neutron net-list
-
-Verify the Overcloud by running Tempest::
+To run only a part of the Tempest test suite (eg. tests with ``smoke`` tag)::
 
     openstack overcloud validate --overcloud-auth-url $OS_AUTH_URL \
                                  --overcloud-admin-password $OS_PASSWORD \
-                                 --network-id <network-uuid>
-
-.. note:: The full Tempest test suite might take many hours to run on a single CPU.
-
-To run only a part of the Tempest test suite (eg. tests with the ``smoke`` tag)::
-
-    openstack overcloud validate --overcloud-auth-url $OS_AUTH_URL \
-                                 --overcloud-admin-password $OS_PASSWORD \
-                                 --network-id <network-uuid> \
-                                 --tempest-args '.*smoke'
+                                 --tempest-args smoke
 
 
 Redeploy the Overcloud
