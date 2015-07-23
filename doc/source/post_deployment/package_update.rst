@@ -17,6 +17,14 @@ will prompt for removing breakpoint on next one.
    Multiple breakpoints can be removed by specifying list of nodes with a
    regular expression.
 
+.. note::
+   Make sure you use `-i` parameter, otherwise update runs on background and
+   doesn't prompt for removing of breakpoints.
+
+.. note::
+   If the update command is aborted for some reason you can always continue
+   in the process by re-running same command.
+
 Updating Packages on Overcloud Nodes Without Using Tuskar
 ---------------------------------------------------------
 If the overcloud was deployed from heat templates directly then use
