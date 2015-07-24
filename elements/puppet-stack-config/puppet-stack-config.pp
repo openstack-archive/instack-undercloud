@@ -321,7 +321,9 @@ class { 'nova::network::neutron':
   neutron_region_name       => '',
 }
 
-include ::ironic::conductor
+class { 'ironic::conductor':
+  force_power_state_during_sync => hiera('ironic::conductor::force_power_state_during_sync'),
+}
 
 class { 'ironic':
   enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac'],
@@ -341,7 +343,6 @@ ironic_config {
   'pxe/http_url':                            value => 'http://$my_ip:8088';
   'pxe/http_root':                           value => '/httpboot';
   'pxe/ipxe_enabled':                        value => 'True';
-  'conductor/force_power_state_during_sync': value => hiera('ironic::conductor::force_power_state_during_sync');
 }
 
 class { 'horizon':
