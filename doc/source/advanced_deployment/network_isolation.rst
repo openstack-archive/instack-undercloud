@@ -65,7 +65,11 @@ The networks are connected to the roles as follows:
 
 Controller:
 
-* All networks
+* Provisioning
+* Internal API
+* Storage
+* Storage Management
+* External
 
 Compute:
 
@@ -139,14 +143,8 @@ Example::
     OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/nic-configs/ceph-storage.yaml
 
   parameters:
-    NeutronExternalNetworkBridge:
-      default: "''"
-      description: Set to "''" if floating IPs on tagged VLAN, "br-ex" if on native.
-      type: string
-    Controller-1::NeutronExternalNetworkBridge:
-      default: "''"
-      description: Set to "''" if floating IPs on tagged VLAN, "br-ex" if on native.
-      type: string
+    # Set to "br-ex" if using floating IPs on native VLAN on bridge br-ex
+    Controller-1::NeutronExternalNetworkBridge: "''"
 
   parameter_defaults:
     # Customize all these values to match the local environment
@@ -168,6 +166,8 @@ Example::
     ExternalNetworkVlanID: 100
     # Set to the router gateway on the external network
     ExternalInterfaceDefaultRoute: 10.1.2.1
+    # Set to "br-ex" if using floating IPs on native VLAN on bridge br-ex
+    NeutronExternalNetworkBridge: "''"
     # Customize bonding options if required (will be ignored if bonds are not used)
     BondInterfaceOvsOptions:
         "bond_mode=balance-tcp lacp=active other-config:lacp-fallback-ab=true"
@@ -350,6 +350,7 @@ Example::
               type: interface
               name: nic2
               use_dhcp: true
+              defroute: false
             -
               type: ovs_bridge
               name: br-bond
@@ -426,6 +427,29 @@ Example::
                   ip_netmask: 10.1.2.0/24
                   next_hop: 172.17.0.1
 
+Using a Dedicated Interface For Tenant VLANs
+--------------------------------------------
+When using a dedicated interface or bond for tenant VLANs, a bridge must be
+created. Neutron will create OVS ports on that bridge with the VLAN tags for the
+provider VLANs. For example, to use NIC 4 as a dedicated interface for tenant
+VLANs, you would add the following to the Controller and Compute templates:
+
+Example::
+
+            -
+              type: ovs_bridge
+              name: br-vlan
+              members:
+                -
+                  type: interface
+                  name: nic4
+                  primary: true
+
+A similar configuration may be used to define an interface or a bridge that
+will be used for Provider VLANs. Provider VLANs are external networks which
+are connected directly to the Compute hosts. VMs may be attached directly to
+Provider networks to provide access to datacenter resources outside the cloud.
+
 Using the Native VLAN for Floating IPs
 --------------------------------------
 By default, Neutron will be expecting the floating IP network to be delivered
@@ -436,14 +460,12 @@ The value must be set in both of these parameters in the parameters section:
 Example::
 
   parameters:
-    NeutronExternalNetworkBridge:
-      default: "br-ex"
-      description: Set to "''" if floating IPs on tagged VLAN, "br-ex" if on native.
-      type: string
-    Controller-1::NeutronExternalNetworkBridge:
-      default: "br-ex"
-      description: Set to "''" if floating IPs on tagged VLAN, "br-ex" if on native.
-      type: string
+    # Set to "br-ex" when using floating IPs on the native VLAN
+    Controller-1::NeutronExternalNetworkBridge: "''"
+
+  parameter_defaults:
+    # Set to "br-ex" when using floating IPs on the native VLAN
+    NeutronExternalNetworkBridge: "''"
 
 The next section contains the changes to the NIC config that need to happen
 to put the External network on the native VLAN (the External network may be
@@ -487,7 +509,7 @@ Example::
                         type: interface
                         name: nic4
 
-..note::
+.. note::
   When moving the address (and possibly route) statements onto the bridge, be
   sure to remove the corresponding VLAN interface from the bridge. Make sure to
   make the changes to all applicable roles. The External network is only on the
@@ -636,7 +658,17 @@ used for tenant networks::
     openstack overcloud deploy -e /home/stack/network-environment.yaml \
     -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml \
     --plan openstack --ntp-server pool.ntp.org --neutron-network-type vlan \
-    --neutron-network-vlan-ranges datacentre:30:100 --neutron-disable-tunneling
+    --neutron-bridge-mappings datacentre:br-ex \
+    --neutron-network-vlan-ranges datacentre:30:100 \
+    --neutron-disable-tunneling
+
+If a dedicated interface or bridge is used for tenant VLANs, it should be
+included in the bridge mappings. For instance, if the tenant VLANs were on a
+bridge named ``br-vlan``, then use these values in the deployment command
+above::
+
+    --neutron-bridge-mappings datacentre:br-ex,tenant:br-vlan \
+    --neutron-network-vlan-ranges tenant:30:100
 
 .. note::
 
@@ -645,3 +677,4 @@ used for tenant networks::
     overcloud, such as :doc:`../post_deployment/scale_roles`,
     :doc:`../post_deployment/delete_nodes` or
     :doc:`../post_deployment/package_update`.
+
