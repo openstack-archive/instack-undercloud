@@ -22,8 +22,10 @@ deleted.
 
 Deleting nodes without using Tuskar
 -----------------------------------
-If the overcloud was deployed from heat templates directly then use
-``--templates`` parameter when deleting nodes::
+
+If the overcloud was :doc:`deployed from heat templates directly
+<../advanced_deployment/template_deploy>` then use the ``--templates``
+parameter when deleting nodes::
 
    openstack overcloud node delete --stack $STACK --templates [templates dir] <list of nova instance IDs>
 
