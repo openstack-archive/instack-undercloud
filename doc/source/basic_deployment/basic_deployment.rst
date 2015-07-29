@@ -326,10 +326,11 @@ Setup the Overcloud network
 Initial networks in Neutron in the Overlcoud need to be created for tenant
 instances. The following are example commands to create the initial networks.
 Edit the address ranges, or use the necessary neutron commands to match the
-environment appropriately.::
+environment appropriately. This assumes a dedicated interface or native VLAN::
 
 
-    neutron net-create nova --router:external
+    neutron net-create nova --router:external --provider:network_type flat \
+      --provider:physical_network datacentre
     neutron subnet-create --name nova --disable-dhcp \
       --allocation-pool start=172.16.23.140,end=172.16.23.240 \
       --gateway 172.16.23.251 nova 172.16.23.128/25
