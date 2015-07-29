@@ -103,19 +103,21 @@ METADATA_SERVER=$UNDERCLOUD_IP
 PHYSICAL_NETWORK=ctlplane
 
 NETWORK_JSON=$(mktemp)
-jq "." <<EOF > $NETWORK_JSON
-{
-    "physical": {
-        "gateway": "$NETWORK_GATEWAY",
-        "metadata_server": "$UNDERCLOUD_IP",
-        "cidr": "$NETWORK_CIDR",
-        "allocation_start": "$DHCP_START",
-        "allocation_end": "$DHCP_END",
-        "name": "$PHYSICAL_NETWORK",
-        "nameserver": "${UNDERCLOUD_NAMESERVER:-192.168.122.1}"
-    }
-}
-EOF
+NETWORK_JSON_DATA='{"physical":{}}'
+NETWORK_JSON_DATA=$(jq '.physical = .physical + {
+    "gateway": "'$NETWORK_GATEWAY'",
+    "metadata_server": "'$UNDERCLOUD_IP'",
+    "cidr": "'$NETWORK_CIDR'",
+    "allocation_start": "'$DHCP_START'",
+    "allocation_end": "'$DHCP_END'",
+    "name": "'$PHYSICAL_NETWORK'",
+}' <<< $NETWORK_JSON_DATA)
+if [ -n "${UNDERCLOUD_NAMESERVER:-}" ]; then
+    NETWORK_JSON_DATA=$(jq '.physical = .physical + {
+        "nameserver": "'$UNDERCLOUD_NAMESERVER'",
+    }' <<< $NETWORK_JSON_DATA)
+fi
+jq . > $NETWORK_JSON <<< $NETWORK_JSON_DATA
 setup-neutron -n $NETWORK_JSON
 rm $NETWORK_JSON
 
