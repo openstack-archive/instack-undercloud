@@ -5,5 +5,5 @@ set -eux
 # Install repo file for Delorean el7 midstream packages built from
 # rdo-management.
 export DELOREAN_TRUNK_MGT_REPO=${DELOREAN_TRUNK_MGT_REPO:-"http://trunk-mgt.rdoproject.org/centos-kilo/current-passed-ci"}
-sudo -E curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_TRUNK_MGT_REPO/delorean-rdo-management.repo
+curl -o /etc/yum.repos.d/delorean-rdo-management.repo $DELOREAN_TRUNK_MGT_REPO/delorean-rdo-management.repo
 
