@@ -170,6 +170,7 @@ Roles are reloaded by running the tuskar-db-sync script from the tuskar
 tripleo image element::
 
     /usr/share/tripleo-image-elements/tuskar/os-refresh-config/configure.d/90-tuskar-db-sync
+
 This script defaults to using `/usr/share/openstack-tripleo-heat-templates/`
 as the path to the local tripleo heat templates from which to define the roles.
 This can be overridden by setting the TUSKAR_ROLE_DIRECTORY environment
