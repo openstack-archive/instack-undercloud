@@ -52,11 +52,12 @@ First, obtain a list of the current Nova services::
 Disable the `nova-compute` service on the node you wish to quiesce, to prevent
 new VMs being scheduled on it::
 
-    nova service-disable <service-id> nova-compute
+    nova service-disable <service-host> nova-compute
+
 
 Begin the process of migrating VMs off the node::
 
-    nova host-servers-migrate <service-id>
+    nova host-servers-migrate <service-host>
 
 Completing Migration
 --------------------
