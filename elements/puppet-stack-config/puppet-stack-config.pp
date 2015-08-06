@@ -303,6 +303,7 @@ class { 'nova::compute':
 nova_config {
   'DEFAULT/my_ip':                     value => $ipaddress;
   'DEFAULT/linuxnet_interface_driver': value => 'nova.network.linux_net.LinuxOVSInterfaceDriver';
+  'DEFAULT/rpc_response_timeout':      value => '600';
 }
 
 
@@ -336,6 +337,7 @@ class { 'ironic::api':
 
 ironic_config {
   'DEFAULT/my_ip':                           value => hiera('controller_host');
+  'DEFAULT/rpc_response_timeout':            value => '600';
   'glance/host':                             value => hiera('glance::api::bind_host');
   'discoverd/enabled':                       value => 'true';
   'pxe/pxe_config_template':                 value => '$pybasedir/drivers/modules/ipxe_config.template';
