@@ -258,10 +258,14 @@ Deploy the Overcloud
    .. admonition:: Ceph
       :class: ceph
 
-      When deploying Ceph, specify the number of Ceph OSD nodes to be deployed
-      by passing::
+      When deploying Ceph it is necessary to use the regular Heat templates
+      instead of Tuskar, to specify the number of Ceph OSD nodes to be
+      deployed and to provide some additional parameters to enable usage
+      of Ceph for Glance, Cinder, Nova or all.
+      Make a copy of the file ``/usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml``
+      and edit it as appropriate, then pass the following additional arguments::
 
-          --ceph-storage-scale <number of nodes>
+          --ceph-storage-scale <number of nodes> --templates -e /path/to/customized/storage-environment.yaml
 
       to the deploy command below.
 
