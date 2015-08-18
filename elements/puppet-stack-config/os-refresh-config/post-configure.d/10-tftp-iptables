@@ -7,6 +7,7 @@ add-rule INPUT -m udp -p udp --dport 69 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8773,8774,8775 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 5000,35357 -j ACCEPT
 add-rule INPUT -p tcp --dport 8585 -j ACCEPT
+add-rule INPUT -p tcp --dport 9696 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 6080 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 5900:5999 -j ACCEPT
 add-rule INPUT -p tcp --dport 9292 -j ACCEPT
