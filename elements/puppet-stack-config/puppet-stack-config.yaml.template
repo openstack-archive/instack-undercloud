@@ -164,6 +164,10 @@ nova::notify_on_state_change: 'vm_and_task_state'
 nova::scheduler::enabled: true
 nova::network::neutron::dhcp_domain: ''
 nova::compute::force_config_drive: true
+nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
+nova::compute::reserved_host_memory: '0'
+nova::scheduler::filter::ram_allocation_ratio: '1.0'
+nova::scheduler::filter::scheduler_host_manager: 'nova.scheduler.ironic_host_manager.IronicHostManager'
 
 # Ironic
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}

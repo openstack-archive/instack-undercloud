@@ -177,10 +177,12 @@ class { 'nova':
 
 include ::nova::api
 include ::nova::cert
+include ::nova::compute
 include ::nova::conductor
 include ::nova::consoleauth
 include ::nova::vncproxy
 include ::nova::scheduler
+include ::nova::scheduler::filter
 
 class {'neutron':
   rabbit_hosts => [hiera('controller_host')],
@@ -294,11 +296,6 @@ snmp::snmpv3_user { $snmpd_user:
 class { 'snmp':
   agentaddress => ['udp:161','udp6:[::1]:161'],
   snmpd_config => [ join(['rouser ', hiera('snmpd_readonly_user_name')]), 'proc  cron', 'includeAllDisks  10%', 'master agentx', 'trapsink localhost public', 'iquerySecName internalUser', 'rouser internalUser', 'defaultMonitors yes', 'linkUpDownNotifications yes' ],
-}
-
-class { 'nova::compute':
-  enabled => true,
-  reserved_host_memory => 0,
 }
 
 nova_config {
