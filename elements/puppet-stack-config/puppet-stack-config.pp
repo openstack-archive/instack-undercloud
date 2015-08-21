@@ -188,6 +188,7 @@ class {'neutron':
 }
 
 include ::neutron::server
+include ::neutron::quota
 
 # NOTE(lucasagomes): This bit might be superseded by
 # https://review.openstack.org/#/c/172040/
