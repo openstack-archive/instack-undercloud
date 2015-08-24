@@ -20,8 +20,9 @@ import subprocess
 
 import fixtures
 import mock
-from oslo.config import fixture as config_fixture
+from oslo_config import fixture as config_fixture
 from oslotest import base
+from oslotest import log
 from oslotest import mockpatch
 
 from instack_undercloud import undercloud
@@ -32,7 +33,13 @@ from instack_undercloud import undercloud
 undercloud._configure_logging(undercloud.DEFAULT_LOG_LEVEL, None)
 
 
-class TestUndercloud(base.BaseTestCase):
+class BaseTestCase(base.BaseTestCase):
+    def setUp(self):
+        super(BaseTestCase, self).setUp()
+        self.logger = self.useFixture(log.ConfigureLogging()).logger
+
+
+class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._check_hostname')
     @mock.patch('instack_undercloud.undercloud._run_command')
@@ -60,7 +67,7 @@ class TestUndercloud(base.BaseTestCase):
         self.assertNotEqual(first, second)
 
 
-class TestCheckHostname(base.BaseTestCase):
+class TestCheckHostname(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_correct(self, mock_run_command):
         mock_run_command.side_effect = ['test-hostname', 'test-hostname']
@@ -113,7 +120,7 @@ class TestCheckHostname(base.BaseTestCase):
             self.assertRaises(RuntimeError, undercloud._check_hostname)
 
 
-class TestGenerateEnvironment(base.BaseTestCase):
+class TestGenerateEnvironment(BaseTestCase):
     def setUp(self):
         super(TestGenerateEnvironment, self).setUp()
         # Things that need to always be mocked out, but that the tests
@@ -185,19 +192,18 @@ class TestGenerateEnvironment(base.BaseTestCase):
     def test_opts_in_env(self):
         env = undercloud._generate_environment('.')
         # Just spot check, we don't want to replicate the entire opt list here
-        self.assertEqual(env['DEPLOYMENT_MODE'], 'poc')
         self.assertEqual(env['DISCOVERY_RUNBENCH'], '0')
         self.assertEqual('192.0.2.1/24', env['PUBLIC_INTERFACE_IP'])
         self.assertEqual('192.0.2.1', env['LOCAL_IP'])
 
     def test_answers_file_support(self):
         with open(undercloud.PATHS.ANSWERS_PATH, 'w') as f:
-            f.write('DEPLOYMENT_MODE=scale\n')
+            f.write('LOCAL_INTERFACE=eno1\n')
         env = undercloud._generate_environment('.')
-        self.assertEqual('scale', env['DEPLOYMENT_MODE'])
+        self.assertEqual('eno1', env['LOCAL_INTERFACE'])
 
 
-class TestWritePasswordFile(base.BaseTestCase):
+class TestWritePasswordFile(BaseTestCase):
     def test_normal(self):
         answers_parser = mock.Mock()
         answers_parser.has_option.return_value = False
@@ -240,7 +246,7 @@ class TestWritePasswordFile(base.BaseTestCase):
         self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'foo')
 
 
-class TestRunCommand(base.BaseTestCase):
+class TestRunCommand(BaseTestCase):
     def test_run_command(self):
         output = undercloud._run_command(['echo', 'foo'])
         self.assertEqual('foo\n', output)
