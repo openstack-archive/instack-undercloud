@@ -327,8 +327,13 @@ class { 'ironic::conductor':
   force_power_state_during_sync => hiera('ironic::conductor::force_power_state_during_sync'),
 }
 
+# dependency of pxe_drac
+package{'openwsman-python': }
+# dependency of pxe_ilo
+package{'python-proliantutils': }
+
 class { 'ironic':
-  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac'],
+  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac', 'pxe_ilo'],
   debug           => hiera('debug'),
 }
 
