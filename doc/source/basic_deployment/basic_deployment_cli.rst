@@ -1,5 +1,5 @@
-Basic Deployment
-================
+Basic Deployment (CLI)
+======================
 
 With these few steps you will be able to simply deploy RDO to your environment
 using our defaults in a few steps.
