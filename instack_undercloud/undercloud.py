@@ -31,19 +31,36 @@ from oslo_config import cfg
 import six
 
 
-CONF_PATH = os.path.expanduser('~/undercloud.conf')
-# NOTE(bnemec): Deprecated
-ANSWERS_PATH = os.path.expanduser('~/instack.answers')
-PASSWORD_PATH = os.path.expanduser('~/undercloud-passwords.conf')
-LOG_FILE = os.path.expanduser('~/.instack/install-undercloud.log')
+# Making these values properties on a class allows us to delay their lookup,
+# which makes testing code that interacts with these files much easier.
+# NOTE(bnemec): The unit tests rely on these paths being in ~.  If they are
+# ever moved the tests may need to be updated to avoid overwriting real files.
+class Paths(object):
+    @property
+    def CONF_PATH(self):
+        return os.path.expanduser('~/undercloud.conf')
+
+    # NOTE(bnemec): Deprecated
+    @property
+    def ANSWERS_PATH(self):
+        return os.path.expanduser('~/instack.answers')
+
+    @property
+    def PASSWORD_PATH(self):
+        return os.path.expanduser('~/undercloud-passwords.conf')
+
+    @property
+    def LOG_FILE(self):
+        return os.path.expanduser('~/.instack/install-undercloud.log')
+PATHS = Paths()
 DEFAULT_LOG_LEVEL = logging.DEBUG
 DEFAULT_LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s'
 try:
-    os.makedirs(os.path.dirname(LOG_FILE))
+    os.makedirs(os.path.dirname(PATHS.LOG_FILE))
 except OSError as e:
     if e.errno != errno.EEXIST:
         raise
-logging.basicConfig(filename=LOG_FILE,
+logging.basicConfig(filename=PATHS.LOG_FILE,
                     format=DEFAULT_LOG_FORMAT,
                     level=DEFAULT_LOG_LEVEL)
 LOG = logging.getLogger(__name__)
@@ -235,10 +252,10 @@ def list_opts():
 
 def _load_config():
     conf_params = []
-    if os.path.isfile(PASSWORD_PATH):
-        conf_params += ['--config-file', PASSWORD_PATH]
-    if os.path.isfile(CONF_PATH):
-        conf_params += ['--config-file', CONF_PATH]
+    if os.path.isfile(PATHS.PASSWORD_PATH):
+        conf_params += ['--config-file', PATHS.PASSWORD_PATH]
+    if os.path.isfile(PATHS.CONF_PATH):
+        conf_params += ['--config-file', PATHS.CONF_PATH]
     CONF(conf_params)
 
 
@@ -326,7 +343,7 @@ def _generate_password(length=40):
 
 
 def _write_password_file(answers_parser, instack_env):
-    with open(PASSWORD_PATH, 'w') as password_file:
+    with open(PATHS.PASSWORD_PATH, 'w') as password_file:
         password_file.write('[auth]\n')
         for opt in _auth_opts:
             env_name = opt.name.upper()
@@ -406,10 +423,10 @@ def _generate_environment(instack_root):
 
     # Do some fiddling to retain answers file support for now
     answers_parser = ConfigParser.ConfigParser()
-    if os.path.isfile(ANSWERS_PATH):
+    if os.path.isfile(PATHS.ANSWERS_PATH):
         config_answers = StringIO.StringIO()
         config_answers.write('[answers]\n')
-        with open(ANSWERS_PATH) as f:
+        with open(PATHS.ANSWERS_PATH) as f:
             config_answers.write(f.read())
         config_answers.seek(0)
         answers_parser.readfp(config_answers)
@@ -500,7 +517,7 @@ def install(instack_root):
     :param instack_root: The path containing the instack-undercloud elements
         and json files.
     """
-    LOG.info('Logging to %s', LOG_FILE)
+    LOG.info('Logging to %s', PATHS.LOG_FILE)
     _load_config()
     _check_hostname()
     instack_env = _generate_environment(instack_root)
@@ -514,5 +531,5 @@ def install(instack_root):
     _run_orc(instack_env)
     _configure_ssh_keys()
     _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
-    LOG.info(COMPLETION_MESSAGE, {'password_path': PASSWORD_PATH,
+    LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
              'stackrc_path': os.path.expanduser('~/stackrc')})
