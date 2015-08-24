@@ -116,16 +116,18 @@ sudo chown -R $USER: ~/.ssh
 
 sudo virsh undefine --remove-all-storage seed
 
-# Save number of overcloud VMs to make the following for loop flexible
-VM_LAST_NUMBER=$((NODE_COUNT-1))
+if [ -n "${ATTACH_EXTRA_DISKS:-}" ]; then
+    # Save number of overcloud VMs to make the following for loop flexible
+    VM_LAST_NUMBER=$((NODE_COUNT-1))
 
-# Attach disks for os-disk-config testing
-for i in $(seq 0 VM_LAST_NUMBER); do
-    qcow_file=/var/lib/libvirt/images/baremetal_extra_${i}.qcow2
-    sudo rm -f $qcow_file
-    sudo qemu-img create $qcow_file 10G
-    sudo virsh attach-disk baremetal_$i $qcow_file vda --type disk --persistent
-done
+    # Attach disks for os-disk-config testing
+    for i in $(seq 0 $VM_LAST_NUMBER); do
+        qcow_file=/var/lib/libvirt/images/baremetal_extra_${i}.qcow2
+        sudo rm -f $qcow_file
+        sudo qemu-img create $qcow_file 10G
+        sudo virsh attach-disk baremetal_$i $qcow_file vda --type disk --persistent
+    done
+fi
 
 export UNDERCLOUD_OS=${UNDERCLOUD_OS:-"fedora-20"}
 export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
