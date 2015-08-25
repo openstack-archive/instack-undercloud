@@ -22,16 +22,16 @@ inspired by `SpinalStack <http://spinal-stack.readthedocs.org/en/latest/>`_.
 TripleO
 ^^^^^^^
 
-TripleO is the friendly name for “OpenStack on OpenStack”. It is an official
+TripleO is the friendly name for "OpenStack on OpenStack". It is an official
 OpenStack program with the goal of allowing you to deploy and manage a
 production cloud onto bare metal hardware using a subset of existing OpenStack
 components.
 
 .. image:: ../_images/overview.png
 
-With TripleO, you start by creating an “undercloud” (a deployment cloud)
+With TripleO, you start by creating an "undercloud" (a deployment cloud)
 that will contain the necessary OpenStack components to deploy and manage an
-“overcloud” (a workload cloud). The overcloud is the deployed solution
+"overcloud" (a workload cloud). The overcloud is the deployed solution
 and can represent a cloud for any purpose (e.g. production, staging, test, etc).
 The operator can choose any OpenStack components they want for the overcloud.
 
@@ -73,26 +73,26 @@ that granular control and validation of the deployment is possible
 Benefits
 --------
 
-Using RDO-Manager’s combination of OpenStack components, and their APIs, as the
+Using RDO-Manager's combination of OpenStack components, and their APIs, as the
 infrastructure to deploy and operate OpenStack itself delivers several benefits:
 
-* RDO-Manager’s APIs are the OpenStack APIs. They’re well maintained, well
+* RDO-Manager's APIs are the OpenStack APIs. They're well maintained, well
   documented, and come with client libraries and command line tools. Users who
-  invest time in learning about RDO-Manager’s APIs are also learning about
+  invest time in learning about RDO-Manager's APIs are also learning about
   OpenStack itself, and users who are already familiar with OpenStack will find
   a great deal in RDO-Manager that they already understand.
 * Using the OpenStack components allows more rapid feature development of
   RDO-Manager than might otherwise be the case; RDO-Manager automatically
   inherits all the new features which are added to Glance, Heat etc., even when
-  the developer of the new feature didn’t explicitly have TripleO and
+  the developer of the new feature didn't explicitly have TripleO and
   RDO-Manager in mind.
 * The same applies to bug fixes and security updates. When OpenStack developers
   fix bugs in the common components, those fixes are inherited by RDO-Manager.
-* Users’ can invest time in integrating their own scripts and utilities with
-  RDO-Manager’s APIs with some confidence. Those APIs are cooperatively
-  maintained and developed by the OpenStack community. They’re not at risk of
+* Users' can invest time in integrating their own scripts and utilities with
+  RDO-Manager's APIs with some confidence. Those APIs are cooperatively
+  maintained and developed by the OpenStack community. They're not at risk of
   being suddenly changed or retired by a single controlling vendor.
-* For developers, tight integration with the openstack APIs provides a solid
+* For developers, tight integration with the OpenStack APIs provides a solid
   architecture, which has gone through extensive community review.
 
 It should be noted that not everything in RDO-Manager is a reused OpenStack
@@ -107,7 +107,7 @@ Deployment Workflow Overview
 
 #. Environment Preparation
 
-   * Prepare your environemnt (baremetal or virtual)
+   * Prepare your environment (baremetal or virtual)
    * Install undercloud
 
 
@@ -162,7 +162,7 @@ Environment Preparation
 In the first place, you need to check that your environment is ready.
 RDO-Manager can deploy OpenStack into baremetal as well as virtual environments.
 You need to make sure that your environment satisfies minimum requirements for
-given environemnt type and that networking is correctly set up.
+given environment type and that networking is correctly set up.
 
 Next step is to install the undercloud. We install undercloud using `Instack
 <https://github.com/rdo-management/instack-undercloud>`_'s script and it calls
@@ -198,7 +198,7 @@ Nodes
 """""
 
 Deploying the overcloud requires suitable hardware. The first task is to
-register the available hardware with Ironic, OpenStack’s equivalent of a
+register the available hardware with Ironic, OpenStack's equivalent of a
 hypervisor for managing baremetal servers. User can define the hardware
 attributes (such as number of CPUs, RAM, disk) manually or he can leave the
 fields out and run introspection of the nodes afterwards.
@@ -216,7 +216,7 @@ The sequence of events is pictured below:
 * The discovery ramdisk probes the hardware on the node and gathers facts,
   including the number of CPU cores, the local disk size and the amount of RAM.
 * The ramdisk posts the facts to the discoverd API.
-* All facts are passed and stored in the Ironic databse.
+* All facts are passed and stored in the Ironic database.
 * There can be performed advanced role matching via the ''ahc-match'' tool,
   which simply adds an additional role categorization to Ironic based on
   discovered node facts and specified conditions.
@@ -228,9 +228,9 @@ Flavors
 When users are creating virtual machines (VMs) in an OpenStack cloud, the flavor
 that they choose specifies the capacity of the VM which should be created. The
 flavor defines the CPU count, the amount of RAM, the amount of disk space etc.
-As long as the cloud has enough capacity to grant the user’s wish, and the user
-hasn’t reached their quota limit, the flavor acts as a set of instructions on
-exactly what kind of VM to create on the user’s behalf.
+As long as the cloud has enough capacity to grant the user's wish, and the user
+hasn't reached their quota limit, the flavor acts as a set of instructions on
+exactly what kind of VM to create on the user's behalf.
 
 In the undercloud, where the machines are usually physical rather than virtual
 (or, at least, pre-existing, rather than created on demand), flavors have a
@@ -245,7 +245,7 @@ two different modes.
 
 The simpler PoC (Proof of Concept) mode is intended to enable new users to
 experiment, without worrying about matching hardware profiles. In this mode,
-there’s one single, global flavor, and any hardware can match it. That
+there's one single, global flavor, and any hardware can match it. That
 effectively removes flavor matching. Users can use whatever hardware they wish.
 
 For the second mode, named Scale because it is suited to larger scale overcloud
@@ -277,11 +277,11 @@ Tuskar API. A role brings together following things:
   task
 
 
-In the case of the “Compute” role:
+In the case of the "Compute" role:
 
 * the image must contain all the required software to boot an OS and then run
   the KVM hypervisor and the Nova compute service
-* the flavor (at least for a deployment which isn’t a simple proof of concept),
+* the flavor (at least for a deployment which isn't a simple proof of concept),
   should specify that the machine has enough CPU capacity and RAM to host
   several VMs concurrently
 * the Heat templates will take care of ensuring that the Nova service is
@@ -294,11 +294,12 @@ individual services cannot easily be scaled independently of the Controller role
 future release.
 
 Customizable things during deployment planning are:
+
 * Number of nodes for each role
 * Service parameters configuration
 * Network configuration (NIC configuration options, isolated vs. single overlay)
 * Ceph rbd backend options and defaults
-* Ways to pass in extra configuration, e.g site-specific customzations
+* Ways to pass in extra configuration, e.g site-specific customizations
 
 
 Deployment
@@ -311,12 +312,12 @@ To deploy the overcloud Tuskar needs gather all plan information it keeps and
 build a Heat templates which describe desired overcloud.
 
 This template is served to to Heat which will orchestrate the whole deployment
-and it will create a stack. Stack is Heat’s own term for the applications that
+and it will create a stack. Stack is Heat's own term for the applications that
 it creates. The overcloud, in Heat terms, is a particularly complex instance of
 a stack.
 
 In order to the stack to be deployed, Heat makes successive calls to Nova,
-OpenStack’s compute service controller. Nova depends upon Ironic, which, as
+OpenStack's compute service controller. Nova depends upon Ironic, which, as
 described above has acquired an inventory of discovered hardware by this stage
 in the process.
 
@@ -328,10 +329,10 @@ nodes, ensuring that the selected nodes meets the hardware requirements.
 Once the target node has been selected, Ironic does the actual provisioning of
 the node, Ironic retrieves the OS image associated with the role from Glance,
 causes the node to boot a deployment ramdisk and then, in the typical case,
-exports the node’s local disk over iSCSI so that the disk can be partitioned and
+exports the node's local disk over iSCSI so that the disk can be partitioned and
 the have the OS image written onto it by the Ironic Conductor.
 
-See Ironic’s `Understanding Baremetal Deployment <http://docs.openstack.org/
+See Ironic's `Understanding Baremetal Deployment <http://docs.openstack.org/
 developer/ironic/deploy/user-guide.html#understanding-bare-metal-deployment>`_
 for further details.
 
@@ -350,7 +351,7 @@ After the overcloud has been deployed, the initialization of OpenStack services
 scripts in the `tripleo-incubator <https://github.com/openstack/
 tripleo-incubator>`_ source repository and it uses bits from `os-cloud-config
 <https://github.com/openstack/os-cloud-config>`_ which contains common code,
-the seed initialisation logic, and the post heat completion initial
+the seed initialization logic, and the post heat completion initial
 configuration of a cloud. There are three primary steps to completing the
 initialization:
 
@@ -362,10 +363,10 @@ The first step initializes Keystone for use with normal authentication by
 creating the admin and service tenants, the admin and Member roles, the admin
 user, configure certificates and finally registers the initial identity
 endpoint. The next step registers image, orchestration, network and compute
-services running on the default ports on the controlplane node. Finally, Neutron
-is given a starting IP address, ending IP address, and a CIDR notation to
-represent the subnet for the block of floating IP addresses that will be used
-within the overcloud.
+services running on the default ports on the control plane node. Finally,
+Neutron is given a starting IP address, ending IP address, and a CIDR notation
+to represent the subnet for the block of floating IP addresses that will be
+used within the overcloud.
 
 
 
@@ -391,7 +392,7 @@ Monitoring the Overcloud
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 When the overcloud is deployed, Ceilometer can be configured to track a set of
-OS metrics for each node (system load, CPU utiization, swap usage etc.) These
+OS metrics for each node (system load, CPU utilization, swap usage etc.) These
 metrics are graphed in the GUI, both for individual nodes, and for groups
 of nodes, such as the collection of nodes which are all delivering a particular
 role.
@@ -415,7 +416,7 @@ stages:
 
 * Making sure you have enough nodes to deploy on (or register new nodes as
   described in the "Undercloud Data Preparation" section above).
-* Updating the plan managed by Tuskar, as described in the “Deployment Planning"
+* Updating the plan managed by Tuskar, as described in the "Deployment Planning"
   section above.
 * Calling Heat to update the stack which will apply the set of changes to the
   overcloud.
