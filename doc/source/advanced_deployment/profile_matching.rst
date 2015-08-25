@@ -40,7 +40,7 @@ Accessing additional introspection data
 ---------------------------------------
 
 Every introspection run (as described in
-:doc:`../basic_deployment/basic_deployment`) collects a lot of additional
+:doc:`../basic_deployment/basic_deployment_cli`) collects a lot of additional
 facts about the hardware and puts them as JSON in Swift. Swift container name
 is ``ironic-inspector`` and can be modified in
 **/etc/ironic-discoverd/discoverd.conf**. Swift object name is stored under

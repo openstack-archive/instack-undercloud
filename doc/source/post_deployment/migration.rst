@@ -48,6 +48,6 @@ Manager.
 
 First, register and introspect the additional hardware with Ironic just as you
 would have done when :doc:`initially deploying
-<../basic_deployment/basic_deployment>` the cloud with RDO Manager. Then
+<../basic_deployment/basic_deployment_cli>` the cloud with RDO Manager. Then
 :doc:`scale out <scale_roles>` the 'Compute' role in the new overcloud to start
 making use of the additional capacity.
