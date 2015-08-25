@@ -325,7 +325,7 @@ Deploy the Overcloud
 
    ::
 
-      openstack overcloud deploy --plan overcloud
+      openstack overcloud deploy --templates
 
 .. note::
 
@@ -423,4 +423,4 @@ The overcloud can be redeployed when desired.
 
 #. Deploy the Overcloud again::
 
-    openstack overcloud deploy --plan "[uuid]"
+    openstack overcloud deploy --templates
