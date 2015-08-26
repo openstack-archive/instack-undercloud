@@ -336,6 +336,10 @@ class { 'ironic::api':
   host_ip => hiera('controller_host'),
 }
 
+class { 'ironic::drivers::ipmi':
+  retry_timeout => 15
+}
+
 ironic_config {
   'DEFAULT/my_ip':                           value => hiera('controller_host');
   'DEFAULT/rpc_response_timeout':            value => '600';
