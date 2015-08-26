@@ -19,11 +19,12 @@ if count(hiera('ntp::servers')) > 0 {
 
 # TODO Galara
 class { 'mysql::server':
-  override_options => {
-    'mysqld' => {
-      'bind-address' => hiera('controller_host'),
-      'max_connections' => 500,
-    }
+    override_options => {
+      'mysqld' => {
+        'bind-address' => hiera('controller_host'),
+        'max_connections' => hiera('mysql_max_connections'),
+        'open_files_limit' => '-1',
+      }
   }
 }
 
