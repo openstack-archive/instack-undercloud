@@ -190,16 +190,15 @@ ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ironic::conductor::force_power_state_during_sync: false
 
 # Rabbit
-rabbit_client_port: 5672
-rabbit_client_use_ssl: false
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
 rabbitmq::delete_guest_user: false
+rabbitmq::node_ip_address: {{LOCAL_IP}}
 rabbitmq::package_source: undef
 rabbitmq::port: '5672'
 rabbitmq::repos_ensure: false
 rabbitmq::wipe_db_on_cookie_change: true
-rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-rabbit_username: {{UNDERCLOUD_RABBIT_USERNAME}}
+rabbitmq::default_user: {{UNDERCLOUD_RABBIT_USERNAME}}
+rabbitmq::default_pass: {{UNDERCLOUD_RABBIT_PASSWORD}}
 
 # Horizon
 horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}

@@ -17,6 +17,8 @@ if count(hiera('ntp::servers')) > 0 {
   include ::ntp
 }
 
+include ::rabbitmq
+
 # TODO Galara
 class { 'mysql::server':
     override_options => {
@@ -87,39 +89,6 @@ password      => $ironic_dsn[4],
 host          => $ironic_dsn[5],
 dbname        => $ironic_dsn[6],
 allowed_hosts => $allowed_hosts,
-}
-
-if $::osfamily == 'RedHat' {
-  $rabbit_provider = 'yum'
-} else {
-  $rabbit_provider = undef
-}
-
-# TODO Rabbit HA
-class { 'rabbitmq':
-  package_provider  => $rabbit_provider,
-  config_cluster    => false,
-  node_ip_address   => hiera('controller_host'),
-}
-
-rabbitmq_vhost { '/':
-  provider => 'rabbitmqctl',
-}
-rabbitmq_user {[
-  hiera(rabbit_username)
-]:
-  admin    => true,
-  password => hiera('rabbit_password'),
-  provider => 'rabbitmqctl',
-}
-
-rabbitmq_user_permissions {[
-  join([hiera(rabbit_username), '@/'])
-]:
-  configure_permission => '.*',
-  write_permission     => '.*',
-  read_permission      => '.*',
-  provider             => 'rabbitmqctl',
 }
 
 # pre-install swift here so we can build rings
