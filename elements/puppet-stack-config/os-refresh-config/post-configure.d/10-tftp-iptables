@@ -19,6 +19,7 @@ add-rule INPUT -p tcp --dport $(os-apply-config --key 'horizon.port' --type int 
 add-rule INPUT -p tcp --dport 5672  -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8000,8003,8004 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8779 -j ACCEPT
+add-rule INPUT -p tcp --dport 8777 -j ACCEPT
 
 
 EXTERNAL_BRIDGE=br-ctlplane
