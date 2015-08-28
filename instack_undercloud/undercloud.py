@@ -146,6 +146,10 @@ _opts = [
                 help=('Whether to enable the debug log level for Undercloud '
                       'OpenStack services.')
                 ),
+    cfg.BoolOpt('enable_tuskar',
+                default=True,
+                help=('Whether to install Tuskar services in the Undercloud.')
+                ),
 ]
 
 # Passwords, tokens, hashes

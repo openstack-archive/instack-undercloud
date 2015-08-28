@@ -211,3 +211,6 @@ neutron::agents::metadata::auth_tenant: 'service'
 neutron::server::auth_tenant: 'service'
 nova::api::admin_tenant_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
+
+# Options
+enable_tuskar: {{ENABLE_TUSKAR}}

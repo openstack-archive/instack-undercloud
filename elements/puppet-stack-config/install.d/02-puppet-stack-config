@@ -53,6 +53,7 @@ context = {
     'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
     'UNDERCLOUD_TUSKAR_PASSWORD': os.environ.get('UNDERCLOUD_TUSKAR_PASSWORD', 'unset'),
     'UNDERCLOUD_DEBUG': os.environ.get('UNDERCLOUD_DEBUG', 'true'),
+    'ENABLE_TUSKAR': os.environ.get('ENABLE_TUSKAR', 'true'),
 
     'KEYSTONE_SIGNING_CERTIFICATE':
         open(os.path.join(keystone_pki_dir, 'signing_cert.pem')).read(),

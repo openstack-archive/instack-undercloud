@@ -58,6 +58,9 @@
 # services. (boolean value)
 #undercloud_debug = true
 
+# Whether to install Tuskar services in the Undercloud.
+# (boolean value)
+#enable_tuskar = true
 
 [auth]
 
