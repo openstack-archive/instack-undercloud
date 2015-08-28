@@ -7,8 +7,10 @@ fi
 
 set -ex
 
+export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
+
 mkdir -p ~/.instack
-LOGFILE=~/.instack/virt-setup.log
+LOGFILE=~/.instack/virt-setup-${UNDERCLOUD_VM_NAME}.log
 
 exec > >(tee $LOGFILE)
 exec 2>&1
@@ -63,7 +65,6 @@ if [ "$TRIPLEO_OS_FAMILY" = "redhat" ]; then
     fi
 fi
 
-export UNDERCLOUD_VM_NAME=${UNDERCLOUD_VM_NAME:-"instack"}
 export UNDERCLOUD_BRIDGE=${UNDERCLOUD_BRIDGE:-"brbm"}
 # Set REG_MACHINE_NAME to match UNDERCLOUD_VM_NAME if it isn't already defined.
 # This will be the name used to register the system to satllite/portal. If
