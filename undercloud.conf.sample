@@ -62,6 +62,10 @@
 # (boolean value)
 #enable_tuskar = true
 
+# Whether to install Tempest packages in the Undercloud.
+# (boolean value)
+#enable_tempest = true
+
 [auth]
 
 #

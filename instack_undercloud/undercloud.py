@@ -150,6 +150,10 @@ _opts = [
                 default=True,
                 help=('Whether to install Tuskar services in the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_tempest',
+                default=True,
+                help=('Whether to install Tempest in the Undercloud.')
+                ),
 ]
 
 # Passwords, tokens, hashes

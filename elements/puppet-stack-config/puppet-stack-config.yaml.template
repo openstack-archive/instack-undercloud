@@ -214,3 +214,4 @@ swift::proxy::authtoken::admin_tenant_name: 'service'
 
 # Options
 enable_tuskar: {{ENABLE_TUSKAR}}
+enable_tempest: {{ENABLE_TEMPEST}}

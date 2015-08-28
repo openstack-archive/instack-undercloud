@@ -382,8 +382,10 @@ if str2bool(hiera('enable_tuskar', 'true')) {
   }
 }
 
-# tempest
-# TODO: when puppet-tempest supports install by package, do that instead
-package{'openstack-tempest': }
-# needed for /bin/subunit-2to1 (called by run_tempest.sh)
-package{'subunit-filters': }
+if str2bool(hiera('enable_tempest', 'true')) {
+  # tempest
+  # TODO: when puppet-tempest supports install by package, do that instead
+  package{'openstack-tempest': }
+  # needed for /bin/subunit-2to1 (called by run_tempest.sh)
+  package{'subunit-filters': }
+}
