@@ -12,16 +12,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import ConfigParser
 import copy
 import errno
 import getpass
 import hashlib
+import io
 import logging
 import os
 import platform
 import socket
-import StringIO
 import subprocess
 import uuid
 
@@ -29,6 +28,7 @@ from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
 import six
+from six.moves import configparser
 
 
 # Making these values properties on a class allows us to delay their lookup,
@@ -294,7 +294,7 @@ def _run_command(args, env=None, name=None):
     try:
         return subprocess.check_output(args,
                                        stderr=subprocess.STDOUT,
-                                       env=env)
+                                       env=env).decode()
     except subprocess.CalledProcessError as e:
         LOG.error('%s failed: %s', name, e.output)
         raise
@@ -313,7 +313,7 @@ def _run_live_command(args, env=None, name=None):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
     while True:
-        line = process.stdout.readline()
+        line = process.stdout.readline().decode()
         if line:
             LOG.info(line.rstrip())
         if line == '' and process.poll() is not None:
@@ -445,12 +445,12 @@ def _generate_environment(instack_root):
         raise RuntimeError('%s is not supported' % distro)
 
     # Do some fiddling to retain answers file support for now
-    answers_parser = ConfigParser.ConfigParser()
+    answers_parser = configparser.ConfigParser()
     if os.path.isfile(PATHS.ANSWERS_PATH):
-        config_answers = StringIO.StringIO()
-        config_answers.write('[answers]\n')
+        config_answers = io.StringIO()
+        config_answers.write(u'[answers]\n')
         with open(PATHS.ANSWERS_PATH) as f:
-            config_answers.write(f.read())
+            config_answers.write(six.text_type(f.read()))
         config_answers.seek(0)
         answers_parser.readfp(config_answers)
 

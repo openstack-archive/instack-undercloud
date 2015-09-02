@@ -12,10 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import ConfigParser
 import io
 import os
-import StringIO
 import subprocess
 
 import fixtures
@@ -25,6 +23,7 @@ from oslo_config import fixture as config_fixture
 from oslotest import base
 from oslotest import log
 from oslotest import mockpatch
+from six.moves import configparser
 
 from instack_undercloud import undercloud
 
@@ -217,7 +216,7 @@ class TestWritePasswordFile(BaseTestCase):
         answers_parser.has_option.return_value = False
         instack_env = {}
         undercloud._write_password_file(answers_parser, instack_env)
-        test_parser = ConfigParser.ConfigParser()
+        test_parser = configparser.ConfigParser()
         test_parser.read(undercloud.PATHS.PASSWORD_PATH)
         self.assertTrue(test_parser.has_option('auth',
                                                'undercloud_db_password'))
@@ -233,21 +232,21 @@ class TestWritePasswordFile(BaseTestCase):
         self.useFixture(conf)
         conf.config(undercloud_db_password='test', group='auth')
         undercloud._write_password_file(answers_parser, instack_env)
-        test_parser = ConfigParser.ConfigParser()
+        test_parser = configparser.ConfigParser()
         test_parser.read(undercloud.PATHS.PASSWORD_PATH)
         self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
                          'test')
         self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'test')
 
     def test_answers(self):
-        answers_parser = ConfigParser.ConfigParser()
-        fake_answers = StringIO.StringIO()
-        fake_answers.write('[answers]\nUNDERCLOUD_DB_PASSWORD=foo\n')
+        answers_parser = configparser.ConfigParser()
+        fake_answers = io.StringIO()
+        fake_answers.write(u'[answers]\nUNDERCLOUD_DB_PASSWORD=foo\n')
         fake_answers.seek(0)
         answers_parser.readfp(fake_answers)
         instack_env = {}
         undercloud._write_password_file(answers_parser, instack_env)
-        test_parser = ConfigParser.ConfigParser()
+        test_parser = configparser.ConfigParser()
         test_parser.read(undercloud.PATHS.PASSWORD_PATH)
         self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
                          'foo')
