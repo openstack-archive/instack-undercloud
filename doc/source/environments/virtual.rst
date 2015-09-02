@@ -178,6 +178,14 @@ Preparing the Virtual Environment (Automated)
 
 #. Run the script to setup your virtual environment:
 
+   .. note::
+
+      By default, VMs will be created with 1 vCPU and 4096 MiB RAM. To adjust
+      those values::
+
+           export NODE_CPU=4
+           export NODE_MEM=16384
+
    .. only:: internal
 
       .. admonition:: RHEL
