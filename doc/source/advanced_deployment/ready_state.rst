@@ -1,6 +1,9 @@
 Ready-State (BIOS, RAID)
 ========================
 
+.. note:: Ready-state configuration currently works only with Dell DRAC
+          machines.
+
 Ready-state configuration can be used to prepare bare-metal resources for
 deployment. It includes BIOS and RAID configuration based on a predefined
 profile.
