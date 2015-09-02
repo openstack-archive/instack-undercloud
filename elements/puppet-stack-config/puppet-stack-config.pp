@@ -339,7 +339,7 @@ package{'openwsman-python': }
 package{'python-proliantutils': }
 
 class { 'ironic':
-  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac', 'pxe_ilo'],
+  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac', 'pxe_ilo', 'pxe_wol'],
   debug           => hiera('debug'),
 }
 
