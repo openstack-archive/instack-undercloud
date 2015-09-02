@@ -175,8 +175,8 @@ _auth_opts = [
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_heat_encryption_key',
-               help=('Heat db encryption key(must be 8,16 or 32 characters. '
-                     'If left unset, one will be automatically generated.')
+               help=('Heat db encryption key(must be 16, 24, or 32 characters.'
+                     ' If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_heat_password',
                help=('Heat service password. '
