@@ -57,6 +57,7 @@ context = {
     'INSPECTION_INTERFACE': os.environ.get('INSPECTION_INTERFACE', 'br-ctlplane'),
     'ENABLE_TUSKAR': os.environ.get('ENABLE_TUSKAR', 'true'),
     'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
+    'IPXE_DEPLOY': os.environ.get('IPXE_DEPLOY', 'true'),
     'KEYSTONE_SIGNING_CERTIFICATE':
         open(os.path.join(keystone_pki_dir, 'signing_cert.pem')).read(),
     'KEYSTONE_SIGNING_KEY':
