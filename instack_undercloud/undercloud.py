@@ -157,6 +157,10 @@ _opts = [
                 default=True,
                 help=('Whether to install Tempest in the Undercloud.')
                 ),
+    cfg.BoolOpt('ipxe_deploy',
+                default=True,
+                help=('Whether to use iPXE for deploy by default.')
+                ),
 ]
 
 # Passwords, tokens, hashes

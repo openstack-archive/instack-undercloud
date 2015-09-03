@@ -309,12 +309,22 @@ ironic_config {
   'DEFAULT/rpc_response_timeout': value => '600';
   'glance/host':                  value => hiera('glance::api::bind_host');
   'discoverd/enabled':            value => true;
-  'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/ipxe_config.template';
-  'pxe/pxe_bootfile_name':        value => 'undionly.kpxe';
   'pxe/http_url':                 value => 'http://$my_ip:8088';
   'pxe/http_root':                value => '/httpboot';
-  'pxe/ipxe_enabled':             value => 'True';
   'conductor/clean_nodes':        value => hiera('ironic::conductor::clean_nodes');
+}
+
+if str2bool(hiera('ipxe_deploy', 'true')) {
+  ironic_config {
+    'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/ipxe_config.template';
+    'pxe/pxe_bootfile_name':        value => 'undionly.kpxe';
+    'pxe/ipxe_enabled':             value => 'True';
+  }
+} else {
+  ironic_config {
+    'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/pxe_config.template';
+    'pxe/ipxe_enabled':             value => 'False';
+  }
 }
 
 include ::ironic::inspector
