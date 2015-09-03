@@ -277,66 +277,66 @@ subnet. Define the nameserver to be used for the environment::
 Deploy the Overcloud
 --------------------
 
-   By default 1 compute and 1 control node will be deployed, with networking
-   configured for the virtual environment.  To customize this, see the output of::
+By default 1 compute and 1 control node will be deployed, with networking
+configured for the virtual environment.  To customize this, see the output of::
 
-        openstack help overcloud deploy
+     openstack help overcloud deploy
 
-   .. admonition:: Ceph
-      :class: ceph
+.. admonition:: Ceph
+   :class: ceph
 
-      When deploying Ceph it is necessary to use the regular Heat templates
-      instead of Tuskar, to specify the number of Ceph OSD nodes to be
-      deployed and to provide some additional parameters to enable usage
-      of Ceph for Glance, Cinder, Nova or all.
-      Make a copy of the file ``/usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml``
-      and edit it as appropriate, then pass the following additional arguments::
+   When deploying Ceph it is necessary to use the regular Heat templates
+   instead of Tuskar, to specify the number of Ceph OSD nodes to be
+   deployed and to provide some additional parameters to enable usage
+   of Ceph for Glance, Cinder, Nova or all.
+   Make a copy of the file ``/usr/share/openstack-tripleo-heat-templates/environments/storage-environment.yaml``
+   and edit it as appropriate, then pass the following additional arguments::
 
-          --ceph-storage-scale <number of nodes> --templates -e /path/to/customized/storage-environment.yaml
+       --ceph-storage-scale <number of nodes> --templates -e /path/to/customized/storage-environment.yaml
 
-      to the deploy command below.
+   to the deploy command below.
 
-      By default when Ceph is enabled the Cinder LVM back-end is disabled. This
-      behavior may be changed by also passing::
+   By default when Ceph is enabled the Cinder LVM back-end is disabled. This
+   behavior may be changed by also passing::
 
-          --cinder-lvm
+       --cinder-lvm
 
-   .. admonition:: RHEL Satellite Registration
-      :class: satellite
+.. admonition:: RHEL Satellite Registration
+   :class: satellite
 
-      To register the Overcloud nodes to a Satellite add the following flags
-      to the deploy command::
+   To register the Overcloud nodes to a Satellite add the following flags
+   to the deploy command::
 
-             --rhel-reg --reg-method satellite --reg-org <ORG ID#> --reg-sat-url <satellite URL> --reg-activation-key <KEY>
+          --rhel-reg --reg-method satellite --reg-org <ORG ID#> --reg-sat-url <satellite URL> --reg-activation-key <KEY>
 
-      .. note::
+   .. note::
 
-          Only using an activation key is supported when registering to
-          Satellite, username/password is not supported for security reasons.
-          The activation key must enable the following repos:
+       Only using an activation key is supported when registering to
+       Satellite, username/password is not supported for security reasons.
+       The activation key must enable the following repos:
 
-          rhel-7-server-rpms
+       rhel-7-server-rpms
 
-          rhel-7-server-optional-rpms
+       rhel-7-server-optional-rpms
 
-          rhel-7-server-extras-rpms
+       rhel-7-server-extras-rpms
 
-          rhel-7-server-openstack-6.0-rpms
+       rhel-7-server-openstack-6.0-rpms
 
-   .. admonition:: Virtual
-      :class: virtual
+.. admonition:: Virtual
+   :class: virtual
 
-      The deployment defaults to using kvm as a virtualization library.
-      If your compute nodes are virtual machines, this ends up having
-      nested ``kvm`` engines which is not recommended. Therefore you should
-      on a virtual install use ``qemu`` as a virtualization library instead
-      by adding the following to the deploy command::
+   The deployment defaults to using kvm as a virtualization library.
+   If your compute nodes are virtual machines, this ends up having
+   nested ``kvm`` engines which is not recommended. Therefore you should
+   on a virtual install use ``qemu`` as a virtualization library instead
+   by adding the following to the deploy command::
 
-         --libvirt-type=qemu
+      --libvirt-type=qemu
 
-   ::
+::
 
-      openstack overcloud deploy --templates
+   openstack overcloud deploy --templates
 
 .. note::
 
