@@ -323,6 +323,17 @@ Deploy the Overcloud
 
           rhel-7-server-openstack-6.0-rpms
 
+   .. admonition:: Virtual
+      :class: virtual
+
+      The deployment defaults to using kvm as a virtualization library.
+      If your compute nodes are virtual machines, this ends up having
+      nested ``kvm`` engines which is not recommended. Therefore you should
+      on a virtual install use ``qemu`` as a virtualization library instead
+      by adding the following to the deploy command::
+
+         --libvirt-type=qemu
+
    ::
 
       openstack overcloud deploy --templates
