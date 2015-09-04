@@ -136,10 +136,10 @@ descriptions.
 
 Each node description should contains required fields:
 
-* ``pm_type`` - ``pxe_ipmitool`` for bare metal, ``pxe_ssh`` for virtual
-  environment
+* ``pm_type`` - driver for Ironic nodes, see `Ironic Drivers`_ for details
 
-* ``pm_addr`` - node BMC IP address
+* ``pm_addr`` - node BMC IP address (hypervisor address in case of virtual
+  environment)
 
 * ``pm_user``, ``pm_password`` - node BMC credentials
 
@@ -200,3 +200,45 @@ For example::
             }
         ]
     }
+
+Ironic Drivers
+--------------
+
+Ironic drivers provide various level of support for different hardware.
+The most up-to-date information about Ironic drivers is at
+http://docs.openstack.org/developer/ironic/deploy/drivers.html, but note that
+this page always targets Ironic git master, not the release we use.
+
+There are 2 generic drivers:
+
+* ``pxe_ipmitool`` driver uses `ipmitool`_ utility to manage a bare metal
+  node, and supports fast variaty of hardware.
+
+* ``pxe_ssh`` is a special driver for testing Ironic in the virtual
+  environment. This driver connects to the hypervisor to conduct management
+  operations on virtual nodes. In case of this driver, ``pm_addr`` is a
+  hypervisor address, ``pm_user`` is a SSH user name for accessing hypervisor,
+  ``pm_password`` is a private SSH key for accessing hypervisor. Note that
+  private key must not be encrypted.
+
+Ironic also provides specific drivers for some types of hardware:
+
+* ``pxe_ilo`` targets HP Proliant Gen 8 and Gen 9 systems, and is recommended
+  for these systems instead of ``pxe_ipmitool``. Please refer to the `current
+  iLO driver documentation`_ or `detailed iLO documentation for Kilo version`_.
+
+* ``pxe_drac`` targets DELL 11G and newer systems, and is recommended for these
+  systems instead of ``pxe_ipmitool``.
+
+There are also 2 testing drivers:
+
+* ``fake_pxe`` provides stubs instead of real power and management operations.
+  When using this driver, you have to conduct power on and off operations,
+  and set the current boot device, yourself.
+
+* ``fake`` provides stubs for every operation, so that Ironic does not touch
+  hardware at all.
+
+.. _ipmitool: http://sourceforge.net/projects/ipmitool/
+.. _current iLO driver documentation: http://docs.openstack.org/developer/ironic/drivers/ilo.html
+.. _detailed iLO documentation for Kilo version: https://wiki.openstack.org/wiki/Ironic/Drivers/iLODrivers/Kilo
