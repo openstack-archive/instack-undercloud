@@ -12,13 +12,10 @@ depends() {
 }
 
 install() {
-    set -x
-    for i in $(find /usr/lib64/python2.7/ -type f); do
-        inst $i
-    done
-    for i in $(find /usr/lib/python2.7/ -type f); do
-        inst $i
-    done
+    inst /usr/bin/python
+    while IFS='' read -r -d '' i; do
+        inst "$i"
+    done < <(find /usr/lib64/python2.7/ /usr/lib/python2.7/ -type f -print0)
     inst /etc/ssh/sshd_config
 }
 
