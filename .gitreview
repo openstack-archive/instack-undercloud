@@ -1,5 +1,5 @@
 [gerrit]
-host=review.gerrithub.io
+host=review.openstack.org
 port=29418
-project=rdo-management/instack-undercloud
+project=openstack/instack-undercloud
 defaultbranch=master
