@@ -1,9 +1,7 @@
 Undercloud Install via instack
 ==============================
 
-instack-undercloud documentation:
-https://repos.fedorapeople.org/repos/openstack-m/instack-undercloud/html/
+instack-undercloud is tooling for installing a TripleO undercloud.
 
-To build the docs locally:
-
-    tox -e docs
+It is part of the TripleO project:
+http://docs.openstack.org/developer/tripleo-docs/index.html
