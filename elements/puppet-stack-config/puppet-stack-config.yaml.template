@@ -75,6 +75,7 @@ glance_protocol: http
 glance_notifier_strategy: noop
 glance_log_file: ''
 glance::api::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
+glance::registry::bind_host: {{LOCAL_IP}}
 glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::registry::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
