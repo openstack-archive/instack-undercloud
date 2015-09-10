@@ -1,6 +1,7 @@
 {
  "hiera": {
   "hierarchy": [
+   "\"%{::osfamily}\"",
    "puppet-stack-config"
   ]},
   "local-ip": "{{LOCAL_IP}}",
