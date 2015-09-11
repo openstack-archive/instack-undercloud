@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -eu
+set -o pipefail
+
+# Enable persistent logging for the systemd journal
+mkdir -p /var/log/journal
+
+# Restart the journald service
+systemctl restart systemd-journald.service
