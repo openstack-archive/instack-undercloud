@@ -1,3 +1,4 @@
 six>=1.9.0
 python-novaclient
 oslo.config
+psutil>=1.1.1,<2.0.0

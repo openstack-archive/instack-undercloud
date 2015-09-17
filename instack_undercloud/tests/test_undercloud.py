@@ -40,6 +40,7 @@ class BaseTestCase(base.BaseTestCase):
 class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._check_hostname')
+    @mock.patch('instack_undercloud.undercloud._check_memory')
     @mock.patch('instack_undercloud.undercloud._run_command')
     @mock.patch('instack_undercloud.undercloud._post_config')
     @mock.patch('instack_undercloud.undercloud._run_orc')
@@ -48,11 +49,13 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install(self, mock_load_config, mock_generate_environment,
                      mock_run_instack, mock_run_orc, mock_post_config,
-                     mock_run_command, mock_check_hostname,
+                     mock_run_command, mock_check_memory, mock_check_hostname,
                      mock_configure_logging):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.')
+        self.assertEqual(True, mock_check_hostname.called)
+        self.assertEqual(True, mock_check_memory.called)
         mock_generate_environment.assert_called_with('.')
         mock_run_instack.assert_called_with(fake_env)
         mock_run_orc.assert_called_with(fake_env)
@@ -125,6 +128,20 @@ class TestCheckHostname(BaseTestCase):
         with mock.patch('instack_undercloud.undercloud.open',
                         return_value=fake_hosts, create=True):
             self.assertRaises(RuntimeError, undercloud._check_hostname)
+
+
+class TestCheckMemory(BaseTestCase):
+    @mock.patch('psutil.virtual_memory')
+    def test_sufficient_memory(self, mock_vm):
+        mock_vm.return_value = mock.Mock()
+        mock_vm.return_value.total = 4143927296
+        undercloud._check_memory()
+
+    @mock.patch('psutil.virtual_memory')
+    def test_insufficient_memory(self, mock_vm):
+        mock_vm.return_value = mock.Mock()
+        mock_vm.return_value.total = 2071963648
+        self.assertRaises(RuntimeError, undercloud._check_memory)
 
 
 class TestGenerateEnvironment(BaseTestCase):
