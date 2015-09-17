@@ -125,21 +125,24 @@ _opts = [
                      'Overcloud instances. This should match the local_ip '
                      'above when using masquerading.')
                ),
-    cfg.StrOpt('discovery_interface',
+    cfg.StrOpt('inspection_interface',
                default='br-ctlplane',
-               help=('Network interface on which discovery dnsmasq will '
+               deprecated_name='discovery_interface',
+               help=('Network interface on which inspection dnsmasq will '
                      'listen.  If in doubt, use the default value.')
                ),
-    cfg.StrOpt('discovery_iprange',
+    cfg.StrOpt('inspection_iprange',
                default='192.0.2.100,192.0.2.120',
+               deprecated_name='discovery_iprange',
                help=('Temporary IP range that will be given to nodes during '
-                     'the discovery process.  Should not overlap with the '
+                     'the inspection process.  Should not overlap with the '
                      'range defined by dhcp_start and dhcp_end, but should '
                      'be in the same network.')
                ),
-    cfg.BoolOpt('discovery_runbench',
+    cfg.BoolOpt('inspection_runbench',
                 default=False,
-                help='Whether to run benchmarks when discovering nodes.'
+                deprecated_name='discovery_runbench',
+                help='Whether to run benchmarks when inspecting nodes.'
                 ),
     cfg.BoolOpt('undercloud_debug',
                 default=True,
@@ -465,9 +468,9 @@ def _generate_environment(instack_root):
         else:
             instack_env[env_name] = six.text_type(CONF[opt.name])
     # Opts that needs extra processing
-    if instack_env['DISCOVERY_RUNBENCH'] not in ['0', '1']:
-        instack_env['DISCOVERY_RUNBENCH'] = ('1' if CONF.discovery_runbench
-                                             else '0')
+    if instack_env.get('INSPECTION_RUNBENCH') not in ['0', '1']:
+        instack_env['INSPECTION_RUNBENCH'] = ('1' if CONF.inspection_runbench
+                                              else '0')
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
 

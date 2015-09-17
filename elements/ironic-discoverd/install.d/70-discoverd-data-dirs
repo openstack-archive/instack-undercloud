@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-mkdir -p /var/lib/ironic-discoverd
-mkdir -p /var/log/ironic-discoverd/ramdisk

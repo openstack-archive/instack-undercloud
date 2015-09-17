@@ -1,7 +1,0 @@
-#!ipxe
-
-dhcp
-
-kernel http://{{local-ip}}:8088/discovery.kernel discoverd_callback_url=http://{{local-ip}}:5050/v1/continue RUNBENCH={{discovery.runbench}} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${mac}
-initrd http://{{local-ip}}:8088/discovery.ramdisk
-boot

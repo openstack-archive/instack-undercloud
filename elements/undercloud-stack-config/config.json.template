@@ -11,7 +11,7 @@
     "network_cidr": "{{NETWORK_CIDR}}",
     "network_gateway": "{{NETWORK_GATEWAY}}"
   },
-  "discovery": {
+  "inspection": {
     "interface": "{{DISCOVERY_INTERFACE}}",
     "iprange": "{{DISCOVERY_IPRANGE}}",
     "runbench": "{{DISCOVERY_RUNBENCH}}"
