@@ -27,6 +27,7 @@ import uuid
 from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
+import psutil
 import six
 from six.moves import configparser
 
@@ -71,6 +72,9 @@ secured.
 
 #############################################################################
 """
+# We need 4 GB, leave a little room for variation in what 4 GB means on
+# different platforms.
+REQUIRED_MB = 3750
 
 
 # When adding new options to the lists below, make sure to regenerate the
@@ -378,6 +382,22 @@ def _check_hostname():
             LOG.error('Please add a line to /etc/hosts for the static '
                       'hostname.')
             raise RuntimeError('Static hostname not set in /etc/hosts')
+
+
+def _check_memory():
+    """Check system memory
+
+    The undercloud will not run properly in less than 4 GB of memory.
+    This function verifies that at least that much is available before
+    proceeding with install.
+    """
+    mem = psutil.virtual_memory()
+    total_mb = mem.total / 1024 / 1024
+    if total_mb < REQUIRED_MB:
+        LOG.error('At least 4 GB of memory is required for undercloud '
+                  'installation.  A minimum of 6 GB is recommended. '
+                  'Only detected %d MB' % total_mb)
+        raise RuntimeError('Insufficient memory available')
 
 
 def _generate_password(length=40):
@@ -746,6 +766,7 @@ def install(instack_root):
     _load_config()
     _check_hostname()
     _clean_os_refresh_config()
+    _check_memory()
     instack_env = _generate_environment(instack_root)
     _run_instack(instack_env)
     # NOTE(bnemec): I removed the conditional running of os-refresh-config.
