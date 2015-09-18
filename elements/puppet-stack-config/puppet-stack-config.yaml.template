@@ -190,6 +190,30 @@ ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ironic::conductor::force_power_state_during_sync: false
 
+# Ironic Inspector
+ironic::inspector::debug: "%{hiera('debug')}"
+ironic::inspector::pxe_transfer_protocol: 'http'
+ironic::inspector::auth_uri: "%{hiera('keystone_auth_uri')}"
+ironic::inspector::identity_uri: "%{hiera('keystone_identity_uri')}"
+ironic::inspector::admin_user: 'ironic'
+ironic::inspector::admin_password: "%{hiera('ironic::api::admin_password')}"
+ironic::inspector::admin_tenant_name: 'service'
+ironic::inspector::enable_setting_ipmi_credentials: true
+ironic::inspector::keep_ports: 'added'
+ironic::inspector::ironic_username: 'ironic'
+ironic::inspector::ironic_password: "%{hiera('ironic::api::admin_password')}"
+ironic::inspector::ironic_tenant_name: 'service'
+ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri')}"
+ironic::inspector::ironic_max_retries: 6
+ironic::inspector::ironic_retry_interval: 10
+ironic::inspector::swift_username: 'ironic'
+ironic::inspector::swift_password: "%{hiera('ironic::api::admin_password')}"
+ironic::inspector::swift_tenant_name: 'service'
+ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri')}"
+ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
+ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
+ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
+
 # Rabbit
 rabbit_client_port: 5672
 rabbit_client_use_ssl: false

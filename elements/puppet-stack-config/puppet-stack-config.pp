@@ -356,6 +356,8 @@ ironic_config {
   'pxe/ipxe_enabled':                        value => 'True';
 }
 
+include ::ironic::inspector
+
 if str2bool(hiera('enable_tuskar', 'true')) {
   class { 'horizon':
     secret_key   => hiera('horizon_secret_key'),
