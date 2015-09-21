@@ -63,7 +63,7 @@
 
 # Whether to install Tuskar services in the Undercloud. (boolean
 # value)
-#enable_tuskar = true
+#enable_tuskar = false
 
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = false

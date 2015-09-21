@@ -150,7 +150,7 @@ _opts = [
                       'OpenStack services.')
                 ),
     cfg.BoolOpt('enable_tuskar',
-                default=True,
+                default=False,
                 help=('Whether to install Tuskar services in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_tempest',
