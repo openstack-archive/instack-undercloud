@@ -154,7 +154,7 @@ _opts = [
                 help=('Whether to install Tuskar services in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_tempest',
-                default=True,
+                default=False,
                 help=('Whether to install Tempest in the Undercloud.')
                 ),
 ]
