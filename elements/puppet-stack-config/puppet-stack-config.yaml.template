@@ -20,6 +20,8 @@ swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
 swift::proxy::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 swift::proxy::authtoken::identity_uri: "%{hiera('keystone_identity_uri')}"
 swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
+swift::storage::all::incoming_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
+swift::storage::all::outgoing_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::swift_hash_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
 swift::proxy::account_autocreate: true
 swift::proxy::authtoken::admin_password: {{UNDERCLOUD_SWIFT_PASSWORD}}
