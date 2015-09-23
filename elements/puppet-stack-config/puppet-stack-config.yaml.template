@@ -35,10 +35,10 @@ swift::proxy::pipeline:
   - 'ratelimit'
   - 'tempurl'
   - 'formpost'
-  - 'staticweb'
   - 'ceilometer'
   - 'authtoken'
   - 'keystone'
+  - 'staticweb'
   - 'proxy-logging'
   - 'proxy-server'
 
