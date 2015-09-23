@@ -280,6 +280,12 @@ class { 'ceilometer::agent::auth':
 
 Cron <| title == 'ceilometer-expirer' |> { command => "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
 
+# TODO: add support for setting these to puppet-ceilometer
+ceilometer_config {
+  'hardware/readonly_user_name': value => hiera('snmpd_readonly_user_name');
+  'hardware/readonly_user_password': value => hiera('snmpd_readonly_user_password');
+}
+
 # Heat
 class {'heat':
   debug => hiera('debug'),
@@ -294,16 +300,6 @@ include ::heat::keystone::domain
 # to make sure they are done in order.
 include ::keystone::roles::admin
 Service['keystone'] -> Class['::keystone::roles::admin'] -> Keystone_domain['heat_domain']
-
-$snmpd_user = hiera('snmpd_readonly_user_name')
-snmp::snmpv3_user { $snmpd_user:
-  authtype => 'MD5',
-  authpass => hiera('snmpd_readonly_user_password'),
-}
-class { 'snmp':
-  agentaddress => ['udp:161','udp6:[::1]:161'],
-  snmpd_config => [ join(['rouser ', hiera('snmpd_readonly_user_name')]), 'proc  cron', 'includeAllDisks  10%', 'master agentx', 'trapsink localhost public', 'iquerySecName internalUser', 'rouser internalUser', 'defaultMonitors yes', 'linkUpDownNotifications yes' ],
-}
 
 nova_config {
   'DEFAULT/my_ip':                     value => $ipaddress;
