@@ -180,8 +180,6 @@ include ::nova::api
 include ::nova::cert
 include ::nova::compute
 include ::nova::conductor
-include ::nova::consoleauth
-include ::nova::vncproxy
 include ::nova::scheduler
 include ::nova::scheduler::filter
 
