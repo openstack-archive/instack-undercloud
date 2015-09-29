@@ -2,7 +2,6 @@
 
 dhcp
 
-kernel http://{{local-ip}}:8088/discovery.kernel
-discoverd_callback_url=http://{{local-ip}}:5050/v1/continue RUNBENCH={{inspection.runbench}} ip=${ip}:${next-server}:${gateway}:${netmask} BOOTIF=${mac}
-initrd http://{{local-ip}}:8088/discovery.ramdisk
+kernel http://{{local-ip}}:8088/agent.kernel ipa-inspection-callback-url=http://{{local-ip}}:5050/v1/continue systemd.journald.forward_to_console=yes
+initrd http://{{local-ip}}:8088/agent.ramdisk
 boot
