@@ -10,9 +10,7 @@ if [ -z "$ANSWERSFILE" ]; then
     exit 1
 fi
 
-file_list="$HOME/.ssh/id_rsa_virt_power
-$HOME/.ssh/id_rsa_virt_power.pub
-$ANSWERSFILE
+file_list="$ANSWERSFILE
 $TE_DATAFILE"
 
 for f in $file_list; do
