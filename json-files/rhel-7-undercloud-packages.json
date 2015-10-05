@@ -13,7 +13,6 @@
       "undercloud-package-install",
       "ironic-inspector",
       "element-manifest",
-      "tuskar",
       "ironic-conductor",
       "ipxe",
       "os-cloud-config",
