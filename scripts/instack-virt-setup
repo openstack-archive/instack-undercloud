@@ -130,7 +130,6 @@ if [ -n "${ATTACH_EXTRA_DISKS:-}" ]; then
     done
 fi
 
-export UNDERCLOUD_OS=${UNDERCLOUD_OS:-"fedora-20"}
 export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
 
 if [ "$UNDERCLOUD_INSTALL" = "1" ]; then
