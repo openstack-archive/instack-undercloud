@@ -1,4 +1,4 @@
 #!/bin/bash
 set -eux
 
-ironic-inspector-dbsync --config-file /etc/ironic-inspector/inspector.conf upgrade
+sudo -u ironic-inspector ironic-inspector-dbsync --config-file /etc/ironic-inspector/inspector.conf upgrade
