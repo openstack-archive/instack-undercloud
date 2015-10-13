@@ -69,6 +69,9 @@ glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::registry::registry_host: {{LOCAL_IP}}
 glance::registry::manage_service: true
 glance::registry::pipeline: 'keystone'
+glance::registry::auth_host: false
+glance::registry::auth_port: false
+glance::registry::auth_protocol: false
 
 # Heat
 heat_stack_domain_admin_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
@@ -86,10 +89,6 @@ heat::rabbit_host: {{LOCAL_IP}}
 heat::auth_uri: "%{hiera('keystone_auth_uri')}"
 heat::identity_uri: "%{hiera('keystone_identity_uri')}"
 heat::keystone_password: {{UNDERCLOUD_HEAT_PASSWORD}}
-heat::keystone::domain::auth_url: http://{{LOCAL_IP}}:35357/v2.0
-heat::keystone::domain::keystone_admin: 'admin'
-heat::keystone::domain::keystone_tenant: 'admin'
-heat::keystone::domain::keystone_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 heat::keystone::domain::domain_name: 'heat_stack'
 heat::keystone::domain::domain_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
 heat::api::bind_host: {{LOCAL_IP}}
@@ -144,6 +143,7 @@ neutron::agents::dhcp::dhcp_domain: ''
 neutron::quota::quota_port: -1
 
 # Ceilometer
+ceilometer::expirer::time_to_live: undef
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
 ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
@@ -169,7 +169,6 @@ nova::api::metadata_listen: {{LOCAL_IP}}
 nova::api::admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::api::osapi_v3: true
 nova::conductor::enabled: true
-nova::consoleauth::enabled: true
 nova::database_connection: mysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
 nova::network::neutron::neutron_admin_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 nova::notify_on_state_change: 'vm_and_task_state'
@@ -178,6 +177,7 @@ nova::network::neutron::dhcp_domain: ''
 nova::compute::force_config_drive: true
 nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
 nova::compute::reserved_host_memory: '0'
+nova::compute::vnc_enabled: false
 nova::scheduler::filter::ram_allocation_ratio: '1.0'
 nova::scheduler::filter::scheduler_host_manager: 'nova.scheduler.ironic_host_manager.IronicHostManager'
 
