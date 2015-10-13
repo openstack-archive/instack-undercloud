@@ -203,7 +203,7 @@ sysctl \
 
 function deploy-ramdisk {
 if [ ! -f $DEPLOY_NAME.initramfs -o \
-     ! -f $DEPLOY_NAME.kernel ]; then
+    ! -f $DEPLOY_NAME.kernel ]; then
     ramdisk-image-create \
         -a $NODE_ARCH \
         -o $DEPLOY_NAME \
@@ -216,7 +216,7 @@ fi
 
 function discovery-ramdisk {
     if [ ! -f $DISCOVERY_NAME.initramfs -o \
-         ! -f $DISCOVERY_NAME.kernel ]; then
+        ! -f $DISCOVERY_NAME.kernel ]; then
         ramdisk-image-create \
             -a $NODE_ARCH \
             -o $DISCOVERY_NAME \

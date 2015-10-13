@@ -10,8 +10,8 @@ IMAGE_PATH='.'
 # tripleo os-adduser -p $OVERCLOUD_DEMO_PASSWORD demo demo@example.com
 
 if ! glance image-show user 2>&1 1>/dev/null; then
-	glance image-create --name user --is-public True --disk-format qcow2 \
-	    --container-format bare --file $IMAGE_PATH/fedora-user.qcow2
+    glance image-create --name user --is-public True --disk-format qcow2 \
+        --container-format bare --file $IMAGE_PATH/fedora-user.qcow2
 fi
 
 tripleo wait_for 30 10 nova service-list --binary nova-compute 2\>/dev/null \| grep 'enabled.*\ up\ '
@@ -23,7 +23,7 @@ tripleo wait_for 30 10 neutron agent-list -f csv -c alive -c agent_type -c host 
 NET_ID=$(neutron net-list -f csv --quote none | grep default-net | cut -d, -f1)
 
 if ! nova keypair-show default 2>/dev/null; then
-	tripleo user-config
+    tripleo user-config
 fi
 
 nova boot --poll --key-name default --flavor m1.demo --image user --nic net-id=$NET_ID demo
