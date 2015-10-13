@@ -1,4 +1,5 @@
 keystone_identity_uri: http://{{LOCAL_IP}}:35357/
+nova_admin_auth_url: http://{{LOCAL_IP}}:35357/v2.0
 keystone_auth_uri: http://{{LOCAL_IP}}:5000/v2.0/
 
 debug: {{UNDERCLOUD_DEBUG}}
@@ -142,6 +143,10 @@ neutron::server::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::dhcp::dhcp_domain: ''
 neutron::quota::quota_port: -1
+neutron::server::notifications::nova_url: http://{{LOCAL_IP}}:8774/v2
+neutron::server::notifications::nova_admin_auth_url: "%{hiera('nova_admin_auth_url')}"
+neutron::server::notifications::nova_admin_tenant_name: service
+neutron::server::notifications::nova_admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
 
 # Ceilometer
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
