@@ -304,6 +304,9 @@ rabbitmq::default_pass: {{UNDERCLOUD_RABBIT_PASSWORD}}
 
 # Horizon
 horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}
+horizon::allowed_hosts:
+ - "%{::fqdn}"
+ - "{{LOCAL_IP}}"
 horizon::wsgi::apache::priority: 10
 horizon::openstack_endpoint_type: internalURL
 
