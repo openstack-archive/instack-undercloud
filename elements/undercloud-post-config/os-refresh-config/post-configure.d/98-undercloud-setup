@@ -29,71 +29,7 @@ fi
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-KEYSTONE_SERVICE=keystone
-if [ -f /lib/systemd/system/openstack-keystone.service ]; then
-    KEYSTONE_SERVICE=openstack-keystone
-fi
-
-# Ensure keystone is up before continuing on.
-# Waits for up to 2 minutes.
-tripleo wait_for 12 10 service $KEYSTONE_SERVICE status
-
-# Because keystone just still isn't up yet...
-sleep 20
-
 export UNDERCLOUD_IP=$(os-apply-config --key local-ip --type netaddress)
-
-init-keystone -o $UNDERCLOUD_IP -t $UNDERCLOUD_ADMIN_TOKEN \
-    -e admin@example.com -p $UNDERCLOUD_ADMIN_PASSWORD -u root
-
-# Needed by ceilometer user in register-endpoint
-if ! openstack role show ResellerAdmin; then
-    openstack role create ResellerAdmin
-fi
-
-# Create service endpoints and optionally include Ceilometer for UI support
-ENDPOINTS_FILE=$(mktemp)
-cat > $ENDPOINTS_FILE << EOF
-{
-    "heat": {
-        "password": "$UNDERCLOUD_HEAT_PASSWORD"
-    },
-    "neutron": {
-        "password": "$UNDERCLOUD_NEUTRON_PASSWORD"
-    },
-    "glance": {
-        "password": "$UNDERCLOUD_GLANCE_PASSWORD"
-    },
-    "nova": {
-        "password": "$UNDERCLOUD_NOVA_PASSWORD"
-    },
-    "novav3": {
-        "password": "$UNDERCLOUD_NOVA_PASSWORD"
-    },
-    "ceilometer": {
-        "password": "$UNDERCLOUD_CEILOMETER_PASSWORD"
-    },
-    "swift": {
-        "password": "$UNDERCLOUD_SWIFT_PASSWORD"
-    },
-    "ironic": {
-        "password": "$UNDERCLOUD_IRONIC_PASSWORD"
-    },
-    "tuskar": {
-        "password": "$UNDERCLOUD_TUSKAR_PASSWORD",
-        "path": "/v2"
-    }
-}
-EOF
-
-REGISTER_SERVICE_OPTS=
-
-setup-endpoints -s $ENDPOINTS_FILE $REGISTER_SERVICE_OPTS
-rm $ENDPOINTS_FILE
-
-if ! openstack role show heat_stack_user; then
-    openstack role create heat_stack_user
-fi
 
 DHCP_START=$(os-apply-config --key neutron.dhcp_start --type netaddress)
 DHCP_END=$(os-apply-config --key neutron.dhcp_end --type netaddress)

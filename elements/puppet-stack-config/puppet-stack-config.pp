@@ -98,6 +98,24 @@ class { '::keystone':
   debug => hiera('debug'),
 }
 
+include ::keystone::roles::admin
+include ::keystone::endpoint
+
+include ::heat::keystone::auth
+include ::neutron::keystone::auth
+include ::glance::keystone::auth
+include ::nova::keystone::auth
+include ::ceilometer::keystone::auth
+include ::swift::keystone::auth
+include ::ironic::keystone::auth
+include ::tuskar::keystone::auth
+
+# Because os-cloud-config/tree/os_cloud_config/keystone.py already managed
+# it but with a different service name than Puppet will do (novav3), we want Puppet
+# to making sure computev3 is not here anymore and we will add novav3 later.
+keystone_service { 'nova::computev3': ensure => absent }
+Keystone_service<||> -> Keystone_endpoint<||>
+
 #TODO: need a cleanup-keystone-tokens.sh solution here
 keystone_config {
   'ec2/driver': value => 'keystone.contrib.ec2.backends.sql.Ec2';
