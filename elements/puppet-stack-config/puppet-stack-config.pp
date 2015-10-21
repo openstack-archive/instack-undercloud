@@ -363,3 +363,16 @@ augeas { 'lvm.conf':
   context => '/files/etc/lvm/lvm.conf/activation/dict/',
   changes => 'set auto_activation_volume_list/list ""'
 }
+
+if str2bool(hiera('enable_docker_registry', true)) {
+  package{'docker-registry': }
+  augeas { 'docker-registry':
+    context => '/files/etc/sysconfig/docker-registry',
+    changes => 'set REGISTRY_PORT 8787',
+    notify  => Service['docker-registry'],
+  }
+  service { 'docker-registry':
+    ensure  => running,
+    require => Package['docker-registry'],
+  }
+}
