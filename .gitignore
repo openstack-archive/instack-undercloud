@@ -33,6 +33,8 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+*.bundle
+Gemfile.lock
 
 # Mr Mac User
 .DS_Store
