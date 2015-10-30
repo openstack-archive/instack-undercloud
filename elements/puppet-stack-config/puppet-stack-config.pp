@@ -20,14 +20,14 @@ if count(hiera('ntp::servers')) > 0 {
 include ::rabbitmq
 
 # TODO Galara
-class { 'mysql::server':
-    override_options => {
-      'mysqld' => {
-        'bind-address' => hiera('controller_host'),
-        'max_connections' => hiera('mysql_max_connections'),
-        'open_files_limit' => '-1',
-      }
-  }
+class { '::mysql::server':
+  override_options => {
+    'mysqld' => {
+      'bind-address'     => hiera('controller_host'),
+      'max_connections'  => hiera('mysql_max_connections'),
+      'open_files_limit' => '-1',
+    },
+  },
 }
 
 # FIXME: this should only occur on the bootstrap host (ditto for db syncs)
@@ -35,7 +35,7 @@ class { 'mysql::server':
 # Example DSN format: mysql://user:password@host/dbname
 $allowed_hosts = ['%',hiera('controller_host')]
 $keystone_dsn = split(hiera('keystone::database_connection'), '[@:/?]')
-class { 'keystone::db::mysql':
+class { '::keystone::db::mysql':
   user          => $keystone_dsn[3],
   password      => $keystone_dsn[4],
   host          => $keystone_dsn[5],
@@ -43,7 +43,7 @@ class { 'keystone::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 $glance_dsn = split(hiera('glance::api::database_connection'), '[@:/?]')
-class { 'glance::db::mysql':
+class { '::glance::db::mysql':
   user          => $glance_dsn[3],
   password      => $glance_dsn[4],
   host          => $glance_dsn[5],
@@ -51,7 +51,7 @@ class { 'glance::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 $nova_dsn = split(hiera('nova::database_connection'), '[@:/?]')
-class { 'nova::db::mysql':
+class { '::nova::db::mysql':
   user          => $nova_dsn[3],
   password      => $nova_dsn[4],
   host          => $nova_dsn[5],
@@ -59,7 +59,7 @@ class { 'nova::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 $neutron_dsn = split(hiera('neutron::server::database_connection'), '[@:/?]')
-class { 'neutron::db::mysql':
+class { '::neutron::db::mysql':
   user          => $neutron_dsn[3],
   password      => $neutron_dsn[4],
   host          => $neutron_dsn[5],
@@ -67,7 +67,7 @@ class { 'neutron::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 $heat_dsn = split(hiera('heat_dsn'), '[@:/?]')
-class { 'heat::db::mysql':
+class { '::heat::db::mysql':
   user          => $heat_dsn[3],
   password      => $heat_dsn[4],
   host          => $heat_dsn[5],
@@ -75,7 +75,7 @@ class { 'heat::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
-class { 'ceilometer::db::mysql':
+class { '::ceilometer::db::mysql':
   user          => $ceilometer_dsn[3],
   password      => $ceilometer_dsn[4],
   host          => $ceilometer_dsn[5],
@@ -83,7 +83,7 @@ class { 'ceilometer::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 $ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
-class { 'ironic::db::mysql':
+class { '::ironic::db::mysql':
 user          => $ironic_dsn[3],
 password      => $ironic_dsn[4],
 host          => $ironic_dsn[5],
@@ -94,7 +94,7 @@ allowed_hosts => $allowed_hosts,
 # pre-install swift here so we can build rings
 include ::swift
 
-class { 'keystone':
+class { '::keystone':
   debug => hiera('debug'),
 }
 
@@ -139,10 +139,10 @@ class { '::glance::registry':
 }
 include ::glance::backend::file
 
-class { 'nova':
-  rabbit_hosts           => [hiera('controller_host')],
-  glance_api_servers     => join([hiera('glance_protocol'), '://', hiera('controller_host'), ':', hiera('glance_port')]),
-  debug                  => hiera('debug'),
+class { '::nova':
+  rabbit_hosts       => [hiera('controller_host')],
+  glance_api_servers => join([hiera('glance_protocol'), '://', hiera('controller_host'), ':', hiera('glance_port')]),
+  debug              => hiera('debug'),
 }
 
 include ::nova::api
@@ -152,7 +152,7 @@ include ::nova::conductor
 include ::nova::scheduler
 include ::nova::scheduler::filter
 
-class {'neutron':
+class { '::neutron':
   rabbit_hosts => [hiera('controller_host')],
   debug        => hiera('debug'),
 }
@@ -163,26 +163,26 @@ include ::neutron::quota
 
 # NOTE(lucasagomes): This bit might be superseded by
 # https://review.openstack.org/#/c/172040/
-file { "dnsmasq-ironic.conf":
-  path    => "/etc/dnsmasq-ironic.conf",
+file { 'dnsmasq-ironic.conf':
   ensure  => present,
-  owner   => "ironic",
-  group   => "ironic",
-  mode    => 0644,
+  path    => '/etc/dnsmasq-ironic.conf',
+  owner   => 'ironic',
+  group   => 'ironic',
+  mode    => '0644',
   replace => false,
-  content => "dhcp-match=ipxe,175";
+  content => 'dhcp-match=ipxe,175';
 }
 
-class { 'neutron::agents::dhcp':
-  dnsmasq_config_file => '/etc/dnsmasq-ironic.conf';
+class { '::neutron::agents::dhcp':
+  dnsmasq_config_file => '/etc/dnsmasq-ironic.conf',
 }
 
-class { 'neutron::plugins::ml2':
-  flat_networks        => split(hiera('neutron_flat_networks'), ','),
+class { '::neutron::plugins::ml2':
+  flat_networks => split(hiera('neutron_flat_networks'), ','),
 }
 
-class { 'neutron::agents::ml2::ovs':
-  bridge_mappings  => split(hiera('neutron_bridge_mappings'), ','),
+class { '::neutron::agents::ml2::ovs':
+  bridge_mappings => split(hiera('neutron_bridge_mappings'), ','),
 }
 
 # swift proxy
@@ -202,8 +202,8 @@ include ::swift::proxy::tempurl
 include ::swift::proxy::formpost
 
 # swift storage
-class {'swift::storage::all':
-  mount_check => str2bool(hiera('swift_mount_check'))
+class { '::swift::storage::all':
+  mount_check => str2bool(hiera('swift_mount_check')),
 }
 if(!defined(File['/srv/node'])) {
   file { '/srv/node':
@@ -241,7 +241,7 @@ include ::ceilometer::alarm::notifier
 include ::ceilometer::alarm::evaluator
 include ::ceilometer::expirer
 include ::ceilometer::collector
-class { 'ceilometer::agent::auth':
+class { '::ceilometer::agent::auth':
   auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
 }
 
@@ -254,7 +254,7 @@ ceilometer_config {
 }
 
 # Heat
-class {'heat':
+class { '::heat':
   debug => hiera('debug'),
 }
 include ::heat::api
@@ -276,7 +276,7 @@ nova_config {
 
 include ::nova::compute::ironic
 
-class { 'nova::network::neutron':
+class { '::nova::network::neutron':
   neutron_admin_auth_url    => join(['http://', hiera('controller_host'), ':35357/v2.0']),
   neutron_url               => join(['http://', hiera('controller_host'), ':9696']),
   neutron_admin_password    => hiera('neutron::server::auth_password'),
@@ -284,7 +284,7 @@ class { 'nova::network::neutron':
   neutron_region_name       => '',
 }
 
-class { 'ironic::conductor':
+class { '::ironic::conductor':
   force_power_state_during_sync => hiera('ironic::conductor::force_power_state_during_sync'),
 }
 
@@ -293,53 +293,53 @@ package{'openwsman-python': }
 # dependency of pxe_ilo
 package{'python-proliantutils': }
 
-class { 'ironic':
+class { '::ironic':
   enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac', 'pxe_ilo', 'pxe_wol'],
   debug           => hiera('debug'),
 }
 
-class { 'ironic::api':
+class { '::ironic::api':
   host_ip => hiera('controller_host'),
 }
 
-class { 'ironic::drivers::ipmi':
-  retry_timeout => 15
+class { '::ironic::drivers::ipmi':
+  retry_timeout => 15,
 }
 
 ironic_config {
-  'DEFAULT/my_ip':                           value => hiera('controller_host');
-  'DEFAULT/rpc_response_timeout':            value => '600';
-  'glance/host':                             value => hiera('glance::api::bind_host');
-  'discoverd/enabled':                       value => 'true';
-  'pxe/pxe_config_template':                 value => '$pybasedir/drivers/modules/ipxe_config.template';
-  'pxe/pxe_bootfile_name':                   value => 'undionly.kpxe';
-  'pxe/http_url':                            value => 'http://$my_ip:8088';
-  'pxe/http_root':                           value => '/httpboot';
-  'pxe/ipxe_enabled':                        value => 'True';
+  'DEFAULT/my_ip':                value => hiera('controller_host');
+  'DEFAULT/rpc_response_timeout': value => '600';
+  'glance/host':                  value => hiera('glance::api::bind_host');
+  'discoverd/enabled':            value => true;
+  'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/ipxe_config.template';
+  'pxe/pxe_bootfile_name':        value => 'undionly.kpxe';
+  'pxe/http_url':                 value => 'http://$my_ip:8088';
+  'pxe/http_root':                value => '/httpboot';
+  'pxe/ipxe_enabled':             value => 'True';
 }
 
 include ::ironic::inspector
 
-if str2bool(hiera('enable_tuskar', 'true')) {
-  class { 'horizon':
-    secret_key   => hiera('horizon_secret_key'),
-    keystone_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
-    allowed_hosts => [hiera('controller_host'), $::fqdn, 'localhost'],
-    server_aliases => [hiera('controller_host'), $::fqdn, 'localhost'],
-    tuskar_ui => true,
-    tuskar_ui_ironic_discoverd_url => join(['http://', hiera('controller_host'), ':5050']),
-    tuskar_ui_undercloud_admin_password => hiera('admin_password')
+if str2bool(hiera('enable_tuskar', true)) {
+  class { '::horizon':
+    secret_key                          => hiera('horizon_secret_key'),
+    keystone_url                        => join(['http://', hiera('controller_host'), ':5000/v2.0']),
+    allowed_hosts                       => [hiera('controller_host'), $::fqdn, 'localhost'],
+    server_aliases                      => [hiera('controller_host'), $::fqdn, 'localhost'],
+    tuskar_ui                           => true,
+    tuskar_ui_ironic_discoverd_url      => join(['http://', hiera('controller_host'), ':5050']),
+    tuskar_ui_undercloud_admin_password => hiera('admin_password'),
   }
 
   # Install python-tuskarclient so we can deploy a stack with tuskar
   package{'python-tuskarclient': }
 
-  class { 'tuskar::ui':
-    extras => true
+  class { '::tuskar::ui':
+    extras => true,
   }
 }
 
-if str2bool(hiera('enable_tempest', 'true')) {
+if str2bool(hiera('enable_tempest', true)) {
   # tempest
   # TODO: when puppet-tempest supports install by package, do that instead
   package{'openstack-tempest': }
