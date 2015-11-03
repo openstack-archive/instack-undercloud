@@ -137,6 +137,10 @@
 # automatically generated. (string value)
 #undercloud_ceilometer_password = <None>
 
+# Aodh service password. If left unset, one will be
+# automatically generated. (string value)
+#undercloud_aodh_password = <None>
+
 # Ceilometer metering secret. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_ceilometer_metering_secret = <None>
