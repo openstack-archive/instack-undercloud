@@ -177,6 +177,7 @@ class { '::glance::registry':
   debug => hiera('debug'),
 }
 include ::glance::backend::swift
+include ::glance::notify::rabbitmq
 
 class { '::nova':
   rabbit_hosts       => [hiera('controller_host')],
@@ -222,6 +223,10 @@ class { '::neutron::agents::dhcp':
 
 class { '::neutron::agents::ml2::ovs':
   bridge_mappings => split(hiera('neutron_bridge_mappings'), ','),
+}
+
+neutron_config {
+  'DEFAULT/notification_driver': value => 'messaging';
 }
 
 # swift proxy
