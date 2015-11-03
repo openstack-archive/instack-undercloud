@@ -106,6 +106,7 @@ include ::neutron::keystone::auth
 include ::glance::keystone::auth
 include ::nova::keystone::auth
 include ::ceilometer::keystone::auth
+include ::aodh::keystone::auth
 include ::swift::keystone::auth
 include ::ironic::keystone::auth
 include ::tuskar::keystone::auth
@@ -269,6 +270,24 @@ ceilometer_config {
   'hardware/readonly_user_name': value => hiera('snmpd_readonly_user_name');
   'hardware/readonly_user_password': value => hiera('snmpd_readonly_user_password');
 }
+
+# Apache
+include ::apache
+
+# Aodh
+include ::aodh
+include ::aodh::api
+include ::aodh::wsgi::apache
+include ::aodh::evaluator
+include ::aodh::notifier
+include ::aodh::listener
+include ::aodh::client
+include ::aodh::db::sync
+class { '::aodh::auth':
+  auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
+}
+# To manage the upgrade:
+Exec['ceilometer-dbsync'] -> Exec['aodh-db-sync']
 
 # Heat
 class { '::heat':
