@@ -257,7 +257,6 @@ class { '::heat':
 }
 include ::heat::api
 include ::heat::api_cfn
-include ::heat::api_cloudwatch
 include ::heat::engine
 include ::heat::keystone::domain
 
