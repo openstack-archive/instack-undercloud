@@ -20,7 +20,7 @@ TEMPEST=
 # token expiry, which is increased from the default 1 hour to 4.
 TIMEOUT=240
 
-function show_options () {
+function show_options {
     echo "Usage: $SCRIPT_NAME [options]"
     echo
     echo "Deploys an Overcloud."
@@ -34,7 +34,10 @@ function show_options () {
 }
 
 TEMP=$(getopt -o ,h -l,tuskar,timeout:,tempest,help -n $SCRIPT_NAME -- "$@")
-if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+if [ $? != 0 ]; then
+    echo "Terminating..." >&2;
+    exit 1;
+fi
 
 # Note the quotes around `$TEMP': they are essential!
 eval set -- "$TEMP"
@@ -155,9 +158,9 @@ fi
 
 # NOTE(gfidente): Taken from
 # https://github.com/ceph/ceph-deploy/blob/master/ceph_deploy/new.py#L21
-function create_cephx_key() {
-     local KEY=$(python -c 'import base64,os,struct,time;key = os.urandom(16);header = struct.pack("<hiih", 1, int(time.time()), 0, len(key));print(base64.b64encode(header + key))')
-     echo $KEY
+function create_cephx_key {
+    local KEY=$(python -c 'import base64,os,struct,time;key = os.urandom(16);header = struct.pack("<hiih", 1, int(time.time()), 0, len(key));print(base64.b64encode(header + key))')
+    echo $KEY
 }
 
 if [ -n "$TUSKAR" ]; then
@@ -415,7 +418,7 @@ else
         "CephStorageCount": '${CEPHSTORAGESCALE}',
         "BlockStorageCount": '${BLOCKSTORAGESCALE}',
         "ObjectStorageCount": '${SWIFTSTORAGESCALE}'
-      }' <<< $ENV_JSON)
+    }' <<< $ENV_JSON)
 
     jq . > "${HEAT_ENV}" <<< $ENV_JSON
     chmod 0600 "${HEAT_ENV}"
@@ -517,6 +520,6 @@ nova flavor-create m1.demo auto 512 10 1
 echo "Overcloud Deployed"
 
 if [ -n "$TEMPEST" ]; then
-  TEMPEST_ARGS=${TEMPEST_ARGS:-} $(dirname $0)/instack-tempest-test-overcloud
-  $(dirname $0)/instack-test-overcloud
+    TEMPEST_ARGS=${TEMPEST_ARGS:-} $(dirname $0)/instack-tempest-test-overcloud
+    $(dirname $0)/instack-test-overcloud
 fi
