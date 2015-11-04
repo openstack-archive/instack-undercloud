@@ -183,7 +183,9 @@ nova::scheduler::filter::scheduler_host_manager: 'nova.scheduler.ironic_host_man
 
 # Ironic
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
-ironic::api::auth_host: {{LOCAL_IP}}
+ironic::api::auth_uri: "%{hiera('keystone_auth_uri')}"
+ironic::api::identity_uri: "%{hiera('keystone_identity_uri')}"
+ironic::api::neutron_url: "http://{{LOCAL_IP}}:9696/"
 ironic::database_connection: mysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
