@@ -158,6 +158,7 @@ class {'neutron':
 }
 
 include ::neutron::server
+include ::neutron::server::notifications
 include ::neutron::quota
 
 # NOTE(lucasagomes): This bit might be superseded by
