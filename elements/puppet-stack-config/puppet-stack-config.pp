@@ -271,13 +271,7 @@ nova_config {
   'DEFAULT/rpc_response_timeout':      value => '600';
 }
 
-
-class { '::nova::compute::ironic':
-  admin_user        => 'ironic',
-  admin_passwd      => hiera('ironic::api::admin_password'),
-  admin_tenant_name => hiera('ironic::api::admin_tenant_name'),
-  api_endpoint      => join(['http://', hiera('controller_host'), ':6385/v1']),
-}
+include ::nova::compute::ironic
 
 class { '::nova::network::neutron':
   neutron_admin_auth_url    => join(['http://', hiera('controller_host'), ':35357/v2.0']),

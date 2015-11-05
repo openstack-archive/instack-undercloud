@@ -182,6 +182,13 @@ nova::network::neutron::dhcp_domain: ''
 nova::compute::force_config_drive: true
 nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
 nova::compute::reserved_host_memory: '0'
+
+nova::compute::ironic::admin_username: 'ironic'
+nova::compute::ironic::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+nova::compute::ironic::admin_tenant_name: 'service'
+nova::compute::ironic::api_endpoint: "http://{{LOCAL_IP}}:6385/v1"
+nova::compute::ironic::admin_url: "http://{{LOCAL_IP}}:35357/v2.0"
+
 nova::scheduler::filter::ram_allocation_ratio: '1.0'
 nova::scheduler::filter::scheduler_host_manager: 'nova.scheduler.ironic_host_manager.IronicHostManager'
 
