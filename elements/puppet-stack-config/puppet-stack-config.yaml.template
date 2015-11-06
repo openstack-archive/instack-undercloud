@@ -144,9 +144,9 @@ neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::dhcp::dhcp_domain: ''
 neutron::quota::quota_port: -1
 neutron::server::notifications::nova_url: http://{{LOCAL_IP}}:8774/v2
-neutron::server::notifications::nova_admin_auth_url: "%{hiera('nova_admin_auth_url')}"
-neutron::server::notifications::nova_admin_tenant_name: service
-neutron::server::notifications::nova_admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
+neutron::server::notifications::auth_url: "%{hiera('nova_admin_auth_url')}"
+neutron::server::notifications::tenant_name: service
+neutron::server::notifications::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 
 # Ceilometer
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
