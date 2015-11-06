@@ -123,9 +123,11 @@
 # generated. (string value)
 #undercloud_ceilometer_metering_secret = <None>
 
-# Ceilometer snmpd user. If left unset, one will be automatically
-# generated. (string value)
-#undercloud_ceilometer_snmpd_user = <None>
+# Ceilometer snmpd read-only user. If this value is changed from the
+# default, the new value must be passed in the overcloud environment
+# as the parameter SnmpdReadonlyUserName. This value must be between 1
+# and 32 characters long. (string value)
+#undercloud_ceilometer_snmpd_user = ro_snmp_user
 
 # Ceilometer snmpd password. If left unset, one will be automatically
 # generated. (string value)
