@@ -134,7 +134,6 @@ neutron::server::database_connection: mysql://neutron:{{UNDERCLOUD_NEUTRON_PASSW
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::enable_tunneling: True
 neutron::agents::ml2::ovs::local_ip: {{LOCAL_IP}}
-neutron_flat_networks: ''
 neutron_mechanism_drivers: openvswitch
 neutron_bridge_mappings: ctlplane:br-ctlplane
 neutron_public_interface: {{LOCAL_INTERFACE}}
