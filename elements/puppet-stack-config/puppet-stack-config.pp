@@ -160,6 +160,7 @@ class { '::neutron':
 include ::neutron::server
 include ::neutron::server::notifications
 include ::neutron::quota
+include ::neutron::plugins::ml2
 
 # NOTE(lucasagomes): This bit might be superseded by
 # https://review.openstack.org/#/c/172040/
@@ -175,10 +176,6 @@ file { 'dnsmasq-ironic.conf':
 
 class { '::neutron::agents::dhcp':
   dnsmasq_config_file => '/etc/dnsmasq-ironic.conf',
-}
-
-class { '::neutron::plugins::ml2':
-  flat_networks => split(hiera('neutron_flat_networks'), ','),
 }
 
 class { '::neutron::agents::ml2::ovs':
