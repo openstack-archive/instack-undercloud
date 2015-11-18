@@ -313,6 +313,7 @@ ironic_config {
   'pxe/http_url':                 value => 'http://$my_ip:8088';
   'pxe/http_root':                value => '/httpboot';
   'pxe/ipxe_enabled':             value => 'True';
+  'conductor/clean_nodes':        value => hiera('ironic::conductor::clean_nodes');
 }
 
 include ::ironic::inspector
