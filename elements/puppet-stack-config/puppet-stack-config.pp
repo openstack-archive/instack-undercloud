@@ -263,7 +263,7 @@ include ::heat::keystone::domain
 # We're creating the admin role and heat domain user in puppet and need
 # to make sure they are done in order.
 include ::keystone::roles::admin
-Service['keystone'] -> Class['::keystone::roles::admin'] -> Keystone_domain['heat_domain']
+Service['keystone'] -> Class['::keystone::roles::admin'] -> Class['::heat::keystone::domain']
 
 nova_config {
   'DEFAULT/my_ip':                     value => $ipaddress;
