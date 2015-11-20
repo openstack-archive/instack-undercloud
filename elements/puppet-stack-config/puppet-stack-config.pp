@@ -355,3 +355,12 @@ if str2bool(hiera('enable_tempest', true)) {
   # needed for /bin/subunit-2to1 (called by run_tempest.sh)
   package{'subunit-filters': }
 }
+
+# Ensure dm thin-pool is never activated. This avoids an issue
+# where the instack host (in this case on a VM) was crashing due to
+# activation of the docker thin-pool associated with the atomic host.
+augeas { 'lvm.conf':
+  require => Package['openstack-nova-compute'],
+  context => '/files/etc/lvm/lvm.conf/activation/dict/',
+  changes => 'set auto_activation_volume_list/list ""'
+}
