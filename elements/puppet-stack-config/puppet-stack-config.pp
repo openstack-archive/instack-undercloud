@@ -200,7 +200,8 @@ include ::swift::proxy::formpost
 
 # swift storage
 class { '::swift::storage::all':
-  mount_check => str2bool(hiera('swift_mount_check')),
+  mount_check    => str2bool(hiera('swift_mount_check')),
+  allow_versions => true,
 }
 if(!defined(File['/srv/node'])) {
   file { '/srv/node':
