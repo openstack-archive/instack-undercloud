@@ -70,6 +70,7 @@ glance::api::registry_host: {{LOCAL_IP}}
 glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::api::known_stores:
   - glance.store.filesystem.Store
+  - glance.store.swift.Store
 glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_port: 9292
@@ -94,6 +95,10 @@ glance::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
 glance::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_GLANCE_ADMIN}}
 glance::keystone::auth::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::keystone::auth::region: "%{hiera('keystone_region')}"
+glance::backend::swift::swift_store_auth_address: http://{{LOCAL_IP}}:35357/v2.0
+glance::backend::swift::swift_store_user: service:glance
+glance::backend::swift::swift_store_key: {{UNDERCLOUD_GLANCE_PASSWORD}}
+glance::backend::swift::swift_store_create_container_on_put: true
 
 # Heat
 heat_stack_domain_admin_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
