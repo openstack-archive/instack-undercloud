@@ -68,6 +68,9 @@
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = true
 
+# Whether to install Mistral in the Undercloud. (boolean value)
+#enable_mistral = false
+
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 
@@ -137,6 +140,10 @@
 # Swift service password. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_swift_password = <None>
+
+# Mistral service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_mistral_password = <None>
 
 # Rabbitmq cookie. If left unset, one will be automatically generated.
 # (string value)
