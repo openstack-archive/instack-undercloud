@@ -99,35 +99,64 @@ class TestCheckHostname(BaseTestCase):
             self.assertRaises(RuntimeError, undercloud._check_hostname)
 
     @mock.patch('instack_undercloud.undercloud._run_command')
-    def test_missing_entry(self, mock_run_command):
-        mock_run_command.side_effect = ['test-hostname', 'test-hostname']
-        self.useFixture(fixtures.EnvironmentVariable('HOSTNAME',
-                                                     'test-hostname'))
-        fake_hosts = io.StringIO(u'127.0.0.1 other-hostname\n')
-        with mock.patch('instack_undercloud.undercloud.open',
-                        return_value=fake_hosts, create=True):
-            self.assertRaises(RuntimeError, undercloud._check_hostname)
-
-    @mock.patch('instack_undercloud.undercloud._run_command')
     def test_no_substring_match(self, mock_run_command):
-        mock_run_command.side_effect = ['test-hostname', 'test-hostname']
+        mock_run_command.side_effect = ['test.hostname', 'test.hostname',
+                                        None]
         self.useFixture(fixtures.EnvironmentVariable('HOSTNAME',
-                                                     'test-hostname'))
+                                                     'test.hostname'))
         fake_hosts = io.StringIO(u'127.0.0.1 test-hostname-bad\n')
         with mock.patch('instack_undercloud.undercloud.open',
                         return_value=fake_hosts, create=True):
-            self.assertRaises(RuntimeError, undercloud._check_hostname)
+            undercloud._check_hostname()
+            mock_run_command.assert_called_with([
+                'sudo', '/bin/bash', '-c',
+                'echo 127.0.0.1 test.hostname test >> /etc/hosts'],
+                name='hostname-to-etc-hosts')
 
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_commented(self, mock_run_command):
-        mock_run_command.side_effect = ['test-hostname', 'test-hostname']
+        mock_run_command.side_effect = ['test.hostname', 'test.hostname',
+                                        None]
         self.useFixture(fixtures.EnvironmentVariable('HOSTNAME',
-                                                     'test-hostname'))
-        fake_hosts = io.StringIO(u""" #127.0.0.1 test-hostname\n
+                                                     'test.hostname'))
+        fake_hosts = io.StringIO(u""" #127.0.0.1 test.hostname\n
                                      127.0.0.1 other-hostname\n""")
         with mock.patch('instack_undercloud.undercloud.open',
                         return_value=fake_hosts, create=True):
-            self.assertRaises(RuntimeError, undercloud._check_hostname)
+            undercloud._check_hostname()
+            mock_run_command.assert_called_with([
+                'sudo', '/bin/bash', '-c',
+                'echo 127.0.0.1 test.hostname test >> /etc/hosts'],
+                name='hostname-to-etc-hosts')
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    def test_set_fqdn(self, mock_run_command):
+        mock_run_command.side_effect = [None,
+                                        'test-hostname.domain',
+                                        'test-hostname.domain',
+                                        None]
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_hostname='test-hostname.domain')
+        fake_hosts = io.StringIO(u'127.0.0.1 other-hostname\n')
+        with mock.patch('instack_undercloud.undercloud.open',
+                        return_value=fake_hosts, create=True):
+            undercloud._check_hostname()
+        mock_run_command.assert_called_with([
+            'sudo', '/bin/bash', '-c',
+            'echo 127.0.0.1 test-hostname.domain test-hostname >> /etc/hosts'],
+            name='hostname-to-etc-hosts')
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    def test_set_not_fq(self, mock_run_command):
+        mock_run_command.side_effect = [None,
+                                        'test-hostname',
+                                        'test-hostname',
+                                        None]
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_hostname='test-hostname')
+        self.assertRaises(RuntimeError, undercloud._check_hostname)
 
 
 class TestCheckMemory(BaseTestCase):

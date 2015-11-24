@@ -86,6 +86,14 @@ _opts = [
                      'should be a directory readable by the current user '
                      'that contains the full set of images.'),
                ),
+    cfg.StrOpt('undercloud_hostname',
+               help=('Fully qualified hostname (including domain) to set on '
+                     'the Undercloud. If left unset, the '
+                     'current hostname will be used, but the user is '
+                     'responsible for configuring all system hostname '
+                     'settings appropriately.  If set, the undercloud install '
+                     'will configure all system hostname settings.'),
+               ),
     cfg.StrOpt('local_ip',
                default='192.0.2.1/24',
                help=('IP information for the interface on the Undercloud '
@@ -367,10 +375,15 @@ def _run_live_command(args, env=None, name=None):
 def _check_hostname():
     """Check system hostname configuration
 
-    Rabbit requires a pretty specific hostname configuration.  This attempts
-    to verify the configuration is correct before continuing with
-    installation.
+    Rabbit and Puppet require pretty specific hostname configuration. This
+    function ensures that the system hostname settings are valid before
+    continuing with the installation.
     """
+    if CONF.undercloud_hostname is not None:
+        args = ['sudo', 'hostnamectl', 'set-hostname',
+                CONF.undercloud_hostname]
+        _run_command(args, name='hostnamectl')
+
     LOG.info('Checking for a FQDN hostname...')
     args = ['sudo', 'hostnamectl', '--static']
     detected_static_hostname = _run_command(args, name='hostnamectl').rstrip()
@@ -391,10 +404,16 @@ def _check_hostname():
                     detected_static_hostname in line.split()):
                 break
         else:
-            LOG.error('Static hostname not set in /etc/hosts.')
-            LOG.error('Please add a line to /etc/hosts for the static '
-                      'hostname.')
-            raise RuntimeError('Static hostname not set in /etc/hosts')
+            short_hostname = detected_static_hostname.split('.')[0]
+            if short_hostname == detected_static_hostname:
+                raise RuntimeError('Configured hostname is not fully '
+                                   'qualified.')
+            echo_cmd = ('echo 127.0.0.1 %s %s >> /etc/hosts' %
+                        (detected_static_hostname, short_hostname))
+            args = ['sudo', '/bin/bash', '-c', echo_cmd]
+            _run_command(args, name='hostname-to-etc-hosts')
+            LOG.info('Added hostname %s to /etc/hosts',
+                     detected_static_hostname)
 
 
 def _check_memory():
@@ -579,7 +598,7 @@ def _generate_environment(instack_root):
     """
     instack_env = dict(os.environ)
     # Rabbit uses HOSTNAME, so we need to make sure it's right
-    instack_env['HOSTNAME'] = socket.gethostname()
+    instack_env['HOSTNAME'] = CONF.undercloud_hostname or socket.gethostname()
 
     # Find the paths we need
     json_file_dir = '/usr/share/instack-undercloud/json-files'

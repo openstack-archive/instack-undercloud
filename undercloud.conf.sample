@@ -9,6 +9,13 @@
 # images. (string value)
 #image_path = .
 
+# Fully qualified hostname (including domain) to set on the
+# Undercloud. If left unset, the current hostname will be used, but
+# the user is responsible for configuring all system hostname settings
+# appropriately.  If set, the undercloud install will configure all
+# system hostname settings. (string value)
+#undercloud_hostname = <None>
+
 # IP information for the interface on the Undercloud that will be
 # handling the PXE boots and DHCP for Overcloud instances.  The IP
 # portion of the value will be assigned to the network interface
