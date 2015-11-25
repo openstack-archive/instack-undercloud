@@ -41,13 +41,13 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._check_hostname')
     @mock.patch('instack_undercloud.undercloud._run_command')
-    @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
+    @mock.patch('instack_undercloud.undercloud._post_config')
     @mock.patch('instack_undercloud.undercloud._run_orc')
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install(self, mock_load_config, mock_generate_environment,
-                     mock_run_instack, mock_run_orc, mock_configure_ssh_keys,
+                     mock_run_instack, mock_run_orc, mock_post_config,
                      mock_run_command, mock_check_hostname,
                      mock_configure_logging):
         fake_env = mock.MagicMock()
@@ -342,38 +342,100 @@ class TestConfigureSshKeys(base.BaseTestCase):
         undercloud._ensure_user_identity(id_path)
         self.assertFalse(mock_run.called)
 
-    def _test_configure_ssh_keys(self, mock_eui, mock_extract, mock_client,
-                                 mock_run, exists=True):
+    def _test_configure_ssh_keys(self, mock_eui, exists=True):
         id_path = self._create_test_id()
-        mock_run.side_effect = [None, None, '3nigma']
-        mock_extract.side_effect = ['aturing', 'http://bletchley:5000/v2.0',
-                                    'hut8']
+
         mock_client_instance = mock.Mock()
-        mock_client.return_value = mock_client_instance
         if not exists:
             get = mock_client_instance.keypairs.get
             get.side_effect = exceptions.NotFound('test')
-        undercloud._configure_ssh_keys()
+        undercloud._configure_ssh_keys(mock_client_instance)
         mock_eui.assert_called_with(id_path)
-        mock_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
-                                       'http://bletchley:5000/v2.0')
         mock_client_instance.keypairs.get.assert_called_with('default')
         if not exists:
             mock_client_instance.keypairs.create.assert_called_with(
                 'default', 'test public')
 
-    @mock.patch('novaclient.client.Client', autospec=True)
-    @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
     @mock.patch('instack_undercloud.undercloud._ensure_user_identity')
-    def test_configure_ssh_keys_exists(self, mock_eui, mock_extract,
-                                       mock_client, mock_run):
-        self._test_configure_ssh_keys(mock_eui, mock_extract, mock_client,
-                                      mock_run)
+    def test_configure_ssh_keys_exists(self, mock_eui, _):
+        self._test_configure_ssh_keys(mock_eui)
 
-    @mock.patch('novaclient.client.Client', autospec=True)
-    @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
     @mock.patch('instack_undercloud.undercloud._ensure_user_identity')
-    def test_configure_ssh_keys_missing(self, mock_eui, mock_extract,
-                                        mock_client, mock_run):
-        self._test_configure_ssh_keys(mock_eui, mock_extract, mock_client,
-                                      mock_run, False)
+    def test_configure_ssh_keys_missing(self, mock_eui, _):
+        self._test_configure_ssh_keys(mock_eui, False)
+
+
+class TestPostConfig(base.BaseTestCase):
+    @mock.patch('novaclient.client.Client', autospec=True)
+    @mock.patch('instack_undercloud.undercloud._copy_stackrc')
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
+    @mock.patch('instack_undercloud.undercloud._ensure_flavor')
+    def test_post_config(self, mock_ensure_flavor, mock_configure_ssh_keys,
+                         mock_get_auth_values, mock_copy_stackrc, mock_client):
+        mock_get_auth_values.return_value = ('aturing', '3nigma', 'hut8',
+                                             'http://bletchley:5000/v2.0')
+        mock_instance = mock.Mock()
+        mock_client.return_value = mock_instance
+        undercloud._post_config()
+        mock_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
+                                       'http://bletchley:5000/v2.0')
+        self.assertTrue(mock_copy_stackrc.called)
+        mock_configure_ssh_keys.assert_called_with(mock_instance)
+        calls = [mock.call(mock_instance, 'baremetal'),
+                 mock.call(mock_instance, 'control', 'control'),
+                 mock.call(mock_instance, 'compute', 'compute'),
+                 mock.call(mock_instance, 'ceph-storage', 'ceph-storage'),
+                 mock.call(mock_instance, 'block-storage', 'block-storage'),
+                 mock.call(mock_instance, 'swift-storage', 'swift-storage'),
+                 ]
+        mock_ensure_flavor.assert_has_calls(calls)
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    def test_copy_stackrc(self, mock_run):
+        undercloud._copy_stackrc()
+        calls = [mock.call(['sudo', 'cp', '/root/stackrc', mock.ANY],
+                           name='Copy stackrc'),
+                 mock.call(['sudo', 'chown', mock.ANY, mock.ANY],
+                           name='Chown stackrc'),
+                 ]
+        mock_run.assert_has_calls(calls)
+
+    def _create_flavor_mocks(self):
+        mock_nova = mock.Mock()
+        mock_nova.flavors.create = mock.Mock()
+        mock_flavor = mock.Mock()
+        mock_nova.flavors.create.return_value = mock_flavor
+        mock_flavor.set_keys = mock.Mock()
+        return mock_nova, mock_flavor
+
+    def test_ensure_flavor_no_profile(self):
+        mock_nova, mock_flavor = self._create_flavor_mocks()
+        undercloud._ensure_flavor(mock_nova, 'test')
+        mock_nova.flavors.create.assert_called_with('test', 4096, 1, 40)
+        keys = {'capabilities:boot_option': 'local'}
+        mock_flavor.set_keys.assert_called_with(keys)
+
+    def test_ensure_flavor_profile(self):
+        mock_nova, mock_flavor = self._create_flavor_mocks()
+        undercloud._ensure_flavor(mock_nova, 'test', 'test')
+        mock_nova.flavors.create.assert_called_with('test', 4096, 1, 40)
+        keys = {'capabilities:boot_option': 'local',
+                'capabilities:profile': 'test'}
+        mock_flavor.set_keys.assert_called_with(keys)
+
+    def test_ensure_flavor_exists(self):
+        mock_nova, mock_flavor = self._create_flavor_mocks()
+        mock_nova.flavors.create.side_effect = exceptions.Conflict(None)
+        undercloud._ensure_flavor(mock_nova, 'test')
+        mock_flavor.set_keys.assert_not_called()
+
+    @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    def test_get_auth_values(self, mock_run, mock_extract):
+        mock_run.return_value = '3nigma'
+        mock_extract.side_effect = ['aturing', 'hut8',
+                                    'http://bletchley:5000/v2.0']
+        values = undercloud._get_auth_values()
+        expected = ('aturing', '3nigma', 'hut8', 'http://bletchley:5000/v2.0')
+        self.assertEqual(expected, values)
