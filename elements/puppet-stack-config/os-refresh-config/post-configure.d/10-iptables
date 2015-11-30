@@ -4,21 +4,21 @@ set -eux
 set -o pipefail
 
 add-rule INPUT -m udp -p udp --dport 69 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8773,8774,8775 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 5000,35357 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 8773,8774,8775,13773,13774,13775 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 5000,35357,13000,13357 -j ACCEPT
 add-rule INPUT -p tcp --dport 8585 -j ACCEPT
-add-rule INPUT -p tcp --dport 9696 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 6080 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 9696,13696 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 6080,13080 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 5900:5999 -j ACCEPT
-add-rule INPUT -p tcp --dport 9292 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 9292,13292 -j ACCEPT
 add-rule INPUT -p tcp --dport 9191 -j ACCEPT
-add-rule INPUT -p tcp --dport 6385 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 6385,13385 -j ACCEPT
 add-rule FORWARD -d 192.0.2.0/24 -j ACCEPT
 add-rule FORWARD -d 192.168.122.0/24 -j ACCEPT
 add-rule INPUT -p tcp --dport $(os-apply-config --key 'horizon.port' --type int --key-default 80) -j ACCEPT
 add-rule INPUT -p tcp --dport 5672  -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8000,8003,8004 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8080 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 8000,8003,8004,13800,13003,13004 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 8080,13808 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8779 -j ACCEPT
 add-rule INPUT -p tcp --dport 8777 -j ACCEPT
 add-rule INPUT -p tcp --dport 5050 -j ACCEPT
