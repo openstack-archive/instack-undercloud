@@ -314,16 +314,16 @@ ironic_config {
   'conductor/clean_nodes':        value => hiera('ironic::conductor::clean_nodes');
 }
 
-if str2bool(hiera('ipxe_deploy', 'true')) {
+if str2bool(hiera('ipxe_deploy', true)) {
   ironic_config {
     'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/ipxe_config.template';
     'pxe/pxe_bootfile_name':        value => 'undionly.kpxe';
-    'pxe/ipxe_enabled':             value => 'True';
+    'pxe/ipxe_enabled':             value => true;
   }
 } else {
   ironic_config {
     'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/pxe_config.template';
-    'pxe/ipxe_enabled':             value => 'False';
+    'pxe/ipxe_enabled':             value => false;
   }
 }
 
