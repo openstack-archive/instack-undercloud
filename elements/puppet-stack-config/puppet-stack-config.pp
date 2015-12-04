@@ -449,3 +449,23 @@ if str2bool(hiera('enable_mistral', false)) {
   include ::mistral::engine
   include ::mistral::executor
 }
+
+if str2bool(hiera('enable_monitoring', true)) {
+  # Deploy Redis (event storage), Sensu (Monitoring server)
+  # and Uchiwa (Sensu dashboard)
+  include ::redis
+  include ::sensu
+  include ::uchiwa
+  Service['sensu-api'] -> Service['uchiwa']
+  Yumrepo['sensu'] -> Package['uchiwa']
+
+  # RDO packaging is WIP
+  # https://trello.com/c/X9dJ0iTQ/110-monitoring-packaging
+  # openstack-checks contains checks specific to OpenStack and Ceph.
+  package { 'osops-tools-monitoring-oschecks':
+    ensure   => installed,
+    provider => 'rpm',
+    source   => 'https://apevec.fedorapeople.org/openstack/ggillies/osops-tools-monitoring-oschecks-0.1-1.gitdd7ca5c.el7.centos.noarch.rpm',
+  }
+  Package['osops-tools-monitoring-oschecks'] -> Service['sensu-client']
+}

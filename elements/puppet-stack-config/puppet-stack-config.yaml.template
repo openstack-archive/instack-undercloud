@@ -183,6 +183,39 @@ neutron::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_ADMIN}}
 neutron::keystone::auth::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::keystone::auth::region: "%{hiera('keystone_region')}"
 
+# Monitoring
+# TODO(emilien) disable sensu repo when packaging ready
+uchiwa::install_repo: false
+uchiwa::sensu_api_endpoints:
+  - name: 'Undercloud Server'
+    host: {{LOCAL_IP}}
+    ssl: false
+    insecure: false
+    port: 4567
+    user: 'sensu'
+    password: {{UNDERCLOUD_SENSU_PASSWORD}}
+    path: ''
+    timeout: 5000
+
+sensu::server: true
+sensu::install_repo: true
+sensu::manage_services: true
+sensu::manage_user: true
+sensu::rabbitmq_host: {{LOCAL_IP}}
+sensu::rabbitmq_vhost: '/'
+sensu::rabbitmq_user: {{UNDERCLOUD_RABBIT_USERNAME}}
+sensu::rabbitmq_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+sensu::api: true
+sensu::api_user: 'sensu'
+sensu::api_password: {{UNDERCLOUD_SENSU_PASSWORD}}
+sensu::subscriptions:
+  - 'undercloud'
+sensu::checks:
+  'check_keystone-api':
+    command: 'oschecks-check_keystone_api --os-auth-url http://{{LOCAL_IP}}:5000/v2.0 --os-username admin --os-password {{UNDERCLOUD_ADMIN_PASSWORD}} --os-tenant-name service'
+    subscribers: 'undercloud'
+    standalone: false
+
 # Ceilometer
 ceilometer::expirer::time_to_live: undef
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
@@ -369,3 +402,4 @@ mistral::admin_tenant_name: 'service'
 enable_tempest: {{ENABLE_TEMPEST}}
 enable_mistral: {{ENABLE_MISTRAL}}
 ipxe_deploy: {{IPXE_DEPLOY}}
+enable_monitoring: {{ENABLE_MONITORING}}
