@@ -16,9 +16,19 @@
 # portion of the value. (string value)
 #local_ip = 192.0.2.1/24
 
+# Network gateway for the Neutron-managed network for Overcloud
+# instances. This should match the local_ip above when using
+# masquerading. (string value)
+#network_gateway = 192.0.2.1
+
 # Network interface on the Undercloud that will be handling the PXE
 # boots and DHCP for Overcloud instances. (string value)
 #local_interface = eth1
+
+# Network CIDR for the Neutron-managed network for Overcloud
+# instances. This should be the subnet used for PXE booting. (string
+# value)
+#network_cidr = 192.0.2.0/24
 
 # Network that will be masqueraded for external access, if required.
 # This should be the subnet used for PXE booting. (string value)
@@ -31,16 +41,6 @@
 # End of DHCP allocation range for PXE and DHCP of Overcloud
 # instances. (string value)
 #dhcp_end = 192.0.2.24
-
-# Network CIDR for the Neutron-managed network for Overcloud
-# instances. This should be the subnet used for PXE booting. (string
-# value)
-#network_cidr = 192.0.2.0/24
-
-# Network gateway for the Neutron-managed network for Overcloud
-# instances. This should match the local_ip above when using
-# masquerading. (string value)
-#network_gateway = 192.0.2.1
 
 # Network interface on which inspection dnsmasq will listen.  If in
 # doubt, use the default value. (string value)
