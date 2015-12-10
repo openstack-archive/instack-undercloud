@@ -235,8 +235,6 @@ include ::ceilometer::api
 include ::ceilometer::db
 include ::ceilometer::agent::notification
 include ::ceilometer::agent::central
-include ::ceilometer::alarm::notifier
-include ::ceilometer::alarm::evaluator
 include ::ceilometer::expirer
 include ::ceilometer::collector
 class { '::ceilometer::agent::auth':
