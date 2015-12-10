@@ -30,6 +30,7 @@ tripleo::ringbuilder::part_power: 10
 tripleo::ringbuilder::replicas: 3
 tripleo::ringbuilder::min_part_hours: 1
 swift_mount_check: false
+swift::ringbuilder::replicas: 1
 
 swift::proxy::pipeline:
   - 'catch_errors'
