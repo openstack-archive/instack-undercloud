@@ -26,9 +26,6 @@ swift::storage::all::outgoing_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::swift_hash_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
 swift::proxy::account_autocreate: true
 swift::proxy::authtoken::admin_password: {{UNDERCLOUD_SWIFT_PASSWORD}}
-tripleo::ringbuilder::part_power: 10
-tripleo::ringbuilder::replicas: 3
-tripleo::ringbuilder::min_part_hours: 1
 swift_mount_check: false
 swift::ringbuilder::replicas: 1
 
@@ -44,10 +41,6 @@ swift::proxy::pipeline:
   - 'staticweb'
   - 'proxy-logging'
   - 'proxy-server'
-
-# NOTE(dprince): build_ring support is currently not wired in.
-# See: https://review.openstack.org/#/c/109225/
-tripleo::ringbuilder::build_ring: True
 
 # Glance
 glance::api::bind_port: 9292
