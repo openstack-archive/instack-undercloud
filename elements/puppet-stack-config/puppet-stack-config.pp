@@ -120,7 +120,6 @@ include ::aodh::keystone::auth
 include ::swift::keystone::auth
 include ::ironic::keystone::auth
 include ::ironic::keystone::auth_inspector
-include ::tuskar::keystone::auth
 
 # Because os-cloud-config/tree/os_cloud_config/keystone.py already managed
 # it but with a different service name than Puppet will do (novav3), we want Puppet
@@ -380,25 +379,6 @@ if str2bool(hiera('ipxe_deploy', true)) {
 }
 
 include ::ironic::inspector
-
-if str2bool(hiera('enable_tuskar', true)) {
-  class { '::horizon':
-    secret_key                          => hiera('horizon_secret_key'),
-    keystone_url                        => join(['http://', hiera('controller_host'), ':5000/v2.0']),
-    allowed_hosts                       => [hiera('controller_host'), $::fqdn, 'localhost'],
-    server_aliases                      => [hiera('controller_host'), $::fqdn, 'localhost'],
-    tuskar_ui                           => true,
-    tuskar_ui_ironic_discoverd_url      => join(['http://', hiera('controller_host'), ':5050']),
-    tuskar_ui_undercloud_admin_password => hiera('admin_password'),
-  }
-
-  # Install python-tuskarclient so we can deploy a stack with tuskar
-  package{'python-tuskarclient': }
-
-  class { '::tuskar::ui':
-    extras => true,
-  }
-}
 
 if hiera('service_certificate', undef) {
   class { '::tripleo::loadbalancer':

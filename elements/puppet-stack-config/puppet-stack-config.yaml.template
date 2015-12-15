@@ -316,14 +316,6 @@ ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
 
-# Tuskar
-tuskar::keystone::auth::tenant: 'service'
-tuskar::keystone::auth::public_url: http://{{LOCAL_IP}}:8585/v2
-tuskar::keystone::auth::internal_url: http://{{LOCAL_IP}}:8585/v2
-tuskar::keystone::auth::admin_url: http://{{LOCAL_IP}}:8585/v2
-tuskar::keystone::auth::password: {{UNDERCLOUD_TUSKAR_PASSWORD}}
-tuskar::keystone::auth::region: "%{hiera('keystone_region')}"
-
 # Rabbit
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
 rabbitmq::delete_guest_user: false
@@ -374,7 +366,6 @@ swift::proxy::authtoken::admin_tenant_name: 'service'
 mistral::admin_tenant_name: 'service'
 
 # Options
-enable_tuskar: {{ENABLE_TUSKAR}}
 enable_tempest: {{ENABLE_TEMPEST}}
 enable_mistral: {{ENABLE_MISTRAL}}
 ipxe_deploy: {{IPXE_DEPLOY}}

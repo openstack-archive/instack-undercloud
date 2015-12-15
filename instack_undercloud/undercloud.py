@@ -167,10 +167,6 @@ _opts = [
                 help=('Whether to enable the debug log level for Undercloud '
                       'OpenStack services.')
                 ),
-    cfg.BoolOpt('enable_tuskar',
-                default=False,
-                help=('Whether to install Tuskar services in the Undercloud.')
-                ),
     cfg.BoolOpt('enable_tempest',
                 default=True,
                 help=('Whether to install Tempest in the Undercloud.')
@@ -221,10 +217,6 @@ _auth_opts = [
                ),
     cfg.StrOpt('undercloud_ironic_password',
                help=('Ironic service password. '
-                     'If left unset, one will be automatically generated.')
-               ),
-    cfg.StrOpt('undercloud_tuskar_password',
-               help=('Tuskar service password. '
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_aodh_password',

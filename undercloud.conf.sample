@@ -76,10 +76,6 @@
 # services. (boolean value)
 #undercloud_debug = true
 
-# Whether to install Tuskar services in the Undercloud. (boolean
-# value)
-#enable_tuskar = false
-
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = true
 
@@ -131,10 +127,6 @@
 # Ironic service password. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_ironic_password = <None>
-
-# Tuskar service password. If left unset, one will be automatically
-# generated. (string value)
-#undercloud_tuskar_password = <None>
 
 # Ceilometer service password. If left unset, one will be
 # automatically generated. (string value)

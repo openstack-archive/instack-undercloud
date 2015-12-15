@@ -48,15 +48,6 @@
   "ironic": {
     "service-password": "{{UNDERCLOUD_IRONIC_PASSWORD}}"
   },
-  "tuskar": {
-    "service-password": "{{UNDERCLOUD_TUSKAR_PASSWORD}}",
-    "db": "mysql://tuskar:{{UNDERCLOUD_TUSKAR_PASSWORD}}@localhost/tuskar?charset=utf8",
-    "heat_keystone": {
-      "username": "admin",
-      "password": "unset",
-      "tenant_name": "admin"
-    }
-  },
   "bootstrap_host": {
     "bootstrap_nodeid": "undercloud",
     "nodeid": "undercloud"
