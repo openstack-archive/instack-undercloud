@@ -171,7 +171,7 @@ sudo virsh start $UNDERCLOUD_VM_NAME
 timeout_seconds=180
 elapsed_seconds=0
 while true; do
-    IP=$(ip n | grep $(tripleo get-vm-mac $UNDERCLOUD_VM_NAME) | awk '{print $1;}')
+    IP=$(ip n | grep $(tripleo get-vm-mac " $UNDERCLOUD_VM_NAME ") | awk '{print $1;}')
     if [ -n "$IP" ]; then
         set +x
         echo "$UNDERCLOUD_VM_NAME vm IP address is $IP"
