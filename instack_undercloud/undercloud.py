@@ -519,7 +519,20 @@ def _ensure_user_identity(id_path):
         LOG.info('Generated new ssh key in ~/.ssh/id_rsa')
 
 
-def _configure_ssh_keys():
+def _get_auth_values():
+    """Get auth values from stackrc
+
+    Returns the user, password, tenant and auth_url as read from stackrc,
+    in that order as a tuple.
+    """
+    user = _extract_from_stackrc('OS_USERNAME')
+    password = _run_command(['sudo', 'hiera', 'admin_password']).rstrip()
+    tenant = _extract_from_stackrc('OS_TENANT')
+    auth_url = _extract_from_stackrc('OS_AUTH_URL')
+    return user, password, tenant, auth_url
+
+
+def _configure_ssh_keys(nova):
     """Configure default ssh keypair in Nova
 
     Generates a new ssh key for the current user if one does not already
@@ -528,21 +541,48 @@ def _configure_ssh_keys():
     id_path = os.path.expanduser('~/.ssh/id_rsa')
     _ensure_user_identity(id_path)
 
-    args = ['sudo', 'cp', '/root/stackrc', os.path.expanduser('~')]
-    _run_command(args, name='Copy stackrc')
-    args = ['sudo', 'chown', getpass.getuser() + ':',
-            os.path.expanduser('~/stackrc')]
-    _run_command(args, name='Chown stackrc')
-    password = _run_command(['sudo', 'hiera', 'admin_password']).rstrip()
-    user = _extract_from_stackrc('OS_USERNAME')
-    auth_url = _extract_from_stackrc('OS_AUTH_URL')
-    tenant = _extract_from_stackrc('OS_TENANT')
-    nova = novaclient.Client(2, user, password, tenant, auth_url)
     try:
         nova.keypairs.get('default')
     except exceptions.NotFound:
         with open(id_path + '.pub') as pubkey:
             nova.keypairs.create('default', pubkey.read().rstrip())
+
+
+def _ensure_flavor(nova, name, profile=None):
+    try:
+        flavor = nova.flavors.create(name, 4096, 1, 40)
+    except exceptions.Conflict:
+        LOG.info('Not creating flavor "%s" because it already exists.', name)
+        return
+    keys = {'capabilities:boot_option': 'local'}
+    if profile is not None:
+        keys['capabilities:profile'] = profile
+    flavor.set_keys(keys)
+    message = 'Created flavor "%s" with profile "%s"'
+    LOG.info(message, name, profile)
+
+
+def _copy_stackrc():
+    args = ['sudo', 'cp', '/root/stackrc', os.path.expanduser('~')]
+    _run_command(args, name='Copy stackrc')
+    args = ['sudo', 'chown', getpass.getuser() + ':',
+            os.path.expanduser('~/stackrc')]
+    _run_command(args, name='Chown stackrc')
+
+
+def _post_config():
+    _copy_stackrc()
+    user, password, tenant, auth_url = _get_auth_values()
+    nova = novaclient.Client(2, user, password, tenant, auth_url)
+
+    _configure_ssh_keys(nova)
+
+    _ensure_flavor(nova, 'baremetal')
+    _ensure_flavor(nova, 'control', 'control')
+    _ensure_flavor(nova, 'compute', 'compute')
+    _ensure_flavor(nova, 'ceph-storage', 'ceph-storage')
+    _ensure_flavor(nova, 'block-storage', 'block-storage')
+    _ensure_flavor(nova, 'swift-storage', 'swift-storage')
 
 
 def install(instack_root):
@@ -564,7 +604,7 @@ def install(instack_root):
     # TODO(bnemec): Do we still need INSTACK_ROOT?
     instack_env['INSTACK_ROOT'] = os.environ.get('INSTACK_ROOT') or ''
     _run_orc(instack_env)
-    _configure_ssh_keys()
+    _post_config()
     _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
     LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
              'stackrc_path': os.path.expanduser('~/stackrc')})
