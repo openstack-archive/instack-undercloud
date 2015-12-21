@@ -109,6 +109,7 @@ include ::nova::keystone::auth
 include ::ceilometer::keystone::auth
 include ::swift::keystone::auth
 include ::ironic::keystone::auth
+include ::ironic::keystone::auth_inspector
 include ::tuskar::keystone::auth
 
 # Because os-cloud-config/tree/os_cloud_config/keystone.py already managed
