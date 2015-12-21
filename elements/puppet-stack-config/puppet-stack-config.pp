@@ -272,9 +272,9 @@ nova_config {
 }
 
 
-class { 'nova::compute::ironic':
+class { '::nova::compute::ironic':
   admin_user        => 'ironic',
-  admin_passwd    => hiera('ironic::api::admin_password'),
+  admin_passwd      => hiera('ironic::api::admin_password'),
   admin_tenant_name => hiera('ironic::api::admin_tenant_name'),
   api_endpoint      => join(['http://', hiera('controller_host'), ':6385/v1']),
 }
