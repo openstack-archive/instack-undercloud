@@ -13,9 +13,11 @@ ssh::server::storeconfigs_enabled: false
 
 # ceilometer settings used by compute and controller ceilo auth settings
 ceilometer::agent::auth::auth_region: 'regionOne'
+aodh::auth::auth_region: 'regionOne'
 # FIXME: Might be better to use 'service' tenant here but this requires
 # changes in the tripleo-incubator keystone role setup
 ceilometer::agent::auth::auth_tenant_name: 'admin'
+aodh::auth::auth_tenant_name: 'admin'
 
 # Swift
 swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
@@ -199,6 +201,26 @@ ceilometer::keystone::auth::admin_url: http://{{LOCAL_IP}}:8777
 ceilometer::keystone::auth::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::auth::region: "%{hiera('keystone_region')}"
 
+# Aodh
+aodh::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+aodh::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+aodh::rabbit_host: {{LOCAL_IP}}
+aodh::api::host: {{LOCAL_IP}}
+aodh::api::keystone_password: {{UNDERCLOUD_AODH_PASSWORD}}
+aodh::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
+aodh::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
+aodh::api::service_name: 'httpd'
+aodh::wsgi::apache::ssl: false
+# for a migration path from ceilometer-alarm to aodh, we use the same database
+aodh::db::database_connection: mysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
+aodh::auth::auth_password: {{UNDERCLOUD_AODH_PASSWORD}}
+aodh::keystone::auth::tenant: 'service'
+aodh::keystone::auth::public_url: http://{{LOCAL_IP}}:8042
+aodh::keystone::auth::internal_url: http://{{LOCAL_IP}}:8042
+aodh::keystone::auth::admin_url: http://{{LOCAL_IP}}:8042
+aodh::keystone::auth::password: {{UNDERCLOUD_AODH_PASSWORD}}
+aodh::keystone::auth::region: "%{hiera('keystone_region')}"
+
 # Nova
 nova::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 nova::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
@@ -316,6 +338,7 @@ horizon::openstack_endpoint_type: internalURL
 
 # service tenant
 ceilometer::api::keystone_tenant: 'service'
+aodh::api::keystone_tenant: 'service'
 cinder::api::keystone_tenant: 'service'
 glance::api::keystone_tenant: 'service'
 glance::registry::keystone_tenant: 'service'
