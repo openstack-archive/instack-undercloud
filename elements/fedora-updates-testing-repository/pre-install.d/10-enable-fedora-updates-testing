@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-install-packages yum-utils
-
-yum-config-manager --enable updates-testing

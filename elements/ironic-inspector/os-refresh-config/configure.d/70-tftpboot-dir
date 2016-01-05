@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-# make sure tftpboot is labelled correctly
-install -d -m 0755 -o ironic -g ironic /tftpboot/pxelinux.cfg
-restorecon -R /tftpboot

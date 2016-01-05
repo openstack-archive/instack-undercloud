@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-ln -s -f /bin/true /usr/local/bin/restore-selinux-file-context

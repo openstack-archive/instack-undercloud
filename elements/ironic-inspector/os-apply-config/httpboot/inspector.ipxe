@@ -1,7 +1,0 @@
-#!ipxe
-
-dhcp
-
-kernel http://{{local-ip}}:8088/agent.kernel ipa-inspection-callback-url=http://{{local-ip}}:5050/v1/continue systemd.journald.forward_to_console=yes
-initrd http://{{local-ip}}:8088/agent.ramdisk
-boot

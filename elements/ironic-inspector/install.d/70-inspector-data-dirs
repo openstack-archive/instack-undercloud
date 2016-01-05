@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eux
-
-mkdir -p /var/lib/ironic-inspector
-mkdir -p /var/log/ironic-inspector/ramdisk

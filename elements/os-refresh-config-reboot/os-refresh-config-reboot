@@ -1,3 +1,0 @@
-PATH=/usr/lib64/ccache:/usr/local/sbin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin:/root/bin 
-
-@reboot root /usr/bin/os-refresh-config 2>&1 | tee -a /var/log/os-refresh-config-reboot.log

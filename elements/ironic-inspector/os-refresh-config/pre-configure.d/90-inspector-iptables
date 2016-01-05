@@ -1,4 +1,0 @@
-#!/bin/bash
-set -eux
-
-add-rule INPUT -p tcp --dport 5050 -j ACCEPT

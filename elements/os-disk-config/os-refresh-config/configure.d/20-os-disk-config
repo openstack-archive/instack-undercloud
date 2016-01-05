@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -eux
-set -o pipefail
-
-DISK_CONFIG=$(os-apply-config --key os_disk_config --type raw --key-default '')
-if [ -n "$DISK_CONFIG" ]; then
-    os-disk-config -c /etc/os-disk-config/config.json -v
-fi

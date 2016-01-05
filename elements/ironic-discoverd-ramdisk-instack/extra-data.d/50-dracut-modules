@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -eux
-set -o pipefail
-
-MODULE_PATH="/usr/lib/dracut/modules.d"
-sudo cp -r $(dirname $0)/../dracut-modules/* $TMP_MOUNT_PATH/$MODULE_PATH/

@@ -1,2 +1,0 @@
-os-disk-config git /opt/stack/os-disk-config https://github.com/rdo-management/os-disk-config
-blivet git /opt/stack/blivet https://github.com/rhinstaller/blivet

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -eu
-set -o pipefail
-
-set -x
-
-tar c -C / usr/lib*/python2* usr/lib*/libexpat* | tar xv -C "$TMP_MOUNT_PATH"
