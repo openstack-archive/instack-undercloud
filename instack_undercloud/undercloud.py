@@ -175,6 +175,10 @@ _opts = [
                 default=True,
                 help=('Whether to install Tempest in the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_mistral',
+                default=False,
+                help=('Whether to install Mistral services in the Undercloud.')
+                ),
     cfg.BoolOpt('ipxe_deploy',
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')
@@ -245,6 +249,10 @@ _auth_opts = [
                ),
     cfg.StrOpt('undercloud_swift_password',
                help=('Swift service password. '
+                     'If left unset, one will be automatically generated.')
+               ),
+    cfg.StrOpt('undercloud_mistral_password',
+               help=('Mistral service password. '
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_rabbit_cookie',

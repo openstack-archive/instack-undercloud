@@ -452,3 +452,20 @@ if str2bool(hiera('enable_docker_registry', true)) {
     require => Package['docker-registry'],
   }
 }
+
+if str2bool(hiera('enable_mistral', false)) {
+  include ::mistral
+  $mistral_dsn = split(hiera('mistral::database_connection'), '[@:/?]')
+  class { '::mistral::db::mysql':
+    user          => $mistral_dsn[3],
+    password      => $mistral_dsn[4],
+    host          => $mistral_dsn[5],
+    dbname        => $mistral_dsn[6],
+    allowed_hosts => $allowed_hosts,
+  }
+  include ::mistral::keystone::auth
+  include ::mistral::db::sync
+  include ::mistral::api
+  include ::mistral::engine
+  include ::mistral::executor
+}
