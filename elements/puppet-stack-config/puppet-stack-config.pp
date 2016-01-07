@@ -220,6 +220,7 @@ include ::swift::proxy
 include ::swift::ringbuilder
 include ::swift::proxy::proxy_logging
 include ::swift::proxy::healthcheck
+include ::swift::proxy::bulk
 include ::swift::proxy::cache
 include ::swift::proxy::keystone
 include ::swift::proxy::authtoken
