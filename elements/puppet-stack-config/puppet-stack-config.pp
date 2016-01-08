@@ -33,7 +33,7 @@ class { '::mysql::server':
 
 # FIXME: this should only occur on the bootstrap host (ditto for db syncs)
 # Create all the database schemas
-# Example DSN format: mysql://user:password@host/dbname
+# Example DSN format: mysql+pymysql://user:password@host/dbname
 $allowed_hosts = ['%',hiera('controller_host')]
 $keystone_dsn = split(hiera('keystone::database_connection'), '[@:/?]')
 class { '::keystone::db::mysql':
