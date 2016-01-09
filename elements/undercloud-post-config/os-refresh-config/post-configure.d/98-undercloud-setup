@@ -4,10 +4,6 @@ set -eux
 
 OK_FILE=/opt/stack/.undercloud-setup
 
-if [ -f $OK_FILE ]; then
-    exit
-fi
-
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
@@ -38,24 +34,63 @@ NETWORK_GATEWAY=$(os-apply-config --key neutron.network_gateway --type netaddres
 METADATA_SERVER=$UNDERCLOUD_IP
 PHYSICAL_NETWORK=ctlplane
 
-NETWORK_JSON=$(mktemp)
-NETWORK_JSON_DATA='{"physical":{}}'
-NETWORK_JSON_DATA=$(jq '.physical = .physical + {
-    "gateway": "'$NETWORK_GATEWAY'",
-    "metadata_server": "'$UNDERCLOUD_IP'",
-    "cidr": "'$NETWORK_CIDR'",
-    "allocation_start": "'$DHCP_START'",
-    "allocation_end": "'$DHCP_END'",
-    "name": "'$PHYSICAL_NETWORK'",
-}' <<< $NETWORK_JSON_DATA)
-if [ -n "${UNDERCLOUD_NAMESERVER:-}" ]; then
-    NETWORK_JSON_DATA=$(jq '.physical = .physical + {
-        "nameserver": "'$UNDERCLOUD_NAMESERVER'",
-    }' <<< $NETWORK_JSON_DATA)
+net_create=1
+ctlplane_id=$(neutron net-list -f csv -c id -c name --quote none | tail -n +2 | grep ctlplane | cut -d, -f 1)
+subnet_ids=$(neutron subnet-list -f csv -c id --quote none | tail -n +2)
+subnet_id=
+
+for subnet_id in $subnet_ids; do
+    network_id=$(neutron subnet-show -f value -c network_id $subnet_id)
+    if [ "$network_id" = "$ctlplane_id" ]; then
+        break
+    fi
+done
+
+
+
+if [ -n "$subnet_id" ]; then
+    cidr=$(neutron subnet-show $subnet_id -f value -c cidr)
+    # If the cidr's are equal, we can get by with just a network update
+    if [ "$cidr" = "$NETWORK_CIDR" ]; then
+        net_create=0
+        neutron subnet-update $subnet_id \
+            --allocation-pool start=$DHCP_START,end=$DHCP_END \
+            --gateway $NETWORK_GATEWAY \
+            --host-route destination=169.254.169.254/32,nexthop=$METADATA_SERVER
+    else
+        echo "New cidr $NETWORK_CIDR does not equal old cidr $cidr"
+        echo "Will attempt to delete and recreate subnet $subnet_id"
+    fi
 fi
-jq . > $NETWORK_JSON <<< $NETWORK_JSON_DATA
-setup-neutron -n $NETWORK_JSON
-rm $NETWORK_JSON
+
+if [ "$net_create" -eq "1" ]; then
+    # Delete the subnet and network to make sure it doesn't already exist
+    if neutron subnet-list | grep start; then
+        neutron subnet-delete $(neutron subnet-list | grep start | awk '{print $2}')
+    fi
+    if neutron net-show ctlplane; then
+        neutron net-delete ctlplane
+    fi
+
+    NETWORK_JSON=$(mktemp)
+    NETWORK_JSON_DATA='{"physical":{}}'
+    NETWORK_JSON_DATA=$(jq '.physical = .physical + {
+        "gateway": "'$NETWORK_GATEWAY'",
+        "metadata_server": "'$UNDERCLOUD_IP'",
+        "cidr": "'$NETWORK_CIDR'",
+        "allocation_start": "'$DHCP_START'",
+        "allocation_end": "'$DHCP_END'",
+        "name": "'$PHYSICAL_NETWORK'",
+    }' <<< $NETWORK_JSON_DATA)
+    if [ -n "${UNDERCLOUD_NAMESERVER:-}" ]; then
+        NETWORK_JSON_DATA=$(jq '.physical = .physical + {
+            "nameserver": "'$UNDERCLOUD_NAMESERVER'",
+        }' <<< $NETWORK_JSON_DATA)
+    fi
+    jq . > $NETWORK_JSON <<< $NETWORK_JSON_DATA
+    setup-neutron -n $NETWORK_JSON
+    rm $NETWORK_JSON
+fi
 
 # Delete initial flavors
 for flavor in m1.tiny m1.small m1.medium m1.large m1.xlarge; do

@@ -28,6 +28,7 @@ class { '::mysql::server':
       'open_files_limit' => '-1',
     },
   },
+  restart          => true
 }
 
 # FIXME: this should only occur on the bootstrap host (ditto for db syncs)
