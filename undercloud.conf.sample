@@ -85,6 +85,9 @@
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 
+# Whether to install Monitoring services in the Undercloud. (boolean
+# value)
+#enable_monitoring = false
 
 [auth]
 
@@ -135,6 +138,10 @@
 # Aodh service password. If left unset, one will be
 # automatically generated. (string value)
 #undercloud_aodh_password = <None>
+
+# Sensu service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_sensu_password = <None>
 
 # Ceilometer metering secret. If left unset, one will be automatically
 # generated. (string value)

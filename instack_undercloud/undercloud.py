@@ -183,6 +183,11 @@ _opts = [
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')
                 ),
+    cfg.BoolOpt('enable_monitoring',
+                default=False,
+                help=('Whether to install Monitoring services in the '
+                      'Undercloud.')
+                ),
 ]
 
 # Passwords, tokens, hashes
@@ -269,6 +274,10 @@ _auth_opts = [
                ),
     cfg.StrOpt('undercloud_swift_hash_suffix',
                help=('Swift hash suffix. '
+                     'If left unset, one will be automatically generated.')
+               ),
+    cfg.StrOpt('undercloud_sensu_password',
+               help=('Sensu service password. '
                      'If left unset, one will be automatically generated.')
                ),
 ]
