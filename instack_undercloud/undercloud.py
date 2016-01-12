@@ -748,6 +748,11 @@ def _copy_stackrc():
     _run_command(args, name='Chown stackrc')
 
 
+def _clean_os_refresh_config():
+    args = ['sudo', 'rm', '-rf', '/usr/libexec/os-refresh-config/*']
+    _run_command(args, name='Clean os-refresh-config')
+
+
 def _post_config():
     _copy_stackrc()
     user, password, tenant, auth_url = _get_auth_values()
@@ -774,6 +779,7 @@ def install(instack_root):
     _load_config()
     _check_hostname()
     _check_memory()
+    _clean_os_refresh_config()
     instack_env = _generate_environment(instack_root)
     _run_instack(instack_env)
     # NOTE(bnemec): I removed the conditional running of os-refresh-config.
