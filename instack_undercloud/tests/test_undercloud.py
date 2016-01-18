@@ -220,12 +220,6 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual('192.0.2.1/24', env['PUBLIC_INTERFACE_IP'])
         self.assertEqual('192.0.2.1', env['LOCAL_IP'])
 
-    def test_answers_file_support(self):
-        with open(undercloud.PATHS.ANSWERS_PATH, 'w') as f:
-            f.write('LOCAL_INTERFACE=eno1\n')
-        env = undercloud._generate_environment('.')
-        self.assertEqual('eno1', env['LOCAL_INTERFACE'])
-
     def test_generate_endpoints(self):
         env = undercloud._generate_environment('.')
         endpoint_vars = {k: v for (k, v) in env.items()
@@ -281,10 +275,8 @@ class TestGenerateEnvironment(BaseTestCase):
 
 class TestWritePasswordFile(BaseTestCase):
     def test_normal(self):
-        answers_parser = mock.Mock()
-        answers_parser.has_option.return_value = False
         instack_env = {}
-        undercloud._write_password_file(answers_parser, instack_env)
+        undercloud._write_password_file(instack_env)
         test_parser = configparser.ConfigParser()
         test_parser.read(undercloud.PATHS.PASSWORD_PATH)
         self.assertTrue(test_parser.has_option('auth',
@@ -294,32 +286,16 @@ class TestWritePasswordFile(BaseTestCase):
                          len(instack_env['UNDERCLOUD_HEAT_ENCRYPTION_KEY']))
 
     def test_value_set(self):
-        answers_parser = mock.Mock()
-        answers_parser.has_option.return_value = False
         instack_env = {}
         conf = config_fixture.Config()
         self.useFixture(conf)
         conf.config(undercloud_db_password='test', group='auth')
-        undercloud._write_password_file(answers_parser, instack_env)
+        undercloud._write_password_file(instack_env)
         test_parser = configparser.ConfigParser()
         test_parser.read(undercloud.PATHS.PASSWORD_PATH)
         self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
                          'test')
         self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'test')
-
-    def test_answers(self):
-        answers_parser = configparser.ConfigParser()
-        fake_answers = io.StringIO()
-        fake_answers.write(u'[answers]\nUNDERCLOUD_DB_PASSWORD=foo\n')
-        fake_answers.seek(0)
-        answers_parser.readfp(fake_answers)
-        instack_env = {}
-        undercloud._write_password_file(answers_parser, instack_env)
-        test_parser = configparser.ConfigParser()
-        test_parser.read(undercloud.PATHS.PASSWORD_PATH)
-        self.assertEqual(test_parser.get('auth', 'undercloud_db_password'),
-                         'foo')
-        self.assertEqual(instack_env['UNDERCLOUD_DB_PASSWORD'], 'foo')
 
 
 class TestRunCommand(BaseTestCase):

@@ -16,7 +16,6 @@ import copy
 import errno
 import getpass
 import hashlib
-import io
 import logging
 import os
 import platform
@@ -29,7 +28,6 @@ from novaclient import exceptions
 from oslo_config import cfg
 import psutil
 import six
-from six.moves import configparser
 
 
 # Making these values properties on a class allows us to delay their lookup,
@@ -545,18 +543,12 @@ def _generate_endpoints(instack_env):
     instack_env.update(endpoints)
 
 
-def _write_password_file(answers_parser, instack_env):
+def _write_password_file(instack_env):
     with open(PATHS.PASSWORD_PATH, 'w') as password_file:
         password_file.write('[auth]\n')
         for opt in _auth_opts:
             env_name = opt.name.upper()
-            if answers_parser.has_option('answers', env_name):
-                LOG.warning('Using value for %s from instack.answers. This '
-                            'behavior is deprecated.  undercloud.conf should '
-                            'now be used for configuration.', env_name)
-                value = answers_parser.get('answers', env_name)
-            else:
-                value = CONF.auth[opt.name]
+            value = CONF.auth[opt.name]
             if not value:
                 # Heat requires this encryption key to be a specific length
                 if env_name == 'UNDERCLOUD_HEAT_ENCRYPTION_KEY':
@@ -624,26 +616,10 @@ def _generate_environment(instack_root):
     else:
         raise RuntimeError('%s is not supported' % distro)
 
-    # Do some fiddling to retain answers file support for now
-    answers_parser = configparser.ConfigParser()
-    if os.path.isfile(PATHS.ANSWERS_PATH):
-        config_answers = io.StringIO()
-        config_answers.write(u'[answers]\n')
-        with open(PATHS.ANSWERS_PATH) as f:
-            config_answers.write(six.text_type(f.read()))
-        config_answers.seek(0)
-        answers_parser.readfp(config_answers)
-
     # Convert conf opts to env values
     for opt in _opts:
         env_name = opt.name.upper()
-        if answers_parser.has_option('answers', env_name):
-            LOG.warning('Using value for %s from instack.answers. This '
-                        'behavior is deprecated.  undercloud.conf should '
-                        'now be used for configuration.', env_name)
-            instack_env[env_name] = answers_parser.get('answers', env_name)
-        else:
-            instack_env[env_name] = six.text_type(CONF[opt.name])
+        instack_env[env_name] = six.text_type(CONF[opt.name])
     # Opts that needs extra processing
     if instack_env.get('INSPECTION_RUNBENCH') not in ['0', '1']:
         instack_env['INSPECTION_RUNBENCH'] = ('1' if CONF.inspection_runbench
@@ -656,7 +632,7 @@ def _generate_environment(instack_root):
 
     _generate_endpoints(instack_env)
 
-    _write_password_file(answers_parser, instack_env)
+    _write_password_file(instack_env)
 
     return instack_env
 
