@@ -1,6 +1,12 @@
 export NOVA_VERSION=1.1
 export OS_PASSWORD=$(sudo hiera admin_password)
+{{#service_certificate}}
+export OS_AUTH_URL=https://{{public_vip}}:13000/v2.0
+export PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
+{{/service_certificate}}
+{{^service_certificate}}
 export OS_AUTH_URL=http://{{local-ip}}:5000/v2.0
+{{/service_certificate}}
 export OS_USERNAME=admin
 export OS_TENANT_NAME=admin
 export COMPUTE_API_VERSION=1.1
