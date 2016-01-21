@@ -363,7 +363,7 @@ ironic_config {
   'DEFAULT/my_ip':                value => hiera('controller_host');
   'DEFAULT/rpc_response_timeout': value => '600';
   'glance/host':                  value => hiera('glance::api::bind_host');
-  'discoverd/enabled':            value => true;
+  'inspector/enabled':            value => true;
   'pxe/http_url':                 value => 'http://$my_ip:8088';
   'pxe/http_root':                value => '/httpboot';
   'conductor/clean_nodes':        value => hiera('ironic::conductor::clean_nodes');
