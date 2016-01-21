@@ -106,6 +106,10 @@ class { '::keystone':
   public_bind_host => hiera('controller_host'),
   admin_bind_host  => hiera('controller_host'),
   public_endpoint  => $keystone_public_endpoint,
+  service_name     => 'httpd',
+}
+class { '::keystone::wsgi::apache':
+  ssl => false,
 }
 
 include ::keystone::roles::admin
@@ -141,21 +145,21 @@ file { '/etc/keystone/ssl/certs/signing_cert.pem':
   content => hiera('keystone_signing_certificate'),
   owner   => 'keystone',
   group   => 'keystone',
-  notify  => Service['keystone'],
+  notify  => Service['httpd'],
   require => File['/etc/keystone/ssl/certs'],
 }
 file { '/etc/keystone/ssl/private/signing_key.pem':
   content => hiera('keystone_signing_key'),
   owner   => 'keystone',
   group   => 'keystone',
-  notify  => Service['keystone'],
+  notify  => Service['httpd'],
   require => File['/etc/keystone/ssl/private'],
 }
 file { '/etc/keystone/ssl/certs/ca.pem':
   content => hiera('keystone_ca_certificate'),
   owner   => 'keystone',
   group   => 'keystone',
-  notify  => Service['keystone'],
+  notify  => Service['httpd'],
   require => File['/etc/keystone/ssl/certs'],
 }
 
@@ -315,7 +319,7 @@ include ::heat::keystone::domain
 # We're creating the admin role and heat domain user in puppet and need
 # to make sure they are done in order.
 include ::keystone::roles::admin
-Service['keystone'] -> Class['::keystone::roles::admin'] -> Class['::heat::keystone::domain']
+Service['httpd'] -> Class['::keystone::roles::admin'] -> Class['::heat::keystone::domain']
 
 nova_config {
   'DEFAULT/my_ip':                     value => $ipaddress;
