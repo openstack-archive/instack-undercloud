@@ -283,6 +283,7 @@ ironic::inspector::ironic_tenant_name: 'service'
 ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::ironic_max_retries: 6
 ironic::inspector::ironic_retry_interval: 10
+ironic::inspector::store_data: 'swift'
 ironic::inspector::swift_username: 'ironic'
 ironic::inspector::swift_password: "%{hiera('ironic::api::admin_password')}"
 ironic::inspector::swift_tenant_name: 'service'
@@ -290,6 +291,7 @@ ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
+ironic::inspector::ramdisk_collectors: 'default,logs'
 
 # Tuskar
 tuskar::keystone::auth::tenant: 'service'
