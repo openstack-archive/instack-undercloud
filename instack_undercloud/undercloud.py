@@ -342,7 +342,7 @@ def _run_command(args, env=None, name=None):
     try:
         return subprocess.check_output(args,
                                        stderr=subprocess.STDOUT,
-                                       env=env).decode()
+                                       env=env).decode('utf-8')
     except subprocess.CalledProcessError as e:
         LOG.error('%s failed: %s', name, e.output)
         raise
@@ -361,7 +361,7 @@ def _run_live_command(args, env=None, name=None):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
     while True:
-        line = process.stdout.readline().decode()
+        line = process.stdout.readline().decode('utf-8')
         if line:
             LOG.info(line.rstrip())
         if line == '' and process.poll() is not None:
