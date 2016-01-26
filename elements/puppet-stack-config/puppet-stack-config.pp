@@ -108,9 +108,7 @@ class { '::keystone':
   public_endpoint  => $keystone_public_endpoint,
   service_name     => 'httpd',
 }
-class { '::keystone::wsgi::apache':
-  ssl => false,
-}
+include ::keystone::wsgi::apache
 
 include ::keystone::roles::admin
 include ::keystone::endpoint
