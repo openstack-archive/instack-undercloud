@@ -193,7 +193,7 @@ uchiwa::sensu_api_endpoints:
     insecure: false
     port: 4567
     user: 'sensu'
-    password: {{UNDERCLOUD_SENSU_PASSWORD}}
+    pass: {{UNDERCLOUD_SENSU_PASSWORD}}
     path: ''
     timeout: 5000
 
