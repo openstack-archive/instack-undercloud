@@ -59,6 +59,14 @@ class { '::nova::db::mysql':
   dbname        => $nova_dsn[6],
   allowed_hosts => $allowed_hosts,
 }
+$nova_api_dsn = split(hiera('nova::api_database_connection'), '[@:/?]')
+class { '::nova::db::mysql_api':
+  user          => $nova_api_dsn[3],
+  password      => $nova_api_dsn[4],
+  host          => $nova_api_dsn[5],
+  dbname        => $nova_api_dsn[6],
+  allowed_hosts => $allowed_hosts,
+}
 $neutron_dsn = split(hiera('neutron::server::database_connection'), '[@:/?]')
 class { '::neutron::db::mysql':
   user          => $neutron_dsn[3],
