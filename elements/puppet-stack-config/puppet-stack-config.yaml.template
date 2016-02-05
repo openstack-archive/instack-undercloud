@@ -372,15 +372,12 @@ horizon::openstack_endpoint_type: internalURL
 # Mistral
 mistral::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 mistral::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-mistral::rabbit_hostname: {{LOCAL_IP}}
+mistral::rabbit_host: {{LOCAL_IP}}
 mistral::auth_uri: "%{hiera('keystone_auth_uri')}"
 mistral::identity_uri: "%{hiera('keystone_identity_uri')}"
 mistral::database_connection: mysql+pymysql://mistral:{{UNDERCLOUD_MISTRAL_PASSWORD}}@{{LOCAL_IP}}/mistral
 mistral::rpc_backend: rabbit
-mistral::auth_version: 'v3'
-mistral::mistral_db_pass: '{{UNDERCLOUD_MISTRAL_PASSWORD}}'
-mistral::mysql_vip: '{{LOCAL_IP}}'
-mistral::admin_password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
+mistral::keystone_password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::public_url: http://{{LOCAL_IP}}:8989/v2
 mistral::keystone::auth::internal_url: http://{{LOCAL_IP}}:8989/v2
 mistral::keystone::auth::admin_url: http://{{LOCAL_IP}}:8989/v2
@@ -400,7 +397,7 @@ neutron::agents::metadata::auth_tenant: 'service'
 neutron::server::auth_tenant: 'service'
 nova::api::admin_tenant_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
-mistral::admin_tenant_name: 'service'
+mistral::keystone_tenant: 'service'
 
 # Options
 enable_tempest: {{ENABLE_TEMPEST}}
