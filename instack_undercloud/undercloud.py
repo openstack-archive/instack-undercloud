@@ -162,10 +162,17 @@ _opts = [
                      'range defined by dhcp_start and dhcp_end, but should '
                      'be in the same network.')
                ),
+    cfg.BoolOpt('inspection_extras',
+                default=False,
+                help=('Whether to enable extra hardware collection during '
+                      'the inspection process. Requires python-hardware or '
+                      'python-hardware-detect package on the introspection '
+                      'image.')),
     cfg.BoolOpt('inspection_runbench',
                 default=False,
                 deprecated_name='discovery_runbench',
-                help='Whether to run benchmarks when inspecting nodes.'
+                help=('Whether to run benchmarks when inspecting nodes. '
+                      'Requires inspection_extras set to True.')
                 ),
     cfg.BoolOpt('undercloud_debug',
                 default=True,
@@ -640,9 +647,18 @@ def _generate_environment(instack_root):
         else:
             instack_env[env_name] = six.text_type(CONF[opt.name])
     # Opts that needs extra processing
-    if instack_env.get('INSPECTION_RUNBENCH') not in ['0', '1']:
-        instack_env['INSPECTION_RUNBENCH'] = ('1' if CONF.inspection_runbench
-                                              else '0')
+    if CONF.inspection_runbench and not CONF.inspection_extras:
+        raise RuntimeError('inspection_extras must be enabled for '
+                           'inspection_runbench to work')
+    if CONF.inspection_extras:
+        instack_env['INSPECTION_COLLECTORS'] = 'default,extra-hardware,logs'
+    else:
+        instack_env['INSPECTION_COLLECTORS'] = 'default,logs'
+
+    if CONF.inspection_runbench:
+        instack_env['INSPECTION_KERNEL_ARGS'] = (
+            'ipa-inspection-benchmarks=cpu,mem,disk')
+
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
     if instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
