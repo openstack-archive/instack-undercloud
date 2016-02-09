@@ -58,6 +58,8 @@ context = {
     'UNDERCLOUD_DEBUG': os.environ.get('UNDERCLOUD_DEBUG', 'true'),
     'INSPECTION_IPRANGE': os.environ.get('INSPECTION_IPRANGE', '192.0.2.100,192.0.2.120'),
     'INSPECTION_INTERFACE': os.environ.get('INSPECTION_INTERFACE', 'br-ctlplane'),
+    'INSPECTION_COLLECTORS': os.environ.get('INSPECTION_COLLECTORS', 'default,logs'),
+    'INSPECTION_KERNEL_ARGS': os.environ.get('INSPECTION_KERNEL_ARGS', ''),
     'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
     'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'false'),
     'ENABLE_ZAQAR': os.environ.get('ENABLE_ZAQAR', 'false'),
