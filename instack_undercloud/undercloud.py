@@ -338,7 +338,7 @@ def _run_live_command(args, env=None, name=None):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
     while True:
-        line = process.stdout.readline().decode()
+        line = process.stdout.readline().decode('utf-8')
         if line:
             LOG.info(line.rstrip())
         if line == '' and process.poll() is not None:
