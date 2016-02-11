@@ -777,12 +777,6 @@ def install(instack_root):
     _clean_os_refresh_config()
     instack_env = _generate_environment(instack_root)
     _run_instack(instack_env)
-    # NOTE(bnemec): I removed the conditional running of os-refresh-config.
-    # To my knowledge it wasn't really being used anymore, and if we do still
-    # need it, it should be reimplemented as a client parameter instead of
-    # an input env var.
-    # TODO(bnemec): Do we still need INSTACK_ROOT?
-    instack_env['INSTACK_ROOT'] = os.environ.get('INSTACK_ROOT') or ''
     _run_orc(instack_env)
     _post_config()
     _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
