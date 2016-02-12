@@ -59,6 +59,7 @@ context = {
     'INSPECTION_INTERFACE': os.environ.get('INSPECTION_INTERFACE', 'br-ctlplane'),
     'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
     'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'false'),
+    'ENABLE_MONITORING': os.environ.get('ENABLE_MONITORING', 'false'),
     'IPXE_DEPLOY': os.environ.get('IPXE_DEPLOY', 'true'),
     'UNDERCLOUD_ADMIN_VIP': os.environ.get('UNDERCLOUD_ADMIN_VIP', ''),
     'UNDERCLOUD_PUBLIC_VIP': os.environ.get('UNDERCLOUD_PUBLIC_VIP', ''),
