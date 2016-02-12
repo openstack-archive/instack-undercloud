@@ -322,6 +322,7 @@ include ::heat::api
 include ::heat::api_cfn
 include ::heat::engine
 include ::heat::keystone::domain
+include ::heat::cron::purge_deleted
 
 # We're creating the admin role and heat domain user in puppet and need
 # to make sure they are done in order.

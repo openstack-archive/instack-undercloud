@@ -125,6 +125,9 @@ heat::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_HEAT_INTERNAL}}
 heat::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_HEAT_ADMIN}}
 heat::keystone::auth::password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::keystone::auth::region: "%{hiera('keystone_region')}"
+heat::cron::purge_deleted::age: 1
+heat::cron::purge_deleted::age_type: 'days'
+heat::cron::purge_deleted::destination: '/dev/null'
 
 # Keystone
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
