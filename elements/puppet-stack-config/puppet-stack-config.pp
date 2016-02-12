@@ -171,12 +171,12 @@ file { '/etc/keystone/ssl/certs/ca.pem':
 
 # TODO: notifications, scrubber, etc.
 class { '::glance::api':
-  debug => hiera('debug'),
+  debug        => hiera('debug'),
 }
 class { '::glance::registry':
   debug => hiera('debug'),
 }
-include ::glance::backend::file
+include ::glance::backend::swift
 
 class { '::nova':
   rabbit_hosts       => [hiera('controller_host')],
