@@ -12,6 +12,8 @@ add-rule INPUT -p tcp -m multiport --dports 6080,13080 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 5900:5999 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 9292,13292 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8989,13989 -j ACCEPT #mistral
+add-rule INPUT -p tcp -m multiport --dports 8888,13888 -j ACCEPT #zaqar
+add-rule INPUT -p tcp -m multiport --dports 9000 -j ACCEPT #zaqar websockets
 add-rule INPUT -p tcp --dport 9191 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 6385,13385 -j ACCEPT
 add-rule FORWARD -d 192.0.2.0/24 -j ACCEPT

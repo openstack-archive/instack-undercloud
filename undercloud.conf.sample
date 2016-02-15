@@ -89,6 +89,9 @@
 # Whether to install Mistral in the Undercloud. (boolean value)
 #enable_mistral = false
 
+# Whether to install Zaqar in the Undercloud. (boolean value)
+#enable_zaqar = false
+
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 

@@ -185,6 +185,10 @@ _opts = [
                 default=False,
                 help=('Whether to install Mistral services in the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_zaqar',
+                default=False,
+                help=('Whether to install Zaqar services in the Undercloud.')
+                ),
     cfg.BoolOpt('ipxe_deploy',
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')

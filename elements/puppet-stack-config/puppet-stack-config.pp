@@ -461,6 +461,24 @@ if str2bool(hiera('enable_mistral', false)) {
   include ::mistral::executor
 }
 
+if str2bool(hiera('enable_zaqar', false)) {
+  include ::mongodb::globals
+  include ::mongodb::server
+  include ::mongodb::client
+
+  include ::zaqar
+  include ::zaqar::management::mongodb
+  include ::zaqar::messaging::mongodb
+  include ::zaqar::keystone::auth
+  include ::zaqar::transport::websocket
+  include ::zaqar::transport::wsgi
+
+  include ::zaqar::server
+  zaqar::server_instance{ 1:
+    transport => 'websocket'
+  }
+}
+
 if str2bool(hiera('enable_monitoring', true)) {
   # Deploy Redis (event storage), Sensu (Monitoring server)
   # and Uchiwa (Sensu dashboard)
