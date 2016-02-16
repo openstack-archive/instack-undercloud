@@ -393,6 +393,8 @@ mistral::keystone::auth::admin_url: http://{{LOCAL_IP}}:8989/v2
 mistral::keystone::auth::region: 'regionOne'
 mistral::keystone::auth::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::tenant: 'service'
+mistral::api::service_name: 'httpd'
+mistral::wsgi::apache::ssl: false
 
 # service tenant
 ceilometer::api::keystone_tenant: 'service'
