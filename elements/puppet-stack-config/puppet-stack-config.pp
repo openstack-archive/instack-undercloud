@@ -178,7 +178,10 @@ include ::nova::cert
 include ::nova::compute
 include ::nova::conductor
 include ::nova::scheduler
-include ::nova::scheduler::filter
+
+class {'::nova::scheduler::filter':
+  ram_allocation_ratio => hiera('nova::scheduler::filter::ram_allocation_ratio'),
+}
 
 class { '::neutron':
   rabbit_hosts => [hiera('controller_host')],
