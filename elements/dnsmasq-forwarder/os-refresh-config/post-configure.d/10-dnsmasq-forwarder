@@ -6,5 +6,5 @@ set -o pipefail
 systemctl enable dnsmasq-forwarder
 systemctl start dnsmasq-forwarder
 
-iptables -I INPUT -p udp --dport 53 -j ACCEPT
-iptables -I FORWARD -j ACCEPT
+iptables -w -I INPUT -p udp --dport 53 -j ACCEPT
+iptables -w -I FORWARD -j ACCEPT
