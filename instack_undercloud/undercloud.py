@@ -15,6 +15,7 @@
 import copy
 import errno
 import getpass
+import glob
 import hashlib
 import logging
 import os
@@ -752,7 +753,8 @@ def _copy_stackrc():
 
 
 def _clean_os_refresh_config():
-    args = ['sudo', 'rm', '-rf', '/usr/libexec/os-refresh-config/*']
+    orc_dirs = glob.glob('/usr/libexec/os-refresh-config/*')
+    args = ['sudo', 'rm', '-rf'] + orc_dirs
     _run_command(args, name='Clean os-refresh-config')
 
 
