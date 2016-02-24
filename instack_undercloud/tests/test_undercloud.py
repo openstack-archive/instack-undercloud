@@ -301,6 +301,12 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         self.assertEqual('', env['UNDERCLOUD_SERVICE_CERTIFICATE'])
 
+    def test_remove_dib_yum_repo_conf(self):
+        self.useFixture(fixtures.EnvironmentVariable('DIB_YUM_REPO_CONF',
+                                                     'rum_yepo.conf'))
+        env = undercloud._generate_environment('.')
+        self.assertNotIn(env, 'DIB_YUM_REPO_CONF')
+
 
 class TestWritePasswordFile(BaseTestCase):
     def test_normal(self):
