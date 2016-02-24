@@ -336,14 +336,7 @@ nova_config {
 }
 
 include ::nova::compute::ironic
-
-class { '::nova::network::neutron':
-  neutron_admin_auth_url    => join(['http://', hiera('controller_host'), ':35357/v2.0']),
-  neutron_url               => join(['http://', hiera('controller_host'), ':9696']),
-  neutron_admin_password    => hiera('neutron::server::auth_password'),
-  neutron_admin_tenant_name => hiera('neutron::server::auth_tenant'),
-  neutron_region_name       => '',
-}
+include ::nova::network::neutron
 
 class { '::ironic::conductor':
   force_power_state_during_sync => hiera('ironic::conductor::force_power_state_during_sync'),
