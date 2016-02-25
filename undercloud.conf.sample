@@ -99,6 +99,14 @@
 # value)
 #enable_monitoring = false
 
+# Maximum number of attempts the scheduler will make when deploying
+# the instance. You should keep it greater or equal to the number of
+# bare metal nodes you expect to deploy at once to work around
+# potential race condition when scheduling. (integer value)
+# Minimum value: 1
+#scheduler_max_attempts = 30
+
+
 [auth]
 
 #
