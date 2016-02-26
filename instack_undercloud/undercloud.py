@@ -237,8 +237,12 @@ _auth_opts = [
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_ceilometer_snmpd_user',
-               help=('Ceilometer snmpd user. '
-                     'If left unset, one will be automatically generated.')
+               default='ro_snmp_user',
+               help=('Ceilometer snmpd read-only user. If this value is '
+                     'changed from the default, the new value must be passed '
+                     'in the overcloud environment as the parameter '
+                     'SnmpdReadonlyUserName. This value must be between '
+                     '1 and 32 characters long.')
                ),
     cfg.StrOpt('undercloud_ceilometer_snmpd_password',
                help=('Ceilometer snmpd password. '
