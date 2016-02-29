@@ -655,9 +655,13 @@ def _generate_environment(instack_root):
     else:
         instack_env['INSPECTION_COLLECTORS'] = 'default,logs'
 
+    inspection_kernel_args = []
+    if CONF.undercloud_debug:
+        inspection_kernel_args.append('ipa-debug=1')
     if CONF.inspection_runbench:
-        instack_env['INSPECTION_KERNEL_ARGS'] = (
-            'ipa-inspection-benchmarks=cpu,mem,disk')
+        inspection_kernel_args.append('ipa-inspection-benchmarks=cpu,mem,disk')
+
+    instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
 
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
