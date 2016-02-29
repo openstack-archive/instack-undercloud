@@ -446,12 +446,14 @@ class TestConfigureSshKeys(base.BaseTestCase):
 
 class TestPostConfig(base.BaseTestCase):
     @mock.patch('novaclient.client.Client', autospec=True)
+    @mock.patch('instack_undercloud.undercloud._delete_default_flavors')
     @mock.patch('instack_undercloud.undercloud._copy_stackrc')
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
     @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
     @mock.patch('instack_undercloud.undercloud._ensure_flavor')
     def test_post_config(self, mock_ensure_flavor, mock_configure_ssh_keys,
-                         mock_get_auth_values, mock_copy_stackrc, mock_client):
+                         mock_get_auth_values, mock_copy_stackrc, mock_delete,
+                         mock_client):
         mock_get_auth_values.return_value = ('aturing', '3nigma', 'hut8',
                                              'http://bletchley:5000/v2.0')
         mock_instance = mock.Mock()
@@ -518,3 +520,15 @@ class TestPostConfig(base.BaseTestCase):
         values = undercloud._get_auth_values()
         expected = ('aturing', '3nigma', 'hut8', 'http://bletchley:5000/v2.0')
         self.assertEqual(expected, values)
+
+    def test_delete_default_flavors(self):
+        class FakeFlavor(object):
+            def __init__(self, id_, name):
+                self.id = id_
+                self.name = name
+        mock_instance = mock.Mock()
+        mock_flavors = [FakeFlavor('f00', 'foo'),
+                        FakeFlavor('8ar', 'm1.large')]
+        mock_instance.flavors.list.return_value = mock_flavors
+        undercloud._delete_default_flavors(mock_instance)
+        mock_instance.flavors.delete.assert_called_once_with('8ar')

@@ -92,13 +92,6 @@ if [ "$net_create" -eq "1" ]; then
     rm $NETWORK_JSON
 fi
 
-# Delete initial flavors
-for flavor in m1.tiny m1.small m1.medium m1.large m1.xlarge; do
-    if nova flavor-show "$flavor" &> /dev/null; then
-        nova flavor-delete "$flavor"
-    fi
-done
-
 # Disable nova quotas
 nova quota-update --cores -1 --instances -1 --ram -1 $(openstack project show admin | awk '$2=="id" {print $4}')
 

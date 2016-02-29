@@ -741,6 +741,17 @@ def _configure_ssh_keys(nova):
             nova.keypairs.create('default', pubkey.read().rstrip())
 
 
+def _delete_default_flavors(nova):
+    """Delete the default flavors from Nova
+
+    The m1.tiny, m1.small, etc. flavors are not useful on an undercloud.
+    """
+    to_delete = ['m1.tiny', 'm1.small', 'm1.medium', 'm1.large', 'm1.xlarge']
+    for f in nova.flavors.list():
+        if f.name in to_delete:
+            nova.flavors.delete(f.id)
+
+
 def _ensure_flavor(nova, name, profile=None):
     try:
         flavor = nova.flavors.create(name, 4096, 1, 40)
@@ -775,6 +786,7 @@ def _post_config():
     nova = novaclient.Client(2, user, password, tenant, auth_url)
 
     _configure_ssh_keys(nova)
+    _delete_default_flavors(nova)
 
     _ensure_flavor(nova, 'baremetal')
     _ensure_flavor(nova, 'control', 'control')
