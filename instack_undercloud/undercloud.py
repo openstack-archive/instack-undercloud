@@ -645,6 +645,10 @@ def _generate_environment(instack_root):
     if instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
         instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = os.path.abspath(
             instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+    # We're not in a chroot so this doesn't make sense, and it causes weird
+    # errors if it's set.
+    if instack_env.get('DIB_YUM_REPO_CONF'):
+        del instack_env['DIB_YUM_REPO_CONF']
 
     _generate_endpoints(instack_env)
 
