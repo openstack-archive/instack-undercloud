@@ -89,6 +89,10 @@
 #ipxe_deploy = true
 
 
+# Whether to store events in the Undercloud Ceilometer. (boolean
+# value)
+#store_events = false
+
 # Maximum number of attempts the scheduler will make when deploying
 # the instance. You should keep it greater or equal to the number of
 # bare metal nodes you expect to deploy at once to work around
