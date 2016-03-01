@@ -184,6 +184,13 @@ _opts = [
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')
                 ),
+    cfg.IntOpt('scheduler_max_attempts',
+               default=30, min=1,
+               help=('Maximum number of attempts the scheduler will make '
+                     'when deploying the instance. You should keep it '
+                     'greater or equal to the number of bare metal nodes '
+                     'you expect to deploy at once to work around '
+                     'potential race condition when scheduling.')),
 ]
 
 # Passwords, tokens, hashes
