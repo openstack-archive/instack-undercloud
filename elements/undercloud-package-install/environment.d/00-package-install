@@ -20,8 +20,6 @@ export DIB_INSTALLTYPE_ceilometer=${DIB_INSTALLTYPE_ceilometer:-package}
 export DIB_INSTALLTYPE_ironic=${DIB_INSTALLTYPE_ironic:-package}
 export DIB_INSTALLTYPE_nova=${DIB_INSTALLTYPE_nova:-package}
 export DIB_INSTALLTYPE_horizon=${DIB_INSTALLTYPE_horizon:-package}
-export DIB_INSTALLTYPE_tuskar=${DIB_INSTALLTYPE_tuskar:-package}
-export DIB_INSTALLTYPE_tuskar_ui=${DIB_INSTALLTYPE_tuskar_ui:-package}
 
 # Clients
 export DIB_INSTALLTYPE_python_cinderclient=${DIB_INSTALLTYPE_python_cinderclient:-package}
@@ -33,8 +31,7 @@ export DIB_INSTALLTYPE_python_novaclient=${DIB_INSTALLTYPE_python_novaclient:-pa
 export DIB_INSTALLTYPE_python_swiftclient=${DIB_INSTALLTYPE_python_swiftclient:-package}
 export DIB_INSTALLTYPE_python_ceilometerclient=${DIB_INSTALLTYPE_python_ceilometerclient:-package}
 export DIB_INSTALLTYPE_python_ironicclient=${DIB_INSTALLTYPE_python_ironicclient:-package}
-export DIB_INSTALLTYPE_python_tuskarclient=${DIB_INSTALLTYPE_python_tuskarclient:-package}
-export DIB_INSTALLTYPE_python_openstackclient=${DIB_INSTALLTYPE_python_tuskarclient:-package}
+export DIB_INSTALLTYPE_python_openstackclient=${DIB_INSTALLTYPE_python_openstackclient:-package}
 
 # os-*-config
 export DIB_INSTALLTYPE_os_collect_config=${DIB_INSTALLTYPE_os_collect_config:-package}

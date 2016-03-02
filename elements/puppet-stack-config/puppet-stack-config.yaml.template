@@ -318,14 +318,6 @@ ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
 ironic::inspector::ramdisk_collectors: 'default,logs'
 
-# Tuskar
-tuskar::keystone::auth::tenant: 'service'
-tuskar::keystone::auth::public_url: http://{{LOCAL_IP}}:8585/v2
-tuskar::keystone::auth::internal_url: http://{{LOCAL_IP}}:8585/v2
-tuskar::keystone::auth::admin_url: http://{{LOCAL_IP}}:8585/v2
-tuskar::keystone::auth::password: {{UNDERCLOUD_TUSKAR_PASSWORD}}
-tuskar::keystone::auth::region: "%{hiera('keystone_region')}"
-
 # Rabbit
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
 rabbitmq::delete_guest_user: false
@@ -356,6 +348,5 @@ nova::api::admin_tenant_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
 
 # Options
-enable_tuskar: {{ENABLE_TUSKAR}}
 enable_tempest: {{ENABLE_TEMPEST}}
 ipxe_deploy: {{IPXE_DEPLOY}}
