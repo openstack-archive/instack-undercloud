@@ -1,6 +1,6 @@
 keystone_identity_uri: http://{{LOCAL_IP}}:35357/
-nova_admin_auth_url: http://{{LOCAL_IP}}:35357/v2.0
-keystone_auth_uri: http://{{LOCAL_IP}}:5000/v2.0/
+nova_admin_auth_url: http://{{LOCAL_IP}}:35357/
+keystone_auth_uri: http://{{LOCAL_IP}}:5000/v3
 keystone_region: 'regionOne'
 
 debug: {{UNDERCLOUD_DEBUG}}
@@ -282,14 +282,14 @@ ironic::inspector::keep_ports: 'added'
 ironic::inspector::ironic_username: 'ironic'
 ironic::inspector::ironic_password: "%{hiera('ironic::api::admin_password')}"
 ironic::inspector::ironic_tenant_name: 'service'
-ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri')}"
+ironic::inspector::ironic_auth_url: "http://{{LOCAL_IP}}:5000/v2.0"
 ironic::inspector::ironic_max_retries: 6
 ironic::inspector::ironic_retry_interval: 10
 ironic::inspector::store_data: 'swift'
 ironic::inspector::swift_username: 'ironic'
 ironic::inspector::swift_password: "%{hiera('ironic::api::admin_password')}"
 ironic::inspector::swift_tenant_name: 'service'
-ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri')}"
+ironic::inspector::swift_auth_url: "http://{{LOCAL_IP}}:5000/v2.0"
 ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
