@@ -288,6 +288,7 @@ nova::compute::force_config_drive: true
 nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
 nova::compute::reserved_host_memory: '0'
 nova::compute::vnc_enabled: false
+nova_sync_power_state_interval: -1
 
 nova::compute::ironic::admin_username: 'ironic'
 nova::compute::ironic::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
