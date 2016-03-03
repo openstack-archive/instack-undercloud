@@ -18,6 +18,7 @@ context = {
     'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
     'PUBLIC_INTERFACE_IP': os.environ.get('PUBLIC_INTERFACE_IP', '192.0.2.1/24'),
     'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
+    'LOCAL_MTU': os.environ.get('LOCAL_MTU', 1500),
     'MASQUERADE_NETWORK': os.environ.get('MASQUERADE_NETWORK', '192.0.2.0/24'),
     'DHCP_START': os.environ.get('DHCP_START', '192.0.2.5'),
     'DHCP_END': os.environ.get('DHCP_END', '192.0.2.24'),

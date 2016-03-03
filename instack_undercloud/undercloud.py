@@ -132,6 +132,10 @@ _opts = [
                      'handling the PXE boots and DHCP for Overcloud '
                      'instances.')
                ),
+    cfg.IntOpt('local_mtu',
+               default=1500,
+               help=('MTU to use for the local_interface.')
+               ),
     cfg.StrOpt('network_cidr',
                default='192.0.2.0/24',
                help=('Network CIDR for the Neutron-managed network for '

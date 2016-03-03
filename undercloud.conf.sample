@@ -47,6 +47,9 @@
 # boots and DHCP for Overcloud instances. (string value)
 #local_interface = eth1
 
+# MTU to use for the local_interface. (integer value)
+#local_mtu = 1500
+
 # Network CIDR for the Neutron-managed network for Overcloud
 # instances. This should be the subnet used for PXE booting. (string
 # value)
