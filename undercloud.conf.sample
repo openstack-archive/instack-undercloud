@@ -75,7 +75,13 @@
 # Deprecated group/name - [DEFAULT]/discovery_iprange
 #inspection_iprange = 192.0.2.100,192.0.2.120
 
-# Whether to run benchmarks when inspecting nodes. (boolean value)
+# Whether to enable extra hardware collection during the inspection
+# process. Requires python-hardware or python-hardware-detect package
+# on the introspection image. (boolean value)
+#inspection_extras = true
+
+# Whether to run benchmarks when inspecting nodes. Requires
+# inspection_extras set to True. (boolean value)
 # Deprecated group/name - [DEFAULT]/discovery_runbench
 #inspection_runbench = false
 
