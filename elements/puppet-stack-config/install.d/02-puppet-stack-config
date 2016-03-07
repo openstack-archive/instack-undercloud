@@ -77,6 +77,7 @@ context = {
     'KEYSTONE_CA_KEY':
         open(os.path.join(keystone_pki_dir, 'ca_key.pem')).read(),
     'SCHEDULER_MAX_ATTEMPTS': os.environ.get('SCHEDULER_MAX_ATTEMPTS', 30),
+    'CLEAN_NODES': os.environ.get('CLEAN_NODES', 'false'),
 }
 
 endpoint_context = {}
