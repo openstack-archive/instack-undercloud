@@ -74,7 +74,6 @@ glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_port: 9292
 glance_protocol: http
-glance_notifier_strategy: noop
 glance_log_file: ''
 glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::bind_host: {{LOCAL_IP}}
@@ -98,6 +97,9 @@ glance::backend::swift::swift_store_auth_address: http://{{LOCAL_IP}}:35357/v2.0
 glance::backend::swift::swift_store_user: service:glance
 glance::backend::swift::swift_store_key: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::backend::swift::swift_store_create_container_on_put: true
+glance::notify::rabbitmq::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+glance::notify::rabbitmq::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+glance::notify::rabbitmq::rabbit_host: {{LOCAL_IP}}
 
 # Heat
 heat_stack_domain_admin_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
@@ -132,6 +134,7 @@ heat::keystone::auth::region: "%{hiera('keystone_region')}"
 heat::cron::purge_deleted::age: 1
 heat::cron::purge_deleted::age_type: 'days'
 heat::cron::purge_deleted::destination: '/dev/null'
+heat::notification_driver: 'messaging'
 
 # Keystone
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
@@ -150,6 +153,11 @@ keystone::endpoint::admin_url: "%{hiera('keystone_identity_uri')}"
 keystone::endpoint::region: "%{hiera('keystone_region')}"
 keystone::wsgi::apache::ssl: false
 keystone::wsgi::apache::bind_host: {{LOCAL_IP}}
+keystone::notification_driver: messaging
+keystone::notification_topics: notifications
+keystone::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+keystone::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+keystone::rabbit_host: {{LOCAL_IP}}
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
@@ -269,6 +277,7 @@ aodh::keystone::auth::region: "%{hiera('keystone_region')}"
 # Nova
 nova::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 nova::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+nova::notification_driver: messaging
 nova::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 nova::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 nova::api::api_bind_address: {{LOCAL_IP}}
