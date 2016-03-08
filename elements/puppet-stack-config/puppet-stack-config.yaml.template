@@ -244,6 +244,7 @@ ceilometer::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
 ceilometer::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
+ceilometer::agent::notification::store_events: {{STORE_EVENTS}}
 ceilometer_compute_agent: ''
 snmpd_readonly_user_name: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
 snmpd_readonly_user_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}

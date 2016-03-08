@@ -206,6 +206,10 @@ _opts = [
                 help=('Whether to install Monitoring services in the '
                       'Undercloud.')
                 ),
+    cfg.BoolOpt('store_events',
+                default=False,
+                help=('Whether to store events in the Undercloud Ceilometer.')
+                ),
     cfg.IntOpt('scheduler_max_attempts',
                default=30, min=1,
                help=('Maximum number of attempts the scheduler will make '
