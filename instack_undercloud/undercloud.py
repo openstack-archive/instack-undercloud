@@ -313,6 +313,10 @@ _auth_opts = [
                help=('Sensu service password. '
                      'If left unset, one will be automatically generated.')
                ),
+    cfg.StrOpt('undercloud_haproxy_stats_password',
+               help=('HAProxy stats password. '
+                     'If left unset, one will be automatically generated.')
+               ),
 ]
 CONF.register_opts(_opts)
 CONF.register_opts(_auth_opts, group='auth')
