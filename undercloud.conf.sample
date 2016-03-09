@@ -88,7 +88,6 @@
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 
-
 # Whether to store events in the Undercloud Ceilometer. (boolean
 # value)
 #store_events = false
@@ -143,13 +142,13 @@
 # generated. (string value)
 #undercloud_ironic_password = <None>
 
+# Aodh service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_aodh_password = <None>
+
 # Ceilometer service password. If left unset, one will be
 # automatically generated. (string value)
 #undercloud_ceilometer_password = <None>
-
-# Aodh service password. If left unset, one will be
-# automatically generated. (string value)
-#undercloud_aodh_password = <None>
 
 # Ceilometer metering secret. If left unset, one will be automatically
 # generated. (string value)
@@ -188,3 +187,7 @@
 # Swift hash suffix. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_swift_hash_suffix = <None>
+
+# HAProxy stats password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_haproxy_stats_password = <None>

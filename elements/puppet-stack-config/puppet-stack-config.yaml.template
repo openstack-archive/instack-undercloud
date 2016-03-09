@@ -350,6 +350,9 @@ horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}
 horizon::wsgi::apache::priority: 10
 horizon::openstack_endpoint_type: internalURL
 
+# Loadbalancer
+tripleo::loadbalancer::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
+
 # service tenant
 ceilometer::api::keystone_tenant: 'service'
 aodh::api::keystone_tenant: 'service'
