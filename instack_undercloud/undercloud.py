@@ -163,7 +163,7 @@ _opts = [
                      'be in the same network.')
                ),
     cfg.BoolOpt('inspection_extras',
-                default=False,
+                default=True,
                 help=('Whether to enable extra hardware collection during '
                       'the inspection process. Requires python-hardware or '
                       'python-hardware-detect package on the introspection '

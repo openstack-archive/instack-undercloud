@@ -71,7 +71,7 @@
 # Whether to enable extra hardware collection during the inspection
 # process. Requires python-hardware or python-hardware-detect package
 # on the introspection image. (boolean value)
-#inspection_extras = false
+#inspection_extras = true
 
 # Whether to run benchmarks when inspecting nodes. Requires
 # inspection_extras set to True. (boolean value)
