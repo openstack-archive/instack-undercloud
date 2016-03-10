@@ -79,10 +79,10 @@ glance_port: 9292
 glance_protocol: http
 glance_notifier_strategy: noop
 glance_log_file: ''
-glance::api::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
+glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::bind_host: {{LOCAL_IP}}
 glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
-glance::registry::database_connection: mysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
+glance::registry::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::registry::registry_host: {{LOCAL_IP}}
 glance::registry::bind_host: {{LOCAL_IP}}
@@ -124,8 +124,8 @@ heat::keystone::domain::domain_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PA
 heat::api::bind_host: {{LOCAL_IP}}
 heat::api_cloudwatch::bind_host: {{LOCAL_IP}}
 heat::api_cfn::bind_host: {{LOCAL_IP}}
-heat::database_connection: mysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
-heat_dsn: mysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
+heat::database_connection: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
+heat_dsn: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat::rpc_response_timeout: 600
 heat::keystone::auth::tenant: 'service'
 heat::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_HEAT_PUBLIC}}
@@ -142,7 +142,7 @@ keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
 keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
 keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
 keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
-keystone::database_connection: mysql://keystone:{{UNDERCLOUD_ADMIN_TOKEN}}@{{LOCAL_IP}}/keystone
+keystone::database_connection: mysql+pymysql://keystone:{{UNDERCLOUD_ADMIN_TOKEN}}@{{LOCAL_IP}}/keystone
 keystone::roles::admin::password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 keystone::roles::admin::email: 'root@localhost'
 keystone::roles::admin::admin_tenant: 'admin'
@@ -172,7 +172,7 @@ neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 neutron::server::auth_uri: "%{hiera('keystone_auth_uri')}"
 neutron::server::identity_uri: "%{hiera('keystone_identity_uri')}"
-neutron::server::database_connection: mysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
+neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::enable_tunneling: True
 neutron::agents::ml2::ovs::local_ip: {{LOCAL_IP}}
@@ -204,7 +204,7 @@ ceilometer::api::host: {{LOCAL_IP}}
 ceilometer::api::keystone_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
-ceilometer::db::database_connection: mysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
+ceilometer::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::agent::notification::store_events: {{STORE_EVENTS}}
 ceilometer_compute_agent: ''
@@ -249,7 +249,7 @@ nova::api::admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::api::osapi_v3: true
 nova::conductor::enabled: true
 nova::consoleauth::enabled: true
-nova::database_connection: mysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
+nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
 nova::network::neutron::neutron_admin_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 nova::notify_on_state_change: 'vm_and_task_state'
 nova::scheduler::enabled: true
@@ -282,7 +282,7 @@ nova::keystone::auth::configure_ec2_endpoint: false
 # Ironic
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::api::auth_host: {{LOCAL_IP}}
-ironic::database_connection: mysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
+ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
 ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
