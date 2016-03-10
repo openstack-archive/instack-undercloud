@@ -277,7 +277,8 @@ class { '::ceilometer::agent::auth':
   auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
 }
 
-Cron <| title == 'ceilometer-expirer' |> { command => "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
+Cron <| title == 'ceilometer-expirer' |> { command =>
+  "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
 
 # TODO: add support for setting these to puppet-ceilometer
 ceilometer_config {
