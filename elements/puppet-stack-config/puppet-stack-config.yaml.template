@@ -316,6 +316,8 @@ nova::network::neutron::neutron_auth_plugin: 'v3password'
 nova::scheduler::filter::ram_allocation_ratio: '1.0'
 nova::scheduler::filter::scheduler_host_manager: 'nova.scheduler.ironic_host_manager.IronicHostManager'
 nova::scheduler::filter::scheduler_max_attempts: {{SCHEDULER_MAX_ATTEMPTS}}
+nova::scheduler::filter::scheduler_available_filters: 'tripleo_common.filters.list.tripleo_filters'
+nova::scheduler::filter::scheduler_default_filters: ['RetryFilter', 'TripleOCapabilitiesFilter', 'ComputeCapabilitiesFilter', 'AvailabilityZoneFilter', 'RamFilter', 'DiskFilter', 'ComputeFilter', 'ImagePropertiesFilter', 'ServerGroupAntiAffinityFilter', 'ServerGroupAffinityFilter']
 
 nova::keystone::auth::tenant: 'service'
 nova::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_NOVA_PUBLIC}}
