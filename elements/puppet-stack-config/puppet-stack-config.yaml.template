@@ -145,13 +145,13 @@ keystone::roles::admin::password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 keystone::roles::admin::email: 'root@localhost'
 keystone::roles::admin::admin_tenant: 'admin'
 keystone::roles::admin::service_tenant: 'service'
-keystone::public_bind_host: 0.0.0.0
-keystone::admin_bind_host: 0.0.0.0
 keystone::token_expiration: 14400
 keystone::endpoint::public_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
 keystone::endpoint::internal_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL}}
 keystone::endpoint::admin_url: "%{hiera('keystone_identity_uri')}"
 keystone::endpoint::region: "%{hiera('keystone_region')}"
+keystone::wsgi::apache::ssl: false
+keystone::wsgi::apache::bind_host: {{LOCAL_IP}}
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
