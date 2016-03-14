@@ -217,7 +217,7 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         # Just spot check, we don't want to replicate the entire opt list here
         self.assertEqual(env['INSPECTION_COLLECTORS'],
-                         'default,logs')
+                         'default,extra-hardware,logs')
         self.assertEqual('192.0.2.1/24', env['PUBLIC_INTERFACE_IP'])
         self.assertEqual('192.0.2.1', env['LOCAL_IP'])
 
