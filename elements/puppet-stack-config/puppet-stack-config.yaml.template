@@ -1,5 +1,5 @@
-keystone_identity_uri: http://{{LOCAL_IP}}:35357/
-nova_admin_auth_url: http://{{LOCAL_IP}}:35357/
+keystone_identity_uri: http://{{LOCAL_IP}}:35357
+nova_admin_auth_url: http://{{LOCAL_IP}}:35357
 keystone_auth_uri: http://{{LOCAL_IP}}:5000/v3
 keystone_region: 'regionOne'
 
