@@ -25,12 +25,32 @@ class { '::mysql::server':
     'mysqld' => {
       'bind-address'          => hiera('controller_host'),
       'max_connections'       => hiera('mysql_max_connections'),
-      'open_files_limit'      => '-1',
       'innodb_file_per_table' => 'ON',
     },
   },
   restart          => true
 }
+
+# Raise the mysql file limit
+exec { 'systemctl-daemon-reload':
+  command => '/bin/systemctl daemon-reload'
+}
+file { '/etc/systemd/system/mariadb.service.d':
+  ensure => 'directory',
+  owner  => 'root',
+  group  => 'root',
+  mode   => '0755',
+}
+file { '/etc/systemd/system/mariadb.service.d/limits.conf':
+  ensure  => 'file',
+  owner   => 'root',
+  group   => 'root',
+  mode    => '0644',
+  content => "[Service]\nLimitNOFILE=16384\n",
+  require => File['/etc/systemd/system/mariadb.service.d'],
+  notify  => [Exec['systemctl-daemon-reload'], Service['mysqld']],
+}
+Exec['systemctl-daemon-reload'] -> Service['mysqld']
 
 # FIXME: this should only occur on the bootstrap host (ditto for db syncs)
 # Create all the database schemas
