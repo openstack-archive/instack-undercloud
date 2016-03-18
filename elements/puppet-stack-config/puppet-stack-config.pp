@@ -397,6 +397,7 @@ ironic_config {
   'inspector/enabled':            value => true;
   'pxe/http_url':                 value => 'http://$my_ip:8088';
   'pxe/http_root':                value => '/httpboot';
+  'pxe/ipxe_timeout':             value => '60';
   'conductor/clean_nodes':        value => hiera('ironic::conductor::clean_nodes');
 }
 
