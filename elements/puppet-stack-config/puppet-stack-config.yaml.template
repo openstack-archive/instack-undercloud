@@ -416,6 +416,10 @@ ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
 ironic::inspector::ramdisk_collectors: {{INSPECTION_COLLECTORS}}
 ironic::inspector::additional_processing_hooks: 'extra_hardware'
 ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}
+ironic::inspector::ipxe_timeout: 60
+
+# Ironic PXE driver
+ironic::drivers::pxe::ipxe_timeout: 60
 
 # Ironic deploy utils
 ironic::drivers::deploy::http_url: "http://{{LOCAL_IP}}:8088"
