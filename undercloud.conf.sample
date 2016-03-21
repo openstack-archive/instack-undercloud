@@ -92,10 +92,11 @@
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = true
 
-# Whether to install Mistral in the Undercloud. (boolean value)
+# Whether to install Mistral services in the Undercloud. (boolean
+# value)
 #enable_mistral = false
 
-# Whether to install Zaqar in the Undercloud. (boolean value)
+# Whether to install Zaqar services in the Undercloud. (boolean value)
 #enable_zaqar = false
 
 # Whether to use iPXE for deploy by default. (boolean value)
@@ -159,17 +160,13 @@
 # generated. (string value)
 #undercloud_ironic_password = <None>
 
+# Aodh service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_aodh_password = <None>
+
 # Ceilometer service password. If left unset, one will be
 # automatically generated. (string value)
 #undercloud_ceilometer_password = <None>
-
-# Aodh service password. If left unset, one will be
-# automatically generated. (string value)
-#undercloud_aodh_password = <None>
-
-# Sensu service password. If left unset, one will be automatically
-# generated. (string value)
-#undercloud_sensu_password = <None>
 
 # Ceilometer metering secret. If left unset, one will be automatically
 # generated. (string value)
@@ -212,3 +209,11 @@
 # Swift hash suffix. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_swift_hash_suffix = <None>
+
+# Sensu service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_sensu_password = <None>
+
+# HAProxy stats password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_haproxy_stats_password = <None>

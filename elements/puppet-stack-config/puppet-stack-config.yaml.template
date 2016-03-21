@@ -438,6 +438,9 @@ zaqar::transport::wsgi::bind: {{LOCAL_IP}}
 zaqar::management::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::messaging::mongodb::uri: mongodb://127.0.0.1:27017
 
+# Loadbalancer
+tripleo::loadbalancer::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
+
 # service tenant
 ceilometer::api::keystone_tenant: 'service'
 aodh::api::keystone_tenant: 'service'
