@@ -64,7 +64,7 @@ context = {
     'INSPECTION_KERNEL_ARGS': os.environ.get('INSPECTION_KERNEL_ARGS', ''),
     'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
     'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'true'),
-    'ENABLE_ZAQAR': os.environ.get('ENABLE_ZAQAR', 'false'),
+    'ENABLE_ZAQAR': os.environ.get('ENABLE_ZAQAR', 'true'),
     'ENABLE_MONITORING': os.environ.get('ENABLE_MONITORING', 'false'),
     'IPXE_DEPLOY': os.environ.get('IPXE_DEPLOY', 'true'),
     'UNDERCLOUD_ADMIN_VIP': os.environ.get('UNDERCLOUD_ADMIN_VIP', ''),

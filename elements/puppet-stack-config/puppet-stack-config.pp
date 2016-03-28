@@ -484,7 +484,7 @@ if str2bool(hiera('enable_mistral', true)) {
   include ::mistral::executor
 }
 
-if str2bool(hiera('enable_zaqar', false)) {
+if str2bool(hiera('enable_zaqar', true)) {
   include ::mongodb::globals
   include ::mongodb::server
   include ::mongodb::client
