@@ -31,14 +31,16 @@
        {
         "type": "interface",
         "name": "{{LOCAL_INTERFACE}}",
-        "primary": "true"
+        "primary": "true",
+        "mtu": {{LOCAL_MTU}}
        }
       ],
       "addresses": [
         {
           "ip_netmask": "{{PUBLIC_INTERFACE_IP}}"
         }
-      ]
+      ],
+      "mtu": {{LOCAL_MTU}}
     }
    ]
   },
