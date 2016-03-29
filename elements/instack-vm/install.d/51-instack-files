@@ -3,8 +3,6 @@
 set -eu
 set -o pipefail
 
-install-packages net-tools yum-utils git
-
 useradd -m stack
 
 cat > /etc/sudoers.d/stack <<eof
