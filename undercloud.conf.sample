@@ -97,7 +97,7 @@
 
 # Whether to install Mistral services in the Undercloud. (boolean
 # value)
-#enable_mistral = false
+#enable_mistral = true
 
 # Whether to install Zaqar services in the Undercloud. (boolean value)
 #enable_zaqar = false

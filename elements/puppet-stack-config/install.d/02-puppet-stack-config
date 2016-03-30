@@ -64,7 +64,7 @@ context = {
     'INSPECTION_COLLECTORS': os.environ.get('INSPECTION_COLLECTORS', 'default,logs'),
     'INSPECTION_KERNEL_ARGS': os.environ.get('INSPECTION_KERNEL_ARGS', ''),
     'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
-    'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'false'),
+    'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'true'),
     'ENABLE_ZAQAR': os.environ.get('ENABLE_ZAQAR', 'false'),
     'ENABLE_MONITORING': os.environ.get('ENABLE_MONITORING', 'false'),
     'IPXE_DEPLOY': os.environ.get('IPXE_DEPLOY', 'true'),

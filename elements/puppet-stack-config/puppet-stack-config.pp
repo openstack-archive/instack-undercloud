@@ -466,7 +466,7 @@ if str2bool(hiera('enable_docker_registry', true)) {
   }
 }
 
-if str2bool(hiera('enable_mistral', false)) {
+if str2bool(hiera('enable_mistral', true)) {
   include ::mistral
   $mistral_dsn = split(hiera('mistral::database_connection'), '[@:/?]')
   class { '::mistral::db::mysql':

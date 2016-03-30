@@ -194,7 +194,7 @@ _opts = [
                 help=('Whether to install Tempest in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_mistral',
-                default=False,
+                default=True,
                 help=('Whether to install Mistral services in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_zaqar',
