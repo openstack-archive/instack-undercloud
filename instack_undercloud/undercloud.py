@@ -321,6 +321,14 @@ _auth_opts = [
                help=('HAProxy stats password. '
                      'If left unset, one will be automatically generated.')
                ),
+    cfg.StrOpt('undercloud_zaqar_password',
+               help=('Zaqar password. '
+                     'If left unset, one will be automatically generated.')
+               ),
+    cfg.StrOpt('undercloud_horizon_secret_key',
+               help=('Horizon secret key. '
+                     'If left unset, one will be automatically generated.')
+               ),
 ]
 CONF.register_opts(_opts)
 CONF.register_opts(_auth_opts, group='auth')

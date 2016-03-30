@@ -220,3 +220,11 @@
 # HAProxy stats password. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_haproxy_stats_password = <None>
+
+# Zaqar password. If left unset, one will be automatically generated.
+# (string value)
+#undercloud_zaqar_password = <None>
+
+# Horizon secret key. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_horizon_secret_key = <None>
