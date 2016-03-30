@@ -86,7 +86,7 @@ export NODE_COUNT=${NODE_COUNT:-2}
 export NODE_CNT=$NODE_COUNT
 
 export NODE_ARCH=x86_64
-export NODE_MEM=${NODE_MEM:-4096}
+export NODE_MEM=${NODE_MEM:-5120}
 export NODE_CPU=${NODE_CPU:-1}
 
 
