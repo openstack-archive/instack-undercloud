@@ -238,10 +238,6 @@ _auth_opts = [
                help=('Ironic service password. '
                      'If left unset, one will be automatically generated.')
                ),
-    cfg.StrOpt('undercloud_aodh_password',
-               help=('Aodh service password. '
-                     'If left unset, one will be automatically generated.')
-               ),
     cfg.StrOpt('undercloud_ceilometer_password',
                help=('Ceilometer service password. '
                      'If left unset, one will be automatically generated.')
