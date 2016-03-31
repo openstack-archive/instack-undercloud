@@ -79,6 +79,7 @@ glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PAS
 glance::registry::bind_host: {{LOCAL_IP}}
 glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::registry::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
+glance::registry::auth_uri: "%{hiera('keystone_auth_uri')}"
 glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::registry::registry_host: {{LOCAL_IP}}
 glance::registry::bind_host: {{LOCAL_IP}}
