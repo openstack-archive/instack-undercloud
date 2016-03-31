@@ -120,6 +120,10 @@
 # Minimum value: 1
 #scheduler_max_attempts = 30
 
+# Whether to clean overcloud nodes (wipe the hard drive) between
+# deployments and after the introspection. (boolean value)
+#clean_nodes = false
+
 
 [auth]
 

@@ -221,6 +221,10 @@ _opts = [
                      'greater or equal to the number of bare metal nodes '
                      'you expect to deploy at once to work around '
                      'potential race condition when scheduling.')),
+    cfg.BoolOpt('clean_nodes',
+                default=False,
+                help=('Whether to clean overcloud nodes (wipe the hard drive) '
+                      'between deployments and after the introspection.')),
 ]
 
 # Passwords, tokens, hashes
