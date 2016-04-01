@@ -94,7 +94,8 @@ glance::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
 glance::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_GLANCE_ADMIN}}
 glance::keystone::auth::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::keystone::auth::region: "%{hiera('keystone_region')}"
-glance::backend::swift::swift_store_auth_address: http://{{LOCAL_IP}}:35357/v2.0
+glance::backend::swift::swift_store_auth_address: "%{hiera('keystone_auth_uri')}"
+glance::backend::swift::swift_store_auth_version: 3
 glance::backend::swift::swift_store_user: service:glance
 glance::backend::swift::swift_store_key: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::backend::swift::swift_store_create_container_on_put: true
