@@ -1,6 +1,9 @@
 {
  "hiera": {
   "hierarchy": [
+   {{#HIERADATA_OVERRIDE}}
+   "{{.}}",
+   {{/HIERADATA_OVERRIDE}}
    "\"%{::osfamily}\"",
    "puppet-stack-config"
   ]},

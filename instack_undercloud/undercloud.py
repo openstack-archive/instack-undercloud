@@ -158,6 +158,14 @@ _opts = [
                help=('End of DHCP allocation range for PXE and DHCP of '
                      'Overcloud instances.')
                ),
+    cfg.StrOpt('hieradata_override',
+               default='',
+               help=('Path to hieradata override file. If set, the file will '
+                     'be copied under /etc/puppet/hieradata and set as the '
+                     'first file in the hiera hierarchy. This can be used to '
+                     'to custom configure services beyond what '
+                     'undercloud.conf provides')
+               ),
     cfg.StrOpt('inspection_interface',
                default='br-ctlplane',
                deprecated_name='discovery_interface',
