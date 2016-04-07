@@ -25,6 +25,7 @@ class { '::mysql::server':
     'mysqld' => {
       'bind-address'          => hiera('controller_host'),
       'max_connections'       => hiera('mysql_max_connections'),
+      'open_files_limit'      => '-1',
       'innodb_file_per_table' => 'ON',
     },
   },
