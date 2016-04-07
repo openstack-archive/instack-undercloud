@@ -66,6 +66,7 @@ context = {
     'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
     'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'true'),
     'ENABLE_ZAQAR': os.environ.get('ENABLE_ZAQAR', 'true'),
+    'ENABLE_TELEMETRY': os.environ.get('ENABLE_TELEMETRY', 'false'),
     'ENABLE_MONITORING': os.environ.get('ENABLE_MONITORING', 'false'),
     'IPXE_DEPLOY': os.environ.get('IPXE_DEPLOY', 'true'),
     'UNDERCLOUD_ADMIN_VIP': os.environ.get('UNDERCLOUD_ADMIN_VIP', ''),
