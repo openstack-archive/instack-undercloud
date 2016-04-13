@@ -1,0 +1,11 @@
+#!/bin/bash
+set -eux
+
+if systemctl is-enabled keepalived; then
+  # This needs to be run after os-net-config, since os-net-config potentially
+  # can restart network interfaces, which would affects VIPs controlled by
+  # keepalived. So don't just move this up without knowing the consequences.
+  # You have been warned.
+  systemctl reload keepalived
+fi
+
