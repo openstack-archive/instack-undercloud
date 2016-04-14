@@ -8,6 +8,16 @@ import tempfile
 
 import pystache
 
+# Install heiradata override if specified
+hieradata_override = os.environ.get('HIERADATA_OVERRIDE', '')
+if hieradata_override:
+    hiera_entry = os.path.splitext(os.path.basename(hieradata_override))[0]
+    dst = os.path.join('/etc/puppet/hieradata',
+                       os.path.basename(hieradata_override))
+    shutil.copy(hieradata_override, dst)
+    os.chmod(dst, 0644)
+else:
+    hiera_entry = ''
 
 renderer = pystache.Renderer()
 template = os.path.join(os.path.dirname(__file__),
@@ -31,6 +41,7 @@ context = {
     'UNDERCLOUD_SERVICE_CERTIFICATE': os.environ.get('UNDERCLOUD_SERVICE_CERTIFICATE', ''),
     'UNDERCLOUD_PUBLIC_VIP': os.environ.get('UNDERCLOUD_PUBLIC_VIP', ''),
     'UNDERCLOUD_ADMIN_VIP': os.environ.get('UNDERCLOUD_ADMIN_VIP', ''),
+    'HIERADATA_OVERRIDE': hiera_entry,
 }
 
 with open(template) as f:
