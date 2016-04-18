@@ -36,6 +36,7 @@ context = {
         os.environ['TRIPLEO_UNDERCLOUD_CONF_FILE'],
     'TRIPLEO_UNDERCLOUD_PASSWORD_FILE':
         os.environ['TRIPLEO_UNDERCLOUD_PASSWORD_FILE'],
+    'MEMBER_ROLE_EXISTS': os.environ.get('MEMBER_ROLE_EXISTS', 'false'),
 }
 
 # Include all config opts in the context

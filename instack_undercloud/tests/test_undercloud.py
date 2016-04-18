@@ -200,6 +200,11 @@ class TestGenerateEnvironment(BaseTestCase):
         self.useFixture(self.mock_distro)
         self.mock_distro.mock.return_value = [
             'Red Hat Enterprise Linux Server 7.1']
+        stackrc_exists_patcher = mock.patch(
+            'instack_undercloud.undercloud._stackrc_exists',
+            return_value=False)
+        stackrc_exists_patcher.start()
+        self.addCleanup(stackrc_exists_patcher.stop)
 
     @mock.patch('socket.gethostname')
     def test_hostname_set(self, mock_gethostname):
@@ -545,6 +550,53 @@ class TestPostConfig(base.BaseTestCase):
                            name='Chown stackrc'),
                  ]
         mock_run.assert_has_calls(calls)
+
+    @mock.patch('instack_undercloud.undercloud._stackrc_exists')
+    def test_member_role_exists_nostackrc(self, mock_stackrc_exists):
+        mock_stackrc_exists.return_value = False
+        instack_env = {}
+        undercloud._member_role_exists(instack_env)
+        self.assertEqual({'MEMBER_ROLE_EXISTS': 'False'}, instack_env)
+
+    def _mock_ksclient_roles(self, mock_auth_values, mock_ksdiscover, roles):
+        mock_auth_values.return_value = ('user', 'password',
+                                         'tenant', 'http://test:123')
+        mock_discover = mock.Mock()
+        mock_ksdiscover.return_value = mock_discover
+        mock_client = mock.Mock()
+        mock_roles = mock.Mock()
+        mock_role_list = []
+        for role in roles:
+            mock_role = mock.Mock()
+            mock_role.name = role
+            mock_role_list.append(mock_role)
+        mock_roles.list.return_value = mock_role_list
+        mock_client.roles = mock_roles
+        mock_discover.create_client.return_value = mock_client
+
+    @mock.patch('keystoneclient.discover.Discover')
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._stackrc_exists')
+    def test_member_role_exists(self, mock_stackrc_exists, mock_auth_values,
+                                mock_ksdiscover):
+        mock_stackrc_exists.return_value = True
+        self._mock_ksclient_roles(mock_auth_values, mock_ksdiscover,
+                                  ['admin'])
+        instack_env = {}
+        undercloud._member_role_exists(instack_env)
+        self.assertEqual({'MEMBER_ROLE_EXISTS': 'False'}, instack_env)
+
+    @mock.patch('keystoneclient.discover.Discover')
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._stackrc_exists')
+    def test_member_role_exists_true(self, mock_stackrc_exists,
+                                     mock_auth_values, mock_ksdiscover):
+        mock_stackrc_exists.return_value = True
+        self._mock_ksclient_roles(mock_auth_values, mock_ksdiscover,
+                                  ['admin', '_member_'])
+        instack_env = {}
+        undercloud._member_role_exists(instack_env)
+        self.assertEqual({'MEMBER_ROLE_EXISTS': 'True'}, instack_env)
 
     def _create_flavor_mocks(self):
         mock_nova = mock.Mock()

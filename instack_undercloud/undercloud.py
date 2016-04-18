@@ -28,6 +28,10 @@ import sys
 import tempfile
 import uuid
 
+from keystoneclient import exceptions as ks_exceptions
+from keystoneclient import auth
+from keystoneclient import session
+from keystoneclient import discover
 from mistralclient.api import client as mistralclient
 from novaclient import client as novaclient
 from novaclient import exceptions
@@ -743,6 +747,41 @@ def _write_password_file(instack_env):
             password_file.write('%s=%s\n' % (opt.name, value))
 
 
+def _member_role_exists(instack_env):
+    # This is a workaround for puppet removing the deprecated _member_
+    # role on upgrade - if it exists we must not remove role assignments
+    # or trusts stored in the undercloud heat will break
+    if not _stackrc_exists():
+        instack_env['MEMBER_ROLE_EXISTS'] = 'False'
+        return
+    user, password, tenant, auth_url = _get_auth_values()
+    role_exists = False
+    try:
+        # Note this is made somewhat verbose due to trying to handle
+        # any format auth_url (versionless, v2,0/v3 suffix)
+        auth_plugin_class = auth.get_plugin_class('password')
+        auth_kwargs = {
+            'auth_url': auth_url,
+            'username': user,
+            'password': password,
+            'project_name': tenant}
+        if 'v2.0' not in auth_url:
+            auth_kwargs.update({
+                'project_domain_name': 'default',
+                'user_domain_name': 'default'})
+        auth_plugin = auth_plugin_class(**auth_kwargs)
+        sess = session.Session(auth=auth_plugin)
+        disc = discover.Discover(session=sess)
+        c = disc.create_client()
+        role_names = [r.name for r in c.roles.list()]
+        role_exists = '_member_' in role_names
+    except ks_exceptions.ConnectionError:
+        # This will happen on initial deployment, assume False
+        # as no new deployments should have _member_
+        role_exists = False
+    instack_env['MEMBER_ROLE_EXISTS'] = six.text_type(role_exists)
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -845,6 +884,8 @@ def _generate_environment(instack_root):
         public_vip = CONF.undercloud_public_vip
         instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = (
             '/etc/pki/tls/certs/undercloud-%s.pem' % public_vip)
+
+    _member_role_exists(instack_env)
 
     return instack_env
 
@@ -995,9 +1036,20 @@ def _ensure_flavor(nova, name, profile=None):
     LOG.info(message, name, profile)
 
 
+def _stackrc_exists():
+    user_stackrc = os.path.expanduser('~/stackrc')
+    # We gotta check if the copying of stackrc has already been done.
+    if os.path.isfile('/root/stackrc') and os.path.isfile(user_stackrc):
+        return True
+    return False
+
+
 def _copy_stackrc():
     args = ['sudo', 'cp', '/root/stackrc', os.path.expanduser('~')]
-    _run_command(args, name='Copy stackrc')
+    try:
+        _run_command(args, name='Copy stackrc')
+    except subprocess.CalledProcessError:
+        LOG.info("/root/stackrc not found, this is OK on initial deploy")
     args = ['sudo', 'chown', getpass.getuser() + ':',
             os.path.expanduser('~/stackrc')]
     _run_command(args, name='Chown stackrc')
