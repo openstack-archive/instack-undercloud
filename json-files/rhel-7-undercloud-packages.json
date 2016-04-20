@@ -7,13 +7,11 @@
       "redhat-common",
       "undercloud-install",
       "undercloud-stack-config",
-      "common-venv",
       "undercloud-post-config",
       "enable-packages-install",
       "element-manifest",
       "ironic-conductor",
       "ipxe",
-      "os-cloud-config",
       "os-net-config",
       "puppet-stack-config"
     ],

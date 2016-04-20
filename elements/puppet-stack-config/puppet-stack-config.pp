@@ -545,3 +545,4 @@ if str2bool(hiera('enable_monitoring', true)) {
 package{'firewalld':
   ensure => 'absent',
 }
+package{'os-cloud-config': }
