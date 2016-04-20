@@ -531,3 +531,5 @@ if str2bool(hiera('enable_monitoring', true)) {
   }
   Package['osops-tools-monitoring-oschecks'] -> Service['sensu-client']
 }
+
+package{'ipxe-bootimgs': }
