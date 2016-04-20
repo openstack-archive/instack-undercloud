@@ -469,3 +469,158 @@ enable_zaqar: {{ENABLE_ZAQAR}}
 enable_telemetry: {{ENABLE_TELEMETRY}}
 ipxe_deploy: {{IPXE_DEPLOY}}
 enable_monitoring: {{ENABLE_MONITORING}}
+
+
+# Firewall
+tripleo::firewall::manage_firewall: true
+tripleo::firewall::firewall_rules:
+  '101 mongodb_config':
+    dport: 27019
+  '102 mongodb_sharding':
+    dport: 27018
+  '103 mongod':
+    dport: 27017
+  '104 mysql galera':
+    dport:
+      - 873
+      - 3306
+      - 4444
+      - 4567
+      - 4568
+      - 9200
+  '105 ntp':
+    dport: 123
+    proto: udp
+  '106 vrrp':
+    proto: vrrp
+  '107 haproxy stats':
+    dport: 1993
+  '108 redis':
+    dport:
+      - 6379
+      - 26379
+  '109 rabbitmq':
+    dport:
+      - 5672
+      - 35672
+  '110 ceph':
+    dport:
+      - 6789
+      - '6800-6810'
+  '111 keystone':
+    dport:
+      - 5000
+      - 13000
+      - 35357
+      - 13357
+  '112 glance':
+    dport:
+      - 9292
+      - 9191
+      - 13292
+  '113 nova':
+    dport:
+      - 6080
+      - 13080
+      - 8773
+      - 13773
+      - 8774
+      - 13774
+      - 8775
+      - 13775
+  '114 neutron server':
+    dport:
+      - 9696
+      - 13696
+  '115 neutron dhcp input':
+    proto: 'udp'
+    dport: 67
+  '116 neutron dhcp output':
+    proto: 'udp'
+    chain: 'OUTPUT'
+    dport: 68
+  '118 neutron vxlan networks':
+    proto: 'udp'
+    dport: 4789
+  '119 cinder':
+    dport:
+      - 8776
+      - 13776
+  '120 iscsi initiator':
+    dport: 3260
+  '121 memcached':
+    dport: 11211
+  '122 swift proxy':
+    dport:
+      - 8080
+      - 13808
+  '123 swift storage':
+    dport:
+      - 873
+      - 6000
+      - 6001
+      - 6002
+  '124 ceilometer':
+    dport:
+      - 8777
+      - 13777
+  '125 heat':
+    dport:
+      - 8000
+      - 13800
+      - 8003
+      - 13003
+      - 8004
+      - 13004
+  '126 horizon':
+    dport:
+      - 80
+      - 443
+  '127 snmp':
+    dport: 161
+    proto: 'udp'
+  '128 aodh':
+    dport:
+      - 8042
+      - 13042
+  '129 gnocchi-api':
+    dport:
+      - 8041
+      - 13041
+  '130 tftp':
+    dport: 69
+    proto: udp
+  '131 novnc':
+    dport: 5900-5999
+    proto: tcp
+  '132 mistral':
+    dport:
+      - 8989
+      - 13989
+  '133 zaqar':
+    dport:
+      - 8888
+      - 13888
+  '134 zaqar websockets':
+    dport: 9000
+  '135 ironic':
+    dport:
+      - 6385
+      - 13385
+  '136 trove':
+    dport:
+      - 8779
+      - 13779
+  '137 ironic-inspector':
+    dport: 5050
+  '138 docker registry':
+    dport: 8787
+  '139 apache vhost':
+    dport: 8088
+  '140 network cidr nat':
+    chain: FORWARD
+    destination: {{NETWORK_CIDR}}
+  # TODO: Do we still want this?
+  '141 libvirt network nat':
+    chain: FORWARD
+    destination: 192.168.122.0/24

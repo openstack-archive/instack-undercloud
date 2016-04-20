@@ -3,33 +3,5 @@
 set -eux
 set -o pipefail
 
-add-rule INPUT -m udp -p udp --dport 69 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8773,8774,8775,13773,13774,13775 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 5000,35357,13000,13357 -j ACCEPT
-add-rule INPUT -p tcp --dport 8585 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 9696,13696 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 6080,13080 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 5900:5999 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 9292,13292 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8989,13989 -j ACCEPT #mistral
-add-rule INPUT -p tcp -m multiport --dports 8888,13888 -j ACCEPT #zaqar
-add-rule INPUT -p tcp -m multiport --dports 9000 -j ACCEPT #zaqar websockets
-add-rule INPUT -p tcp --dport 9191 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 6385,13385 -j ACCEPT
-add-rule FORWARD -d 192.0.2.0/24 -j ACCEPT
-add-rule FORWARD -d 192.168.122.0/24 -j ACCEPT
-add-rule INPUT -p tcp --dport $(os-apply-config --key 'horizon.port' --type int --key-default 80) -j ACCEPT
-add-rule INPUT -p tcp --dport 5672  -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8000,8003,8004,13800,13003,13004 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8080,13808 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8779 -j ACCEPT
-add-rule INPUT -p tcp -m multiport --dports 8777,13777 -j ACCEPT
-add-rule INPUT -p tcp --dport 5050 -j ACCEPT
-add-rule INPUT -p tcp --dport 8787 -j ACCEPT
-
-
 EXTERNAL_BRIDGE=br-ctlplane
 iptables -w -t nat -C PREROUTING -d 169.254.169.254/32 -i $EXTERNAL_BRIDGE -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8775 || iptables -w -t nat -I PREROUTING -d 169.254.169.254/32 -i $EXTERNAL_BRIDGE -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8775
-
-# Save metadata redirect rule
-iptables-save > /etc/sysconfig/iptables

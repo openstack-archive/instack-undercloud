@@ -18,6 +18,7 @@ if count(hiera('ntp::servers')) > 0 {
 }
 
 include ::rabbitmq
+include ::tripleo::firewall
 
 # TODO Galara
 class { '::mysql::server':
@@ -539,4 +540,8 @@ if str2bool(hiera('enable_monitoring', true)) {
     source   => 'https://apevec.fedorapeople.org/openstack/ggillies/osops-tools-monitoring-oschecks-0.1-1.gitdd7ca5c.el7.centos.noarch.rpm',
   }
   Package['osops-tools-monitoring-oschecks'] -> Service['sensu-client']
+}
+
+package{'firewalld':
+  ensure => 'absent',
 }

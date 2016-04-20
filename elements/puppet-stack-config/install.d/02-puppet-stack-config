@@ -30,6 +30,7 @@ subprocess.check_call(['generate-keystone-pki', '-d', keystone_pki_dir])
 
 context = {
     'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
+    'NETWORK_CIDR': os.environ.get('NETWORK_CIDR', '192.0.2.0/24'),
     'UNDERCLOUD_ADMIN_TOKEN': os.environ.get('UNDERCLOUD_ADMIN_TOKEN', 'unset'),
     'UNDERCLOUD_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_ADMIN_PASSWORD', 'unset'),
     'UNDERCLOUD_RABBIT_USERNAME': os.environ.get('UNDERCLOUD_RABBIT_USERNAME', 'guest'),

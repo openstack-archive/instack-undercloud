@@ -4,7 +4,6 @@
     "element": [
       "base",
       "yum",
-      "iptables",
       "redhat-common",
       "undercloud-install",
       "undercloud-stack-config",
