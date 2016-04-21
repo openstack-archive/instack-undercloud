@@ -271,9 +271,9 @@ aodh::wsgi::apache::ssl: false
 aodh::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 aodh::auth::auth_password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::auth::tenant: 'service'
-aodh::keystone::auth::public_url: http://{{LOCAL_IP}}:8042
-aodh::keystone::auth::internal_url: http://{{LOCAL_IP}}:8042
-aodh::keystone::auth::admin_url: http://{{LOCAL_IP}}:8042
+aodh::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_AODH_PUBLIC}}
+aodh::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_AODH_INTERNAL}}
+aodh::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_AODH_ADMIN}}
 aodh::keystone::auth::password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::auth::region: "%{hiera('keystone_region')}"
 
