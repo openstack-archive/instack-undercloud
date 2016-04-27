@@ -19,6 +19,7 @@ if count(hiera('ntp::servers')) > 0 {
 
 include ::rabbitmq
 include ::tripleo::firewall
+include ::tripleo::selinux
 
 # TODO Galara
 class { '::mysql::server':

@@ -1,0 +1,1 @@
+tripleo::selinux::mode: permissive

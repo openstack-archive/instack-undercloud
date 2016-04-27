@@ -1,1 +1,2 @@
 rabbitmq::package_provider: yum
+tripleo::selinux::mode: enforcing

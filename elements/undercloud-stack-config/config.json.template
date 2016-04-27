@@ -4,6 +4,7 @@
    {{#HIERADATA_OVERRIDE}}
    "{{.}}",
    {{/HIERADATA_OVERRIDE}}
+   "\"%{::operatingsystem}\"",
    "\"%{::osfamily}\"",
    "puppet-stack-config"
   ]},

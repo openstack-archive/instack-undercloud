@@ -13,9 +13,7 @@
       "ironic-conductor",
       "ipxe",
       "os-net-config",
-      "puppet-stack-config",
-      "selinux-permissive",
-      "selinux-setenforce-0"
+      "puppet-stack-config"
     ],
     "hook": [
       "extra-data",
