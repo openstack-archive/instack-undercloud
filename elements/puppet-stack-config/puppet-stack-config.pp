@@ -409,7 +409,6 @@ ironic_config {
   'inspector/enabled':            value => true;
   'pxe/http_url':                 value => 'http://$my_ip:8088';
   'pxe/http_root':                value => '/httpboot';
-  'conductor/clean_nodes':        value => hiera('ironic::conductor::clean_nodes');
 }
 
 if str2bool(hiera('ipxe_deploy', true)) {
