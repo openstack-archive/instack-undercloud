@@ -105,13 +105,51 @@ class { '::heat::db::mysql':
   dbname        => $heat_dsn[6],
   allowed_hosts => $allowed_hosts,
 }
-$ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
-class { '::ceilometer::db::mysql':
-  user          => $ceilometer_dsn[3],
-  password      => $ceilometer_dsn[4],
-  host          => $ceilometer_dsn[5],
-  dbname        => $ceilometer_dsn[6],
-  allowed_hosts => $allowed_hosts,
+if str2bool(hiera('enable_telemetry', false)) {
+  $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
+  class { '::ceilometer::db::mysql':
+    user          => $ceilometer_dsn[3],
+    password      => $ceilometer_dsn[4],
+    host          => $ceilometer_dsn[5],
+    dbname        => $ceilometer_dsn[6],
+    allowed_hosts => $allowed_hosts,
+  }
+  include ::ceilometer::keystone::auth
+  include ::aodh::keystone::auth
+  include ::ceilometer
+  include ::ceilometer::api
+  include ::ceilometer::db
+  include ::ceilometer::agent::notification
+  include ::ceilometer::agent::central
+  include ::ceilometer::expirer
+  include ::ceilometer::collector
+  class { '::ceilometer::agent::auth':
+    auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
+  }
+
+  Cron <| title == 'ceilometer-expirer' |> { command =>
+    "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
+
+  # TODO: add support for setting these to puppet-ceilometer
+  ceilometer_config {
+    'hardware/readonly_user_name': value => hiera('snmpd_readonly_user_name');
+    'hardware/readonly_user_password': value => hiera('snmpd_readonly_user_password');
+  }
+
+  # Aodh
+  include ::aodh
+  include ::aodh::api
+  include ::aodh::wsgi::apache
+  include ::aodh::evaluator
+  include ::aodh::notifier
+  include ::aodh::listener
+  include ::aodh::client
+  include ::aodh::db::sync
+  class { '::aodh::auth':
+    auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
+  }
+  # To manage the upgrade:
+  Exec['ceilometer-dbsync'] -> Exec['aodh-db-sync']
 }
 $ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
 class { '::ironic::db::mysql':
@@ -147,8 +185,6 @@ include ::heat::keystone::auth
 include ::neutron::keystone::auth
 include ::glance::keystone::auth
 include ::nova::keystone::auth
-include ::ceilometer::keystone::auth
-include ::aodh::keystone::auth
 include ::swift::keystone::auth
 include ::ironic::keystone::auth
 include ::ironic::keystone::auth_inspector
@@ -312,44 +348,8 @@ ring_account_device { "${controller_host}:6002/1":
   weight => 1,
 }
 
-# Ceilometer
-include ::ceilometer
-include ::ceilometer::api
-include ::ceilometer::db
-include ::ceilometer::agent::notification
-include ::ceilometer::agent::central
-include ::ceilometer::expirer
-include ::ceilometer::collector
-class { '::ceilometer::agent::auth':
-  auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
-}
-
-Cron <| title == 'ceilometer-expirer' |> { command =>
-  "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
-
-# TODO: add support for setting these to puppet-ceilometer
-ceilometer_config {
-  'hardware/readonly_user_name': value => hiera('snmpd_readonly_user_name');
-  'hardware/readonly_user_password': value => hiera('snmpd_readonly_user_password');
-}
-
 # Apache
 include ::apache
-
-# Aodh
-include ::aodh
-include ::aodh::api
-include ::aodh::wsgi::apache
-include ::aodh::evaluator
-include ::aodh::notifier
-include ::aodh::listener
-include ::aodh::client
-include ::aodh::db::sync
-class { '::aodh::auth':
-  auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
-}
-# To manage the upgrade:
-Exec['ceilometer-dbsync'] -> Exec['aodh-db-sync']
 
 # Heat
 class { '::heat':
@@ -443,7 +443,7 @@ if hiera('service_certificate', undef) {
     nova_metadata             => true,
     swift_proxy_server        => true,
     heat_api                  => true,
-    ceilometer                => true,
+    ceilometer                => str2bool(hiera('enable_telemetry', false)),
     ironic                    => true,
     rabbitmq                  => true,
   }

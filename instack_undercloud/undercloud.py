@@ -209,6 +209,11 @@ _opts = [
                 default=True,
                 help=('Whether to install Zaqar services in the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_telemetry',
+                default=False,
+                help=('Whether to install Telemetry services '
+                      '(ceilometer, aodh) in the Undercloud.')
+                ),
     cfg.BoolOpt('ipxe_deploy',
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')

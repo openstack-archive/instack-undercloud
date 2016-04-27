@@ -464,5 +464,6 @@ mistral::keystone_tenant: 'service'
 enable_tempest: {{ENABLE_TEMPEST}}
 enable_mistral: {{ENABLE_MISTRAL}}
 enable_zaqar: {{ENABLE_ZAQAR}}
+enable_telemetry: {{ENABLE_TELEMETRY}}
 ipxe_deploy: {{IPXE_DEPLOY}}
 enable_monitoring: {{ENABLE_MONITORING}}
