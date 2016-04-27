@@ -10,6 +10,7 @@ export OS_AUTH_URL=http://{{local-ip}}:5000/v2.0
 export OS_USERNAME=admin
 export OS_TENANT_NAME=admin
 export COMPUTE_API_VERSION=1.1
+export OS_BAREMETAL_API_VERSION=1.11
 export OS_NO_CACHE=True
 export OS_CLOUDNAME=undercloud
 export OS_IMAGE_API_VERSION=1
