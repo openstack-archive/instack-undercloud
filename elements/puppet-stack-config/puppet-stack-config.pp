@@ -54,6 +54,14 @@ file { '/etc/systemd/system/mariadb.service.d/limits.conf':
 }
 Exec['systemctl-daemon-reload'] -> Service['mysqld']
 
+file { '/var/log/journal':
+  ensure => 'directory',
+  owner  => 'root',
+  group  => 'root',
+  mode   => '0755'
+}
+File['/var/log/journal'] -> Service <| name == 'systemd-journald' |>
+
 # FIXME: this should only occur on the bootstrap host (ditto for db syncs)
 # Create all the database schemas
 # Example DSN format: mysql+pymysql://user:password@host/dbname
