@@ -404,7 +404,6 @@ class { '::ironic::drivers::ipmi':
 
 ironic_config {
   'DEFAULT/my_ip':                value => hiera('controller_host');
-  'DEFAULT/rpc_response_timeout': value => '600';
   'glance/host':                  value => hiera('glance::api::bind_host');
   'inspector/enabled':            value => true;
   'pxe/http_url':                 value => 'http://$my_ip:8088';

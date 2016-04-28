@@ -336,6 +336,7 @@ nova::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::keystone::auth::configure_ec2_endpoint: false
 
 # Ironic
+ironic::rpc_response_timeout: 600
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::api::identity_uri: "%{hiera('keystone_identity_uri')}"
