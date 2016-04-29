@@ -10,7 +10,6 @@
       "undercloud-post-config",
       "enable-packages-install",
       "element-manifest",
-      "ironic-conductor",
       "ipxe",
       "os-net-config",
       "puppet-stack-config"
