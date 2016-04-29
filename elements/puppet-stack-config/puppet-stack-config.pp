@@ -555,3 +555,13 @@ package{'firewalld':
   ensure => 'absent',
 }
 package{'os-cloud-config': }
+package{'openstack-selinux': }
+package{'syslinux-extlinux': }
+package{'tftp-server': }
+package{'parted': }
+package{'psmisc': }
+
+service { 'sshd':
+  ensure => running,
+  enable => true,
+}
