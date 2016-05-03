@@ -151,6 +151,7 @@ keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
 keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
 keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
 keystone::database_connection: mysql+pymysql://keystone:{{UNDERCLOUD_ADMIN_TOKEN}}@{{LOCAL_IP}}/keystone
+keystone::cron::token_flush::destination: '/dev/null'
 keystone::roles::admin::password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 keystone::roles::admin::email: 'root@localhost'
 keystone::roles::admin::admin_tenant: 'admin'
@@ -308,6 +309,7 @@ nova::compute::force_config_drive: true
 nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
 nova::compute::reserved_host_memory: '0'
 nova::compute::vnc_enabled: false
+nova::cron::archive_deleted_rows::destination: '/dev/null'
 nova_sync_power_state_interval: -1
 
 nova::compute::ironic::admin_username: 'ironic'

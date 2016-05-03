@@ -139,7 +139,7 @@ class { '::keystone':
   service_name     => 'httpd',
 }
 include ::keystone::wsgi::apache
-
+include ::keystone::cron::token_flush
 include ::keystone::roles::admin
 include ::keystone::endpoint
 
@@ -209,6 +209,7 @@ class { '::nova':
 
 include ::nova::api
 include ::nova::cert
+include ::nova::cron::archive_deleted_rows
 include ::nova::compute
 include ::nova::conductor
 include ::nova::scheduler
