@@ -1,5 +1,4 @@
 keystone_identity_uri: http://{{LOCAL_IP}}:35357
-nova_admin_auth_url: http://{{LOCAL_IP}}:35357
 keystone_auth_uri: http://{{LOCAL_IP}}:5000/v3
 keystone_region: 'regionOne'
 
@@ -192,7 +191,7 @@ neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::dhcp::dhcp_domain: ''
 neutron::quota::quota_port: -1
 neutron::server::notifications::nova_url: http://{{LOCAL_IP}}:8774/v2
-neutron::server::notifications::auth_url: "%{hiera('nova_admin_auth_url')}"
+neutron::server::notifications::auth_url: "%{hiera('keystone_auth_uri')}"
 neutron::server::notifications::tenant_name: service
 neutron::server::notifications::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 neutron::keystone::auth::tenant: 'service'
