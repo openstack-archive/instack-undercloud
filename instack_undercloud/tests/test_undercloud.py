@@ -533,3 +533,35 @@ class TestPostConfig(base.BaseTestCase):
         mock_instance.flavors.list.return_value = mock_flavors
         undercloud._delete_default_flavors(mock_instance)
         mock_instance.flavors.delete.assert_called_once_with('8ar')
+
+
+class FakeException(Exception):
+    pass
+
+
+@mock.patch('os.path.exists')
+@mock.patch('instack_undercloud.undercloud._run_command')
+class TestGenerateCertificate(base.BaseTestCase):
+    def test_normal(self, mock_run_command, mock_exists):
+        with mock.patch('instack_undercloud.undercloud.open'):
+            undercloud._generate_certificate({})
+
+    def test_exists(self, mock_run_command, mock_exists):
+        mock_exists.return_value = True
+        with mock.patch('instack_undercloud.undercloud.open') as mock_open:
+            undercloud._generate_certificate({})
+            self.assertFalse(mock_open.called)
+
+    @mock.patch('os.remove')
+    def test_command_fails(self, mock_remove, mock_run_command, mock_exists):
+        mock_run_command.side_effect = FakeException
+        mock_exists.side_effect = [False, True, True]
+        self.assertRaises(FakeException, undercloud._generate_certificate, {})
+        self.assertEqual(3, mock_remove.call_count)
+
+    @mock.patch('os.remove')
+    def test_file_missing(self, mock_remove, mock_run_command, mock_exists):
+        mock_run_command.side_effect = FakeException
+        mock_exists.side_effect = [False, True, False]
+        self.assertRaises(FakeException, undercloud._generate_certificate, {})
+        self.assertEqual(2, mock_remove.call_count)

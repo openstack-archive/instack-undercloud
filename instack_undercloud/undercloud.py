@@ -22,6 +22,7 @@ import os
 import platform
 import socket
 import subprocess
+import tempfile
 import uuid
 
 from novaclient import client as novaclient
@@ -126,6 +127,17 @@ _opts = [
                      'connections.  Setting this enables SSL for the '
                      'OpenStack API endpoints, leaving it unset disables SSL.')
                ),
+    cfg.BoolOpt('generate_service_certificate',
+                default=False,
+                help=('When set to True, a self-signed SSL certificate will '
+                      'be generated as part of the undercloud install and '
+                      'this certificate will be used in place of the value '
+                      'for undercloud_service_certificate.  The resulting '
+                      'certificate will be written to '
+                      '~/undercloud-[undercloud_public_vip].pem.  Note that '
+                      'this certificate will also be added to the system\'s '
+                      'trusted certificate store.')
+                ),
     cfg.StrOpt('local_interface',
                default='eth1',
                help=('Network interface on the Undercloud that will be '
@@ -650,6 +662,81 @@ def _write_password_file(instack_env):
             password_file.write('%s=%s\n' % (opt.name, value))
 
 
+SSL_CONFIG_TEMPLATE = '''[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+C = xx
+ST = xx
+L = xxxx
+O = xxxx
+CN = %(public_vip)s
+
+[v3_req]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+basicConstraints = CA:TRUE
+subjectAltName = @alt_names
+
+[alt_names]
+IP = %(public_vip)s
+'''
+
+
+def _generate_certificate(instack_env):
+    public_vip = CONF.undercloud_public_vip
+    home_pem = os.path.expanduser('~/undercloud-%s.pem' % public_vip)
+    if os.path.exists(home_pem):
+        LOG.info('%s already exists. Not generating a new '
+                 'certificate', home_pem)
+        return
+    ssl_config = SSL_CONFIG_TEMPLATE % {'public_vip': public_vip}
+    ssl_config_file = tempfile.mkstemp()[1]
+    try:
+        with open(ssl_config_file, 'w') as f:
+            f.write(ssl_config)
+        privkey = tempfile.mkstemp()[1]
+        cacert = tempfile.mkstemp()[1]
+        undercloud_pem = ('/etc/pki/instack-certs/undercloud-%s.pem' %
+                          public_vip)
+        args = ['openssl', 'genrsa', '-out', privkey, '2048']
+        _run_command(args, name='openssl private key')
+        args = ['openssl', 'req', '-new', '-x509', '-key', privkey, '-out',
+                cacert, '-days', '3650', '-config', ssl_config_file]
+        _run_command(args, name='openssl cacert')
+        with open(home_pem, 'w') as u:
+            with open(cacert) as c:
+                u.write(c.read())
+            with open(privkey) as p:
+                u.write(p.read())
+        args = ['sudo', 'mkdir', '-p', '/etc/pki/instack-certs']
+        _run_command(args, name='mkdir instack-certs')
+        args = ['sudo', 'cp', '-f', home_pem, undercloud_pem]
+        _run_command(args, name='cp undercloud.pem')
+        args = ['sudo', 'semanage', 'fcontext', '-a', '-t', 'etc_t',
+                '"/etc/pki/instack-certs(/.*)?"']
+        _run_command(args, name='semanage')
+        args = ['sudo', 'restorecon', '-R', '/etc/pki/instack-certs']
+        _run_command(args, name='restorecon')
+        instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = undercloud_pem
+        LOG.info('Generated new service certificate in %s', undercloud_pem)
+        cacert_path = ('/etc/pki/ca-trust/source/anchors/cacert-%s.pem' %
+                       public_vip)
+        args = ['sudo', 'cp', '-f', cacert, cacert_path]
+        _run_command(args, name='copy cacert')
+        args = ['sudo', 'update-ca-trust', 'extract']
+        _run_command(args, name='update-ca-trust')
+        LOG.info('Added %s to system certificate store', cacert_path)
+    finally:
+        os.remove(ssl_config_file)
+        if os.path.exists(privkey):
+            os.remove(privkey)
+        if os.path.exists(cacert):
+            os.remove(cacert)
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -740,6 +827,9 @@ def _generate_environment(instack_root):
     _generate_endpoints(instack_env)
 
     _write_password_file(instack_env)
+
+    if CONF.generate_service_certificate:
+        _generate_certificate(instack_env)
 
     return instack_env
 

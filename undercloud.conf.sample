@@ -43,6 +43,15 @@
 # unset disables SSL. (string value)
 #undercloud_service_certificate =
 
+# When set to True, a self-signed SSL certificate will be generated as
+# part of the undercloud install and this certificate will be used in
+# place of the value for undercloud_service_certificate.  The
+# resulting certificate will be written to
+# ~/undercloud-[undercloud_public_vip].pem.  Note that this
+# certificate will also be added to the system's trusted certificate
+# store. (boolean value)
+#generate_service_certificate = false
+
 # Network interface on the Undercloud that will be handling the PXE
 # boots and DHCP for Overcloud instances. (string value)
 #local_interface = eth1
