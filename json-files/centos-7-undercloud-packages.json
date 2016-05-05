@@ -10,7 +10,7 @@
       "undercloud-stack-config",
       "common-venv",
       "undercloud-post-config",
-      "undercloud-package-install",
+      "enable-packages-install",
       "element-manifest",
       "ironic-conductor",
       "ipxe",
