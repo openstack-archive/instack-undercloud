@@ -495,6 +495,12 @@ if str2bool(hiera('enable_mistral', true)) {
   include ::mistral::wsgi::apache
   include ::mistral::engine
   include ::mistral::executor
+
+  # ensure TripleO common entrypoints for custom Mistral actions
+  # are installed before performing the Mistral action population
+  package {'tripleo-common': }
+  Package['tripleo-common'] ~> Exec['mistral-db-populate']
+
 }
 
 if str2bool(hiera('enable_zaqar', true)) {
