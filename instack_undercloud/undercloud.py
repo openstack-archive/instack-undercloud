@@ -29,6 +29,7 @@ from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
 import psutil
+import pystache
 import six
 
 from instack_undercloud import validator
@@ -851,6 +852,49 @@ def _generate_environment(instack_root):
     return instack_env
 
 
+def _generate_init_data(instack_env):
+    context = instack_env.copy()
+
+    if CONF.hieradata_override:
+        hiera_entry = os.path.splitext(
+            os.path.basename(CONF.hieradata_override))[0]
+        dst = os.path.join('/etc/puppet/hieradata',
+                           os.path.basename(CONF.hieradata_override))
+        _run_command(['sudo', 'cp', CONF.hieradata_override, dst])
+        _run_command(['sudo', 'chmod', '0644', dst])
+    else:
+        hiera_entry = ''
+
+    context['HIERADATA_OVERRIDE'] = hiera_entry
+
+    renderer = pystache.Renderer()
+    local_template_path = os.path.join(
+        os.path.dirname(__file__),
+        '..',
+        'templates',
+        'config.json.template')
+    installed_template_path = \
+        '/usr/share/instack-undercloud/templates/config.json.template'
+    if os.path.exists(local_template_path):
+        template = local_template_path
+    else:
+        template = installed_template_path
+
+    with open(template) as f:
+        config_json = renderer.render(f.read(), context)
+
+    cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
+    tmp_json = tempfile.mkstemp()[1]
+    with open(tmp_json, 'w') as f:
+        print >>f, config_json
+
+    if not os.path.exists(os.path.dirname(cfn_path)):
+        _run_command(['sudo', 'mkdir', '-p', os.path.dirname(cfn_path)])
+
+    _run_command(['sudo', 'mv', tmp_json, cfn_path])
+    _run_command(['sudo', 'chmod', '0644', cfn_path])
+
+
 def _run_instack(instack_env):
     args = ['sudo', '-E', 'instack', '-p', instack_env['ELEMENTS_PATH'],
             '-j', instack_env['JSONFILE'],
@@ -983,6 +1027,7 @@ def install(instack_root):
     _clean_os_refresh_config()
     _validate_configuration()
     instack_env = _generate_environment(instack_root)
+    _generate_init_data(instack_env)
     _run_instack(instack_env)
     _run_orc(instack_env)
     _post_config()
