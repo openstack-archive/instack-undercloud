@@ -444,6 +444,7 @@ zaqar::transport::websocket::bind: {{LOCAL_IP}}
 zaqar::transport::wsgi::bind: {{LOCAL_IP}}
 zaqar::management::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::messaging::mongodb::uri: mongodb://127.0.0.1:27017
+zaqar::message_pipeline: 'zaqar.notification.notifier'
 
 # Loadbalancer
 tripleo::loadbalancer::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
