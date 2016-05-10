@@ -3,13 +3,20 @@
 set -eux
 set -o pipefail
 
-set +e
-puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
-rc=$?
-set -e
+function puppet_apply {
+    set +e
+    $@
+    rc=$?
+    set -e
 
-echo "puppet apply exited with exit code $rc"
+    echo "puppet apply exited with exit code $rc"
 
-if [ $rc != 2 -a $rc != 0 ]; then
-    exit $rc
-fi
+    if [ $rc != 2 -a $rc != 0 ]; then
+        exit $rc
+    fi
+}
+
+FACTER_step=1 puppet_apply \
+    puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
+FACTER_step=2 puppet_apply \
+    puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
