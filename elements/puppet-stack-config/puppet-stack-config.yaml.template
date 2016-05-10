@@ -446,6 +446,8 @@ mistral::keystone::auth::admin_url: http://{{LOCAL_IP}}:8989/v2
 mistral::keystone::auth::region: 'regionOne'
 mistral::keystone::auth::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::tenant: 'service'
+mistral::engine::older_than: 2880
+mistral::engine::evaluation_interval: 120
 
 # Zaqar
 zaqar::keystone::auth::tenant: 'service'
