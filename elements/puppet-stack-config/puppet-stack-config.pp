@@ -333,6 +333,7 @@ if $step == 2 {
     replace => false,
     content => 'dhcp-match=ipxe,175';
   }
+  Package['openstack-ironic-common'] -> File['dnsmasq-ironic.conf']
 
   class { '::neutron::agents::dhcp':
     dnsmasq_config_file => '/etc/dnsmasq-ironic.conf',

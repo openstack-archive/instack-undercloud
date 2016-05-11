@@ -2,9 +2,7 @@
   {
     "name": "Installation",
     "element": [
-      "base",
-      "yum",
-      "redhat-common",
+      "install-types",
       "undercloud-install",
       "enable-packages-install",
       "element-manifest",
@@ -15,27 +13,23 @@
       "extra-data",
       "pre-install",
       "install",
-      "post-install",
-      "finalise"
+      "post-install"
     ],
     "exclude-element": [
       "pip-and-virtualenv",
-      "ironic",
       "os-collect-config",
-      "openstack-clients"
+      "svc-map",
+      "pip-manifest",
+      "package-installs",
+      "pkg-map",
+      "puppet",
+      "cache-url",
+      "dib-python",
+      "os-svc-install",
+      "install-bin"
     ],
     "blacklist": [
-      "10-cloud-init",
-      "50-store-build-settings",
-      "99-dkms",
-      "99-up-to-date",
-      "01-yum-keepcache",
-      "05-fstab-rootfs-label",
-      "15-fedora-remove-grub",
-      "15-remove-grub",
-      "00-load-selinux-policy",
-      "00-install-and-load-selinux-policy",
-      "00-rhel-registration"
+      "99-refresh-completed"
     ]
   }
 ]
