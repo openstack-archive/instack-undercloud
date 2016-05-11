@@ -391,50 +391,32 @@ nova_config {
 include ::nova::compute::ironic
 include ::nova::network::neutron
 
-class { '::ironic::conductor':
-  force_power_state_during_sync => hiera('ironic::conductor::force_power_state_during_sync'),
-}
+# Ironic
 
 # dependency of pxe_drac
 package{'openwsman-python': }
 # dependency of pxe_ilo
 package{'python-proliantutils': }
 
-class { '::ironic':
-  enabled_drivers => ['pxe_ipmitool', 'pxe_ssh', 'pxe_drac', 'pxe_ilo', 'pxe_wol', 'pxe_amt'],
-  debug           => hiera('debug'),
-}
-
-class { '::ironic::api':
-  host_ip => hiera('controller_host'),
-}
-
-class { '::ironic::drivers::ipmi':
-  retry_timeout => 15,
-}
-
-ironic_config {
-  'DEFAULT/my_ip':                value => hiera('controller_host');
-  'glance/host':                  value => hiera('glance::api::bind_host');
-  'inspector/enabled':            value => true;
-  'pxe/http_url':                 value => 'http://$my_ip:8088';
-  'pxe/http_root':                value => '/httpboot';
-}
+include ::ironic
+include ::ironic::api
+include ::ironic::conductor
+include ::ironic::drivers::deploy
+include ::ironic::drivers::ipmi
+include ::ironic::inspector
 
 if str2bool(hiera('ipxe_deploy', true)) {
-  ironic_config {
-    'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/ipxe_config.template';
-    'pxe/pxe_bootfile_name':        value => 'undionly.kpxe';
-    'pxe/ipxe_enabled':             value => true;
-  }
+  $pxe_config_template = '$pybasedir/drivers/modules/ipxe_config.template'
+  $pxe_bootfile_name   = 'undionly.kpxe'
 } else {
-  ironic_config {
-    'pxe/pxe_config_template':      value => '$pybasedir/drivers/modules/pxe_config.template';
-    'pxe/ipxe_enabled':             value => false;
-  }
+  $pxe_config_template = '$pybasedir/drivers/modules/pxe_config.template'
+  $pxe_bootfile_name = undef
+}
+class { '::ironic::drivers::pxe':
+  pxe_config_template => $pxe_config_template,
+  pxe_bootfile_name   => $pxe_bootfile_name
 }
 
-include ::ironic::inspector
 
 if hiera('service_certificate', undef) {
   class { '::tripleo::loadbalancer':

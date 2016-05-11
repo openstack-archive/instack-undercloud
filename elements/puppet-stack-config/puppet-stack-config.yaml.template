@@ -337,11 +337,21 @@ nova::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::keystone::auth::configure_ec2_endpoint: false
 
 # Ironic
+ironic::debug: "%{hiera('debug')}"
+ironic::my_ip: {{LOCAL_IP}}
+ironic::enabled_drivers:
+  - 'pxe_ipmitool'
+  - 'pxe_ssh'
+  - 'pxe_drac'
+  - 'pxe_ilo'
+  - 'pxe_wol'
+  - 'pxe_amt'
 ironic::rpc_response_timeout: 600
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 ironic::api::neutron_url: "http://{{LOCAL_IP}}:9696/"
+ironic::api::host_ip: {{LOCAL_IP}}
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
@@ -390,6 +400,16 @@ ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
 ironic::inspector::ramdisk_collectors: {{INSPECTION_COLLECTORS}}
 ironic::inspector::additional_processing_hooks: 'extra_hardware'
 ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}
+
+# Ironic deploy utils
+ironic::drivers::deploy::http_url: "http://{{LOCAL_IP}}:8088"
+ironic::drivers::deploy::http_boot: '/httpboot'
+
+# Ironic pxe
+ironic::drivers::pxe::ipxe_enabled: {{IPXE_DEPLOY}}
+
+# Ironic ipmi
+ironic::drivers::ipmi::retry_timeout: 15
 
 # Rabbit
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
