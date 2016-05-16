@@ -620,13 +620,7 @@ def _generate_endpoints(instack_env):
                  glance_admin_params,
                  )
     add_endpoint('nova',
-                 '%s://%s:%d/v2/%%(tenant_id)s',
-                 nova_public_params,
-                 nova_internal_params,
-                 nova_admin_params,
-                 )
-    add_endpoint('novav3',
-                 '%s://%s:%d/v3',
+                 '%s://%s:%d/v2.1',
                  nova_public_params,
                  nova_internal_params,
                  nova_admin_params,
