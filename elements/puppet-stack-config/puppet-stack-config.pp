@@ -350,14 +350,17 @@ ring_object_device { "${controller_host}:6000/1":
   zone   => 1,
   weight => 1,
 }
+Ring_object_device<||> ~> Service['swift-proxy-server']
 ring_container_device { "${controller_host}:6001/1":
   zone   => 1,
   weight => 1,
 }
+Ring_container_device<||> ~> Service['swift-proxy-server']
 ring_account_device { "${controller_host}:6002/1":
   zone   => 1,
   weight => 1,
 }
+Ring_account_device<||> ~> Service['swift-proxy-server']
 
 # Apache
 include ::apache
