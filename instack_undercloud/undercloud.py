@@ -31,6 +31,8 @@ from oslo_config import cfg
 import psutil
 import six
 
+from instack_undercloud import validator
+
 
 # Making these values properties on a class allows us to delay their lookup,
 # which makes testing code that interacts with these files much easier.
@@ -502,6 +504,21 @@ def _check_memory():
         raise RuntimeError('Insufficient memory available')
 
 
+def _validate_network():
+    def error_handler(message):
+        LOG.error('Undercloud configuration validation failed: %s', message)
+        raise validator.FailedValidation(message)
+
+    params = {opt.name: CONF[opt.name] for opt in _opts}
+    validator.validate_config(params, error_handler)
+
+
+def _validate_configuration():
+    _check_hostname()
+    _check_memory()
+    _validate_network()
+
+
 def _generate_password(length=40):
     """Create a random password
 
@@ -963,9 +980,8 @@ def install(instack_root):
     _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
     LOG.info('Logging to %s', PATHS.LOG_FILE)
     _load_config()
-    _check_hostname()
-    _check_memory()
     _clean_os_refresh_config()
+    _validate_configuration()
     instack_env = _generate_environment(instack_root)
     _run_instack(instack_env)
     _run_orc(instack_env)

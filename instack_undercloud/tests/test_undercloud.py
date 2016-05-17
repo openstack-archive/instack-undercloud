@@ -39,8 +39,7 @@ class BaseTestCase(base.BaseTestCase):
 
 class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._configure_logging')
-    @mock.patch('instack_undercloud.undercloud._check_hostname')
-    @mock.patch('instack_undercloud.undercloud._check_memory')
+    @mock.patch('instack_undercloud.undercloud._validate_configuration')
     @mock.patch('instack_undercloud.undercloud._run_command')
     @mock.patch('instack_undercloud.undercloud._post_config')
     @mock.patch('instack_undercloud.undercloud._run_orc')
@@ -49,13 +48,12 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install(self, mock_load_config, mock_generate_environment,
                      mock_run_instack, mock_run_orc, mock_post_config,
-                     mock_run_command, mock_check_memory, mock_check_hostname,
+                     mock_run_command, mock_validate_configuration,
                      mock_configure_logging):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.')
-        self.assertEqual(True, mock_check_hostname.called)
-        self.assertEqual(True, mock_check_memory.called)
+        self.assertTrue(mock_validate_configuration.called)
         mock_generate_environment.assert_called_with('.')
         mock_run_instack.assert_called_with(fake_env)
         mock_run_orc.assert_called_with(fake_env)
@@ -75,6 +73,16 @@ class TestUndercloud(BaseTestCase):
                          undercloud._extract_from_stackrc('OS_USERNAME'))
         self.assertEqual('http://bletchley:5000/v2.0',
                          undercloud._extract_from_stackrc('OS_AUTH_URL'))
+
+    @mock.patch('instack_undercloud.undercloud._check_hostname')
+    @mock.patch('instack_undercloud.undercloud._check_memory')
+    @mock.patch('instack_undercloud.undercloud._validate_network')
+    def test_validate_configuration(self, mock_validate_network,
+                                    mock_check_memory, mock_check_hostname):
+        undercloud._validate_configuration()
+        self.assertTrue(mock_validate_network.called)
+        self.assertTrue(mock_check_memory.called)
+        self.assertTrue(mock_check_hostname.called)
 
 
 class TestCheckHostname(BaseTestCase):
