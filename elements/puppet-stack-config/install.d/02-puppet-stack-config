@@ -20,6 +20,8 @@ import tempfile
 
 import pystache
 
+from instack_undercloud import undercloud
+
 renderer = pystache.Renderer()
 template = os.path.join(os.path.dirname(__file__),
                         '..',
@@ -28,50 +30,10 @@ template = os.path.join(os.path.dirname(__file__),
 keystone_pki_dir = tempfile.mkdtemp()
 subprocess.check_call(['generate-keystone-pki', '-d', keystone_pki_dir])
 
+# Only variables that are not oslo.config opts need to be added here
 context = {
-    'LOCAL_IP': os.environ.get('LOCAL_IP', '192.0.2.1'),
-    'NETWORK_CIDR': os.environ.get('NETWORK_CIDR', '192.0.2.0/24'),
-    'UNDERCLOUD_ADMIN_TOKEN': os.environ.get('UNDERCLOUD_ADMIN_TOKEN', 'unset'),
-    'UNDERCLOUD_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_ADMIN_PASSWORD', 'unset'),
-    'UNDERCLOUD_RABBIT_USERNAME': os.environ.get('UNDERCLOUD_RABBIT_USERNAME', 'guest'),
-    'UNDERCLOUD_RABBIT_PASSWORD': os.environ.get('UNDERCLOUD_RABBIT_PASSWORD', 'guest'),
-    'UNDERCLOUD_RABBIT_COOKIE': os.environ.get('UNDERCLOUD_RABBIT_COOKIE', 'guest'),
-    'UNDERCLOUD_SWIFT_HASH_SUFFIX': os.environ.get('UNDERCLOUD_SWIFT_HASH_SUFFIX', 'unset'),
-    'UNDERCLOUD_SWIFT_PASSWORD': os.environ.get('UNDERCLOUD_SWIFT_PASSWORD', 'unset'),
-    'UNDERCLOUD_MISTRAL_PASSWORD': os.environ.get('UNDERCLOUD_MISTRAL_PASSWORD', 'unset'),
-    'UNDERCLOUD_ZAQAR_PASSWORD': os.environ.get('UNDERCLOUD_ZAQAR_PASSWORD', 'unset'),
-    'UNDERCLOUD_GLANCE_PASSWORD': os.environ.get('UNDERCLOUD_GLANCE_PASSWORD', 'unset'),
-    'UNDERCLOUD_HAPROXY_STATS_PASSWORD': os.environ.get('UNDERCLOUD_HAPROXY_STATS_PASSWORD', 'unset'),
-    'UNDERCLOUD_HEAT_ENCRYPTION_KEY': os.environ.get('UNDERCLOUD_HEAT_ENCRYPTION_KEY', 'unset___________'),
-    'UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD', 'unset'),
-    'UNDERCLOUD_HEAT_PASSWORD': os.environ.get('UNDERCLOUD_HEAT_PASSWORD', 'unset'),
-    'UNDERCLOUD_HORIZON_SECRET_KEY': os.environ.get('UNDERCLOUD_HORIZON_SECRET_KEY', 'unset'),
-    'UNDERCLOUD_NEUTRON_PASSWORD': os.environ.get('UNDERCLOUD_NEUTRON_PASSWORD', 'unset'),
-    'LOCAL_INTERFACE': os.environ.get('LOCAL_INTERFACE', 'eth1'),
-    'LOCAL_MTU': os.environ.get('LOCAL_MTU', 1500),
-    'UNDERCLOUD_AODH_PASSWORD': os.environ.get('UNDERCLOUD_AODH_PASSWORD', 'unset'),
-    'UNDERCLOUD_SENSU_PASSWORD': os.environ.get('UNDERCLOUD_SENSU_PASSWORD', 'unset'),
-    'UNDERCLOUD_CEILOMETER_METERING_SECRET': os.environ.get('UNDERCLOUD_CEILOMETER_METERING_SECRET', 'unset'),
-    'UNDERCLOUD_CEILOMETER_PASSWORD': os.environ.get('UNDERCLOUD_CEILOMETER_PASSWORD', 'unset'),
-    'UNDERCLOUD_CEILOMETER_SNMPD_USER': os.environ.get('UNDERCLOUD_CEILOMETER_SNMPD_USER', 'unset'),
-    'UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD': os.environ.get('UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD', 'unset'),
-    'STORE_EVENTS': os.environ.get('STORE_EVENTS', 'false'),
-    'UNDERCLOUD_NOVA_PASSWORD': os.environ.get('UNDERCLOUD_NOVA_PASSWORD', 'unset'),
-    'UNDERCLOUD_IRONIC_PASSWORD': os.environ.get('UNDERCLOUD_IRONIC_PASSWORD', 'unset'),
-    'UNDERCLOUD_DEBUG': os.environ.get('UNDERCLOUD_DEBUG', 'true'),
-    'INSPECTION_IPRANGE': os.environ.get('INSPECTION_IPRANGE', '192.0.2.100,192.0.2.120'),
-    'INSPECTION_INTERFACE': os.environ.get('INSPECTION_INTERFACE', 'br-ctlplane'),
-    'INSPECTION_COLLECTORS': os.environ.get('INSPECTION_COLLECTORS', 'default,logs'),
-    'INSPECTION_KERNEL_ARGS': os.environ.get('INSPECTION_KERNEL_ARGS', ''),
-    'ENABLE_TEMPEST': os.environ.get('ENABLE_TEMPEST', 'true'),
-    'ENABLE_MISTRAL': os.environ.get('ENABLE_MISTRAL', 'true'),
-    'ENABLE_ZAQAR': os.environ.get('ENABLE_ZAQAR', 'true'),
-    'ENABLE_TELEMETRY': os.environ.get('ENABLE_TELEMETRY', 'false'),
-    'ENABLE_MONITORING': os.environ.get('ENABLE_MONITORING', 'false'),
-    'IPXE_DEPLOY': os.environ.get('IPXE_DEPLOY', 'true'),
-    'UNDERCLOUD_ADMIN_VIP': os.environ.get('UNDERCLOUD_ADMIN_VIP', ''),
-    'UNDERCLOUD_PUBLIC_VIP': os.environ.get('UNDERCLOUD_PUBLIC_VIP', ''),
-    'UNDERCLOUD_SERVICE_CERTIFICATE': os.environ.get('UNDERCLOUD_SERVICE_CERTIFICATE', ''),
+    'INSPECTION_COLLECTORS': os.environ['INSPECTION_COLLECTORS'],
+    'INSPECTION_KERNEL_ARGS': os.environ['INSPECTION_KERNEL_ARGS'],
     'KEYSTONE_SIGNING_CERTIFICATE':
         open(os.path.join(keystone_pki_dir, 'signing_cert.pem')).read(),
     'KEYSTONE_SIGNING_KEY':
@@ -80,9 +42,13 @@ context = {
         open(os.path.join(keystone_pki_dir, 'ca_cert.pem')).read(),
     'KEYSTONE_CA_KEY':
         open(os.path.join(keystone_pki_dir, 'ca_key.pem')).read(),
-    'SCHEDULER_MAX_ATTEMPTS': os.environ.get('SCHEDULER_MAX_ATTEMPTS', 30),
-    'CLEAN_NODES': os.environ.get('CLEAN_NODES', 'false'),
 }
+
+# Include all config opts in the context
+for _, group in undercloud.list_opts():
+    for opt in group:
+        upper_name = opt.name.upper()
+        context[upper_name] = os.environ[upper_name]
 
 endpoint_context = {}
 for k, v in os.environ.items():
