@@ -545,6 +545,7 @@ package{'syslinux-extlinux': }
 package{'tftp-server': }
 package{'parted': }
 package{'psmisc': }
+package{'ipxe-bootimgs': }
 
 service { 'sshd':
   ensure => running,
