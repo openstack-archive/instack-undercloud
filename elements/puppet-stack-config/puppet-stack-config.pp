@@ -522,7 +522,6 @@ if $step == 2 {
     include ::mistral::keystone::auth
     include ::mistral::db::sync
     include ::mistral::api
-    include ::mistral::wsgi::apache
     include ::mistral::engine
     include ::mistral::executor
 
