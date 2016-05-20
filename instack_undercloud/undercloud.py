@@ -180,6 +180,11 @@ _opts = [
                 help=('Whether to run benchmarks when inspecting nodes. '
                       'Requires inspection_extras set to True.')
                 ),
+    cfg.BoolOpt('inspection_enable_uefi',
+                default=False,
+                help=('Whether to support introspection of nodes that have'
+                      'UEFI-only firmware.')
+                ),
     cfg.BoolOpt('undercloud_debug',
                 default=True,
                 help=('Whether to enable the debug log level for Undercloud '
