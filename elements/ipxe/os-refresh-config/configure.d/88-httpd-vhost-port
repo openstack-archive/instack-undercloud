@@ -6,8 +6,7 @@ set -o pipefail
 mkdir -p /etc/httpd/conf.d
 sudo cp -r $(dirname $0)/ipxe-vhost.template /etc/httpd/conf.d/10-ipxe_vhost.conf
 
-os-svc-enable -n apache2
-os-svc-restart -n apache2 || true
+systemctl restart httpd || :
 
 [ -x /usr/sbin/semanage ] || exit 0
 
