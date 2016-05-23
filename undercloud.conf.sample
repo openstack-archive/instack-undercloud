@@ -78,6 +78,10 @@
 # Deprecated group/name - [DEFAULT]/discovery_runbench
 #inspection_runbench = false
 
+# Whether to support introspection of nodes that have UEFI-only
+# firmware. (boolean value)
+#inspection_enable_uefi = false
+
 # Whether to enable the debug log level for Undercloud OpenStack
 # services. (boolean value)
 #undercloud_debug = true
