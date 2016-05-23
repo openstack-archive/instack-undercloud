@@ -209,7 +209,7 @@ _opts = [
                 ),
     cfg.BoolOpt('inspection_enable_uefi',
                 default=False,
-                help=('Whether to support introspection of nodes that have'
+                help=('Whether to support introspection of nodes that have '
                       'UEFI-only firmware.')
                 ),
     cfg.BoolOpt('undercloud_debug',
