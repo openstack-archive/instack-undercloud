@@ -376,6 +376,7 @@ ironic::keystone::auth_inspector::region: "%{hiera('keystone_region')}"
 # Ironic Inspector
 ironic::inspector::debug: "%{hiera('debug')}"
 ironic::inspector::pxe_transfer_protocol: 'http'
+ironic::inspector::enable_uefi: {{INSPECTION_ENABLE_UEFI}}
 ironic::inspector::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::identity_uri: "%{hiera('keystone_identity_uri')}"
 ironic::inspector::admin_user: 'ironic'
