@@ -103,6 +103,7 @@ class TestValidator(base.BaseTestCase):
                           undercloud._validate_network)
 
     def test_no_alter_params(self):
+        self.conf.config(network_cidr='192.0.2.0/24')
         params = {opt.name: self.conf.conf[opt.name]
                   for opt in undercloud._opts}
         save_params = dict(params)
