@@ -94,9 +94,12 @@ if $step == 2 {
     ensure => 'directory',
     owner  => 'root',
     group  => 'root',
-    mode   => '0755'
+    mode   => '0755',
+    notify => Service['systemd-journald'],
   }
-  File['/var/log/journal'] -> Service <| name == 'systemd-journald' |>
+  service { 'systemd-journald':
+    ensure => 'running'
+  }
 
   # FIXME: this should only occur on the bootstrap host (ditto for db syncs)
   # Create all the database schemas
