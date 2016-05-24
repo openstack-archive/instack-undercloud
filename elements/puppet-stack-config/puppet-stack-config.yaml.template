@@ -26,7 +26,7 @@ swift::proxy::authtoken::identity_uri: "%{hiera('keystone_identity_uri')}"
 swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
 swift::storage::all::incoming_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::storage::all::outgoing_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
-swift::swift_hash_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
+swift::swift_hash_path_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
 swift::proxy::account_autocreate: true
 swift::proxy::authtoken::admin_password: {{UNDERCLOUD_SWIFT_PASSWORD}}
 swift::keystone::auth::tenant: 'service'
@@ -66,9 +66,10 @@ glance::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 glance::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::api::registry_host: {{LOCAL_IP}}
 glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
-glance::api::known_stores:
+glance::api::stores:
   - glance.store.filesystem.Store
   - glance.store.swift.Store
+glance::api::default_store: 'glance.store.swift.Store'
 glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_port: 9292
@@ -116,7 +117,8 @@ heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 heat::rabbit_host: {{LOCAL_IP}}
-heat::auth_uri: "%{hiera('keystone_auth_uri')}"
+heat::auth_plugin: password
+heat::keystone_tenant: service
 heat::identity_uri: "%{hiera('keystone_identity_uri')}"
 heat::keystone_password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::keystone::domain::domain_name: 'heat_stack'
@@ -174,10 +176,12 @@ mysql_max_connections: 4096
 neutron::bind_host: {{LOCAL_IP}}
 neutron::core_plugin: ml2
 neutron::dhcp_agents_per_network: 2
+neutron::dns_domain: ''
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
+neutron::server::project_name: "%{hiera('neutron::server::auth_tenant')}"
 neutron::server::auth_uri: "%{hiera('keystone_auth_uri')}"
-neutron::server::identity_uri: "%{hiera('keystone_identity_uri')}"
+neutron::server::auth_url: "%{hiera('keystone_identity_uri')}"
 neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::enable_tunneling: True
@@ -186,11 +190,9 @@ neutron_mechanism_drivers: openvswitch
 neutron_bridge_mappings: ctlplane:br-ctlplane
 neutron_public_interface: {{LOCAL_INTERFACE}}
 neutron_physical_bridge: br-ctlplane
-neutron::server::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+neutron::server::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
-neutron::agents::dhcp::dhcp_domain: ''
 neutron::quota::quota_port: -1
-neutron::server::notifications::nova_url: http://{{LOCAL_IP}}:8774/v2
 neutron::server::notifications::auth_url: "%{hiera('keystone_auth_uri')}"
 neutron::server::notifications::tenant_name: service
 neutron::server::notifications::password: {{UNDERCLOUD_NOVA_PASSWORD}}
@@ -287,8 +289,9 @@ nova::api::api_bind_address: {{LOCAL_IP}}
 nova::api::enabled: true
 nova::api::metadata_listen: {{LOCAL_IP}}
 nova::api::admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
-nova::api::osapi_v3: true
-nova::api::enabled_apis: 'osapi_compute,metadata'
+nova::api::enabled_apis:
+  - osapi_compute
+  - metadata
 nova::api::sync_db_api: true
 nova::api::service_name: 'httpd'
 nova::wsgi::apache::ssl: false
@@ -314,10 +317,9 @@ nova::compute::ironic::admin_url: "http://{{LOCAL_IP}}:35357/v2.0"
 
 nova::network::neutron::neutron_auth_url: "http://%{hiera('controller_host')}:35357/v3"
 nova::network::neutron::neutron_url: "http://%{hiera('controller_host')}:9696"
-nova::network::neutron::neutron_password: "%{hiera('neutron::server::auth_password')}"
+nova::network::neutron::neutron_password: "%{hiera('neutron::server::password')}"
 nova::network::neutron::neutron_project_name: "%{hiera('neutron::server::auth_tenant')}"
 nova::network::neutron::neutron_region_name: ''
-nova::network::neutron::neutron_auth_plugin: 'v3password'
 
 nova::scheduler::filter::ram_allocation_ratio: '1.0'
 nova::scheduler::filter::scheduler_host_manager: 'ironic_host_manager'
@@ -329,9 +331,6 @@ nova::keystone::auth::tenant: 'service'
 nova::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_NOVA_PUBLIC}}
 nova::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_NOVA_INTERNAL}}
 nova::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NOVA_ADMIN}}
-nova::keystone::auth::public_url_v3: {{UNDERCLOUD_ENDPOINT_NOVAV3_PUBLIC}}
-nova::keystone::auth::internal_url_v3: {{UNDERCLOUD_ENDPOINT_NOVAV3_INTERNAL}}
-nova::keystone::auth::admin_url_v3: {{UNDERCLOUD_ENDPOINT_NOVAV3_ADMIN}}
 nova::keystone::auth::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::keystone::auth::configure_ec2_endpoint: false
