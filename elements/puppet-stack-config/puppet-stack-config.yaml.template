@@ -464,8 +464,30 @@ zaqar::management::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::messaging::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::message_pipeline: 'zaqar.notification.notifier'
 
-# Loadbalancer
-tripleo::loadbalancer::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
+# HAproxy
+tripleo::haproxy::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
+tripleo::haproxy::controller_virtual_ip: "%{hiera('controller_admin_vip')}"
+tripleo::haproxy::controller_hosts: "%{hiera('controller_host')}"
+tripleo::haproxy::public_virtual_ip: "%{hiera('controller_public_vip')}"
+tripleo::haproxy::public_virtual_interface: 'br-ctlplane'
+tripleo::haproxy::keystone_admin: true
+tripleo::haproxy::keystone_public: true
+tripleo::haproxy::neutron: true
+tripleo::haproxy::glance_api: true
+tripleo::haproxy::glance_registry: true
+tripleo::haproxy::nova_osapi: true
+tripleo::haproxy::nova_metadata: true
+tripleo::haproxy::swift_proxy_server: true
+tripleo::haproxy::heat_api: true
+tripleo::haproxy::ceilometer: "%{hiera('enable_telemetry')}"
+tripleo::haproxy::ironic: true
+tripleo::haproxy::rabbitmq: true
+
+# Keepalived
+tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_vip')}"
+tripleo::keepalived::control_virtual_interface: 'br-ctlplane'
+tripleo::keepalived::public_virtual_ip: "%{hiera('controller_public_vip')}"
+tripleo::keepalived::public_virtual_interface: 'br-ctlplane'
 
 # service tenant
 ceilometer::api::keystone_tenant: 'service'

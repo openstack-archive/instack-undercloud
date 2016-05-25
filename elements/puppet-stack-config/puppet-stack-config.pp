@@ -461,26 +461,12 @@ if $step == 2 {
 
 
   if hiera('service_certificate', undef) {
-    class { '::tripleo::loadbalancer':
-      controller_virtual_ip     => hiera('controller_admin_vip'),
-      controller_hosts          => [hiera('controller_host')],
-      control_virtual_interface => 'br-ctlplane',
-      public_virtual_ip         => hiera('controller_public_vip'),
-      public_virtual_interface  => 'br-ctlplane',
-      service_certificate       => hiera('service_certificate', undef),
-      keystone_admin            => true,
-      keystone_public           => true,
-      neutron                   => true,
-      glance_api                => true,
-      glance_registry           => true,
-      nova_osapi                => true,
-      nova_metadata             => true,
-      swift_proxy_server        => true,
-      heat_api                  => true,
-      ceilometer                => str2bool(hiera('enable_telemetry', false)),
-      ironic                    => true,
-      rabbitmq                  => true,
+    class { '::tripleo::haproxy':
+      # with our current version of hiera, we can't set tripleo::loadbalancer::service_certificate in hieradata
+      # because the value might be empty and puppet would fail to compile the catalog.
+      service_certificate => hiera('service_certificate', undef),
     }
+    include ::tripleo::keepalived
   }
 
   if str2bool(hiera('enable_tempest', true)) {
