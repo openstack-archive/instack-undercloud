@@ -98,16 +98,18 @@ nova quota-update --cores -1 --instances -1 --ram -1 $(openstack project show ad
 # instack-prepare-for-overcloud
 rm -rf $HOME/.novaclient
 
-# load workflows
-for workbook in $(mistral workbook-list | grep tripleo | cut -f 2 -d ' '); do
-    mistral workbook-delete $workbook
-done
-for workflow in $(mistral workflow-list | grep tripleo | cut -f 2 -d ' '); do
-    mistral workflow-delete $workflow
-done
-for workbook in $(ls /usr/share/tripleo-common/workbooks/*); do
-    mistral workbook-create $workbook
-done
+if [ "$(hiera enable_mistral)" = "true" ]; then
+    # load workflows
+    for workbook in $(mistral workbook-list | grep tripleo | cut -f 2 -d ' '); do
+        mistral workbook-delete $workbook
+    done
+    for workflow in $(mistral workflow-list | grep tripleo | cut -f 2 -d ' '); do
+        mistral workflow-delete $workflow
+    done
+    for workbook in $(ls /usr/share/tripleo-common/workbooks/*); do
+        mistral workbook-create $workbook
+    done
+fi
 
 # restart openstack-nova-compute
 # When installing via puppet, nova-compute fails the first time because the
