@@ -296,6 +296,11 @@ _opts = [
                 default=True,
                 help=('Whether to install the TripleO UI.')
                 ),
+    cfg.BoolOpt('enable_validations',
+                default=False,
+                help=('Whether to install requirements to run the TripleO '
+                      'validations.')
+                ),
     cfg.BoolOpt('ipxe_deploy',
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')

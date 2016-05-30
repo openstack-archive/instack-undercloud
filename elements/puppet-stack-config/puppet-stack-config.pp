@@ -486,6 +486,10 @@ if str2bool(hiera('enable_ui', true)) {
   include ::tripleo::profile::base::ui
 }
 
+if str2bool(hiera('enable_validations', false)) {
+  include ::tripleo::profile::base::validations
+}
+
 if str2bool(hiera('enable_zaqar', true)) {
   include ::mongodb::globals
   include ::mongodb::server

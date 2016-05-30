@@ -157,6 +157,10 @@
 # (boolean value)
 #enable_ui = true
 
+# Whether to install requirements to run the TripleO validations.
+# (boolean value)
+#enable_validations = false
+
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 
