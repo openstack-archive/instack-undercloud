@@ -462,7 +462,7 @@ if $step == 2 {
 
   if hiera('service_certificate', undef) {
     class { '::tripleo::haproxy':
-      # with our current version of hiera, we can't set tripleo::loadbalancer::service_certificate in hieradata
+      # with our current version of hiera, we can't set tripleo::haproxy::service_certificate in hieradata
       # because the value might be empty and puppet would fail to compile the catalog.
       service_certificate => hiera('service_certificate', undef),
     }
