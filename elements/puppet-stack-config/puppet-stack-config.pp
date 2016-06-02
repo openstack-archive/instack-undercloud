@@ -286,7 +286,6 @@ if $step == 2 {
   include ::glance::notify::rabbitmq
 
   class { '::nova':
-    rabbit_hosts       => [hiera('controller_host')],
     glance_api_servers => join([hiera('glance_protocol'), '://', hiera('controller_host'), ':', hiera('glance_port')]),
     debug              => hiera('debug'),
   }
@@ -426,7 +425,6 @@ if $step == 2 {
   nova_config {
     'DEFAULT/my_ip':                     value => $ipaddress;
     'DEFAULT/linuxnet_interface_driver': value => 'nova.network.linux_net.LinuxOVSInterfaceDriver';
-    'DEFAULT/rpc_response_timeout':      value => '600';
     'DEFAULT/sync_power_state_interval': value => hiera('nova_sync_power_state_interval');
   }
 

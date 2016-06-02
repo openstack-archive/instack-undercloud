@@ -280,9 +280,9 @@ aodh::keystone::auth::password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::auth::region: "%{hiera('keystone_region')}"
 
 # Nova
-nova::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-nova::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
 nova::notification_driver: messaging
+nova::rpc_response_timeout: '600'
 nova::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 nova::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 nova::api::api_bind_address: {{LOCAL_IP}}
