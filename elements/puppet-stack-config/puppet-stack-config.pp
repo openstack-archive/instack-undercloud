@@ -57,17 +57,7 @@ if $step == 2 {
   include ::tripleo::selinux
 
   # TODO Galara
-  class { '::mysql::server':
-    override_options => {
-      'mysqld' => {
-        'bind-address'          => hiera('controller_host'),
-        'max_connections'       => hiera('mysql_max_connections'),
-        'open_files_limit'      => '-1',
-        'innodb_file_per_table' => 'ON',
-      },
-    },
-    restart          => true
-  }
+  include ::mysql::server
 
   # Raise the mysql file limit
   exec { 'systemctl-daemon-reload':
@@ -171,9 +161,7 @@ if $step == 2 {
     include ::ceilometer::agent::central
     include ::ceilometer::expirer
     include ::ceilometer::collector
-    class { '::ceilometer::agent::auth':
-      auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
-    }
+    include ::ceilometer::agent::auth
 
     Cron <| title == 'ceilometer-expirer' |> { command =>
       "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
@@ -193,9 +181,7 @@ if $step == 2 {
     include ::aodh::listener
     include ::aodh::client
     include ::aodh::db::sync
-    class { '::aodh::auth':
-      auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
-    }
+    include ::aodh::auth
     # To manage the upgrade:
     Exec['ceilometer-dbsync'] -> Exec['aodh-db-sync']
   }
@@ -276,12 +262,8 @@ if $step == 2 {
   }
 
   # TODO: notifications, scrubber, etc.
-  class { '::glance::api':
-    debug        => hiera('debug'),
-  }
-  class { '::glance::registry':
-    debug => hiera('debug'),
-  }
+  include ::glance::api
+  include ::glance::registry
   include ::glance::backend::swift
   include ::glance::notify::rabbitmq
 
@@ -310,10 +292,7 @@ if $step == 2 {
   include ::nova::compute
   include ::nova::conductor
   include ::nova::scheduler
-
-  class {'::nova::scheduler::filter':
-    ram_allocation_ratio => hiera('nova::scheduler::filter::ram_allocation_ratio'),
-  }
+  include ::nova::scheduler::filter
 
   class { '::neutron':
     rabbit_hosts => [hiera('controller_host')],
