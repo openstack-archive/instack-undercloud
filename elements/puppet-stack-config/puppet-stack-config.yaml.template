@@ -181,6 +181,7 @@ neutron::dns_domain: ''
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 neutron::server::project_name: "%{hiera('neutron::server::auth_tenant')}"
+neutron::server::notifications::project_name: "%{hiera('neutron::server::auth_tenant')}"
 neutron::server::auth_uri: "%{hiera('keystone_auth_uri')}"
 neutron::server::auth_url: "%{hiera('keystone_identity_uri')}"
 neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
