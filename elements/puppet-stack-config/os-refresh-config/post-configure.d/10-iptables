@@ -24,6 +24,7 @@ add-rule INPUT -p tcp -m multiport --dports 8000,8003,8004,13800,13003,13004 -j 
 add-rule INPUT -p tcp -m multiport --dports 8080,13808 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8779 -j ACCEPT
 add-rule INPUT -p tcp -m multiport --dports 8777,13777 -j ACCEPT
+add-rule INPUT -p tcp -m multiport --dports 8042,13042 -j ACCEPT
 add-rule INPUT -p tcp --dport 5050 -j ACCEPT
 add-rule INPUT -p tcp --dport 8787 -j ACCEPT
 
