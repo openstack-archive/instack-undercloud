@@ -918,6 +918,10 @@ def _generate_environment(instack_root):
     if instack_env.get('DIB_YUM_REPO_CONF'):
         del instack_env['DIB_YUM_REPO_CONF']
 
+    instack_env['TRIPLEO_INSTALL_USER'] = getpass.getuser()
+    instack_env['TRIPLEO_UNDERCLOUD_CONF_FILE'] = PATHS.CONF_PATH
+    instack_env['TRIPLEO_UNDERCLOUD_PASSWORD_FILE'] = PATHS.PASSWORD_PATH
+
     _generate_endpoints(instack_env)
 
     _write_password_file(instack_env)

@@ -544,6 +544,11 @@ enable_telemetry: {{ENABLE_TELEMETRY}}
 ipxe_deploy: {{IPXE_DEPLOY}}
 enable_monitoring: {{ENABLE_MONITORING}}
 
+# Path to install configuration files
+tripleo_install_user: {{TRIPLEO_INSTALL_USER}}
+tripleo_undercloud_conf_file: {{TRIPLEO_UNDERCLOUD_CONF_FILE}}
+tripleo_undercloud_password_file: {{TRIPLEO_UNDERCLOUD_PASSWORD_FILE}}
+
 
 # Firewall
 tripleo::firewall::manage_firewall: true
