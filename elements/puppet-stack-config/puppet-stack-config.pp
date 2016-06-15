@@ -494,8 +494,8 @@ if $step == 2 {
 
     # ensure TripleO common entrypoints for custom Mistral actions
     # are installed before performing the Mistral action population
-    package {'tripleo-common': }
-    Package['tripleo-common'] ~> Exec['mistral-db-populate']
+    package {'openstack-tripleo-common': }
+    Package['openstack-tripleo-common'] ~> Exec['mistral-db-populate']
 
   }
 
