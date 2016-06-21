@@ -102,6 +102,16 @@ class TestValidator(base.BaseTestCase):
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
+    def test_fail_on_invalid_local_ip(self):
+        self.conf.config(local_ip='192.0.2.1')
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
+
+    def test_fail_on_unqualified_hostname(self):
+        self.conf.config(undercloud_hostname='undercloud')
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
+
     def test_no_alter_params(self):
         params = {opt.name: self.conf.conf[opt.name]
                   for opt in undercloud._opts}
