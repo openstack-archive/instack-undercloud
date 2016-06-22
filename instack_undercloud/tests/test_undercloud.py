@@ -290,8 +290,7 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
-    @mock.patch('instack_undercloud.undercloud._generate_certificate')
-    def test_generate_endpoints_ssl_auto(self, mock_gen_cert):
+    def test_generate_endpoints_ssl_auto(self):
         conf = config_fixture.Config()
         self.useFixture(conf)
         conf.config(generate_service_certificate=True)
@@ -558,41 +557,3 @@ class TestPostConfig(base.BaseTestCase):
         mock_instance.flavors.list.return_value = mock_flavors
         undercloud._delete_default_flavors(mock_instance)
         mock_instance.flavors.delete.assert_called_once_with('8ar')
-
-
-class FakeException(Exception):
-    pass
-
-
-@mock.patch('os.path.exists')
-@mock.patch('instack_undercloud.undercloud._run_command')
-class TestGenerateCertificate(base.BaseTestCase):
-    def test_normal(self, mock_run_command, mock_exists):
-        with mock.patch('instack_undercloud.undercloud.open'):
-            fake_env = {}
-            undercloud._generate_certificate(fake_env)
-            self.assertEqual('/etc/pki/instack-certs/undercloud-192.0.2.2.pem',
-                             fake_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
-
-    def test_exists(self, mock_run_command, mock_exists):
-        mock_exists.return_value = True
-        with mock.patch('instack_undercloud.undercloud.open') as mock_open:
-            fake_env = {}
-            undercloud._generate_certificate(fake_env)
-            self.assertFalse(mock_open.called)
-            self.assertEqual('/etc/pki/instack-certs/undercloud-192.0.2.2.pem',
-                             fake_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
-
-    @mock.patch('os.remove')
-    def test_command_fails(self, mock_remove, mock_run_command, mock_exists):
-        mock_run_command.side_effect = FakeException
-        mock_exists.side_effect = [False, True, True]
-        self.assertRaises(FakeException, undercloud._generate_certificate, {})
-        self.assertEqual(3, mock_remove.call_count)
-
-    @mock.patch('os.remove')
-    def test_file_missing(self, mock_remove, mock_run_command, mock_exists):
-        mock_run_command.side_effect = FakeException
-        mock_exists.side_effect = [False, True, False]
-        self.assertRaises(FakeException, undercloud._generate_certificate, {})
-        self.assertEqual(2, mock_remove.call_count)

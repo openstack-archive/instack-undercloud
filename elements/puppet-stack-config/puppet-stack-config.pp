@@ -62,6 +62,18 @@ include ::rabbitmq
 include ::tripleo::firewall
 include ::tripleo::selinux
 
+if hiera('tripleo::haproxy::service_certificate', undef) {
+  class {'::tripleo::profile::base::haproxy':
+    enable_load_balancer => true,
+  }
+  include ::tripleo::keepalived
+  # NOTE: This is required because the haproxy configuration should be changed
+  # before any keystone operations are triggered. Without this, it will try to
+  # access the new endpoints that point to haproxy even if haproxy hasn't
+  # started yet.
+  Class['::tripleo::haproxy'] -> Anchor['keystone::install::begin']
+}
+
 # MySQL
 include ::tripleo::profile::base::database::mysql
 # Raise the mysql file limit
@@ -202,7 +214,7 @@ class { '::ironic::db::mysql':
 # pre-install swift here so we can build rings
 include ::swift
 
-if hiera('service_certificate', undef) {
+if hiera('tripleo::haproxy::service_certificate', undef) {
   $keystone_public_endpoint = join(['https://', hiera('controller_public_vip'), ':13000'])
   $enable_proxy_headers_parsing = true
 } else {
@@ -416,16 +428,6 @@ if str2bool(hiera('ipxe_deploy', true)) {
 class { '::ironic::drivers::pxe':
   pxe_config_template => $pxe_config_template,
   pxe_bootfile_name   => $pxe_bootfile_name
-}
-
-
-if hiera('service_certificate', undef) {
-  class { '::tripleo::haproxy':
-    # with our current version of hiera, we can't set tripleo::haproxy::service_certificate in hieradata
-    # because the value might be empty and puppet would fail to compile the catalog.
-    service_certificate => hiera('service_certificate', undef),
-  }
-  include ::tripleo::keepalived
 }
 
 if str2bool(hiera('enable_tempest', true)) {

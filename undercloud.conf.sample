@@ -52,6 +52,16 @@
 # store. (boolean value)
 #generate_service_certificate = false
 
+# The certmonger nickname of the CA from which the certificate will be
+# requested. This is used only if the generate_service_certificate
+# option is set. (string value)
+#certificate_generation_ca = local
+
+# The kerberos principal for the service that will use the
+# certificate. This is only needed if your CA requires a kerberos
+# principal. e.g. with FreeIPA. (string value)
+#service_principal =
+
 # Network interface on the Undercloud that will be handling the PXE
 # boots and DHCP for Overcloud instances. (string value)
 #local_interface = eth1
