@@ -274,10 +274,27 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual('http://192.0.2.1:8080/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
-    def test_generate_endpoints_ssl(self):
+    def test_generate_endpoints_ssl_manual(self):
         conf = config_fixture.Config()
         self.useFixture(conf)
         conf.config(undercloud_service_certificate='test.pem')
+        env = undercloud._generate_environment('.')
+        # Spot check one service
+        self.assertEqual('https://192.0.2.2:13000',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
+        self.assertEqual('http://192.0.2.1:5000',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
+        self.assertEqual('http://192.0.2.1:35357',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
+        # Also check that the tenant id part is preserved
+        self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
+                         env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
+
+    @mock.patch('instack_undercloud.undercloud._generate_certificate')
+    def test_generate_endpoints_ssl_auto(self, mock_gen_cert):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(generate_service_certificate=True)
         env = undercloud._generate_environment('.')
         # Spot check one service
         self.assertEqual('https://192.0.2.2:13000',

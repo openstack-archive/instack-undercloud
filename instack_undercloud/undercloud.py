@@ -561,7 +561,8 @@ def _generate_endpoints(instack_env):
     ironic_public_port = 6385
     aodh_public_port = 8042
 
-    if CONF.undercloud_service_certificate:
+    if (CONF.undercloud_service_certificate or
+            CONF.generate_service_certificate):
         public_host = CONF.undercloud_public_vip
         proto = 'https'
         heat_public_port = 13004
