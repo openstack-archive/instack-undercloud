@@ -1,20 +1,34 @@
-source 'https://rubygems.org'
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
 group :development, :test do
-  gem 'puppetlabs_spec_helper', :require => false
+  gem 'puppetlabs_spec_helper',               :require => 'false'
+  gem 'rspec-puppet', '~> 2.2.0',             :require => 'false'
+  gem 'metadata-json-lint',                   :require => 'false'
+  gem 'puppet-lint-param-docs',               :require => 'false'
+  gem 'puppet-lint-absolute_template_path',   :require => 'false'
+  gem 'puppet-lint-trailing_newline-check',   :require => 'false'
+  gem 'puppet-lint-unquoted_string-check',    :require => 'false'
+  gem 'puppet-lint-leading_zero-check',       :require => 'false'
+  gem 'puppet-lint-variable_contains_upcase', :require => 'false'
+  gem 'puppet-lint-numericvariable',          :require => 'false'
+  gem 'json',                                 :require => 'false'
+  # adding 'psych' explicitly
+  # https://github.com/bundler/bundler/issues/2068
+  # TODO: drop it in a future release of 'bundle'.
+  gem 'psych',                                :require => 'false'
+  # https://github.com/voxpupuli/puppet-lint-absolute_classname-check/issues/6
+  gem 'puppet-lint-absolute_classname-check', '0.1.3', :require => 'false'
+end
 
-  # FIXME: need to install puppet-lint gem from github.com because of
-  # https://github.com/rodjek/puppet-lint/issues/409
-  gem 'puppet-lint', :git => 'git://github.com/rodjek/puppet-lint.git'
-  gem 'puppet-lint-absolute_classname-check'
-  gem 'puppet-lint-absolute_template_path'
-  gem 'puppet-lint-trailing_newline-check'
+group :system_tests do
+  gem 'beaker-rspec',                 :require => 'false'
+  gem 'beaker-puppet_install_helper', :require => 'false'
+end
 
-  # Puppet 4.x related lint checks
-  gem 'puppet-lint-unquoted_string-check'
-  gem 'puppet-lint-leading_zero-check'
-  gem 'puppet-lint-variable_contains_upcase'
-  gem 'puppet-lint-numericvariable'
+if facterversion = ENV['FACTER_GEM_VERSION']
+  gem 'facter', facterversion, :require => false
+else
+  gem 'facter', :require => false
 end
 
 if puppetversion = ENV['PUPPET_GEM_VERSION']
