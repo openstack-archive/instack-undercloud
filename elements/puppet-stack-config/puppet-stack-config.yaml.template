@@ -18,7 +18,7 @@ ssh::server::storeconfigs_enabled: false
 ceilometer::agent::auth::auth_region: 'regionOne'
 aodh::auth::auth_region: 'regionOne'
 ceilometer::agent::auth::auth_tenant_name: 'service'
-aodh::auth::auth_tenant_name: 'admin'
+aodh::auth::auth_tenant_name: 'service'
 
 # Swift
 swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
