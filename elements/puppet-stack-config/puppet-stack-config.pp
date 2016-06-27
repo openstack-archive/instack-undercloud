@@ -264,7 +264,7 @@ if $step == 2 {
   # TODO: notifications, scrubber, etc.
   include ::glance::api
   include ::glance::registry
-  include ::glance::backend::swift
+  include ::glance::backend::file
   include ::glance::notify::rabbitmq
 
   class { '::nova':

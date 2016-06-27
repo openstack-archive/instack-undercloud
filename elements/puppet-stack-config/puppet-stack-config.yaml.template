@@ -71,9 +71,10 @@ glance::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 glance::api::registry_host: {{LOCAL_IP}}
 glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::api::stores:
-  - glance.store.filesystem.Store
-  - glance.store.swift.Store
-glance::api::default_store: 'glance.store.swift.Store'
+  - file
+# For now, we can't enable Swift backend because of OOM issue.
+# See https://bugs.launchpad.net/tripleo/+bug/1595916
+glance::api::default_store: 'file'
 glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_port: 9292
