@@ -181,6 +181,16 @@ _opts = [
                      'to custom configure services beyond what '
                      'undercloud.conf provides')
                ),
+    cfg.StrOpt('net_config_override',
+               default='',
+               help=('Path to network config override template. If set, this '
+                     'template will be used to configure the networking via '
+                     'os-net-config. Must be in json format. '
+                     'Templated tags can be used within the '
+                     'template, see '
+                     'instack-undercloud/elements/undercloud-stack-config/'
+                     'net-config.json.template for example tags')
+               ),
     cfg.StrOpt('inspection_interface',
                default='br-ctlplane',
                deprecated_name='discovery_interface',
@@ -853,6 +863,21 @@ def _generate_environment(instack_root):
     return instack_env
 
 
+def _get_template_path(template):
+    local_template_path = os.path.join(
+        os.path.dirname(__file__),
+        '..',
+        'templates',
+        template)
+    installed_template_path = os.path.join(
+        '/usr/share/instack-undercloud/templates',
+        template)
+    if os.path.exists(local_template_path):
+        return local_template_path
+    else:
+        return installed_template_path
+
+
 def _generate_init_data(instack_env):
     context = instack_env.copy()
 
@@ -866,20 +891,17 @@ def _generate_init_data(instack_env):
     else:
         hiera_entry = ''
 
+    if CONF.net_config_override:
+        net_config_json = open(CONF.net_config_override).read()
+    else:
+        net_config_json = \
+            open(_get_template_path('net-config.json.template')).read()
+
     context['HIERADATA_OVERRIDE'] = hiera_entry
 
-    renderer = pystache.Renderer()
-    local_template_path = os.path.join(
-        os.path.dirname(__file__),
-        '..',
-        'templates',
-        'config.json.template')
-    installed_template_path = \
-        '/usr/share/instack-undercloud/templates/config.json.template'
-    if os.path.exists(local_template_path):
-        template = local_template_path
-    else:
-        template = installed_template_path
+    partials = {'net_config': net_config_json}
+    renderer = pystache.Renderer(partials=partials)
+    template = _get_template_path('config.json.template')
 
     with open(template) as f:
         config_json = renderer.render(f.read(), context)

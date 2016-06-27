@@ -24,29 +24,7 @@
     "runbench": "{{DISCOVERY_RUNBENCH}}"
   },
   "os_net_config": {
-   "network_config": [
-     {
-      "type": "ovs_bridge",
-      "name": "br-ctlplane",
-      "ovs_extra": [
-       "br-set-external-id br-ctlplane bridge-id br-ctlplane"
-      ],
-      "members": [
-       {
-        "type": "interface",
-        "name": "{{LOCAL_INTERFACE}}",
-        "primary": "true",
-        "mtu": {{LOCAL_MTU}}
-       }
-      ],
-      "addresses": [
-        {
-          "ip_netmask": "{{PUBLIC_INTERFACE_IP}}"
-        }
-      ],
-      "mtu": {{LOCAL_MTU}}
-    }
-   ]
+  {{> net_config}}
   },
   "keystone": {
     "host": "{{LOCAL_IP}}"
