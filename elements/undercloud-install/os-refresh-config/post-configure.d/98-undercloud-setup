@@ -93,7 +93,7 @@ if [ "$net_create" -eq "1" ]; then
 fi
 
 # Disable nova quotas
-nova quota-update --cores -1 --instances -1 --ram -1 $(openstack project show admin | awk '$2=="id" {print $4}')
+openstack quota set --cores -1 --instances -1 --ram -1 $(openstack project show admin | awk '$2=="id" {print $4}')
 
 # instack-prepare-for-overcloud
 rm -rf $HOME/.novaclient
