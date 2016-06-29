@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from __future__ import print_function
+
 import copy
 import errno
 import getpass
@@ -909,7 +911,7 @@ def _generate_init_data(instack_env):
     cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
     tmp_json = tempfile.mkstemp()[1]
     with open(tmp_json, 'w') as f:
-        print >>f, config_json
+        print(config_json, file=f)
 
     if not os.path.exists(os.path.dirname(cfn_path)):
         _run_command(['sudo', 'mkdir', '-p', os.path.dirname(cfn_path)])
