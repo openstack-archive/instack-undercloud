@@ -402,8 +402,6 @@ if $step == 2 {
   Service['httpd'] -> Class['::keystone::roles::admin'] -> Class['::heat::keystone::domain']
 
   nova_config {
-    'DEFAULT/my_ip':                     value => $ipaddress;
-    'DEFAULT/linuxnet_interface_driver': value => 'nova.network.linux_net.LinuxOVSInterfaceDriver';
     'DEFAULT/sync_power_state_interval': value => hiera('nova_sync_power_state_interval');
   }
 
