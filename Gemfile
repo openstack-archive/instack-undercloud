@@ -5,7 +5,9 @@ group :development, :test do
 
   # FIXME: need to install puppet-lint gem from github.com because of
   # https://github.com/rodjek/puppet-lint/issues/409
-  gem 'puppet-lint', :git => 'git://github.com/rodjek/puppet-lint.git'
+  # We pin to the last commit before the release of v2.0.0, because
+  # puppet-lint_variable_contains_upcase depends on puppet-lint v1.x.
+  gem 'puppet-lint', :git => 'git://github.com/rodjek/puppet-lint.git', :ref => 'b04a35f'
   gem 'puppet-lint-absolute_classname-check'
   gem 'puppet-lint-absolute_template_path'
   gem 'puppet-lint-trailing_newline-check'
