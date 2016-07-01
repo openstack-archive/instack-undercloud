@@ -18,7 +18,7 @@ ssh::server::storeconfigs_enabled: false
 ceilometer::agent::auth::auth_region: 'regionOne'
 aodh::auth::auth_region: 'regionOne'
 ceilometer::agent::auth::auth_tenant_name: 'service'
-aodh::auth::auth_tenant_name: 'admin'
+aodh::auth::auth_tenant_name: 'service'
 ceilometer::agent::auth::auth_url: "%{hiera('keystone_auth_uri_v2')}"
 aodh::auth::auth_url: "%{hiera('keystone_auth_uri_v2')}"
 
