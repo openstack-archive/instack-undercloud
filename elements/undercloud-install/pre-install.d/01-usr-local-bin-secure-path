@@ -7,4 +7,4 @@ fi
 set -eu
 set -o pipefail
 
-sed -i '/secure_path/ s/$/:\/usr\/local\/bin/' /etc/sudoers
+sed -i '/secure_path/ s/\("\?\)$/:\/usr\/local\/bin\1/' /etc/sudoers
