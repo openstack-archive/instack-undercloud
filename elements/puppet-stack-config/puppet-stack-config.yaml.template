@@ -50,6 +50,7 @@ swift::ringbuilder::replicas: 1
 swift::proxy::pipeline:
   - 'catch_errors'
   - 'healthcheck'
+  - 'proxy-logging'
   - 'cache'
   - 'ratelimit'
   - 'bulk'
