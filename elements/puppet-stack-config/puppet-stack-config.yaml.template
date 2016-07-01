@@ -47,6 +47,7 @@ swift_mount_check: false
 swift::proxy::pipeline:
   - 'catch_errors'
   - 'healthcheck'
+  - 'proxy-logging'
   - 'cache'
   - 'ratelimit'
   - 'tempurl'
