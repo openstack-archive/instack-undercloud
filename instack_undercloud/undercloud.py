@@ -715,9 +715,12 @@ IP = %(public_vip)s
 def _generate_certificate(instack_env):
     public_vip = CONF.undercloud_public_vip
     home_pem = os.path.expanduser('~/undercloud-%s.pem' % public_vip)
+    undercloud_pem = ('/etc/pki/instack-certs/undercloud-%s.pem' %
+                      public_vip)
     if os.path.exists(home_pem):
         LOG.info('%s already exists. Not generating a new '
                  'certificate', home_pem)
+        instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = undercloud_pem
         return
     ssl_config = SSL_CONFIG_TEMPLATE % {'public_vip': public_vip}
     ssl_config_file = tempfile.mkstemp()[1]
@@ -726,8 +729,6 @@ def _generate_certificate(instack_env):
             f.write(ssl_config)
         privkey = tempfile.mkstemp()[1]
         cacert = tempfile.mkstemp()[1]
-        undercloud_pem = ('/etc/pki/instack-certs/undercloud-%s.pem' %
-                          public_vip)
         args = ['openssl', 'genrsa', '-out', privkey, '2048']
         _run_command(args, name='openssl private key')
         args = ['openssl', 'req', '-new', '-x509', '-key', privkey, '-out',

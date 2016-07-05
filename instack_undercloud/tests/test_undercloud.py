@@ -552,13 +552,19 @@ class FakeException(Exception):
 class TestGenerateCertificate(base.BaseTestCase):
     def test_normal(self, mock_run_command, mock_exists):
         with mock.patch('instack_undercloud.undercloud.open'):
-            undercloud._generate_certificate({})
+            fake_env = {}
+            undercloud._generate_certificate(fake_env)
+            self.assertEqual('/etc/pki/instack-certs/undercloud-192.0.2.2.pem',
+                             fake_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
 
     def test_exists(self, mock_run_command, mock_exists):
         mock_exists.return_value = True
         with mock.patch('instack_undercloud.undercloud.open') as mock_open:
-            undercloud._generate_certificate({})
+            fake_env = {}
+            undercloud._generate_certificate(fake_env)
             self.assertFalse(mock_open.called)
+            self.assertEqual('/etc/pki/instack-certs/undercloud-192.0.2.2.pem',
+                             fake_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
 
     @mock.patch('os.remove')
     def test_command_fails(self, mock_remove, mock_run_command, mock_exists):
