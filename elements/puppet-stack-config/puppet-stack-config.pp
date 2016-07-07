@@ -506,6 +506,7 @@ if $step == 2 {
     include ::zaqar::management::mongodb
     include ::zaqar::messaging::mongodb
     include ::zaqar::keystone::auth
+    include ::zaqar::keystone::auth_websocket
     include ::zaqar::transport::websocket
     include ::zaqar::transport::wsgi
 
