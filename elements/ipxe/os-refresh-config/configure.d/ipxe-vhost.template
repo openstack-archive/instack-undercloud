@@ -1,5 +1,5 @@
-Listen 8088
-<VirtualHost *:8088>
+Listen IRONIC_HTTP_PORT
+<VirtualHost *:IRONIC_HTTP_PORT>
     DocumentRoot "/httpboot"
     <Directory "/httpboot">
         Options Indexes FollowSymLinks

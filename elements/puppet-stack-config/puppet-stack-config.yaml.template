@@ -418,7 +418,8 @@ ironic::inspector::additional_processing_hooks: 'extra_hardware'
 ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}
 
 # Ironic deploy utils
-ironic::drivers::deploy::http_url: "http://{{LOCAL_IP}}:8088"
+ironic::drivers::deploy::http_port: 8088
+ironic::drivers::deploy::http_url: "http://{{LOCAL_IP}}:%{hiera('ironic::drivers::deploy::http_port')}"
 ironic::drivers::deploy::http_boot: '/httpboot'
 
 # Ironic pxe
@@ -675,7 +676,7 @@ tripleo::firewall::firewall_rules:
   '138 docker registry':
     dport: 8787
   '139 apache vhost':
-    dport: 8088
+    dport: "%{hiera('ironic::drivers::deploy::http_port')}"
   '140 network cidr nat':
     chain: FORWARD
     destination: {{NETWORK_CIDR}}
