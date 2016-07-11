@@ -466,16 +466,22 @@ mistral::engine::older_than: 2880
 mistral::engine::evaluation_interval: 120
 
 # Zaqar
-zaqar::keystone::auth::tenant: 'service'
 zaqar::admin_tenant_name: 'service'
 zaqar::auth_uri: "%{hiera('keystone_auth_uri')}"
 zaqar::identity_uri: "%{hiera('keystone_identity_uri')}"
 zaqar::admin_password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
+zaqar::keystone::auth::tenant: 'service'
 zaqar::keystone::auth::public_url: http://{{LOCAL_IP}}:8888/
 zaqar::keystone::auth::internal_url: http://{{LOCAL_IP}}:8888/
 zaqar::keystone::auth::admin_url: http://{{LOCAL_IP}}:8888/
 zaqar::keystone::auth::region: 'regionOne'
 zaqar::keystone::auth::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
+zaqar::keystone::auth_websocket::tenant: 'service'
+zaqar::keystone::auth_websocket::public_url: ws://{{LOCAL_IP}}:9000/
+zaqar::keystone::auth_websocket::internal_url: ws://{{LOCAL_IP}}:9000/
+zaqar::keystone::auth_websocket::admin_url: ws://{{LOCAL_IP}}:9000/
+zaqar::keystone::auth_websocket::region: 'regionOne'
+zaqar::keystone::auth_websocket::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::unreliable: true
 zaqar::transport::websocket::bind: {{LOCAL_IP}}
 zaqar::transport::wsgi::bind: {{LOCAL_IP}}
