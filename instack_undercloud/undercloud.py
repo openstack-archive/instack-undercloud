@@ -888,6 +888,7 @@ def _generate_init_data(instack_env):
             os.path.basename(CONF.hieradata_override))[0]
         dst = os.path.join('/etc/puppet/hieradata',
                            os.path.basename(CONF.hieradata_override))
+        _run_command(['sudo', 'mkdir', '-p', '/etc/puppet/hieradata'])
         _run_command(['sudo', 'cp', CONF.hieradata_override, dst])
         _run_command(['sudo', 'chmod', '0644', dst])
     else:
