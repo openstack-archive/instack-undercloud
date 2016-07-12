@@ -199,8 +199,10 @@ if $step == 2 {
 
   if hiera('service_certificate', undef) {
     $keystone_public_endpoint = join(['https://', hiera('controller_public_vip'), ':13000'])
+    $enable_proxy_headers_parsing = true
   } else {
     $keystone_public_endpoint = undef
+    $enable_proxy_headers_parsing = false
   }
 
   class { '::keystone':
@@ -284,7 +286,9 @@ if $step == 2 {
   Nova_config<||> ~> Exec['stop_nova-api']
   Exec['stop_nova-api'] -> Service['httpd']
 
-  include ::nova::api
+  class { '::nova::api':
+    enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
+  }
   include ::nova::wsgi::apache
   include ::nova::cert
   include ::nova::cron::archive_deleted_rows
@@ -384,8 +388,9 @@ if $step == 2 {
 
   # Heat
   class { '::heat':
-    debug            => hiera('debug'),
-    keystone_ec2_uri => join(['http://', hiera('controller_host'), ':5000/v2.0/ec2tokens']),
+    debug                        => hiera('debug'),
+    keystone_ec2_uri             => join(['http://', hiera('controller_host'), ':5000/v2.0/ec2tokens']),
+    enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
   }
   heat_config {
     'clients/endpoint_type': value => 'internal',
