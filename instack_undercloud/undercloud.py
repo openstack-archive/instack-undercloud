@@ -844,6 +844,7 @@ def _generate_environment(instack_root):
         inspection_kernel_args.append('ipa-inspection-benchmarks=cpu,mem,disk')
     if CONF.inspection_extras:
         inspection_kernel_args.append('ipa-inspection-dhcp-all-interfaces=1')
+        inspection_kernel_args.append('ipa-collect-lldp=1')
 
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
 
