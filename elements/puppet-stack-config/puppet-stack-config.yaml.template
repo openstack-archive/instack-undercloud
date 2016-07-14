@@ -1,6 +1,6 @@
-keystone_identity_uri: http://{{LOCAL_IP}}:35357
-keystone_auth_uri: http://{{LOCAL_IP}}:5000/v3
-keystone_auth_uri_v2: http://{{LOCAL_IP}}:5000/v2.0
+keystone_identity_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN}}
+keystone_auth_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v3
+keystone_auth_uri_v2: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v2.0
 keystone_region: 'regionOne'
 
 debug: {{UNDERCLOUD_DEBUG}}
@@ -249,7 +249,7 @@ sensu::subscriptions:
   - 'undercloud'
 sensu::checks:
   'check_keystone-api':
-    command: 'oschecks-check_keystone_api --os-auth-url http://{{LOCAL_IP}}:5000/v2.0 --os-username admin --os-password {{UNDERCLOUD_ADMIN_PASSWORD}} --os-tenant-name service'
+    command: 'oschecks-check_keystone_api --os-auth-url "%{hiera(\"keystone_auth_uri_v2\")}" --os-username admin --os-password {{UNDERCLOUD_ADMIN_PASSWORD}} --os-tenant-name service'
     subscribers: 'undercloud'
     standalone: false
 
@@ -329,11 +329,11 @@ nova_sync_power_state_interval: -1
 nova::compute::ironic::admin_username: 'ironic'
 nova::compute::ironic::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 nova::compute::ironic::admin_tenant_name: 'service'
-nova::compute::ironic::api_endpoint: "http://{{LOCAL_IP}}:6385/v1"
-nova::compute::ironic::admin_url: "http://{{LOCAL_IP}}:35357/v2.0"
+nova::compute::ironic::api_endpoint: "{{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}/v1"
+nova::compute::ironic::admin_url: "%{hiera('keystone_identity_uri')}/v2.0"
 
-nova::network::neutron::neutron_auth_url: "http://%{hiera('controller_host')}:35357/v3"
-nova::network::neutron::neutron_url: "http://%{hiera('controller_host')}:9696"
+nova::network::neutron::neutron_auth_url: "%{hiera('keystone_auth_uri')}"
+nova::network::neutron::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 nova::network::neutron::neutron_password: "%{hiera('neutron::server::password')}"
 nova::network::neutron::neutron_project_name: "%{hiera('neutron::server::auth_tenant')}"
 nova::network::neutron::neutron_region_name: ''
@@ -366,7 +366,7 @@ ironic::rpc_response_timeout: 600
 ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::api::identity_uri: "%{hiera('keystone_identity_uri')}"
-ironic::api::neutron_url: "http://{{LOCAL_IP}}:9696/"
+ironic::api::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 ironic::api::host_ip: {{LOCAL_IP}}
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::rabbit_host: {{LOCAL_IP}}
@@ -403,14 +403,14 @@ ironic::inspector::keep_ports: 'added'
 ironic::inspector::ironic_username: 'ironic'
 ironic::inspector::ironic_password: "%{hiera('ironic::api::admin_password')}"
 ironic::inspector::ironic_tenant_name: 'service'
-ironic::inspector::ironic_auth_url: "http://{{LOCAL_IP}}:5000/v2.0"
+ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri_v2')}"
 ironic::inspector::ironic_max_retries: 6
 ironic::inspector::ironic_retry_interval: 10
 ironic::inspector::store_data: 'swift'
 ironic::inspector::swift_username: 'ironic'
 ironic::inspector::swift_password: "%{hiera('ironic::api::admin_password')}"
 ironic::inspector::swift_tenant_name: 'service'
-ironic::inspector::swift_auth_url: "http://{{LOCAL_IP}}:5000/v2.0"
+ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri_v2')}"
 ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
