@@ -449,6 +449,7 @@ horizon::wsgi::apache::priority: 10
 horizon::openstack_endpoint_type: internalURL
 
 # Mistral
+mistral::api::bind_host: {{LOCAL_IP}}
 mistral::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 mistral::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 mistral::rabbit_host: {{LOCAL_IP}}
@@ -457,9 +458,9 @@ mistral::identity_uri: "%{hiera('keystone_identity_uri')}"
 mistral::database_connection: mysql+pymysql://mistral:{{UNDERCLOUD_MISTRAL_PASSWORD}}@{{LOCAL_IP}}/mistral
 mistral::rpc_backend: rabbit
 mistral::keystone_password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
-mistral::keystone::auth::public_url: http://{{LOCAL_IP}}:8989/v2
-mistral::keystone::auth::internal_url: http://{{LOCAL_IP}}:8989/v2
-mistral::keystone::auth::admin_url: http://{{LOCAL_IP}}:8989/v2
+mistral::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC}}
+mistral::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_INTERNAL}}
+mistral::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_ADMIN}}
 mistral::keystone::auth::region: 'regionOne'
 mistral::keystone::auth::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::tenant: 'service'
@@ -508,6 +509,7 @@ tripleo::haproxy::heat_api: true
 tripleo::haproxy::ceilometer: "%{hiera('enable_telemetry')}"
 tripleo::haproxy::ironic: true
 tripleo::haproxy::rabbitmq: true
+tripleo::haproxy::mistral: {{ENABLE_MISTRAL}}
 
 # Keepalived
 tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_vip')}"

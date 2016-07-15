@@ -262,7 +262,7 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         endpoint_vars = {k: v for (k, v) in env.items()
                          if k.startswith('UNDERCLOUD_ENDPOINT')}
-        self.assertEqual(27, len(endpoint_vars))
+        self.assertEqual(30, len(endpoint_vars))
         # Spot check one service
         self.assertEqual('http://192.0.2.1:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
