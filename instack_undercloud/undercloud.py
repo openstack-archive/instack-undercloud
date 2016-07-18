@@ -610,6 +610,7 @@ def _generate_endpoints(instack_env):
     swift_public_port = 8080
     ironic_public_port = 6385
     aodh_public_port = 8042
+    mistral_public_port = 8989
 
     if (CONF.undercloud_service_certificate or
             CONF.generate_service_certificate):
@@ -624,6 +625,7 @@ def _generate_endpoints(instack_env):
         swift_public_port = 13808
         ironic_public_port = 13385
         aodh_public_port = 13042
+        mistral_public_port = 13989
 
     heat_public_params = (proto, public_host, heat_public_port)
     heat_internal_params = ('http', local_host, 8004)
@@ -652,6 +654,9 @@ def _generate_endpoints(instack_env):
     aodh_public_params = (proto, public_host, aodh_public_port)
     aodh_internal_params = ('http', local_host, 8042)
     aodh_admin_params = aodh_internal_params
+    mistral_public_params = (proto, public_host, mistral_public_port)
+    mistral_internal_params = ('http', local_host, 8989)
+    mistral_admin_params = mistral_internal_params
 
     endpoints = {}
 
@@ -720,6 +725,12 @@ def _generate_endpoints(instack_env):
                  aodh_public_params,
                  aodh_internal_params,
                  aodh_admin_params,
+                 )
+    add_endpoint('mistral',
+                 '%s://%s:%d/v2',
+                 mistral_public_params,
+                 mistral_internal_params,
+                 mistral_admin_params,
                  )
 
     instack_env.update(endpoints)
