@@ -422,6 +422,7 @@ ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}
 ironic::drivers::deploy::http_port: 8088
 ironic::drivers::deploy::http_url: "http://{{LOCAL_IP}}:%{hiera('ironic::drivers::deploy::http_port')}"
 ironic::drivers::deploy::http_boot: '/httpboot'
+ironic::inspector::http_port: "%{hiera('ironic::drivers::deploy::http_port')"
 
 # Ironic pxe
 ironic::drivers::pxe::ipxe_enabled: {{IPXE_DEPLOY}}
