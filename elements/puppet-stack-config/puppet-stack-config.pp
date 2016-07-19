@@ -308,7 +308,7 @@ include ::ceilometer::agent::central
 include ::ceilometer::expirer
 include ::ceilometer::collector
 class { '::ceilometer::agent::auth':
-  auth_url => join(['http://', hiera('controller_host'), ':5000/v2.0']),
+  auth_url => join(['http://', hiera('controller_host'), ':5000']),
 }
 
 Cron <| title == 'ceilometer-expirer' |> { command =>
