@@ -130,6 +130,11 @@ if [ -n "${ATTACH_EXTRA_DISKS:-}" ]; then
     done
 fi
 
+export UNDERCLOUD_NODE_ARCH=x86_64
+export UNDERCLOUD_NODE_MEM=${UNDERCLOUD_NODE_MEM:-6144}
+export UNDERCLOUD_NODE_CPU=${UNDERCLOUD_NODE_CPU:-2}
+export UNDERCLOUD_NODE_DISK=${UNDERCLOUD_NODE_DISK:-30}
+
 export UNDERCLOUD_INSTALL=${UNDERCLOUD_INSTALL:-1}
 
 if [ "$UNDERCLOUD_INSTALL" = "1" ]; then
@@ -137,19 +142,15 @@ if [ "$UNDERCLOUD_INSTALL" = "1" ]; then
     cp $ANSWERSFILE /tmp/instack.answers
 
     disk-image-create \
-        --image-size 30 \
+        --image-size $UNDERCLOUD_NODE_DISK \
         -a amd64 \
         $NODE_DIST instack-vm \
         -o $UNDERCLOUD_VM_NAME
 
     sudo cp $UNDERCLOUD_VM_NAME.qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2
 else
-    sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 30G
+    sudo qemu-img create -f qcow2 /var/lib/libvirt/images/$UNDERCLOUD_VM_NAME.qcow2 ${UNDERCLOUD_NODE_DISK}G
 fi
-
-export UNDERCLOUD_NODE_ARCH=x86_64
-export UNDERCLOUD_NODE_MEM=${UNDERCLOUD_NODE_MEM:-6144}
-export UNDERCLOUD_NODE_CPU=${UNDERCLOUD_NODE_CPU:-2}
 
 UNDERCLOUD_NODE_EXTRAOPTS=
 if [[ ${DIB_COMMON_ELEMENTS:-} == *enable-serial-console* ]]; then
