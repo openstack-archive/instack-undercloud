@@ -462,8 +462,8 @@ if $step == 2 {
   # activation of the docker thin-pool associated with the atomic host.
   augeas { 'lvm.conf':
     require => Package['openstack-nova-compute'],
-    context => '/files/etc/lvm/lvm.conf/activation/dict/',
-    changes => 'set auto_activation_volume_list/list ""'
+    context => '/files/etc/lvm/lvm.conf/devices/dict/',
+    changes => 'set global_filter/str "[ r|^/dev/disk/by-path/ip.*iscsi.*\.org\.openstack:.*| ]"'
   }
 
   if str2bool(hiera('enable_docker_registry', true)) {
