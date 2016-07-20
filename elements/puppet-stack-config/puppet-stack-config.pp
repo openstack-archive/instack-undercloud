@@ -56,9 +56,8 @@ if $step == 2 {
   include ::tripleo::firewall
   include ::tripleo::selinux
 
-  # TODO Galara
-  include ::mysql::server
-
+  # MySQL
+  include ::tripleo::profile::base::database::mysql
   # Raise the mysql file limit
   exec { 'systemctl-daemon-reload':
     command => '/bin/systemctl daemon-reload'
