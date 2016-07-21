@@ -1,7 +1,0 @@
-#!/bin/bash
-set -eux
-set -o pipefail
-
-[ -x /usr/sbin/semanage ] || exit 0
-
-semodule -i /opt/stack/selinux-policy/ipxe.pp
