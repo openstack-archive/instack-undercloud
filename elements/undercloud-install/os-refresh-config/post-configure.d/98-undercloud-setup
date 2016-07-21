@@ -2,8 +2,6 @@
 
 set -eux
 
-OK_FILE=/opt/stack/.undercloud-setup
-
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
@@ -122,5 +120,3 @@ systemctl restart openstack-nova-compute
 sysctl -w net.ipv4.ip_forward=1
 # Make it persistent
 echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/ip-forward.conf
-
-touch $OK_FILE
