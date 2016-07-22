@@ -5,7 +5,7 @@ set -o pipefail
 
 function puppet_apply {
     set +e
-    $@ 2>&1 | awk '{print strftime("%Y-%m-%d %H:%M:%S") " - "$0}'
+    $@ 2>&1 | awk '{print strftime("%Y-%m-%d %H:%M:%S") " - "$0; fflush()}'
     rc=$?
     set -e
 
