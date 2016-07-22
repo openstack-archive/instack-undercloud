@@ -174,17 +174,14 @@ keystone::rabbit_host: {{LOCAL_IP}}
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
-mysql_innodb_buffer_pool_size: 0
-mysql_root_password: ''
-mysql_cluster_name: unset
-mysql_max_connections: 4096
-mysql::server::manage_config_file: true
-mysql::server::restart: true
-mysql::server::override_options:
+enable_galera: true
+mysql_max_connections: '4096'
+tripleo::profile::base::database::mysql::step: 2
+tripleo::profile::base::database::mysql::manage_resources: true
+tripleo::profile::base::database::mysql::remove_default_accounts: false
+tripleo::profile::base::database::mysql::mysql_server_options:
   'mysqld':
     bind-address: "%{hiera('controller_host')}"
-    max_connections: "%{hiera('mysql_max_connections')}"
-    open_files_limit: '-1'
     innodb_file_per_table: 'ON'
 mysql::server::restart: true
 
