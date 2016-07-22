@@ -40,6 +40,19 @@ Package<| tag == 'openstack' |> { ensure => latest }
 # can notify services and db_sync commands.
 Package<| tag == 'openstack' |> -> Exec['package-upgrade']
 
+# Run  OpenStack db-sync at every puppet run, in any case.
+Exec<| title == 'neutron-db-sync' |> { refreshonly => false }
+Exec<| title == 'keystone-manage db_sync' |> { refreshonly => false }
+Exec<| title == 'glance-manage db_sync' |> { refreshonly => false }
+Exec<| title == 'nova-db-sync-api' |> { refreshonly => false }
+Exec<| title == 'nova-db-sync' |> { refreshonly => false }
+Exec<| title == 'heat-dbsync' |> { refreshonly => false }
+Exec<| title == 'ceilometer-dbsync' |> { refreshonly => false }
+Exec<| title == 'aodh-db-sync' |> { refreshonly => false }
+Exec<| title == 'ironic-dbsync' |> { refreshonly => false }
+Exec<| title == 'mistral-db-sync' |> { refreshonly => false }
+Exec<| title == 'mistral-db-populate' |> { refreshonly => false }
+Exec<| title == 'zaqar-manage db_sync' |> { refreshonly => false }
 
 if count(hiera('ntp::servers')) > 0 {
   include ::ntp
