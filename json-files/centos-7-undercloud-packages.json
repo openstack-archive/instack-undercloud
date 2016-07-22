@@ -6,7 +6,6 @@
       "undercloud-install",
       "enable-packages-install",
       "element-manifest",
-      "ipxe",
       "puppet-stack-config"
     ],
     "hook": [

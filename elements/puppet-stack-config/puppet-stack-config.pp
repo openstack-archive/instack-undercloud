@@ -418,6 +418,7 @@ include ::ironic::drivers::ipmi
 include ::ironic::drivers::pxe
 include ::ironic::drivers::ssh
 include ::ironic::inspector
+include ::ironic::pxe
 
 if str2bool(hiera('enable_tempest', true)) {
   # tempest
