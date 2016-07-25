@@ -16,7 +16,4 @@ function puppet_apply {
     fi
 }
 
-FACTER_step=1 puppet_apply \
-    puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
-FACTER_step=2 puppet_apply \
-    puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
+puppet_apply puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
