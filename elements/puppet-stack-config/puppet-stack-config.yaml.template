@@ -510,6 +510,7 @@ tripleo::haproxy::nova_metadata: true
 tripleo::haproxy::swift_proxy_server: true
 tripleo::haproxy::heat_api: true
 tripleo::haproxy::ceilometer: "%{hiera('enable_telemetry')}"
+tripleo::haproxy::aodh: "%{hiera('enable_telemetry')}"
 tripleo::haproxy::ironic: true
 tripleo::haproxy::rabbitmq: true
 tripleo::haproxy::mistral: {{ENABLE_MISTRAL}}
