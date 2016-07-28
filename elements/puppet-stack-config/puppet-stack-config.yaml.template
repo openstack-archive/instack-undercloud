@@ -491,6 +491,7 @@ mistral::keystone::auth::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::tenant: 'service'
 mistral::engine::older_than: 2880
 mistral::engine::evaluation_interval: 120
+mistral::engine::execution_field_size_limit_kb: 4096
 
 # Zaqar
 zaqar::keystone::authtoken::project_name: 'service'
