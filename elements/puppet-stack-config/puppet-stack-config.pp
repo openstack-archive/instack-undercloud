@@ -432,6 +432,7 @@ if hiera('service_certificate', undef) {
     swift_proxy_server        => true,
     heat_api                  => true,
     ceilometer                => true,
+    aodh                      => true,
     ironic                    => true,
     rabbitmq                  => true,
   }
