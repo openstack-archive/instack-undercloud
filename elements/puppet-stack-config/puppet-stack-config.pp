@@ -240,33 +240,6 @@ Keystone_service<||> -> Keystone_endpoint<||>
 keystone_config {
   'ec2/driver': value => 'keystone.contrib.ec2.backends.sql.Ec2';
 }
-file { [ '/etc/keystone/ssl', '/etc/keystone/ssl/certs', '/etc/keystone/ssl/private' ]:
-  ensure  => 'directory',
-  owner   => 'keystone',
-  group   => 'keystone',
-  require => Package['keystone'],
-}
-file { '/etc/keystone/ssl/certs/signing_cert.pem':
-  content => hiera('keystone_signing_certificate'),
-  owner   => 'keystone',
-  group   => 'keystone',
-  notify  => Service['httpd'],
-  require => File['/etc/keystone/ssl/certs'],
-}
-file { '/etc/keystone/ssl/private/signing_key.pem':
-  content => hiera('keystone_signing_key'),
-  owner   => 'keystone',
-  group   => 'keystone',
-  notify  => Service['httpd'],
-  require => File['/etc/keystone/ssl/private'],
-}
-file { '/etc/keystone/ssl/certs/ca.pem':
-  content => hiera('keystone_ca_certificate'),
-  owner   => 'keystone',
-  group   => 'keystone',
-  notify  => Service['httpd'],
-  require => File['/etc/keystone/ssl/certs'],
-}
 
 # TODO: notifications, scrubber, etc.
 include ::glance::api
