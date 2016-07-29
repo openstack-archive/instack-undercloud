@@ -267,6 +267,7 @@ aodh::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
 aodh::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
 aodh::api::service_name: 'httpd'
 aodh::wsgi::apache::ssl: false
+aodh::wsgi::apache::bind_host: {{LOCAL_IP}}
 # for a migration path from ceilometer-alarm to aodh, we use the same database
 aodh::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 aodh::auth::auth_password: {{UNDERCLOUD_AODH_PASSWORD}}
