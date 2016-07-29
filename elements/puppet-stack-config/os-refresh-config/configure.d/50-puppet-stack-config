@@ -16,7 +16,4 @@ function puppet_apply {
     fi
 }
 
-# Explicitly set fqdn instead of letting puppet detect it.
-# See https://bugs.launchpad.net/tripleo/+bug/1607334
-export FACTER_fqdn=$(hostnamectl --static)
 puppet_apply puppet apply --detailed-exitcodes /etc/puppet/manifests/puppet-stack-config.pp
