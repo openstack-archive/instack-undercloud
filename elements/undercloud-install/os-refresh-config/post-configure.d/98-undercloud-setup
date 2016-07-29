@@ -109,12 +109,6 @@ if [ "$(hiera enable_mistral)" = "true" ]; then
     done
 fi
 
-# restart openstack-nova-compute
-# When installing via puppet, nova-compute fails the first time because the
-# ironic user does not yet exist. Now that the user has been created via
-# setup-endpoints, we need to restart the service.
-systemctl restart openstack-nova-compute
-
 # IP forwarding is needed to allow the overcloud nodes access to the outside
 # internet in cases where they are on an isolated network.
 sysctl -w net.ipv4.ip_forward=1
