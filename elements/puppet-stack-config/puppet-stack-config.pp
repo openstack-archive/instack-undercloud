@@ -59,6 +59,8 @@ if count(hiera('ntp::servers')) > 0 {
 }
 
 include ::rabbitmq
+Class['::rabbitmq'] -> Service['httpd']
+
 include ::tripleo::firewall
 include ::tripleo::selinux
 
@@ -400,6 +402,7 @@ package{'python-proliantutils': }
 
 include ::ironic
 include ::ironic::api
+include ::ironic::wsgi::apache
 include ::ironic::conductor
 include ::ironic::drivers::deploy
 include ::ironic::drivers::ipmi
