@@ -403,6 +403,7 @@ include ::ironic::api
 include ::ironic::conductor
 include ::ironic::drivers::deploy
 include ::ironic::drivers::ipmi
+include ::ironic::drivers::ssh
 include ::ironic::inspector
 
 if str2bool(hiera('ipxe_deploy', true)) {
