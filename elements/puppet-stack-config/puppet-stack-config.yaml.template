@@ -365,9 +365,6 @@ ironic::api::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::api::identity_uri: "%{hiera('keystone_identity_uri')}"
 ironic::api::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 ironic::api::host_ip: {{LOCAL_IP}}
-ironic::api::service_name: 'httpd'
-ironic::wsgi::apache::ssl: false
-ironic::wsgi::apache::bind_host: {{LOCAL_IP}}
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
