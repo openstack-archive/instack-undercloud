@@ -27,6 +27,7 @@ import subprocess
 import tempfile
 import uuid
 
+from mistralclient.api import client as mistralclient
 from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
@@ -976,7 +977,7 @@ def _get_auth_values():
     """
     user = _extract_from_stackrc('OS_USERNAME')
     password = _run_command(['sudo', 'hiera', 'admin_password']).rstrip()
-    tenant = _extract_from_stackrc('OS_TENANT')
+    tenant = _extract_from_stackrc('OS_TENANT_NAME')
     auth_url = _extract_from_stackrc('OS_AUTH_URL')
     return user, password, tenant, auth_url
 
@@ -1036,7 +1037,22 @@ def _clean_os_refresh_config():
     _run_command(args, name='Clean os-refresh-config')
 
 
-def _post_config():
+def _create_default_plan(mistral):
+    plan_name = 'overcloud'
+    queue_name = str(uuid.uuid4())
+
+    if plan_name in [env.name for env in mistral.environments.list()]:
+        LOG.info('Not creating default plan "%s" because it already exists.',
+                 plan_name)
+        return
+
+    mistral.executions.create(
+        'tripleo.plan_management.v1.create_default_deployment_plan',
+        workflow_input={'container': plan_name, 'queue_name': queue_name}
+    )
+
+
+def _post_config(instack_env):
     _copy_stackrc()
     user, password, tenant, auth_url = _get_auth_values()
     nova = novaclient.Client(2, user, password, tenant, auth_url)
@@ -1050,6 +1066,12 @@ def _post_config():
     _ensure_flavor(nova, 'ceph-storage', 'ceph-storage')
     _ensure_flavor(nova, 'block-storage', 'block-storage')
     _ensure_flavor(nova, 'swift-storage', 'swift-storage')
+
+    if CONF.enable_mistral:
+        mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
+        mistral = mistralclient.client(mistral_url, user, password, tenant,
+                                       auth_url)
+        _create_default_plan(mistral)
 
 
 def install(instack_root):
@@ -1067,7 +1089,7 @@ def install(instack_root):
     _generate_init_data(instack_env)
     _run_instack(instack_env)
     _run_orc(instack_env)
-    _post_config()
+    _post_config(instack_env)
     _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
     LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
              'stackrc_path': os.path.expanduser('~/stackrc')})
