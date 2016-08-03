@@ -7,9 +7,23 @@ debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 controller_admin_vip: {{UNDERCLOUD_ADMIN_VIP}}
 controller_public_vip: {{UNDERCLOUD_PUBLIC_VIP}}
-service_certificate: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
 ntp::servers:
   -
+
+# SSL
+tripleo::haproxy::service_certificate: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
+generate_service_certificates: {{GENERATE_SERVICE_CERTIFICATE}}
+tripleo::profile::base::haproxy::certificates_specs:
+  undercloud-haproxy-public:
+    service_pem: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
+    service_certificate: '/etc/pki/tls/certs/undercloud-front.crt'
+    service_key: '/etc/pki/tls/private/undercloud-front.key'
+    hostname: "%{hiera('controller_public_vip')}"
+    postsave_cmd: "/usr/bin/instack-haproxy-cert-update '/etc/pki/tls/certs/undercloud-front.crt' '/etc/pki/tls/private/undercloud-front.key' {{UNDERCLOUD_SERVICE_CERTIFICATE}}"
+    principal: {{SERVICE_PRINCIPAL}}
+
+# CA defaults
+certmonger_ca: {{CERTIFICATE_GENERATION_CA}}
 
 # Common Hiera data gets applied to all nodes
 ssh::server::storeconfigs_enabled: false
@@ -496,6 +510,7 @@ zaqar::message_pipeline: 'zaqar.notification.notifier'
 zaqar::max_messages_post_size: 524288
 
 # HAproxy
+tripleo::profile::base::haproxy::step: 1
 tripleo::haproxy::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
 tripleo::haproxy::controller_virtual_ip: "%{hiera('controller_admin_vip')}"
 tripleo::haproxy::controller_hosts: "%{hiera('controller_host')}"

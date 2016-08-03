@@ -1,0 +1,16 @@
+#!/bin/bash
+CERT_FILE="$1"
+KEY_FILE="$2"
+OUTPUT_FILE="$3"
+
+if [[ -z "$CERT_FILE" || -z "$KEY_FILE" || -z "$OUTPUT_FILE" ]]; then
+    echo "You need to provide CERT_FILE KEY_FILE and finally OUTPUT_FILE" \
+        "as arguments in that order."
+    exit 1
+fi
+if [[ ! -f "$CERT_FILE" || ! -f "$KEY_FILE" ]]; then
+    echo "Certificate and key files must exist!"
+    exit 1
+fi
+cat $CERT_FILE $KEY_FILE > $OUTPUT_FILE
+systemctl reload haproxy
