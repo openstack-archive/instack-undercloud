@@ -31,6 +31,11 @@ template = os.path.join(os.path.dirname(__file__),
 context = {
     'INSPECTION_COLLECTORS': os.environ['INSPECTION_COLLECTORS'],
     'INSPECTION_KERNEL_ARGS': os.environ['INSPECTION_KERNEL_ARGS'],
+    'TRIPLEO_INSTALL_USER': os.environ['TRIPLEO_INSTALL_USER'],
+    'TRIPLEO_UNDERCLOUD_CONF_FILE':
+        os.environ['TRIPLEO_UNDERCLOUD_CONF_FILE'],
+    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE':
+        os.environ['TRIPLEO_UNDERCLOUD_PASSWORD_FILE'],
 }
 
 # Include all config opts in the context
