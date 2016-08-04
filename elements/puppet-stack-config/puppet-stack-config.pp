@@ -404,11 +404,6 @@ include ::nova::network::neutron
 
 # Ironic
 
-# dependency of pxe_drac
-package{'openwsman-python': }
-# dependency of pxe_ilo
-package{'python-proliantutils': }
-
 include ::ironic
 include ::ironic::api
 include ::ironic::conductor
@@ -521,16 +516,21 @@ if str2bool(hiera('enable_monitoring', true)) {
   Package['osops-tools-monitoring-oschecks'] -> Service['sensu-client']
 }
 
-package{'firewalld':
-  ensure => 'absent',
-}
-package{'os-cloud-config': }
-package{'openstack-selinux': }
-package{'syslinux-extlinux': }
-package{'tftp-server': }
-package{'parted': }
-package{'psmisc': }
-package{'ipxe-bootimgs': }
+# dependency of pxe_drac
+ensure_resource('package', 'openwsman-python')
+# dependency of pxe_ilo
+ensure_resource('package', 'python-proliantutils')
+
+ensure_resource('package', 'firewalld', {
+  'ensure' => 'absent',
+})
+ensure_resource('package', 'os-cloud-config')
+ensure_resource('package', 'openstack-selinux')
+ensure_resource('package', 'syslinux-extlinux')
+ensure_resource('package', 'tftp-server')
+ensure_resource('package', 'parted')
+ensure_resource('package', 'psmisc')
+ensure_resource('package', 'ipxe-bootimgs')
 
 service { 'sshd':
   ensure => running,
