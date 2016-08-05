@@ -40,6 +40,8 @@ if count(hiera('ntp::servers')) > 0 {
 }
 
 include ::rabbitmq
+Class['::rabbitmq'] -> Service['httpd']
+
 include ::tripleo::firewall
 include ::tripleo::selinux
 include ::tripleo::profile::base::kernel
@@ -472,6 +474,7 @@ include ::nova::network::neutron
 
 include ::ironic
 include ::ironic::api
+include ::ironic::wsgi::apache
 include ::ironic::conductor
 include ::ironic::drivers::ilo
 include ::ironic::drivers::ipmi
@@ -481,7 +484,6 @@ include ::ironic::inspector
 include ::ironic::pxe
 include ::ironic::cors
 
-Keystone_endpoint<||> -> Service['ironic-api']
 Keystone_endpoint<||> -> Service['ironic-inspector']
 
 # https://bugs.launchpad.net/tripleo/+bug/1663273
