@@ -43,18 +43,21 @@
 # unset disables SSL. (string value)
 #undercloud_service_certificate =
 
-# When set to True, a self-signed SSL certificate will be generated as
-# part of the undercloud install and this certificate will be used in
-# place of the value for undercloud_service_certificate.  The
-# resulting certificate will be written to
-# ~/undercloud-[undercloud_public_vip].pem.  Note that this
-# certificate will also be added to the system's trusted certificate
-# store. (boolean value)
+# When set to True, an SSL certificate will be generated as part of
+# the undercloud install and this certificate will be used in place of
+# the value for undercloud_service_certificate.  The resulting
+# certificate will be written to
+# /etc/pki/tls/certs/undercloud-[undercloud_public_vip].pem.  This
+# certificate is signed by CA selected by the
+# "certificate_generation_ca" option. (boolean value)
 #generate_service_certificate = false
 
 # The certmonger nickname of the CA from which the certificate will be
 # requested. This is used only if the generate_service_certificate
-# option is set. (string value)
+# option is set. Note that if the "local" CA is selected the
+# certmonger's local CA certificate will be extracted to /etc/pki/ca-
+# trust/source/anchors/cm-local-ca.pem and subsequently added to the
+# trust chain. (string value)
 #certificate_generation_ca = local
 
 # The kerberos principal for the service that will use the
@@ -101,10 +104,10 @@
 #hieradata_override =
 
 # Path to network config override template. If set, this template will
-# be used to configure the networking via os-net-config. Templated
-# tags can be used within the template, see instack-
-# undercloud/elements/undercloud-stack-config/net-config.json.template
-# for example tags (string value)
+# be used to configure the networking via os-net-config. Must be in
+# json format. Templated tags can be used within the template, see
+# instack-undercloud/elements/undercloud-stack-config/net-
+# config.json.template for example tags (string value)
 #net_config_override =
 
 # Network interface on which inspection dnsmasq will listen.  If in

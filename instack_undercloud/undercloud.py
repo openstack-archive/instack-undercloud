@@ -153,20 +153,25 @@ _opts = [
                ),
     cfg.BoolOpt('generate_service_certificate',
                 default=False,
-                help=('When set to True, a self-signed SSL certificate will '
-                      'be generated as part of the undercloud install and '
-                      'this certificate will be used in place of the value '
-                      'for undercloud_service_certificate.  The resulting '
+                help=('When set to True, an SSL certificate will be generated '
+                      'as part of the undercloud install and this certificate '
+                      'will be used in place of the value for '
+                      'undercloud_service_certificate.  The resulting '
                       'certificate will be written to '
-                      '~/undercloud-[undercloud_public_vip].pem.  Note that '
-                      'this certificate will also be added to the system\'s '
-                      'trusted certificate store.')
+                      '/etc/pki/tls/certs/undercloud-[undercloud_public_vip].'
+                      'pem.  This certificate is signed by CA selected by the '
+                      '"certificate_generation_ca" option.')
                 ),
     cfg.StrOpt('certificate_generation_ca',
                default='local',
                help=('The certmonger nickname of the CA from which the '
                      'certificate will be requested. This is used only if '
-                     'the generate_service_certificate option is set.')
+                     'the generate_service_certificate option is set. '
+                     'Note that if the "local" CA is selected the '
+                     'certmonger\'s local CA certificate will be extracted to '
+                     '/etc/pki/ca-trust/source/anchors/cm-local-ca.pem and '
+                     'subsequently added to the trust chain.')
+
                ),
     cfg.StrOpt('service_principal',
                default='',
