@@ -498,9 +498,9 @@ zaqar::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 zaqar::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 zaqar::keystone::authtoken::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::keystone::auth::tenant: 'service'
-zaqar::keystone::auth::public_url: http://{{LOCAL_IP}}:8888/
-zaqar::keystone::auth::internal_url: http://{{LOCAL_IP}}:8888/
-zaqar::keystone::auth::admin_url: http://{{LOCAL_IP}}:8888/
+zaqar::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_PUBLIC}}
+zaqar::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_INTERNAL}}
+zaqar::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_ADMIN}}
 zaqar::keystone::auth::region: 'regionOne'
 zaqar::keystone::auth::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::keystone::auth_websocket::tenant: 'service'
@@ -539,6 +539,7 @@ tripleo::haproxy::ironic: true
 tripleo::haproxy::ironic_inspector: true
 tripleo::haproxy::rabbitmq: true
 tripleo::haproxy::mistral: {{ENABLE_MISTRAL}}
+tripleo::haproxy::zaqar_api: {{ENABLE_ZAQAR}}
 
 # Keepalived
 tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_vip')}"

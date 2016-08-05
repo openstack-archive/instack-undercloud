@@ -693,7 +693,11 @@ def _generate_endpoints(instack_env):
         ('mistral',
             '%s://%s:%d/v2',
             {'host': public_host, 'port': 8989, 'ssl_port': 13989},
-            {'host': internal_host, 'port': 8989})
+            {'host': internal_host, 'port': 8989}),
+        ('zaqar',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 8888, 'ssl_port': 13888},
+            {'host': internal_host, 'port': 8888}),
     ]
     for endpoint_data in endpoint_list:
         endpoints.update(
