@@ -78,7 +78,8 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
 include ::tripleo::profile::base::database::mysql
 # Raise the mysql file limit
 exec { 'systemctl-daemon-reload':
-  command => '/bin/systemctl daemon-reload'
+  command     => '/bin/systemctl daemon-reload',
+  refreshonly => true,
 }
 file { '/etc/systemd/system/mariadb.service.d':
   ensure => 'directory',
