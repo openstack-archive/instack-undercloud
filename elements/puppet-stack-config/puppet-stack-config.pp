@@ -260,7 +260,7 @@ class { '::glance::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
 include ::glance::registry
-include ::glance::backend::file
+include ::glance::backend::swift
 include ::glance::notify::rabbitmq
 
 class { '::nova':
