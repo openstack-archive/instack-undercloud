@@ -205,8 +205,8 @@ neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: ''
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
-neutron::server::project_name: "%{hiera('neutron::server::auth_tenant')}"
-neutron::server::notifications::project_name: "%{hiera('neutron::server::auth_tenant')}"
+neutron::server::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
+neutron::server::notifications::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 neutron::server::auth_uri: "%{hiera('keystone_auth_uri')}"
 neutron::server::auth_url: "%{hiera('keystone_identity_uri')}"
 neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
@@ -346,7 +346,7 @@ nova::compute::ironic::admin_url: "%{hiera('keystone_identity_uri')}/v2.0"
 nova::network::neutron::neutron_auth_url: "%{hiera('keystone_auth_uri')}"
 nova::network::neutron::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 nova::network::neutron::neutron_password: "%{hiera('neutron::server::password')}"
-nova::network::neutron::neutron_project_name: "%{hiera('neutron::server::auth_tenant')}"
+nova::network::neutron::neutron_project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 nova::network::neutron::neutron_region_name: ''
 
 nova::scheduler::filter::ram_allocation_ratio: '1.0'
@@ -544,8 +544,6 @@ glance::api::keystone_tenant: 'service'
 glance::registry::keystone_tenant: 'service'
 heat::keystone_tenant: 'service'
 ironic::api::admin_tenant_name: 'service'
-neutron::agents::metadata::auth_tenant: 'service'
-neutron::server::auth_tenant: 'service'
 nova::api::admin_tenant_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
 mistral::keystone_tenant: 'service'
