@@ -70,8 +70,10 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
   # NOTE: This is required because the haproxy configuration should be changed
   # before any keystone operations are triggered. Without this, it will try to
   # access the new endpoints that point to haproxy even if haproxy hasn't
-  # started yet.
+  # started yet. The same is the case for ironic and ironic-inspector.
   Class['::tripleo::haproxy'] -> Anchor['keystone::install::begin']
+  Class['::tripleo::haproxy'] -> Class['::ironic::api']
+  Class['::tripleo::haproxy'] -> Class['::ironic::inspector']
 }
 
 # MySQL
@@ -478,6 +480,9 @@ if str2bool(hiera('enable_mistral', true)) {
   # are installed before performing the Mistral action population
   package {'openstack-tripleo-common': }
   Package['openstack-tripleo-common'] ~> Exec['mistral-db-populate']
+  # If ironic inspector is not running, mistral-db-populate will have invalid
+  # actions for it.
+  Class['::ironic::inspector'] ~> Exec['mistral-db-populate']
 
 }
 
