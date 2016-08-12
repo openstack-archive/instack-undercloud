@@ -61,6 +61,7 @@ if count(hiera('ntp::servers')) > 0 {
 include ::rabbitmq
 include ::tripleo::firewall
 include ::tripleo::selinux
+include ::tripleo::profile::base::kernel
 
 if hiera('tripleo::haproxy::service_certificate', undef) {
   class {'::tripleo::profile::base::haproxy':

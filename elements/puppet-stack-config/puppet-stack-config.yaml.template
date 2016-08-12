@@ -10,6 +10,12 @@ controller_public_vip: {{UNDERCLOUD_PUBLIC_VIP}}
 ntp::servers:
   -
 
+sysctl_settings:
+  net.ipv4.ip_nonlocal_bind:
+    value: 1
+  net.ipv6.ip_nonlocal_bind:
+    value: 1
+
 # SSL
 tripleo::haproxy::service_certificate: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
 generate_service_certificates: {{GENERATE_SERVICE_CERTIFICATE}}
