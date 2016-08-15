@@ -11,6 +11,13 @@ service_certificate: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
 ntp::servers:
   -
 
+# https://bugs.launchpad.net/tripleo/+bug/1612789
+sysctl_settings:
+  net.ipv4.ip_nonlocal_bind:
+    value: 1
+  net.ipv6.ip_nonlocal_bind:
+    value: 1
+
 # Common Hiera data gets applied to all nodes
 ssh::server::storeconfigs_enabled: false
 

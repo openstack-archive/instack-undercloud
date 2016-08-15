@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+create_resources(sysctl::value, hiera('sysctl_settings'), { })
+
 if count(hiera('ntp::servers')) > 0 {
   include ::ntp
 }
