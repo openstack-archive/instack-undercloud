@@ -389,6 +389,9 @@ ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
 ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+# Ironic conductor forces deployments to use http
+# https://bugs.launchpad.net/tripleo/+bug/1613088
+ironic::conductor::api_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
 ironic::conductor::force_power_state_during_sync: false
 ironic::conductor::automated_clean: {{CLEAN_NODES}}
 ironic::keystone::auth::tenant: 'service'
