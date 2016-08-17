@@ -13,8 +13,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-create_resources(sysctl::value, hiera('sysctl_settings'), { })
-
 if count(hiera('ntp::servers')) > 0 {
   include ::ntp
 }
@@ -438,6 +436,11 @@ if hiera('service_certificate', undef) {
     ironic                    => true,
     rabbitmq                  => true,
   }
+} else {
+  # sysctl_settings are set in puppet-tripleo/loadbalancer.pp
+  # so to avoid a duplicated resource we need to set it here manually only
+  # when we don't have service_certificate parameter.
+  create_resources(sysctl::value, hiera('sysctl_settings'), { })
 }
 
 if str2bool(hiera('enable_tempest', true)) {
