@@ -434,6 +434,7 @@ if hiera('service_certificate', undef) {
     ceilometer                => true,
     aodh                      => true,
     ironic                    => true,
+    ironic_inspector          => true,
     rabbitmq                  => true,
   }
 } else {

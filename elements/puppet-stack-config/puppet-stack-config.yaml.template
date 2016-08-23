@@ -360,13 +360,14 @@ ironic::keystone::auth::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::keystone::auth::region: "%{hiera('keystone_region')}"
 
 ironic::keystone::auth_inspector::tenant: 'service'
-ironic::keystone::auth_inspector::public_url: http://{{LOCAL_IP}}:5050
-ironic::keystone::auth_inspector::internal_url: http://{{LOCAL_IP}}:5050
-ironic::keystone::auth_inspector::admin_url: http://{{LOCAL_IP}}:5050
+ironic::keystone::auth_inspector::public_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INSPECTOR_PUBLIC}}
+ironic::keystone::auth_inspector::internal_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INSPECTOR_INTERNAL}}
+ironic::keystone::auth_inspector::admin_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INSPECTOR_ADMIN}}
 ironic::keystone::auth_inspector::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::keystone::auth_inspector::region: "%{hiera('keystone_region')}"
 
 # Ironic Inspector
+ironic::inspector::listen_address: {{LOCAL_IP}}
 ironic::inspector::debug: "%{hiera('debug')}"
 ironic::inspector::pxe_transfer_protocol: 'http'
 ironic::inspector::enable_uefi: {{INSPECTION_ENABLE_UEFI}}

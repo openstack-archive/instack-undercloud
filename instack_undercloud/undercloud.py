@@ -488,6 +488,7 @@ def _generate_endpoints(instack_env):
     keystone_public_port = 5000
     swift_public_port = 8080
     ironic_public_port = 6385
+    ironic_inspector_public_port = 5050
     aodh_public_port = 8042
 
     if CONF.undercloud_service_certificate:
@@ -501,6 +502,7 @@ def _generate_endpoints(instack_env):
         keystone_public_port = 13000
         swift_public_port = 13808
         ironic_public_port = 13385
+        ironic_inspector_public_port = 13050
         aodh_public_port = 13042
 
     heat_public_params = (proto, public_host, heat_public_port)
@@ -527,6 +529,10 @@ def _generate_endpoints(instack_env):
     ironic_public_params = (proto, public_host, ironic_public_port)
     ironic_internal_params = ('http', local_host, 6385)
     ironic_admin_params = ironic_internal_params
+    ironic_inspector_public_params = (proto, public_host,
+                                      ironic_inspector_public_port)
+    ironic_inspector_internal_params = ('http', local_host, 5050)
+    ironic_inspector_admin_params = ironic_inspector_internal_params
     aodh_public_params = (proto, public_host, aodh_public_port)
     aodh_internal_params = ('http', local_host, 8042)
     aodh_admin_params = aodh_internal_params
@@ -598,6 +604,12 @@ def _generate_endpoints(instack_env):
                  ironic_public_params,
                  ironic_internal_params,
                  ironic_admin_params,
+                 )
+    add_endpoint('ironic_inspector',
+                 '%s://%s:%d',
+                 ironic_inspector_public_params,
+                 ironic_inspector_internal_params,
+                 ironic_inspector_admin_params,
                  )
     add_endpoint('aodh',
                  '%s://%s:%d',
