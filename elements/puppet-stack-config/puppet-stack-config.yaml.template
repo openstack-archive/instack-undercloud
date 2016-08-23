@@ -275,9 +275,9 @@ ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ceilometer::rabbit_host: {{LOCAL_IP}}
 ceilometer::api::host: {{LOCAL_IP}}
-ceilometer::api::keystone_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
-ceilometer::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
-ceilometer::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
+ceilometer::keystone::authtoken::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
+ceilometer::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ceilometer::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::agent::notification::store_events: {{STORE_EVENTS}}
@@ -296,9 +296,9 @@ aodh::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 aodh::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 aodh::rabbit_host: {{LOCAL_IP}}
 aodh::api::host: {{LOCAL_IP}}
-aodh::api::keystone_password: {{UNDERCLOUD_AODH_PASSWORD}}
-aodh::api::keystone_auth_uri: "%{hiera('keystone_auth_uri')}"
-aodh::api::keystone_identity_uri: "%{hiera('keystone_identity_uri')}"
+aodh::keystone::authtoken::password: {{UNDERCLOUD_AODH_PASSWORD}}
+aodh::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+aodh::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 aodh::api::service_name: 'httpd'
 aodh::wsgi::apache::ssl: false
 aodh::wsgi::apache::bind_host: {{LOCAL_IP}}
@@ -316,12 +316,12 @@ aodh::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
 nova::notification_driver: messaging
 nova::rpc_response_timeout: '600'
-nova::api::auth_uri: "%{hiera('keystone_auth_uri')}"
-nova::api::identity_uri: "%{hiera('keystone_identity_uri')}"
+nova::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+nova::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::api::api_bind_address: {{LOCAL_IP}}
 nova::api::enabled: true
 nova::api::metadata_listen: {{LOCAL_IP}}
-nova::api::admin_password: {{UNDERCLOUD_NOVA_PASSWORD}}
+nova::keystone::authtoken::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::api::enabled_apis:
   - osapi_compute
   - metadata
@@ -379,9 +379,9 @@ ironic::enabled_drivers:
   - 'pxe_wol'
   - 'pxe_amt'
 ironic::rpc_response_timeout: 600
-ironic::api::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
-ironic::api::auth_uri: "%{hiera('keystone_auth_uri')}"
-ironic::api::identity_uri: "%{hiera('keystone_identity_uri')}"
+ironic::api::authtoken::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+ironic::api::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+ironic::api::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::api::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 ironic::api::host_ip: {{LOCAL_IP}}
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
@@ -413,22 +413,22 @@ ironic::inspector::listen_address: {{LOCAL_IP}}
 ironic::inspector::debug: "%{hiera('debug')}"
 ironic::inspector::pxe_transfer_protocol: 'http'
 ironic::inspector::enable_uefi: {{INSPECTION_ENABLE_UEFI}}
-ironic::inspector::auth_uri: "%{hiera('keystone_auth_uri')}"
-ironic::inspector::identity_uri: "%{hiera('keystone_identity_uri')}"
-ironic::inspector::admin_user: 'ironic'
-ironic::inspector::admin_password: "%{hiera('ironic::api::admin_password')}"
-ironic::inspector::admin_tenant_name: 'service'
+ironic::inspector::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+ironic::inspector::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
+ironic::inspector::authtoken::username: 'ironic'
+ironic::inspector::authtoken::password: "%{hiera('ironic::api::authtoken::password')}"
+ironic::inspector::authtoken::project_name: 'service'
 ironic::inspector::enable_setting_ipmi_credentials: true
 ironic::inspector::keep_ports: 'added'
 ironic::inspector::ironic_username: 'ironic'
-ironic::inspector::ironic_password: "%{hiera('ironic::api::admin_password')}"
+ironic::inspector::ironic_password: "%{hiera('ironic::api::authtoken::password')}"
 ironic::inspector::ironic_tenant_name: 'service'
 ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri_v2')}"
 ironic::inspector::ironic_max_retries: 6
 ironic::inspector::ironic_retry_interval: 10
 ironic::inspector::store_data: 'swift'
 ironic::inspector::swift_username: 'ironic'
-ironic::inspector::swift_password: "%{hiera('ironic::api::admin_password')}"
+ironic::inspector::swift_password: "%{hiera('ironic::api::authtoken::password')}"
 ironic::inspector::swift_tenant_name: 'service'
 ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri_v2')}"
 ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
@@ -548,14 +548,14 @@ tripleo::keepalived::public_virtual_ip: "%{hiera('controller_public_vip')}"
 tripleo::keepalived::public_virtual_interface: 'br-ctlplane'
 
 # service tenant
-ceilometer::api::keystone_tenant: 'service'
-aodh::api::keystone_tenant: 'service'
-cinder::api::keystone_tenant: 'service'
+ceilometer::keystone::authtoken::project_name: 'service'
+aodh::keystone::authtoken::project_name: 'service'
+cinder::keystone::authtoken::project_name: 'service'
 glance::api::keystone_tenant: 'service'
 glance::registry::keystone_tenant: 'service'
 heat::keystone_tenant: 'service'
-ironic::api::admin_tenant_name: 'service'
-nova::api::admin_tenant_name: 'service'
+ironic::api::authtoken::project_name: 'service'
+nova::keystone::authtoken::project_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
 mistral::keystone_tenant: 'service'
 
