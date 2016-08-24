@@ -484,7 +484,9 @@ if str2bool(hiera('enable_mistral', true)) {
   # If ironic inspector is not running, mistral-db-populate will have invalid
   # actions for it.
   Class['::ironic::inspector'] ~> Exec['mistral-db-populate']
-
+  # db-populate calls inspectorclient, which will use the keystone endpoint to
+  # check inspector's version. So that's needed before db-populate is executed.
+  Class['::ironic::keystone::auth_inspector']  ~> Exec['mistral-db-populate']
 }
 
 if str2bool(hiera('enable_zaqar', true)) {
