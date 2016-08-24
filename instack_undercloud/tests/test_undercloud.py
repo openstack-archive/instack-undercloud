@@ -471,6 +471,7 @@ class TestConfigureSshKeys(base.BaseTestCase):
 
 class TestPostConfig(base.BaseTestCase):
     @mock.patch('novaclient.client.Client', autospec=True)
+    @mock.patch('mistralclient.api.client.client', autospec=True)
     @mock.patch('instack_undercloud.undercloud._delete_default_flavors')
     @mock.patch('instack_undercloud.undercloud._copy_stackrc')
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
@@ -478,14 +479,17 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._ensure_flavor')
     def test_post_config(self, mock_ensure_flavor, mock_configure_ssh_keys,
                          mock_get_auth_values, mock_copy_stackrc, mock_delete,
-                         mock_client):
+                         mock_mistral_client, mock_nova_client):
+        instack_env = {
+            'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC': 'http://192.0.2.1:8989/v2',
+        }
         mock_get_auth_values.return_value = ('aturing', '3nigma', 'hut8',
                                              'http://bletchley:5000/v2.0')
         mock_instance = mock.Mock()
-        mock_client.return_value = mock_instance
-        undercloud._post_config()
-        mock_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
-                                       'http://bletchley:5000/v2.0')
+        mock_nova_client.return_value = mock_instance
+        undercloud._post_config(instack_env)
+        mock_nova_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
+                                            'http://bletchley:5000/v2.0')
         self.assertTrue(mock_copy_stackrc.called)
         mock_configure_ssh_keys.assert_called_with(mock_instance)
         calls = [mock.call(mock_instance, 'baremetal'),
