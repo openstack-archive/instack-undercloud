@@ -614,154 +614,96 @@ def _generate_password(length=40):
     return hashlib.sha1(uuid_str).hexdigest()[:length]
 
 
+def _get_service_endpoints(name, format_str, public, internal, admin=None,
+                           public_proto='http', internal_proto='http'):
+    endpoints = {}
+    upper_name = name.upper()
+    public_port_key = 'port'
+
+    if not admin:
+        admin = internal
+    if public_proto == 'https':
+        public_port_key = 'ssl_port'
+
+    endpoints['UNDERCLOUD_ENDPOINT_%s_PUBLIC' % upper_name] = (
+        format_str % (public_proto, public['host'], public[public_port_key]))
+    endpoints['UNDERCLOUD_ENDPOINT_%s_INTERNAL' % upper_name] = (
+        format_str % (internal_proto, internal['host'], internal['port']))
+    endpoints['UNDERCLOUD_ENDPOINT_%s_ADMIN' % upper_name] = (
+        format_str % (internal_proto, admin['host'], admin['port']))
+    return endpoints
+
+
 def _generate_endpoints(instack_env):
     local_host = instack_env['LOCAL_IP']
     public_host = local_host
-    proto = 'http'
-    heat_public_port = 8004
-    neutron_public_port = 9696
-    glance_public_port = 9292
-    nova_public_port = 8774
-    ceilo_public_port = 8777
-    keystone_public_port = 5000
-    swift_public_port = 8080
-    ironic_public_port = 6385
-    ironic_inspector_public_port = 5050
-    aodh_public_port = 8042
-    mistral_public_port = 8989
+    public_proto = 'http'
+    internal_host = local_host
+    internal_proto = 'http'
 
     if (CONF.undercloud_service_certificate or
             CONF.generate_service_certificate):
         public_host = CONF.undercloud_public_vip
-        proto = 'https'
-        heat_public_port = 13004
-        neutron_public_port = 13696
-        glance_public_port = 13292
-        nova_public_port = 13774
-        ceilo_public_port = 13777
-        keystone_public_port = 13000
-        swift_public_port = 13808
-        ironic_public_port = 13385
-        ironic_inspector_public_port = 13050
-        aodh_public_port = 13042
-        mistral_public_port = 13989
-
-    heat_public_params = (proto, public_host, heat_public_port)
-    heat_internal_params = ('http', local_host, 8004)
-    heat_admin_params = heat_internal_params
-    neutron_public_params = (proto, public_host, neutron_public_port)
-    neutron_internal_params = ('http', local_host, 9696)
-    neutron_admin_params = neutron_internal_params
-    glance_public_params = (proto, public_host, glance_public_port)
-    glance_internal_params = ('http', local_host, 9292)
-    glance_admin_params = glance_internal_params
-    nova_public_params = (proto, public_host, nova_public_port)
-    nova_internal_params = ('http', local_host, 8774)
-    nova_admin_params = nova_internal_params
-    ceilo_public_params = (proto, public_host, ceilo_public_port)
-    ceilo_internal_params = ('http', local_host, 8777)
-    ceilo_admin_params = ceilo_internal_params
-    keystone_public_params = (proto, public_host, keystone_public_port)
-    keystone_internal_params = ('http', local_host, 5000)
-    keystone_admin_params = ('http', local_host, 35357)
-    swift_public_params = (proto, public_host, swift_public_port)
-    swift_internal_params = ('http', local_host, 8080)
-    swift_admin_params = swift_internal_params
-    ironic_public_params = (proto, public_host, ironic_public_port)
-    ironic_internal_params = ('http', local_host, 6385)
-    ironic_admin_params = ironic_internal_params
-    ironic_inspector_public_params = (proto, public_host,
-                                      ironic_inspector_public_port)
-    ironic_inspector_internal_params = ('http', local_host, 5050)
-    ironic_inspector_admin_params = ironic_inspector_internal_params
-    aodh_public_params = (proto, public_host, aodh_public_port)
-    aodh_internal_params = ('http', local_host, 8042)
-    aodh_admin_params = aodh_internal_params
-    mistral_public_params = (proto, public_host, mistral_public_port)
-    mistral_internal_params = ('http', local_host, 8989)
-    mistral_admin_params = mistral_internal_params
+        public_proto = 'https'
 
     endpoints = {}
 
-    def add_endpoint(name, format_str, public, internal, admin):
-        upper_name = name.upper()
-        endpoints['UNDERCLOUD_ENDPOINT_%s_PUBLIC' % upper_name] = (format_str %
-                                                                   public)
-        endpoints['UNDERCLOUD_ENDPOINT_%s_INTERNAL' % upper_name] = (
-            format_str % internal)
-        endpoints['UNDERCLOUD_ENDPOINT_%s_ADMIN' % upper_name] = (format_str %
-                                                                  admin)
+    endpoint_list = [
+        ('heat',
+            '%s://%s:%d/v1/%%(tenant_id)s',
+            {'host': public_host, 'port': 8004, 'ssl_port': 13004},
+            {'host': internal_host, 'port': 8004}),
+        ('neutron',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 9696, 'ssl_port': 13696},
+            {'host': internal_host, 'port': 9696}),
+        ('glance',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 9292, 'ssl_port': 13292},
+            {'host': internal_host, 'port': 9292}),
+        ('nova',
+            '%s://%s:%d/v2.1',
+            {'host': public_host, 'port': 8774, 'ssl_port': 13774},
+            {'host': internal_host, 'port': 8774}),
+        ('ceilometer',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 8777, 'ssl_port': 13777},
+            {'host': internal_host, 'port': 8777}),
+        ('keystone',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 5000, 'ssl_port': 13000},
+            {'host': internal_host, 'port': 5000},
+            {'host': internal_host, 'port': 35357}),
+        ('swift',
+            '%s://%s:%d/v1/AUTH_%%(tenant_id)s',
+            {'host': public_host, 'port': 8080, 'ssl_port': 13808},
+            {'host': internal_host, 'port': 8080}),
+        ('ironic',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 6385, 'ssl_port': 13385},
+            {'host': internal_host, 'port': 6385}),
+        ('ironic_inspector',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 5050, 'ssl_port': 13050},
+            {'host': internal_host, 'port': 5050}),
+        ('aodh',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 8042, 'ssl_port': 13042},
+            {'host': internal_host, 'port': 8042}),
+        ('mistral',
+            '%s://%s:%d/v2',
+            {'host': public_host, 'port': 8989, 'ssl_port': 13989},
+            {'host': internal_host, 'port': 8989})
+    ]
+    for endpoint_data in endpoint_list:
+        endpoints.update(
+            _get_service_endpoints(*endpoint_data,
+                                   public_proto=public_proto,
+                                   internal_proto=internal_proto))
 
-    add_endpoint('heat',
-                 '%s://%s:%d/v1/%%(tenant_id)s',
-                 heat_public_params,
-                 heat_internal_params,
-                 heat_admin_params,
-                 )
-    add_endpoint('neutron',
-                 '%s://%s:%d',
-                 neutron_public_params,
-                 neutron_internal_params,
-                 neutron_admin_params,
-                 )
-    add_endpoint('glance',
-                 '%s://%s:%d',
-                 glance_public_params,
-                 glance_internal_params,
-                 glance_admin_params,
-                 )
-    add_endpoint('nova',
-                 '%s://%s:%d/v2.1',
-                 nova_public_params,
-                 nova_internal_params,
-                 nova_admin_params,
-                 )
-    add_endpoint('ceilometer',
-                 '%s://%s:%d',
-                 ceilo_public_params,
-                 ceilo_internal_params,
-                 ceilo_admin_params,
-                 )
-    add_endpoint('keystone',
-                 '%s://%s:%d',
-                 keystone_public_params,
-                 keystone_internal_params,
-                 keystone_admin_params,
-                 )
-    add_endpoint('swift',
-                 '%s://%s:%d/v1/AUTH_%%(tenant_id)s',
-                 swift_public_params,
-                 swift_internal_params,
-                 swift_admin_params,
-                 )
     # The swift admin endpoint has a different format from the others
-    endpoints['UNDERCLOUD_ENDPOINT_SWIFT_ADMIN'] = ('%s://%s:%s' %
-                                                    swift_admin_params)
-    add_endpoint('ironic',
-                 '%s://%s:%d',
-                 ironic_public_params,
-                 ironic_internal_params,
-                 ironic_admin_params,
-                 )
-    add_endpoint('ironic_inspector',
-                 '%s://%s:%d',
-                 ironic_inspector_public_params,
-                 ironic_inspector_internal_params,
-                 ironic_inspector_admin_params,
-                 )
-    add_endpoint('aodh',
-                 '%s://%s:%d',
-                 aodh_public_params,
-                 aodh_internal_params,
-                 aodh_admin_params,
-                 )
-    add_endpoint('mistral',
-                 '%s://%s:%d/v2',
-                 mistral_public_params,
-                 mistral_internal_params,
-                 mistral_admin_params,
-                 )
-
+    endpoints['UNDERCLOUD_ENDPOINT_SWIFT_ADMIN'] = (
+        '%s://%s:%s' % (internal_proto, internal_host, 8080))
     instack_env.update(endpoints)
 
 
