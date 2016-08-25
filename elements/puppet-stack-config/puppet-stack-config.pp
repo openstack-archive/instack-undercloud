@@ -445,7 +445,7 @@ if str2bool(hiera('enable_tempest', true)) {
 augeas { 'lvm.conf':
   require => Package['openstack-nova-compute'],
   context => '/files/etc/lvm/lvm.conf/devices/dict/',
-  changes => 'set global_filter/str "[ r|^/dev/disk/by-path/ip.*iscsi.*\.org\.openstack:.*| ]"'
+  changes => 'set global_filter/list/1/str "r|^/dev/disk/by-path/ip.*iscsi.*\.org\.openstack:.*|"'
 }
 
 if str2bool(hiera('enable_docker_registry', true)) {
