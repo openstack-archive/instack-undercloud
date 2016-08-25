@@ -550,6 +550,22 @@ tripleo::keepalived::control_virtual_interface: 'br-ctlplane'
 tripleo::keepalived::public_virtual_ip: "%{hiera('controller_public_vip')}"
 tripleo::keepalived::public_virtual_interface: 'br-ctlplane'
 
+# UI
+keystone::cors::allowed_origin: '*'
+ironic::cors::allowed_origin: '*'
+ironic::cors::max_age: 3600
+ironic::cors::allow_methods: 'GET,POST,PUT,DELETE,OPTIONS'
+ironic::cors::allow_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma,X-Auth-Token'
+ironic::cors::expose_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma'
+heat::cors::allowed_origin: '*'
+heat::cors::max_age: 3600
+heat::cors::allow_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma,X-Auth-Token'
+heat::cors::expose_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma'
+mistral::cors::allowed_origin: '*'
+mistral::cors::allow_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma,X-Auth-Token'
+mistral::cors::expose_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma'
+swift::proxy::cors_allow_origin: '*'
+
 # service tenant
 ceilometer::keystone::authtoken::project_name: 'service'
 aodh::keystone::authtoken::project_name: 'service'

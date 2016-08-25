@@ -238,6 +238,7 @@ include ::keystone::wsgi::apache
 include ::keystone::cron::token_flush
 include ::keystone::roles::admin
 include ::keystone::endpoint
+include ::keystone::cors
 
 include ::heat::keystone::auth
 include ::neutron::keystone::auth
@@ -396,6 +397,7 @@ include ::heat::api_cfn
 include ::heat::engine
 include ::heat::keystone::domain
 include ::heat::cron::purge_deleted
+include ::heat::cors
 
 # We're creating the admin role and heat domain user in puppet and need
 # to make sure they are done in order.
@@ -419,6 +421,7 @@ include ::ironic::drivers::pxe
 include ::ironic::drivers::ssh
 include ::ironic::inspector
 include ::ironic::pxe
+include ::ironic::cors
 
 if str2bool(hiera('enable_tempest', true)) {
   # tempest
@@ -465,6 +468,7 @@ if str2bool(hiera('enable_mistral', true)) {
   include ::mistral::api
   include ::mistral::engine
   include ::mistral::executor
+  include ::mistral::cors
 
   # ensure TripleO common entrypoints for custom Mistral actions
   # are installed before performing the Mistral action population
