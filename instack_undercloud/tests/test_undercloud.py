@@ -303,9 +303,9 @@ class TestGenerateEnvironment(BaseTestCase):
         # Spot check one service
         self.assertEqual('https://192.0.2.2:13000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.0.2.1:5000',
+        self.assertEqual('http://192.0.2.3:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.0.2.1:35357',
+        self.assertEqual('http://192.0.2.3:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
         self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
@@ -319,9 +319,9 @@ class TestGenerateEnvironment(BaseTestCase):
         # Spot check one service
         self.assertEqual('https://192.0.2.2:13000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.0.2.1:5000',
+        self.assertEqual('http://192.0.2.3:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.0.2.1:35357',
+        self.assertEqual('http://192.0.2.3:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
         self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
