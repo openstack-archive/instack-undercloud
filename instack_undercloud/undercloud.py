@@ -137,14 +137,12 @@ _opts = [
     cfg.StrOpt('undercloud_public_vip',
                default='192.0.2.2',
                help=('Virtual IP address to use for the public endpoints of '
-                     'Undercloud services.  Only used if '
-                     'undercloud_service_certficate is set.')
+                     'Undercloud services. Only used with SSL.')
                ),
     cfg.StrOpt('undercloud_admin_vip',
                default='192.0.2.3',
                help=('Virtual IP address to use for the admin endpoints of '
-                     'Undercloud services.  Only used if '
-                     'undercloud_service_certficate is set.')
+                     'Undercloud services. Only used with SSL.')
                ),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
