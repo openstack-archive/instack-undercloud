@@ -2,7 +2,7 @@
 set -eux
 set -o pipefail
 
-ironic_http_port=$(hiera ironic::drivers::deploy::http_port)
+ironic_http_port=$(hiera ironic_ipxe_port)
 
 # Create the apache vHOST for Ironic
 mkdir -p /etc/httpd/conf.d
