@@ -422,13 +422,19 @@ include ::ironic::inspector
 if str2bool(hiera('ipxe_deploy', true)) {
   $pxe_config_template = '$pybasedir/drivers/modules/ipxe_config.template'
   $pxe_bootfile_name   = 'undionly.kpxe'
+  $uefi_pxe_config_template = '$pybasedir/drivers/modules/ipxe_config.template'
+  $uefi_pxe_bootfile_name   = 'ipxe.efi'
 } else {
   $pxe_config_template = '$pybasedir/drivers/modules/pxe_config.template'
   $pxe_bootfile_name = undef
+  $uefi_pxe_config_template = undef
+  $uefi_pxe_bootfile_name   = undef
 }
 class { '::ironic::drivers::pxe':
-  pxe_config_template => $pxe_config_template,
-  pxe_bootfile_name   => $pxe_bootfile_name
+  pxe_config_template      => $pxe_config_template,
+  pxe_bootfile_name        => $pxe_bootfile_name,
+  uefi_pxe_bootfile_name   => $uefi_pxe_bootfile_name,
+  uefi_pxe_config_template => $uefi_pxe_config_template,
 }
 
 if str2bool(hiera('enable_tempest', true)) {
