@@ -478,8 +478,8 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
     @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
     @mock.patch('instack_undercloud.undercloud._ensure_flavor')
-    @mock.patch('instack_undercloud.undercloud._create_default_plan')
-    def test_post_config(self, mock_create_default_plan, mock_ensure_flavor,
+    @mock.patch('instack_undercloud.undercloud._post_config_mistral')
+    def test_post_config(self, mock_post_config_mistral, mock_ensure_flavor,
                          mock_configure_ssh_keys, mock_get_auth_values,
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
                          mock_nova_client):
@@ -505,7 +505,7 @@ class TestPostConfig(base.BaseTestCase):
                  mock.call(mock_instance, 'swift-storage', 'swift-storage'),
                  ]
         mock_ensure_flavor.assert_has_calls(calls)
-        mock_create_default_plan.assert_called_once_with(mock_instance_mistral)
+        mock_post_config_mistral.assert_called_once_with(mock_instance_mistral)
 
     def test_create_default_plan(self):
         mock_mistral = mock.Mock()
@@ -529,6 +529,12 @@ class TestPostConfig(base.BaseTestCase):
 
         undercloud._create_default_plan(mock_mistral)
         mock_mistral.executions.create.assert_not_called()
+
+    def test_prepare_ssh_environment(self):
+        mock_mistral = mock.Mock()
+        undercloud._prepare_ssh_environment(mock_mistral)
+        mock_mistral.executions.create.assert_called_once_with(
+            'tripleo.validations.v1.copy_ssh_key')
 
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_copy_stackrc(self, mock_run):

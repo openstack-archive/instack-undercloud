@@ -1017,6 +1017,17 @@ def _create_default_plan(mistral):
     )
 
 
+def _prepare_ssh_environment(mistral):
+    mistral.executions.create('tripleo.validations.v1.copy_ssh_key')
+
+
+def _post_config_mistral(mistral):
+    _create_default_plan(mistral)
+
+    if CONF.enable_validations:
+        _prepare_ssh_environment(mistral)
+
+
 def _post_config(instack_env):
     _copy_stackrc()
     user, password, tenant, auth_url = _get_auth_values()
@@ -1036,7 +1047,7 @@ def _post_config(instack_env):
         mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
         mistral = mistralclient.client(mistral_url, user, password, tenant,
                                        auth_url)
-        _create_default_plan(mistral)
+        _post_config_mistral(mistral)
 
 
 def install(instack_root):
