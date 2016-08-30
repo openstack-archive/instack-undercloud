@@ -88,10 +88,10 @@ swift::proxy::pipeline:
 glance::api::debug: "%{hiera('debug')}"
 glance::api::bind_port: 9292
 glance::api::bind_host: {{LOCAL_IP}}
-glance::api::auth_uri: "%{hiera('keystone_auth_uri')}"
-glance::api::identity_uri: "%{hiera('keystone_identity_uri')}"
+glance::api::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+glance::api::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 glance::api::registry_host: {{LOCAL_IP}}
-glance::api::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
+glance::api::authtoken::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::api::stores:
   - glance.store.filesystem.Store
   - glance.store.swift.Store
@@ -104,10 +104,10 @@ glance_log_file: ''
 glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
 glance::registry::debug: "%{hiera('debug')}"
 glance::registry::bind_host: {{LOCAL_IP}}
-glance::registry::keystone_password: {{UNDERCLOUD_GLANCE_PASSWORD}}
+glance::registry::authtoken::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::registry::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
-glance::registry::auth_uri: "%{hiera('keystone_auth_uri')}"
-glance::registry::identity_uri: "%{hiera('keystone_identity_uri')}"
+glance::registry::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+glance::registry::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 glance::registry::registry_host: {{LOCAL_IP}}
 glance::registry::bind_host: {{LOCAL_IP}}
 glance::registry::manage_service: true
@@ -210,10 +210,10 @@ neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: ''
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
-neutron::server::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
+neutron::keystone::authtoken::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 neutron::server::notifications::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
-neutron::server::auth_uri: "%{hiera('keystone_auth_uri')}"
-neutron::server::auth_url: "%{hiera('keystone_identity_uri')}"
+neutron::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+neutron::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::local_ip: {{LOCAL_IP}}
@@ -221,7 +221,7 @@ neutron_mechanism_drivers: openvswitch
 neutron_bridge_mappings: ctlplane:br-ctlplane
 neutron_public_interface: {{LOCAL_INTERFACE}}
 neutron_physical_bridge: br-ctlplane
-neutron::server::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+neutron::keystone::authtoken::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::quota::quota_port: -1
 neutron::server::notifications::auth_url: "%{hiera('keystone_auth_uri')}"
@@ -349,7 +349,7 @@ nova::ironic::common::admin_url: "%{hiera('keystone_identity_uri')}/v2.0"
 
 nova::network::neutron::neutron_auth_url: "%{hiera('keystone_auth_uri')}"
 nova::network::neutron::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
-nova::network::neutron::neutron_password: "%{hiera('neutron::server::password')}"
+nova::network::neutron::neutron_password: "%{hiera('neutron::keystone::authtoken::password')}"
 nova::network::neutron::neutron_project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 nova::network::neutron::neutron_region_name: ''
 
@@ -556,6 +556,8 @@ cinder::keystone::authtoken::project_name: 'service'
 glance::api::keystone_tenant: 'service'
 glance::registry::keystone_tenant: 'service'
 heat::keystone::authtoken::project_name: 'service'
+glance::api::authtoken::project_name: 'service'
+glance::registry::authtoken::project_name: 'service'
 ironic::api::authtoken::project_name: 'service'
 nova::keystone::authtoken::project_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
