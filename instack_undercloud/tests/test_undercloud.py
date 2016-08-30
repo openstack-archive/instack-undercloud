@@ -12,6 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import collections
 import io
 import os
 import subprocess
@@ -477,9 +478,11 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
     @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
     @mock.patch('instack_undercloud.undercloud._ensure_flavor')
-    def test_post_config(self, mock_ensure_flavor, mock_configure_ssh_keys,
-                         mock_get_auth_values, mock_copy_stackrc, mock_delete,
-                         mock_mistral_client, mock_nova_client):
+    @mock.patch('instack_undercloud.undercloud._create_default_plan')
+    def test_post_config(self, mock_create_default_plan, mock_ensure_flavor,
+                         mock_configure_ssh_keys, mock_get_auth_values,
+                         mock_copy_stackrc, mock_delete, mock_mistral_client,
+                         mock_nova_client):
         instack_env = {
             'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC': 'http://192.0.2.1:8989/v2',
         }
@@ -487,6 +490,8 @@ class TestPostConfig(base.BaseTestCase):
                                              'http://bletchley:5000/v2.0')
         mock_instance = mock.Mock()
         mock_nova_client.return_value = mock_instance
+        mock_instance_mistral = mock.Mock()
+        mock_mistral_client.return_value = mock_instance_mistral
         undercloud._post_config(instack_env)
         mock_nova_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
                                             'http://bletchley:5000/v2.0')
@@ -500,6 +505,30 @@ class TestPostConfig(base.BaseTestCase):
                  mock.call(mock_instance, 'swift-storage', 'swift-storage'),
                  ]
         mock_ensure_flavor.assert_has_calls(calls)
+        mock_create_default_plan.assert_called_once_with(mock_instance_mistral)
+
+    def test_create_default_plan(self):
+        mock_mistral = mock.Mock()
+        mock_mistral.environments.list.return_value = []
+
+        undercloud._create_default_plan(mock_mistral)
+        mock_mistral.executions.create.assert_called_once_with(
+            'tripleo.plan_management.v1.create_default_deployment_plan',
+            workflow_input={
+                'container': 'overcloud',
+                'queue_name': mock.ANY
+            }
+        )
+
+    def test_create_default_plan_existing(self):
+        mock_mistral = mock.Mock()
+        environment = collections.namedtuple('environment', ['name'])
+        mock_mistral.environments.list.return_value = [
+            environment(name='overcloud')
+        ]
+
+        undercloud._create_default_plan(mock_mistral)
+        mock_mistral.executions.create.assert_not_called()
 
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_copy_stackrc(self, mock_run):
