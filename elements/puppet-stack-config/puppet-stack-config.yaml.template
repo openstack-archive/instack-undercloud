@@ -450,6 +450,9 @@ ironic::inspector::http_port: "%{hiera('ironic::drivers::deploy::http_port')}"
 
 # Ironic pxe
 ironic::drivers::pxe::ipxe_enabled: {{IPXE_DEPLOY}}
+# NOTE(dtantsur): UEFI only works with iPXE currently for us
+ironic::drivers::pxe::uefi_pxe_config_template: '$pybasedir/drivers/modules/ipxe_config.template'
+ironic::drivers::pxe::uefi_pxe_bootfile_name: 'ipxe.efi'
 
 # Ironic ipmi
 ironic::drivers::ipmi::retry_timeout: 15
