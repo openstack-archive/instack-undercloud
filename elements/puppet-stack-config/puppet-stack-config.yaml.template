@@ -586,14 +586,6 @@ tripleo::firewall::firewall_rules:
     dport: 27018
   '103 mongod':
     dport: 27017
-  '104 mysql galera':
-    dport:
-      - 873
-      - 3306
-      - 4444
-      - 4567
-      - 4568
-      - 9200
   '105 ntp':
     dport: 123
     proto: udp
@@ -605,10 +597,6 @@ tripleo::firewall::firewall_rules:
     dport:
       - 6379
       - 26379
-  '109 rabbitmq':
-    dport:
-      - 5672
-      - 35672
   '110 ceph':
     dport:
       - 6789
