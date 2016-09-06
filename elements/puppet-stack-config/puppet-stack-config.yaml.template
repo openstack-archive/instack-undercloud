@@ -189,6 +189,7 @@ keystone::notification_topics: notifications
 keystone::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 keystone::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 keystone::rabbit_host: {{LOCAL_IP}}
+keystone::enable_credential_setup: true
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
