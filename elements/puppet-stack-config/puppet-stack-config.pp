@@ -518,7 +518,7 @@ if str2bool(hiera('enable_monitoring', true)) {
 }
 
 # dependency of pxe_drac
-ensure_resource('package', 'openwsman-python')
+ensure_resource('package', 'python-dracclient')
 # dependency of pxe_ilo
 ensure_resource('package', 'python-proliantutils')
 
