@@ -516,7 +516,7 @@ zaqar::transport::wsgi::bind: {{LOCAL_IP}}
 zaqar::management::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::messaging::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::message_pipeline: 'zaqar.notification.notifier'
-zaqar::max_messages_post_size: 524288
+zaqar::max_messages_post_size: 1048576
 
 # HAproxy
 tripleo::profile::base::haproxy::step: 1
