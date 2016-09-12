@@ -153,6 +153,10 @@
 # Undercloud. (boolean value)
 #enable_telemetry = false
 
+# Whether to install the TripleO UI.
+# (boolean value)
+#enable_ui = true
+
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 

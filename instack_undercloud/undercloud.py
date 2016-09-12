@@ -292,6 +292,10 @@ _opts = [
                 help=('Whether to install Telemetry services '
                       '(ceilometer, aodh) in the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_ui',
+                default=True,
+                help=('Whether to install the TripleO UI.')
+                ),
     cfg.BoolOpt('ipxe_deploy',
                 default=True,
                 help=('Whether to use iPXE for deploy by default.')

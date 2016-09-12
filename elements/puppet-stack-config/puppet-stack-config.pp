@@ -478,6 +478,10 @@ if str2bool(hiera('enable_mistral', true)) {
   Class['::ironic::keystone::auth_inspector']  ~> Exec['mistral-db-populate']
 }
 
+if str2bool(hiera('enable_ui', true)) {
+  include ::tripleo::profile::base::ui
+}
+
 if str2bool(hiera('enable_zaqar', true)) {
   include ::mongodb::globals
   include ::mongodb::server
