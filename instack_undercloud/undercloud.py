@@ -26,6 +26,7 @@ import socket
 import subprocess
 import sys
 import tempfile
+import time
 import uuid
 
 from keystoneclient import exceptions as ks_exceptions
@@ -1099,7 +1100,7 @@ def _clean_os_refresh_config():
     _run_command(args, name='Clean os-refresh-config')
 
 
-def _create_default_plan(mistral):
+def _create_default_plan(mistral, timeout=60):
     plan_name = 'overcloud'
     queue_name = str(uuid.uuid4())
 
@@ -1108,10 +1109,28 @@ def _create_default_plan(mistral):
                  plan_name)
         return
 
-    mistral.executions.create(
+    execution = mistral.executions.create(
         'tripleo.plan_management.v1.create_default_deployment_plan',
         workflow_input={'container': plan_name, 'queue_name': queue_name}
     )
+
+    timeout_at = time.time() + timeout
+
+    while time.time() < timeout_at:
+        exe = mistral.executions.get(execution.id)
+        if exe.state == "RUNNING":
+            time.sleep(5)
+            continue
+        if exe.state == "SUCCESS":
+            return
+        else:
+            LOG.warning("Failed to create the default Deployment Plan.")
+            return
+    else:
+        exe = mistral.executions.get(execution.id)
+        LOG.error("Timed out waiting for execution %s to finish. State: %s",
+                  exe.id, exe.state)
+        raise RuntimeError("Timed out creating the default Deployment Plan.")
 
 
 def _prepare_ssh_environment(mistral):

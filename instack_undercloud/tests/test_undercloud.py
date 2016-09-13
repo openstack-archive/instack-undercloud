@@ -530,6 +530,7 @@ class TestPostConfig(base.BaseTestCase):
     def test_create_default_plan(self):
         mock_mistral = mock.Mock()
         mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.return_value = mock.Mock(state="SUCCESS")
 
         undercloud._create_default_plan(mock_mistral)
         mock_mistral.executions.create.assert_called_once_with(
@@ -555,6 +556,28 @@ class TestPostConfig(base.BaseTestCase):
         undercloud._prepare_ssh_environment(mock_mistral)
         mock_mistral.executions.create.assert_called_once_with(
             'tripleo.validations.v1.copy_ssh_key')
+
+    @mock.patch('time.sleep')
+    def test_create_default_plan_timeout(self, mock_sleep):
+        mock_mistral = mock.Mock()
+        mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.return_value = mock.Mock(state="RUNNING")
+
+        self.assertRaises(
+            RuntimeError,
+            undercloud._create_default_plan, mock_mistral, timeout=0)
+
+    def test_create_default_plan_failed(self):
+        mock_mistral = mock.Mock()
+        mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.return_value = mock.Mock(state="ERROR")
+
+        # TODO(dmatthews): Switch to this check after this lands:
+        #   https://review.openstack.org/#/c/371347/
+        # self.assertRaises(
+        #     RuntimeError,
+        #     undercloud._create_default_plan, mock_mistral)
+        undercloud._create_default_plan(mock_mistral)
 
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_copy_stackrc(self, mock_run):
