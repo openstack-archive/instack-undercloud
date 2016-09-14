@@ -452,6 +452,11 @@ ironic::drivers::pxe::ipxe_enabled: {{IPXE_DEPLOY}}
 ironic::drivers::pxe::uefi_pxe_config_template: '$pybasedir/drivers/modules/ipxe_config.template'
 ironic::drivers::pxe::uefi_pxe_bootfile_name: 'ipxe.efi'
 
+# Ironic agent
+ironic::drivers::agent::deploy_logs_collect: 'always'
+ironic::drivers::agent::deploy_logs_storage_backend: 'local'
+ironic::drivers::agent::deploy_logs_local_path: '/var/log/ironic/deploy/'
+
 # Ironic ipmi
 ironic::drivers::ipmi::retry_timeout: 15
 
