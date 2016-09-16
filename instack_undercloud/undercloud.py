@@ -266,7 +266,7 @@ _opts = [
                       'Requires inspection_extras set to True.')
                 ),
     cfg.BoolOpt('inspection_enable_uefi',
-                default=False,
+                default=True,
                 help=('Whether to support introspection of nodes that have '
                       'UEFI-only firmware.')
                 ),
