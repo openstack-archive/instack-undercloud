@@ -29,13 +29,11 @@
 #network_gateway = 192.0.2.1
 
 # Virtual IP address to use for the public endpoints of Undercloud
-# services.  Only used if undercloud_service_certficate is set.
-# (string value)
+# services. Only used with SSL. (string value)
 #undercloud_public_vip = 192.0.2.2
 
 # Virtual IP address to use for the admin endpoints of Undercloud
-# services.  Only used if undercloud_service_certficate is set.
-# (string value)
+# services. Only used with SSL. (string value)
 #undercloud_admin_vip = 192.0.2.3
 
 # Certificate file to use for OpenStack service SSL connections.
@@ -153,8 +151,7 @@
 # Undercloud. (boolean value)
 #enable_telemetry = false
 
-# Whether to install the TripleO UI.
-# (boolean value)
+# Whether to install the TripleO UI. (boolean value)
 #enable_ui = true
 
 # Whether to install requirements to run the TripleO validations.
