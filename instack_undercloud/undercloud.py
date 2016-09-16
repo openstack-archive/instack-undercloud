@@ -24,6 +24,7 @@ import os
 import platform
 import socket
 import subprocess
+import sys
 import tempfile
 import uuid
 
@@ -607,9 +608,15 @@ def _validate_cidr():
 
 
 def _validate_configuration():
-    _check_hostname()
-    _check_memory()
-    _validate_network()
+    try:
+        _check_hostname()
+        _check_memory()
+        _validate_network()
+    except RuntimeError as e:
+        LOG.error('ERROR: An error occured during configuration validation, '
+                  'please check your host configuration and try again. '
+                  '{error}'.format(error=e))
+        sys.exit(1)
 
 
 def _generate_password(length=40):
