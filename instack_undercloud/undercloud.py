@@ -578,6 +578,28 @@ def _check_memory():
         raise RuntimeError('Insufficient memory available')
 
 
+def _check_sysctl():
+    """Check sysctl option availability
+
+    The undercloud will not install properly if some of the expected sysctl
+    values are not available to be set.
+    """
+    options = ['net.ipv4.ip_forward', 'net.ipv4.ip_nonlocal_bind',
+               'net.ipv6.ip_nonlocal_bind']
+
+    not_available = []
+    for option in options:
+        path = '/proc/sys/{opt}'.format(opt=option.replace('.', '/'))
+        if not os.path.isfile(path):
+            not_available.append(option)
+
+    if not_available:
+        LOG.error('Required sysctl options are not available. Check '
+                  'that your kernel is up to date. Missing: '
+                  '{options}'.format(options=", ".join(not_available)))
+        raise RuntimeError('Missing sysctl options')
+
+
 def _validate_network():
     def error_handler(message):
         LOG.error('Undercloud configuration validation failed: %s', message)
@@ -611,6 +633,7 @@ def _validate_configuration():
     try:
         _check_hostname()
         _check_memory()
+        _check_sysctl()
         _validate_network()
     except RuntimeError as e:
         LOG.error('ERROR: An error occured during configuration validation, '
