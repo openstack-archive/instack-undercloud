@@ -636,12 +636,12 @@ def _generate_password(length=40):
 def _get_service_endpoints(name, format_str, public, internal, admin=None,
                            public_proto='http', internal_proto='http'):
     endpoints = {}
-    upper_name = name.upper()
+    upper_name = name.upper().replace('-', '_')
     public_port_key = 'port'
 
     if not admin:
         admin = internal
-    if public_proto == 'https':
+    if public_proto in ['https', 'wss']:
         public_port_key = 'ssl_port'
 
     endpoints['UNDERCLOUD_ENDPOINT_%s_PUBLIC' % upper_name] = (
@@ -659,11 +659,14 @@ def _generate_endpoints(instack_env):
     public_proto = 'http'
     internal_host = local_host
     internal_proto = 'http'
+    zaqar_ws_public_proto = 'ws'
+    zaqar_ws_internal_proto = 'ws'
 
     if (CONF.undercloud_service_certificate or
             CONF.generate_service_certificate):
         public_host = CONF.undercloud_public_vip
         public_proto = 'https'
+        zaqar_ws_public_proto = 'wss'
 
     endpoints = {}
 
@@ -723,6 +726,18 @@ def _generate_endpoints(instack_env):
             _get_service_endpoints(*endpoint_data,
                                    public_proto=public_proto,
                                    internal_proto=internal_proto))
+
+    # Zaqar's websocket endpoint
+    # NOTE(jaosorior): Zaqar's websocket endpoint doesn't support being proxied
+    # on a different port. If that's done it will ignore the handshake and
+    # won't work.
+    endpoints.update(_get_service_endpoints(
+        'zaqar-websocket',
+        '%s://%s:%d',
+        {'host': public_host, 'port': 9000, 'ssl_port': 9000},
+        {'host': internal_host, 'port': 9000},
+        public_proto=zaqar_ws_public_proto,
+        internal_proto=zaqar_ws_internal_proto))
 
     # The swift admin endpoint has a different format from the others
     endpoints['UNDERCLOUD_ENDPOINT_SWIFT_ADMIN'] = (
