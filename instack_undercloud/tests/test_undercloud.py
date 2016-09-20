@@ -572,12 +572,9 @@ class TestPostConfig(base.BaseTestCase):
         mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.return_value = mock.Mock(state="ERROR")
 
-        # TODO(dmatthews): Switch to this check after this lands:
-        #   https://review.openstack.org/#/c/371347/
-        # self.assertRaises(
-        #     RuntimeError,
-        #     undercloud._create_default_plan, mock_mistral)
-        undercloud._create_default_plan(mock_mistral)
+        self.assertRaises(
+            RuntimeError,
+            undercloud._create_default_plan, mock_mistral)
 
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_copy_stackrc(self, mock_run):

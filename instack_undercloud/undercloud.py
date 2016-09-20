@@ -1124,13 +1124,18 @@ def _create_default_plan(mistral, timeout=60):
         if exe.state == "SUCCESS":
             return
         else:
-            LOG.warning("Failed to create the default Deployment Plan.")
-            return
+            raise RuntimeError(
+                "Failed to create the default Deployment Plan. Please check "
+                "the create_default_deployment_plan execution in Mistral with "
+                "`openstack workflow execution list`.")
     else:
         exe = mistral.executions.get(execution.id)
         LOG.error("Timed out waiting for execution %s to finish. State: %s",
                   exe.id, exe.state)
-        raise RuntimeError("Timed out creating the default Deployment Plan.")
+        raise RuntimeError(
+            "Timed out creating the default Deployment Plan. Please check "
+            "the create_default_deployment_plan execution in Mistral with "
+            "`openstack workflow execution list`.")
 
 
 def _prepare_ssh_environment(mistral):
