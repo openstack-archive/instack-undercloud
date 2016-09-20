@@ -299,10 +299,10 @@ class { '::nova::api':
 include ::nova::wsgi::apache
 include ::nova::cert
 include ::nova::cron::archive_deleted_rows
-include ::nova::compute
 include ::nova::conductor
 include ::nova::scheduler
 include ::nova::scheduler::filter
+include ::nova::compute
 
 class { '::neutron':
   rabbit_hosts => [hiera('controller_host')],
@@ -365,7 +365,7 @@ if(!defined(File['/srv/node'])) {
     ensure  => directory,
     owner   => 'swift',
     group   => 'swift',
-    require => Package['openstack-swift'],
+    require => Package['swift'],
   }
 }
 $swift_components = ['account', 'container', 'object']
@@ -444,7 +444,7 @@ if str2bool(hiera('enable_tempest', true)) {
 # where the instack host (in this case on a VM) was crashing due to
 # activation of the docker thin-pool associated with the atomic host.
 augeas { 'lvm.conf':
-  require => Package['openstack-nova-compute'],
+  require => Package['nova-compute'],
   context => '/files/etc/lvm/lvm.conf/devices/dict/',
   changes => 'set global_filter/list/1/str "r|^/dev/disk/by-path/ip.*iscsi.*\.org\.openstack:.*|"'
 }
@@ -513,7 +513,7 @@ if str2bool(hiera('enable_zaqar', true)) {
   include ::zaqar::transport::wsgi
 
   include ::zaqar::server
-  zaqar::server_instance{ 1:
+  zaqar::server_instance{ '1':
     transport => 'websocket'
   }
 }
