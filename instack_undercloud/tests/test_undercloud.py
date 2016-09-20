@@ -77,13 +77,16 @@ class TestUndercloud(BaseTestCase):
 
     @mock.patch('instack_undercloud.undercloud._check_hostname')
     @mock.patch('instack_undercloud.undercloud._check_memory')
+    @mock.patch('instack_undercloud.undercloud._check_sysctl')
     @mock.patch('instack_undercloud.undercloud._validate_network')
     def test_validate_configuration(self, mock_validate_network,
-                                    mock_check_memory, mock_check_hostname):
+                                    mock_check_memory, mock_check_hostname,
+                                    mock_check_sysctl):
         undercloud._validate_configuration()
         self.assertTrue(mock_validate_network.called)
         self.assertTrue(mock_check_memory.called)
         self.assertTrue(mock_check_hostname.called)
+        self.assertTrue(mock_check_sysctl.called)
 
 
 class TestCheckHostname(BaseTestCase):
@@ -180,6 +183,18 @@ class TestCheckMemory(BaseTestCase):
         mock_vm.return_value = mock.Mock()
         mock_vm.return_value.total = 2071963648
         self.assertRaises(RuntimeError, undercloud._check_memory)
+
+
+class TestCheckSysctl(BaseTestCase):
+    @mock.patch('os.path.isfile')
+    def test_missing_options(self, mock_isfile):
+        mock_isfile.return_value = False
+        self.assertRaises(RuntimeError, undercloud._check_sysctl)
+
+    @mock.patch('os.path.isfile')
+    def test_available_option(self, mock_isfile):
+        mock_isfile.return_value = True
+        undercloud._check_sysctl()
 
 
 class TestGenerateEnvironment(BaseTestCase):
