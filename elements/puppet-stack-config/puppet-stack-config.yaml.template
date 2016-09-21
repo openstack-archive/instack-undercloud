@@ -172,6 +172,7 @@ heat::notification_driver: 'messaging'
 
 # Keystone
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
+keystone::admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
 keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
 keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
