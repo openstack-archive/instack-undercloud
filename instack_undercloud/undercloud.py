@@ -1100,7 +1100,7 @@ def _clean_os_refresh_config():
     _run_command(args, name='Clean os-refresh-config')
 
 
-def _create_default_plan(mistral, timeout=60):
+def _create_default_plan(mistral, timeout=90):
     plan_name = 'overcloud'
     queue_name = str(uuid.uuid4())
 
