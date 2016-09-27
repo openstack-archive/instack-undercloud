@@ -215,6 +215,15 @@ class { '::ironic::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 
+$ironic_inspector_dsn = split(hiera('ironic::inspector::db::database_connection'), '[@:/?]')
+class { '::ironic::inspector::db::mysql':
+  user          => $ironic_inspector_dsn[3],
+  password      => $ironic_inspector_dsn[4],
+  host          => $ironic_inspector_dsn[5],
+  dbname        => $ironic_inspector_dsn[6],
+  allowed_hosts => $allowed_hosts,
+}
+
 # pre-install swift here so we can build rings
 include ::swift
 
