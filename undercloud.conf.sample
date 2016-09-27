@@ -131,7 +131,7 @@
 
 # Whether to support introspection of nodes that have UEFI-only
 # firmware. (boolean value)
-#inspection_enable_uefi = false
+#inspection_enable_uefi = true
 
 # Whether to enable the debug log level for Undercloud OpenStack
 # services. (boolean value)
