@@ -1157,8 +1157,12 @@ def _post_config(instack_env):
 
     if CONF.enable_mistral:
         mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
-        mistral = mistralclient.client(mistral_url, user, password, tenant,
-                                       auth_url)
+        mistral = mistralclient.client(
+            mistral_url=mistral_url,
+            username=user,
+            api_key=password,
+            project_name=tenant,
+            auth_url=auth_url)
         _post_config_mistral(mistral)
 
 
