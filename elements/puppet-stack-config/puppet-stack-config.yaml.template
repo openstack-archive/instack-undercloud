@@ -175,7 +175,7 @@ heat::cron::purge_deleted::age_type: 'days'
 heat::cron::purge_deleted::destination: '/dev/null'
 heat::notification_driver: 'messaging'
 heat::yaql_memory_quota: 100000
-heat::limit_iterators: 1000
+heat::yaql_limit_iterators: 1000
 
 # Keystone
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
