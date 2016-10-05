@@ -13,6 +13,9 @@ group :development, :test do
   gem 'puppet-lint-variable_contains_upcase', :require => 'false'
   gem 'puppet-lint-numericvariable',          :require => 'false'
   gem 'json',                                 :require => 'false'
+  # NOTE(aschultz): We need to pin to beaker < 3 because beaker 3.1.0
+  # requires ruby 2.2.5 and 3.0.0 has a bad serverspec dependency
+  gem 'beaker', '< 3.0.0',                    :require => 'false'
   # adding 'psych' explicitly
   # https://github.com/bundler/bundler/issues/2068
   # TODO: drop it in a future release of 'bundle'.
