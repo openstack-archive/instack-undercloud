@@ -73,8 +73,6 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
   # access the new endpoints that point to haproxy even if haproxy hasn't
   # started yet. The same is the case for ironic and ironic-inspector.
   Class['::tripleo::haproxy'] -> Anchor['keystone::install::begin']
-  Class['::tripleo::haproxy'] -> Class['::ironic::api']
-  Class['::tripleo::haproxy'] -> Class['::ironic::inspector']
 }
 
 # MySQL
@@ -431,6 +429,9 @@ include ::ironic::drivers::ssh
 include ::ironic::inspector
 include ::ironic::pxe
 include ::ironic::cors
+
+Keystone_endpoint<||> -> Service['ironic-api']
+Keystone_endpoint<||> -> Service['ironic-inspector']
 
 if str2bool(hiera('enable_tempest', true)) {
   # tempest
