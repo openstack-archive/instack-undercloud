@@ -294,7 +294,7 @@ _opts = [
                 help=('Whether to install Zaqar services in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_telemetry',
-                default=False,
+                default=True,
                 help=('Whether to install Telemetry services '
                       '(ceilometer, aodh) in the Undercloud.')
                 ),
