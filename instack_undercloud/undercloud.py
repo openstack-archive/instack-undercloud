@@ -19,6 +19,7 @@ import errno
 import getpass
 import glob
 import hashlib
+import json
 import logging
 import os
 import platform
@@ -1135,6 +1136,15 @@ def _prepare_ssh_environment(mistral):
 
 def _post_config_mistral(mistral):
     _create_default_plan(mistral)
+
+    # Store the snmpd password in a Mistral environment so it can be accessed
+    # by the Mistral actions.
+    snmpd_password = CONF.auth["undercloud_ceilometer_snmpd_password"]
+    mistral.environments.create(
+        name="tripleo.undercloud-config",
+        variables=json.dumps({
+            "undercloud_ceilometer_snmpd_password": snmpd_password
+        }))
 
     if CONF.enable_validations:
         _prepare_ssh_environment(mistral)
