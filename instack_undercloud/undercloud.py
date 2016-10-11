@@ -680,6 +680,7 @@ def _generate_endpoints(instack_env):
     if (CONF.undercloud_service_certificate or
             CONF.generate_service_certificate):
         public_host = CONF.undercloud_public_vip
+        internal_host = CONF.undercloud_admin_vip
         public_proto = 'https'
         zaqar_ws_public_proto = 'wss'
 
