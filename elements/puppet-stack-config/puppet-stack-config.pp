@@ -162,7 +162,7 @@ class { '::heat::db::mysql':
   dbname        => $heat_dsn[6],
   allowed_hosts => $allowed_hosts,
 }
-if str2bool(hiera('enable_telemetry', false)) {
+if str2bool(hiera('enable_telemetry', true)) {
   $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
   class { '::ceilometer::db::mysql':
     user          => $ceilometer_dsn[3],
