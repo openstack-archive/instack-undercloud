@@ -303,7 +303,7 @@ _opts = [
                 help=('Whether to install the TripleO UI.')
                 ),
     cfg.BoolOpt('enable_validations',
-                default=False,
+                default=True,
                 help=('Whether to install requirements to run the TripleO '
                       'validations.')
                 ),

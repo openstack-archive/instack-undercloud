@@ -496,7 +496,7 @@ if str2bool(hiera('enable_ui', true)) {
   include ::tripleo::profile::base::ui
 }
 
-if str2bool(hiera('enable_validations', false)) {
+if str2bool(hiera('enable_validations', true)) {
   include ::tripleo::profile::base::validations
 }
 
