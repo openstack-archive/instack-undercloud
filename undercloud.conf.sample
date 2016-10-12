@@ -156,7 +156,7 @@
 
 # Whether to install requirements to run the TripleO validations.
 # (boolean value)
-#enable_validations = false
+#enable_validations = true
 
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
