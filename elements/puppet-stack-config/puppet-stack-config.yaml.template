@@ -67,11 +67,10 @@ swift::keystone::auth::configure_s3_endpoint: false
 swift::keystone::auth::operator_roles:
   - admin
   - swiftoperator
-tripleo::ringbuilder::part_power: 10
-tripleo::ringbuilder::replicas: 3
-tripleo::ringbuilder::min_part_hours: 1
 swift_mount_check: false
 swift::ringbuilder::replicas: 1
+swift::ringbuilder::part_power: 10
+swift::ringbuilder::min_part_hours: 1
 
 swift::proxy::pipeline:
   - 'catch_errors'
