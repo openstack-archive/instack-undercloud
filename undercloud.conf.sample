@@ -149,7 +149,7 @@
 
 # Whether to install Telemetry services (ceilometer, aodh) in the
 # Undercloud. (boolean value)
-#enable_telemetry = false
+#enable_telemetry = true
 
 # Whether to install the TripleO UI. (boolean value)
 #enable_ui = true
