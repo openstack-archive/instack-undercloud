@@ -19,6 +19,7 @@ import subprocess
 
 import fixtures
 import mock
+from mistralclient.api import base as mistralclient_base
 from novaclient import exceptions
 from oslo_config import fixture as config_fixture
 from oslotest import base
@@ -525,7 +526,8 @@ class TestPostConfig(base.BaseTestCase):
                  mock.call(mock_instance, 'swift-storage', 'swift-storage'),
                  ]
         mock_ensure_flavor.assert_has_calls(calls)
-        mock_post_config_mistral.assert_called_once_with(mock_instance_mistral)
+        mock_post_config_mistral.assert_called_once_with(instack_env,
+                                                         mock_instance_mistral)
 
     def test_create_default_plan(self):
         mock_mistral = mock.Mock()
@@ -549,6 +551,34 @@ class TestPostConfig(base.BaseTestCase):
         ]
 
         undercloud._create_default_plan(mock_mistral)
+        mock_mistral.executions.create.assert_not_called()
+
+    def test_create_config_environment(self):
+        mock_mistral = mock.Mock()
+        mock_mistral.environments.get.side_effect = (
+            mistralclient_base.APIException)
+
+        env = {
+            "UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD": "snmpd-pass"
+        }
+        json_string = '{"undercloud_ceilometer_snmpd_password": "snmpd-pass"}'
+
+        undercloud._create_mistral_config_environment(env, mock_mistral)
+
+        mock_mistral.environments.create.assert_called_once_with(
+            name="tripleo.undercloud-config",
+            variables=json_string)
+
+    def test_create_config_environment_existing(self):
+        mock_mistral = mock.Mock()
+        environment = collections.namedtuple('environment', ['name'])
+        mock_mistral.environments.get.return_value = environment(
+            name='overcloud')
+        env = {
+            "UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD": "snmpd-pass"
+        }
+
+        undercloud._create_mistral_config_environment(env, mock_mistral)
         mock_mistral.executions.create.assert_not_called()
 
     def test_prepare_ssh_environment(self):
