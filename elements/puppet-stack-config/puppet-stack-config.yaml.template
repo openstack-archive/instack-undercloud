@@ -51,6 +51,7 @@ swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
 swift::proxy::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 swift::proxy::authtoken::identity_uri: "%{hiera('keystone_identity_uri')}"
 swift::proxy::node_timeout: 60
+swift::proxy::workers: "%{::os_workers}"
 swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
 swift::storage::all::incoming_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::storage::all::outgoing_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
@@ -95,6 +96,7 @@ glance::api::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 glance::api::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 glance::api::registry_host: {{LOCAL_IP}}
 glance::api::authtoken::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
+glance::api::workers: "%{::os_workers}"
 glance::api::stores:
   - glance.store.filesystem.Store
   - glance.store.swift.Store
@@ -115,6 +117,7 @@ glance::registry::registry_host: {{LOCAL_IP}}
 glance::registry::bind_host: {{LOCAL_IP}}
 glance::registry::manage_service: true
 glance::registry::pipeline: 'keystone'
+glance::registry::workers: "%{::os_workers}"
 glance::registry::auth_host: false
 glance::registry::auth_port: false
 glance::registry::auth_protocol: false
@@ -144,6 +147,7 @@ heat::engine::trusts_delegated_roles: []
 heat::engine::auth_encryption_key: {{UNDERCLOUD_HEAT_ENCRYPTION_KEY}}
 heat::engine::max_resources_per_stack: -1
 heat::engine::convergence_engine: false
+heat::engine::num_engine_workers: "%{::os_workers}"
 heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
@@ -154,7 +158,9 @@ heat::keystone::authtoken::password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::keystone::domain::domain_name: 'heat_stack'
 heat::keystone::domain::domain_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
 heat::api::bind_host: {{LOCAL_IP}}
+heat::api::workers: "%{::os_workers}"
 heat::api_cfn::bind_host: {{LOCAL_IP}}
+heat::api_cfn::workers: "%{::os_workers}"
 heat::database_connection: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat_dsn: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat::rpc_response_timeout: 600
@@ -174,6 +180,8 @@ heat::limit_iterators: 1000
 # Keystone
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
 keystone::admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
+keystone::admin_workers: "%{::os_workers}"
+keystone::public_workers: "%{::os_workers}"
 keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
 keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
 keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
@@ -215,6 +223,8 @@ neutron::bind_host: {{LOCAL_IP}}
 neutron::core_plugin: ml2
 neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: ''
+neutron::server::api_workers: "%{::os_workers}"
+neutron::server::rpc_workers: "%{::os_workers}"
 neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 neutron::keystone::authtoken::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
@@ -230,6 +240,7 @@ neutron_public_interface: {{LOCAL_INTERFACE}}
 neutron_physical_bridge: br-ctlplane
 neutron::keystone::authtoken::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
+neutron::agents::metadata::metadata_workers: "%{::os_workers}"
 neutron::quota::quota_port: -1
 neutron::server::notifications::auth_url: "%{hiera('keystone_auth_uri')}"
 neutron::server::notifications::tenant_name: service
@@ -300,9 +311,12 @@ nova::api::enabled_apis:
   - metadata
 nova::api::sync_db_api: true
 nova::api::service_name: 'httpd'
+nova::api::osapi_compute_workers: "%{::os_workers}"
+nova::api::metadata_workers: "%{::os_workers}"
 nova::wsgi::apache::ssl: false
 nova::wsgi::apache::bind_host: {{LOCAL_IP}}
 nova::conductor::enabled: true
+nova::conductor::workers: "%{::os_workers}"
 nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
 nova::api_database_connection: mysql+pymysql://nova_api:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova_api
 nova::notify_on_state_change: 'vm_and_task_state'
@@ -355,6 +369,7 @@ ironic::api::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::api::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::api::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 ironic::api::host_ip: {{LOCAL_IP}}
+ironic::api::workers: "%{::os_workers}"
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
@@ -454,6 +469,7 @@ horizon::openstack_endpoint_type: internalURL
 
 # Mistral
 mistral::api::bind_host: {{LOCAL_IP}}
+mistral::api::api_workers: "%{::os_workers}"
 mistral::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 mistral::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 mistral::rabbit_host: {{LOCAL_IP}}
@@ -557,6 +573,7 @@ nova::keystone::authtoken::project_name: 'service'
 swift::proxy::authtoken::admin_tenant_name: 'service'
 mistral::keystone_tenant: 'service'
 
+swift::proxy::workers: "%{::os_workers}"
 # Options
 enable_tempest: {{ENABLE_TEMPEST}}
 enable_mistral: {{ENABLE_MISTRAL}}
