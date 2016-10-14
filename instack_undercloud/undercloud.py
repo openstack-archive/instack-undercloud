@@ -35,6 +35,7 @@ from keystoneclient import auth
 from keystoneclient import session
 from keystoneclient import discover
 from mistralclient.api import client as mistralclient
+from mistralclient.api import base as mistralclient_base
 from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
@@ -1092,6 +1093,22 @@ def _clean_os_refresh_config():
     _run_command(args, name='Clean os-refresh-config')
 
 
+def _create_mistral_config_environment(instack_env, mistral):
+    # Store the snmpd password in a Mistral environment so it can be accessed
+    # by the Mistral actions.
+    snmpd_password = instack_env["UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD"]
+
+    env_name = "tripleo.undercloud-config"
+    try:
+        mistral.environments.get(env_name)
+    except mistralclient_base.APIException:
+        mistral.environments.create(
+            name=env_name,
+            variables=json.dumps({
+                "undercloud_ceilometer_snmpd_password": snmpd_password
+            }))
+
+
 def _create_default_plan(mistral, timeout=180):
     plan_name = 'overcloud'
     queue_name = str(uuid.uuid4())
@@ -1134,17 +1151,10 @@ def _prepare_ssh_environment(mistral):
     mistral.executions.create('tripleo.validations.v1.copy_ssh_key')
 
 
-def _post_config_mistral(mistral):
-    _create_default_plan(mistral)
+def _post_config_mistral(instack_env, mistral):
 
-    # Store the snmpd password in a Mistral environment so it can be accessed
-    # by the Mistral actions.
-    snmpd_password = CONF.auth["undercloud_ceilometer_snmpd_password"]
-    mistral.environments.create(
-        name="tripleo.undercloud-config",
-        variables=json.dumps({
-            "undercloud_ceilometer_snmpd_password": snmpd_password
-        }))
+    _create_mistral_config_environment(instack_env, mistral)
+    _create_default_plan(mistral)
 
     if CONF.enable_validations:
         _prepare_ssh_environment(mistral)
@@ -1173,7 +1183,7 @@ def _post_config(instack_env):
             api_key=password,
             project_name=tenant,
             auth_url=auth_url)
-        _post_config_mistral(mistral)
+        _post_config_mistral(instack_env, mistral)
 
 
 def install(instack_root):
