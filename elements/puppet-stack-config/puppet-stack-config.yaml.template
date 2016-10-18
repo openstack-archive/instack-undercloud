@@ -259,6 +259,9 @@ ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ceilometer::rabbit_host: {{LOCAL_IP}}
 ceilometer::api::host: {{LOCAL_IP}}
+ceilometer::api::service_name: 'httpd'
+ceilometer::wsgi::apache::ssl: false
+ceilometer::wsgi::apache::bind_host: {{LOCAL_IP}}
 ceilometer::keystone::authtoken::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"

@@ -175,6 +175,7 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::aodh::keystone::auth
   include ::ceilometer
   include ::ceilometer::api
+  include ::ceilometer::wsgi::apache
   include ::ceilometer::db
   include ::ceilometer::agent::notification
   include ::ceilometer::agent::central
