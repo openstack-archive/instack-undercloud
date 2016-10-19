@@ -455,11 +455,15 @@ if str2bool(hiera('enable_docker_registry', true)) {
   package{'docker-registry': }
   augeas { 'docker-registry':
     context => '/files/etc/sysconfig/docker-registry',
-    changes => 'set REGISTRY_PORT 8787',
+    changes => [
+      'set REGISTRY_PORT 8787',
+      join(['set REGISTRY_ADDRESS ', hiera('controller_host')])
+    ],
     notify  => Service['docker-registry'],
   }
   service { 'docker-registry':
     ensure  => running,
+    enable  => true,
     require => Package['docker-registry'],
   }
 }
