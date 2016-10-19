@@ -8,5 +8,5 @@ set -o pipefail
 mkdir -p /opt/stack/selinux-policy
 
 # Compile the selinux policy
-checkmodule -M -m -o /tmp/ipxe.mod $(dirname $0)/../selinux/ipxe.te
-sudo semodule_package -m /tmp/ipxe.mod -o /opt/stack/selinux-policy/ipxe.pp
+checkmodule -M -m -o /tmp/ironic-ipxe.mod $(dirname $0)/../selinux/ironic-ipxe.te
+sudo semodule_package -m /tmp/ironic-ipxe.mod -o /opt/stack/selinux-policy/ipxe.pp
