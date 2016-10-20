@@ -453,6 +453,7 @@ augeas { 'lvm.conf':
 
 if str2bool(hiera('enable_docker_registry', true)) {
   package{'docker-registry': }
+  package{'docker': }
   augeas { 'docker-registry':
     context => '/files/etc/sysconfig/docker-registry',
     changes => [
@@ -465,6 +466,11 @@ if str2bool(hiera('enable_docker_registry', true)) {
     ensure  => running,
     enable  => true,
     require => Package['docker-registry'],
+  }
+  service { 'docker':
+    ensure  => running,
+    enable  => true,
+    require => Package['docker'],
   }
 }
 
