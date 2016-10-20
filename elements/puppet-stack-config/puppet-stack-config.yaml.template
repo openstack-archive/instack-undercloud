@@ -38,6 +38,10 @@ member_role_exists: {{MEMBER_ROLE_EXISTS}}
 # Common Hiera data gets applied to all nodes
 ssh::server::storeconfigs_enabled: false
 
+# Apache
+apache::server_signature: 'Off'
+apache::server_tokens: 'Prod'
+
 # ceilometer settings used by compute and controller ceilo auth settings
 ceilometer::agent::auth::auth_region: 'regionOne'
 aodh::auth::auth_region: 'regionOne'
