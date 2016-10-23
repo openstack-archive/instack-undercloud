@@ -383,6 +383,7 @@ ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ironic::conductor::api_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
 ironic::conductor::force_power_state_during_sync: false
 ironic::conductor::automated_clean: {{CLEAN_NODES}}
+ironic::conductor::default_boot_option: 'local'
 ironic::keystone::auth::tenant: 'service'
 ironic::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}
 ironic::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
