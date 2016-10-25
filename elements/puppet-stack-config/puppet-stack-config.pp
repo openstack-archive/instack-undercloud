@@ -533,6 +533,14 @@ augeas { 'lvm.conf':
 }
 
 if str2bool(hiera('enable_docker_registry', true)) {
+  group { 'docker':
+    ensure => 'present',
+  }
+  user { 'docker_user':
+    name   => hiera('tripleo_install_user'),
+    groups => 'docker',
+    notify => Service['docker'],
+  }
   include ::tripleo::profile::base::docker_registry
 }
 
