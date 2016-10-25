@@ -540,6 +540,7 @@ tripleo::haproxy::rabbitmq: true
 tripleo::haproxy::mistral: {{ENABLE_MISTRAL}}
 tripleo::haproxy::zaqar_api: {{ENABLE_ZAQAR}}
 tripleo::haproxy::zaqar_ws: {{ENABLE_ZAQAR}}
+tripleo::haproxy::docker_registry: true
 
 # Keepalived
 tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_vip')}"
@@ -725,6 +726,7 @@ tripleo::firewall::firewall_rules:
     dport: 5050
   '138 docker registry':
     dport: 8787
+    dport: 13787
   '139 apache vhost':
     dport: "%{hiera('ironic_ipxe_port')}"
   '140 network cidr nat':
