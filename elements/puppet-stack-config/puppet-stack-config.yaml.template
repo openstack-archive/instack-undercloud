@@ -49,7 +49,7 @@ aodh::auth::auth_url: "%{hiera('keystone_auth_uri_v2')}"
 # Swift
 swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
 swift::proxy::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
-swift::proxy::authtoken::identity_uri: "%{hiera('keystone_identity_uri')}"
+swift::proxy::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 swift::proxy::node_timeout: 60
 swift::proxy::workers: "%{::os_workers}"
 swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
@@ -57,7 +57,7 @@ swift::storage::all::incoming_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::storage::all::outgoing_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::swift_hash_path_suffix: {{UNDERCLOUD_SWIFT_HASH_SUFFIX}}
 swift::proxy::account_autocreate: true
-swift::proxy::authtoken::admin_password: {{UNDERCLOUD_SWIFT_PASSWORD}}
+swift::proxy::authtoken::password: {{UNDERCLOUD_SWIFT_PASSWORD}}
 swift::keystone::auth::tenant: 'service'
 swift::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC}}
 swift::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_SWIFT_INTERNAL}}
@@ -568,14 +568,12 @@ swift::proxy::cors_allow_origin: '*'
 ceilometer::keystone::authtoken::project_name: 'service'
 aodh::keystone::authtoken::project_name: 'service'
 cinder::keystone::authtoken::project_name: 'service'
-glance::api::keystone_tenant: 'service'
-glance::registry::keystone_tenant: 'service'
 heat::keystone::authtoken::project_name: 'service'
 glance::api::authtoken::project_name: 'service'
 glance::registry::authtoken::project_name: 'service'
 ironic::api::authtoken::project_name: 'service'
 nova::keystone::authtoken::project_name: 'service'
-swift::proxy::authtoken::admin_tenant_name: 'service'
+swift::proxy::authtoken::project_name: 'service'
 mistral::keystone_tenant: 'service'
 
 swift::proxy::workers: "%{::os_workers}"
