@@ -283,6 +283,11 @@ _opts = [
                 help=('Whether to enable the debug log level for Undercloud '
                       'OpenStack services.')
                 ),
+    cfg.BoolOpt('undercloud_update_packages',
+                default=True,
+                help=('Whether to update packages during the Undercloud '
+                      'install.')
+                ),
     cfg.BoolOpt('enable_tempest',
                 default=True,
                 help=('Whether to install Tempest in the Undercloud.')
