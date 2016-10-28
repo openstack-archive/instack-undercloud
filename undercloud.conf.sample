@@ -161,7 +161,6 @@
 # Whether to use iPXE for deploy by default. (boolean value)
 #ipxe_deploy = true
 
-
 # Whether to store events in the Undercloud Ceilometer. (boolean
 # value)
 #store_events = false
@@ -269,10 +268,6 @@
 # Swift hash suffix. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_swift_hash_suffix = <None>
-
-# Sensu service password. If left unset, one will be automatically
-# generated. (string value)
-#undercloud_sensu_password = <None>
 
 # HAProxy stats password. If left unset, one will be automatically
 # generated. (string value)
