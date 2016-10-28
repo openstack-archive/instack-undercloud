@@ -1110,7 +1110,7 @@ def _create_mistral_config_environment(instack_env, mistral):
             }))
 
 
-def _create_default_plan(mistral, timeout=180):
+def _create_default_plan(mistral, timeout=360):
     plan_name = 'overcloud'
     queue_name = str(uuid.uuid4())
 
