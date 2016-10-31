@@ -22,7 +22,7 @@ import pystache
 
 from instack_undercloud import undercloud
 
-renderer = pystache.Renderer()
+renderer = pystache.Renderer(escape=lambda s: s)
 template = os.path.join(os.path.dirname(__file__),
                         '..',
                         'puppet-stack-config.yaml.template')
