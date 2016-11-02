@@ -167,6 +167,8 @@ class { '::heat::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 if str2bool(hiera('enable_telemetry', true)) {
+
+  # Ceilometer
   $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
   class { '::ceilometer::db::mysql':
     user          => $ceilometer_dsn[3],
@@ -186,6 +188,7 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::ceilometer::expirer
   include ::ceilometer::collector
   include ::ceilometer::agent::auth
+  include ::ceilometer::dispatcher::gnocchi
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
@@ -208,7 +211,33 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::aodh::auth
   # To manage the upgrade:
   Exec['ceilometer-dbsync'] -> Exec['aodh-db-sync']
+
+  # Gnocchi
+  $gnocchi_dsn = split(hiera('gnocchi::db::database_connection'), '[@:/?]')
+  class { '::gnocchi::db::mysql':
+    user          => $gnocchi_dsn[3],
+    password      => $gnocchi_dsn[4],
+    host          => $gnocchi_dsn[5],
+    dbname        => $gnocchi_dsn[6],
+    allowed_hosts => $allowed_hosts,
+  }
+  include ::gnocchi
+  include ::gnocchi::api
+  include ::gnocchi::wsgi::apache
+  include ::gnocchi::client
+  include ::gnocchi::db::sync
+  include ::gnocchi::storage
+  include ::gnocchi::metricd
+  include ::gnocchi::statsd
+  $gnocchi_backend = downcase(hiera('gnocchi_backend', 'swift'))
+  case $gnocchi_backend {
+      'swift': { include ::gnocchi::storage::swift }
+      'file': { include ::gnocchi::storage::file }
+      'rbd': { include ::gnocchi::storage::ceph }
+      default: { fail('Unrecognized gnocchi_backend parameter.') }
+  }
 }
+
 $ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
 class { '::ironic::db::mysql':
   user          => $ironic_dsn[3],

@@ -362,6 +362,10 @@ _auth_opts = [
                help=('Aodh service password. '
                      'If left unset, one will be automatically generated.')
                ),
+    cfg.StrOpt('undercloud_gnocchi_password',
+               help=('Gnocchi service password. '
+                     'If left unset, one will be automatically generated.')
+               ),
     cfg.StrOpt('undercloud_ceilometer_password',
                help=('Ceilometer service password. '
                      'If left unset, one will be automatically generated.')
@@ -707,6 +711,10 @@ def _generate_endpoints(instack_env):
             '%s://%s:%d',
             {'host': public_host, 'port': 8042, 'ssl_port': 13042},
             {'host': internal_host, 'port': 8042}),
+        ('gnocchi',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 8041, 'ssl_port': 13041},
+            {'host': internal_host, 'port': 8041}),
         ('mistral',
             '%s://%s:%d/v2',
             {'host': public_host, 'port': 8989, 'ssl_port': 13989},
