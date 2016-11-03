@@ -311,9 +311,10 @@ _opts = [
                 help=('Whether to install requirements to run the TripleO '
                       'validations.')
                 ),
-    cfg.BoolOpt('ipxe_deploy',
+    cfg.BoolOpt('ipxe_enabled',
                 default=True,
-                help=('Whether to use iPXE for deploy by default.')
+                help=('Whether to use iPXE for deploy and inspection.'),
+                deprecated_name='ipxe_deploy',
                 ),
     cfg.BoolOpt('store_events',
                 default=False,
