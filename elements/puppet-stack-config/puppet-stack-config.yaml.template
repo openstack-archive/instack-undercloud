@@ -401,7 +401,9 @@ ironic::keystone::auth_inspector::region: "%{hiera('keystone_region')}"
 # Ironic Inspector
 ironic::inspector::listen_address: {{LOCAL_IP}}
 ironic::inspector::debug: "%{hiera('debug')}"
+{{#IPXE_ENABLED}}
 ironic::inspector::pxe_transfer_protocol: 'http'
+{{/IPXE_ENABLED}}
 ironic::inspector::enable_uefi: {{INSPECTION_ENABLE_UEFI}}
 ironic::inspector::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -440,7 +442,7 @@ ironic::conductor::http_boot: '/httpboot'
 ironic::inspector::http_port: "%{hiera('ironic_ipxe_port')}"
 
 # Ironic pxe
-ironic::drivers::pxe::ipxe_enabled: {{IPXE_DEPLOY}}
+ironic::drivers::pxe::ipxe_enabled: {{IPXE_ENABLED}}
 # NOTE(dtantsur): UEFI only works with iPXE currently for us
 ironic::drivers::pxe::uefi_pxe_config_template: '$pybasedir/drivers/modules/ipxe_config.template'
 ironic::drivers::pxe::uefi_pxe_bootfile_name: 'ipxe.efi'
@@ -587,7 +589,6 @@ enable_zaqar: {{ENABLE_ZAQAR}}
 enable_validations: {{ENABLE_VALIDATIONS}}
 enable_telemetry: {{ENABLE_TELEMETRY}}
 enable_ui: {{ENABLE_UI}}
-ipxe_deploy: {{IPXE_DEPLOY}}
 
 # Path to install configuration files
 tripleo_install_user: {{TRIPLEO_INSTALL_USER}}

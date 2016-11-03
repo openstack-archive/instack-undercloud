@@ -158,8 +158,9 @@
 # (boolean value)
 #enable_validations = true
 
-# Whether to use iPXE for deploy by default. (boolean value)
-#ipxe_deploy = true
+# Whether to use iPXE for deploy and inspection. (boolean value)
+# Deprecated group/name - [DEFAULT]/ipxe_deploy
+#ipxe_enabled = true
 
 # Whether to store events in the Undercloud Ceilometer. (boolean
 # value)
