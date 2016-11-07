@@ -540,3 +540,19 @@ service { 'sshd':
   ensure => running,
   enable => true,
 }
+
+# Swift is using only a single replica on the undercloud. Therefore recovering
+# from a corrupted or lost object is not possible, and running replicators and
+# auditors only wastes resources.
+$needless_services = [
+  'swift-account-auditor',
+  'swift-account-replicator',
+  'swift-container-auditor',
+  'swift-container-replicator',
+  'swift-object-auditor',
+  'swift-object-replicator']
+
+Service[$needless_services] {
+  enable => false,
+  ensure => stopped,
+}
