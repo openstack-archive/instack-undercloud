@@ -88,28 +88,9 @@ secured.
 
 #############################################################################
 """
-CIDR_DEPRECATION_MESSAGE = """
-*****************************************************************************
-The old default CIDR of 192.0.2.0/24 is deprecated due to it being an
-unroutable address range under RFC 5737.  This default will change in the
-Ocata release of OpenStack, so you should stop using the default CIDR and set
-a valid, routable CIDR instead.
-
-Note that if you have already deployed an overcloud with the 192.0.2.0/24
-CIDR, it will not be possible to change it without re-deploying.  If the
-overcloud cannot be re-deployed, you must explicitly set the network values
-in undercloud.conf to ensure continued use of the 192.0.2.0/24 CIDR during
-future upgrades.
-*****************************************************************************
-"""
 # We need 4 GB, leave a little room for variation in what 4 GB means on
 # different platforms.
 REQUIRED_MB = 3750
-
-
-# Allow logging of a warning at the end of the deploy if the deprecated cidr
-# is in use.
-deprecated_cidr = False
 
 
 # When adding new options to the lists below, make sure to regenerate the
@@ -130,7 +111,7 @@ _opts = [
                      'will configure all system hostname settings.'),
                ),
     cfg.StrOpt('local_ip',
-               default='192.0.2.1/24',
+               default='192.168.24.1/24',
                help=('IP information for the interface on the Undercloud '
                      'that will be handling the PXE boots and DHCP for '
                      'Overcloud instances.  The IP portion of the value will '
@@ -139,18 +120,18 @@ _opts = [
                      'prefix portion of the value.')
                ),
     cfg.StrOpt('network_gateway',
-               default='192.0.2.1',
+               default='192.168.24.1',
                help=('Network gateway for the Neutron-managed network for '
                      'Overcloud instances. This should match the local_ip '
                      'above when using masquerading.')
                ),
     cfg.StrOpt('undercloud_public_vip',
-               default='192.0.2.2',
+               default='192.168.24.2',
                help=('Virtual IP address to use for the public endpoints of '
                      'Undercloud services. Only used with SSL.')
                ),
     cfg.StrOpt('undercloud_admin_vip',
-               default='192.0.2.3',
+               default='192.168.24.3',
                help=('Virtual IP address to use for the admin endpoints of '
                      'Undercloud services. Only used with SSL.')
                ),
@@ -199,35 +180,24 @@ _opts = [
                help=('MTU to use for the local_interface.')
                ),
     cfg.StrOpt('network_cidr',
-               sample_default='192.0.2.0/24',
+               default='192.168.24.0/24',
                help=('Network CIDR for the Neutron-managed network for '
                      'Overcloud instances. This should be the subnet used '
-                     'for PXE booting. The current default for this value '
-                     'is 192.0.2.0/24, but this is deprecated due to it being '
-                     'a non-routable CIDR under RFC 5737. The default value '
-                     'for this option will be changed in the Ocata release. '
-                     'A different, valid CIDR should be selected to avoid '
-                     'problems. If an overcloud has already been deployed '
-                     'with the 192.0.2.0/24 CIDR and therefore the CIDR '
-                     'cannot be changed, you must set this option to '
-                     '192.0.2.0/24 explicitly to avoid it changing in future '
-                     'releases, and all other network options related to the '
-                     'CIDR (e.g. local_ip) must also be set to maintain a '
-                     'valid configuration.')
+                     'for PXE booting.')
                ),
     cfg.StrOpt('masquerade_network',
-               default='192.0.2.0/24',
+               default='192.168.24.0/24',
                help=('Network that will be masqueraded for external access, '
                      'if required. This should be the subnet used for PXE '
                      'booting.')
                ),
     cfg.StrOpt('dhcp_start',
-               default='192.0.2.5',
+               default='192.168.24.5',
                help=('Start of DHCP allocation range for PXE and DHCP of '
                      'Overcloud instances.')
                ),
     cfg.StrOpt('dhcp_end',
-               default='192.0.2.24',
+               default='192.168.24.24',
                help=('End of DHCP allocation range for PXE and DHCP of '
                      'Overcloud instances.')
                ),
@@ -256,7 +226,7 @@ _opts = [
                      'listen.  If in doubt, use the default value.')
                ),
     cfg.StrOpt('inspection_iprange',
-               default='192.0.2.100,192.0.2.120',
+               default='192.168.24.100,192.168.24.120',
                deprecated_name='discovery_iprange',
                help=('Temporary IP range that will be given to nodes during '
                      'the inspection process.  Should not overlap with the '
@@ -618,28 +588,8 @@ def _validate_network():
         LOG.error('Undercloud configuration validation failed: %s', message)
         raise validator.FailedValidation(message)
 
-    _validate_cidr()
     params = {opt.name: CONF[opt.name] for opt in _opts}
     validator.validate_config(params, error_handler)
-
-
-def _validate_cidr():
-    """Check for default network_cidr
-
-    The old default cidr of 192.0.2.0/24 is deprecated due to being unroutable
-    under RFC 5737.  However, since we need to give users notice of the
-    change, we need some logic to warn them of the problem before actually
-    changing the default, which could be a breaking change on upgrades.
-
-    This function handles the sentinel value of None, which indicates that
-    the user has not overridden the default value, and sets an override on the
-    conf opt to match the previous default.  It also sets a global flag so we
-    can warn about the deprecation at the end of the deploy.
-    """
-    if CONF.network_cidr is None:
-        global deprecated_cidr
-        deprecated_cidr = True
-        CONF.set_override('network_cidr', '192.0.2.0/24')
 
 
 def _validate_configuration():
@@ -1225,5 +1175,3 @@ def install(instack_root):
     _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
     LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
              'stackrc_path': os.path.expanduser('~/stackrc')})
-    if deprecated_cidr:
-        LOG.warning(CIDR_DEPRECATION_MESSAGE)

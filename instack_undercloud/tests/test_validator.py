@@ -49,61 +49,63 @@ class TestValidator(base.BaseTestCase):
                           undercloud._validate_network)
 
     def test_fail_on_inspection_start(self):
-        self.conf.config(inspection_iprange='193.0.2.100,192.0.2.120')
+        self.conf.config(inspection_iprange='193.0.2.100,192.168.24.120')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_end(self):
-        self.conf.config(inspection_iprange='192.0.2.100,193.0.2.120')
+        self.conf.config(inspection_iprange='192.168.24.100,193.0.2.120')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_dhcp_order(self):
-        self.conf.config(dhcp_start='192.0.2.100', dhcp_end='192.0.2.10')
+        self.conf.config(dhcp_start='192.168.24.100', dhcp_end='192.168.24.10')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_dhcp_equal(self):
-        self.conf.config(dhcp_start='192.0.2.100', dhcp_end='192.0.2.100')
+        self.conf.config(dhcp_start='192.168.24.100',
+                         dhcp_end='192.168.24.100')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_order(self):
-        self.conf.config(inspection_iprange='192.0.2.120,192.0.2.100')
+        self.conf.config(inspection_iprange='192.168.24.120,192.168.24.100')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_equal(self):
-        self.conf.config(inspection_iprange='192.0.2.120,192.0.2.120')
+        self.conf.config(inspection_iprange='192.168.24.120,192.168.24.120')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_1(self):
-        self.conf.config(dhcp_start='192.0.2.10', dhcp_end='192.0.2.100',
-                         inspection_iprange='192.0.2.90,192.0.2.110')
+        self.conf.config(dhcp_start='192.168.24.10', dhcp_end='192.168.24.100',
+                         inspection_iprange='192.168.24.90,192.168.24.110')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_2(self):
-        self.conf.config(dhcp_start='192.0.2.100', dhcp_end='192.0.2.120',
-                         inspection_iprange='192.0.2.90,192.0.2.110')
+        self.conf.config(dhcp_start='192.168.24.100',
+                         dhcp_end='192.168.24.120',
+                         inspection_iprange='192.168.24.90,192.168.24.110')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_3(self):
-        self.conf.config(dhcp_start='192.0.2.20', dhcp_end='192.0.2.90',
-                         inspection_iprange='192.0.2.10,192.0.2.100')
+        self.conf.config(dhcp_start='192.168.24.20', dhcp_end='192.168.24.90',
+                         inspection_iprange='192.168.24.10,192.168.24.100')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_4(self):
-        self.conf.config(dhcp_start='192.0.2.10', dhcp_end='192.0.2.100',
-                         inspection_iprange='192.0.2.20,192.0.2.90')
+        self.conf.config(dhcp_start='192.168.24.10', dhcp_end='192.168.24.100',
+                         inspection_iprange='192.168.24.20,192.168.24.90')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_invalid_local_ip(self):
-        self.conf.config(local_ip='192.0.2.1')
+        self.conf.config(local_ip='192.168.24.1')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
@@ -113,7 +115,7 @@ class TestValidator(base.BaseTestCase):
                           undercloud._validate_network)
 
     def test_no_alter_params(self):
-        self.conf.config(network_cidr='192.0.2.0/24')
+        self.conf.config(network_cidr='192.168.24.0/24')
         params = {opt.name: self.conf.conf[opt.name]
                   for opt in undercloud._opts}
         save_params = dict(params)

@@ -278,8 +278,8 @@ class TestGenerateEnvironment(BaseTestCase):
         # Just spot check, we don't want to replicate the entire opt list here
         self.assertEqual(env['INSPECTION_COLLECTORS'],
                          'default,extra-hardware,logs')
-        self.assertEqual('192.0.2.1/24', env['PUBLIC_INTERFACE_IP'])
-        self.assertEqual('192.0.2.1', env['LOCAL_IP'])
+        self.assertEqual('192.168.24.1/24', env['PUBLIC_INTERFACE_IP'])
+        self.assertEqual('192.168.24.1', env['LOCAL_IP'])
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
         drivers = json.loads(env['ENABLED_DRIVERS'])
@@ -292,14 +292,14 @@ class TestGenerateEnvironment(BaseTestCase):
                          if k.startswith('UNDERCLOUD_ENDPOINT')}
         self.assertEqual(39, len(endpoint_vars))
         # Spot check one service
-        self.assertEqual('http://192.0.2.1:5000',
+        self.assertEqual('http://192.168.24.1:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.0.2.1:5000',
+        self.assertEqual('http://192.168.24.1:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.0.2.1:35357',
+        self.assertEqual('http://192.168.24.1:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
-        self.assertEqual('http://192.0.2.1:8080/v1/AUTH_%(tenant_id)s',
+        self.assertEqual('http://192.168.24.1:8080/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_generate_endpoints_ssl_manual(self):
@@ -308,14 +308,14 @@ class TestGenerateEnvironment(BaseTestCase):
         conf.config(undercloud_service_certificate='test.pem')
         env = undercloud._generate_environment('.')
         # Spot check one service
-        self.assertEqual('https://192.0.2.2:13000',
+        self.assertEqual('https://192.168.24.2:13000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.0.2.3:5000',
+        self.assertEqual('http://192.168.24.3:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.0.2.3:35357',
+        self.assertEqual('http://192.168.24.3:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
-        self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
+        self.assertEqual('https://192.168.24.2:13808/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_generate_endpoints_ssl_auto(self):
@@ -324,14 +324,14 @@ class TestGenerateEnvironment(BaseTestCase):
         conf.config(generate_service_certificate=True)
         env = undercloud._generate_environment('.')
         # Spot check one service
-        self.assertEqual('https://192.0.2.2:13000',
+        self.assertEqual('https://192.168.24.2:13000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.0.2.3:5000',
+        self.assertEqual('http://192.168.24.3:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.0.2.3:35357',
+        self.assertEqual('http://192.168.24.3:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
-        self.assertEqual('https://192.0.2.2:13808/v1/AUTH_%(tenant_id)s',
+        self.assertEqual('https://192.168.24.2:13808/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_absolute_cert_path(self):
@@ -511,7 +511,8 @@ class TestPostConfig(base.BaseTestCase):
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
                          mock_nova_client):
         instack_env = {
-            'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC': 'http://192.0.2.1:8989/v2',
+            'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC':
+                'http://192.168.24.1:8989/v2',
         }
         mock_get_auth_values.return_value = ('aturing', '3nigma', 'hut8',
                                              'http://bletchley:5000/v2.0')
