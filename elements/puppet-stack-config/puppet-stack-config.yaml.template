@@ -176,10 +176,15 @@ heat::yaql_memory_quota: 100000
 heat::yaql_limit_iterators: 1000
 
 # Keystone
+keystone::debug:  "%{hiera('debug')}"
 keystone::admin_token: {{UNDERCLOUD_ADMIN_TOKEN}}
 keystone::admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 keystone::admin_workers: "%{::os_workers}"
 keystone::public_workers: "%{::os_workers}"
+keystone::public_bind_host: {{LOCAL_IP}}
+keystone::admin_bind_host: {{LOCAL_IP}}
+keystone::public_endpoint: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
+keystone::service_name: 'httpd'
 keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
 keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
 keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
