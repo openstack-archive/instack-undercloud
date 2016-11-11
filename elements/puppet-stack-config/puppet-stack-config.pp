@@ -285,7 +285,6 @@ include ::glance::backend::swift
 include ::glance::notify::rabbitmq
 
 class { '::nova':
-  glance_api_servers => join([hiera('glance_protocol'), '://', hiera('controller_host'), ':', hiera('glance_port')]),
   debug              => hiera('debug'),
 }
 
