@@ -738,3 +738,5 @@ tripleo::firewall::firewall_rules:
   '141 libvirt network nat':
     chain: FORWARD
     destination: 192.168.122.0/24
+  '142 tripleo-ui':
+    dport: 3000
