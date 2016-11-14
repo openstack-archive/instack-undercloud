@@ -235,11 +235,6 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
 }
 
 class { '::keystone':
-  debug                        => hiera('debug'),
-  public_bind_host             => hiera('controller_host'),
-  admin_bind_host              => hiera('controller_host'),
-  public_endpoint              => $keystone_public_endpoint,
-  service_name                 => 'httpd',
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
 include ::keystone::wsgi::apache
