@@ -433,6 +433,7 @@ include ::nova::network::neutron
 include ::ironic
 include ::ironic::api
 include ::ironic::conductor
+include ::ironic::drivers::ilo
 include ::ironic::drivers::ipmi
 include ::ironic::drivers::pxe
 include ::ironic::drivers::ssh

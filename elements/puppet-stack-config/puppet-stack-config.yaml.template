@@ -452,8 +452,9 @@ ironic::drivers::agent::deploy_logs_collect: 'always'
 ironic::drivers::agent::deploy_logs_storage_backend: 'local'
 ironic::drivers::agent::deploy_logs_local_path: '/var/log/ironic/deploy/'
 
-# Ironic ipmi
+# Ironic power and management drivers tuning
 ironic::drivers::ipmi::retry_timeout: 15
+ironic::drivers::ilo::default_boot_mode: 'bios'
 
 # Rabbit
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
