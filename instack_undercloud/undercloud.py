@@ -67,6 +67,8 @@ class Paths(object):
     @property
     def LOG_FILE(self):
         return os.path.expanduser('~/.instack/install-undercloud.log')
+
+
 PATHS = Paths()
 DEFAULT_LOG_LEVEL = logging.DEBUG
 DEFAULT_LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s'
