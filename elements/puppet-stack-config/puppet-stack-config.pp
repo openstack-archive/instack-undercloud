@@ -20,18 +20,20 @@ class { '::tripleo::network::os_net_config':
 }
 
 # Upgrade packaging.
-case $::osfamily {
-  'RedHat': {
-    $pkg_upgrade_cmd = 'yum -y update'
+if hiera('update_packages') {
+  case $::osfamily {
+    'RedHat': {
+      $pkg_upgrade_cmd = 'yum -y update'
+    }
+    default: {
+      warning('Please specify a package upgrade command for distribution.')
+    }
   }
-  default: {
-    warning('Please specify a package upgrade command for distribution.')
+  exec { 'package-upgrade':
+    command => $pkg_upgrade_cmd,
+    path    => '/usr/bin',
+    timeout => 0,
   }
-}
-exec { 'package-upgrade':
-  command => $pkg_upgrade_cmd,
-  path    => '/usr/bin',
-  timeout => 0,
 }
 # Ensure Puppet will update packages using Package provider
 # so Puppet OpenStack modules will notify db_sync commands for each service.

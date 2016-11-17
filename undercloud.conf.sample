@@ -137,6 +137,10 @@
 # services. (boolean value)
 #undercloud_debug = true
 
+# Whether to update packages during the Undercloud install. (boolean
+# value)
+#undercloud_update_packages = true
+
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = true
 
