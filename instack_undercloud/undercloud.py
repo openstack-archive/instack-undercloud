@@ -313,6 +313,17 @@ _opts = [
                       'removed in future release. Please consider moving to '
                       'gnocchi/Aodh/Panko API instead.')
                 ),
+    cfg.BoolOpt('enable_novajoin',
+                default=False,
+                help=('Whether to install novajoin metadata service in '
+                      'the Undercloud.')
+                ),
+    cfg.StrOpt('ipa_otp',
+               default='',
+               help=('One Time Password to register Undercloud node with '
+                     'an IPA server.  '
+                     'Required when enable_novajoin = True.')
+               ),
     cfg.BoolOpt('ipxe_enabled',
                 default=True,
                 help=('Whether to use iPXE for deploy and inspection.'),

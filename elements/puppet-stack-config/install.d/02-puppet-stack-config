@@ -45,6 +45,11 @@ for _, group in undercloud.list_opts():
         upper_name = opt.name.upper()
         context[upper_name] = os.environ[upper_name]
 
+# Mustache conditional logic requires ENABLE_NOVAJOIN to be undefined
+# when novajoin is not enabled.
+if context['ENABLE_NOVAJOIN'].lower() == 'false':
+    del context['ENABLE_NOVAJOIN']
+
 endpoint_context = {}
 for k, v in os.environ.items():
     if k.startswith('UNDERCLOUD_ENDPOINT_'):

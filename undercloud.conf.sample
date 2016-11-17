@@ -146,7 +146,7 @@
 # Whether to install Zaqar services in the Undercloud. (boolean value)
 #enable_zaqar = true
 
-# Whether to install Telemetry services (ceilometer, aodh, gnocchi) in the
+# Whether to install Telemetry services (ceilometer, aodh) in the
 # Undercloud. (boolean value)
 #enable_telemetry = true
 
@@ -161,9 +161,19 @@
 # from remote volumes. (boolean value)
 #enable_cinder = false
 
-# Whether to enable legacy ceilometer api service in the
-# Undercloud. (boolean value)
+# Whether to enable legacy ceilometer api in the Undercloud. Note:
+# Ceilometer API has been deprecated and will be removed in future
+# release. Please consider moving to gnocchi/Aodh/Panko API instead.
+# (boolean value)
 #enable_legacy_ceilometer_api = true
+
+# Whether to install novajoin metadata service in the Undercloud.
+# (boolean value)
+#enable_novajoin = false
+
+# One Time Password to register Undercloud node with an IPA server.
+# Required when enable_novajoin = True. (string value)
+#ipa_otp =
 
 # Whether to use iPXE for deploy and inspection. (boolean value)
 # Deprecated group/name - [DEFAULT]/ipxe_deploy
