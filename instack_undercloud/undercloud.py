@@ -299,6 +299,15 @@ _opts = [
                 help=('Whether to enable legacy ceilometer api '
                       'in the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_novajoin',
+                default=False,
+                help=('Whether to install novajoin metadata service in '
+                      'the Undercloud.')
+                ),
+    cfg.StrOpt('ipa_otp',
+               help=('One Time Password to register Undercloud node with '
+                     'an IPA server.')
+               ),
     cfg.BoolOpt('ipxe_enabled',
                 default=True,
                 help=('Whether to use iPXE for deploy and inspection.'),
