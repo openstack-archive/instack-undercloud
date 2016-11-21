@@ -336,6 +336,10 @@ _opts = [
                 default=False,
                 help=('Whether to clean overcloud nodes (wipe the hard drive) '
                       'between deployments and after the introspection.')),
+    cfg.ListOpt('enabled_drivers',
+                default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo', 'pxe_ssh'],
+                help=('List of enabled bare metal drivers.')),
+
 ]
 
 # Passwords, tokens, hashes
@@ -905,6 +909,10 @@ def _generate_environment(instack_root):
         inspection_kernel_args.append('ipa-collect-lldp=1')
 
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
+
+    # Ensure correct rendering of the list and uniqueness of the items
+    instack_env['ENABLED_DRIVERS'] = (
+        '[%s]' % ', '.join('"%s"' % drv for drv in set(CONF.enabled_drivers)))
 
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]

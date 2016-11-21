@@ -371,11 +371,7 @@ nova::glance_api_servers: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
 # Ironic
 ironic::debug: "%{hiera('debug')}"
 ironic::my_ip: {{LOCAL_IP}}
-ironic::enabled_drivers:
-  - 'pxe_ipmitool'
-  - 'pxe_ssh'
-  - 'pxe_drac'
-  - 'pxe_ilo'
+ironic::enabled_drivers: {{ENABLED_DRIVERS}}
 ironic::rpc_response_timeout: 600
 ironic::api::authtoken::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::api::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"

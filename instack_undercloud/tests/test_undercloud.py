@@ -14,6 +14,7 @@
 
 import collections
 import io
+import json
 import os
 import subprocess
 
@@ -279,6 +280,11 @@ class TestGenerateEnvironment(BaseTestCase):
                          'default,extra-hardware,logs')
         self.assertEqual('192.0.2.1/24', env['PUBLIC_INTERFACE_IP'])
         self.assertEqual('192.0.2.1', env['LOCAL_IP'])
+        # The list is generated from a set, so we can't rely on ordering.
+        # Instead make sure that it looks like a valid list by parsing it.
+        drivers = json.loads(env['ENABLED_DRIVERS'])
+        self.assertEqual(sorted(drivers), ['pxe_drac', 'pxe_ilo',
+                                           'pxe_ipmitool', 'pxe_ssh'])
 
     def test_generate_endpoints(self):
         env = undercloud._generate_environment('.')
