@@ -468,6 +468,15 @@ if str2bool(hiera('enable_docker_registry', true)) {
     ],
     notify  => Service['docker-registry'],
   }
+  file_line { 'docker insecure registry':
+    path   => '/etc/sysconfig/docker',
+    line   => join ([
+      'INSECURE_REGISTRY="',
+      '--insecure-registry ', hiera('controller_host'), ':8787 ',
+      '--insecure-registry ', hiera('controller_admin_vip'), ':8787"']),
+    match  => 'INSECURE_REGISTRY=',
+    notify => Service['docker'],
+  }
   service { 'docker-registry':
     ensure  => running,
     enable  => true,
