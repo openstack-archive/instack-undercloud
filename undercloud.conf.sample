@@ -28,13 +28,15 @@
 # masquerading. (string value)
 #network_gateway = 192.168.24.1
 
-# Virtual IP address to use for the public endpoints of Undercloud
-# services. Only used with SSL. (string value)
-#undercloud_public_vip = 192.168.24.2
+# Virtual IP or DNS address to use for the public endpoints of
+# Undercloud services. Only used with SSL. (string value)
+# Deprecated group/name - [DEFAULT]/undercloud_public_vip
+#undercloud_public_host = 192.168.24.2
 
-# Virtual IP address to use for the admin endpoints of Undercloud
-# services. Only used with SSL. (string value)
-#undercloud_admin_vip = 192.168.24.3
+# Virtual IP or DNS address to use for the admin endpoints of
+# Undercloud services. Only used with SSL. (string value)
+# Deprecated group/name - [DEFAULT]/undercloud_admin_vip
+#undercloud_admin_host = 192.168.24.3
 
 # DNS nameserver(s) to use for the undercloud node. (list value)
 #undercloud_nameservers =
@@ -48,7 +50,7 @@
 # the undercloud install and this certificate will be used in place of
 # the value for undercloud_service_certificate.  The resulting
 # certificate will be written to
-# /etc/pki/tls/certs/undercloud-[undercloud_public_vip].pem.  This
+# /etc/pki/tls/certs/undercloud-[undercloud_public_host].pem.  This
 # certificate is signed by CA selected by the
 # "certificate_generation_ca" option. (boolean value)
 #generate_service_certificate = false

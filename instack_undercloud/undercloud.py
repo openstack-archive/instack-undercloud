@@ -136,15 +136,17 @@ _opts = [
                      'Overcloud instances. This should match the local_ip '
                      'above when using masquerading.')
                ),
-    cfg.StrOpt('undercloud_public_vip',
+    cfg.StrOpt('undercloud_public_host',
+               deprecated_name='undercloud_public_vip',
                default='192.168.24.2',
-               help=('Virtual IP address to use for the public endpoints of '
-                     'Undercloud services. Only used with SSL.')
+               help=('Virtual IP or DNS address to use for the public '
+                     'endpoints of Undercloud services. Only used with SSL.')
                ),
-    cfg.StrOpt('undercloud_admin_vip',
+    cfg.StrOpt('undercloud_admin_host',
+               deprecated_name='undercloud_admin_vip',
                default='192.168.24.3',
-               help=('Virtual IP address to use for the admin endpoints of '
-                     'Undercloud services. Only used with SSL.')
+               help=('Virtual IP or DNS address to use for the admin '
+                     'endpoints of Undercloud services. Only used with SSL.')
                ),
     cfg.ListOpt('undercloud_nameservers',
                 default=[],
@@ -163,7 +165,7 @@ _opts = [
                       'will be used in place of the value for '
                       'undercloud_service_certificate.  The resulting '
                       'certificate will be written to '
-                      '/etc/pki/tls/certs/undercloud-[undercloud_public_vip].'
+                      '/etc/pki/tls/certs/undercloud-[undercloud_public_host].'
                       'pem.  This certificate is signed by CA selected by the '
                       '"certificate_generation_ca" option.')
                 ),
@@ -692,8 +694,8 @@ def _generate_endpoints(instack_env):
 
     if (CONF.undercloud_service_certificate or
             CONF.generate_service_certificate):
-        public_host = CONF.undercloud_public_vip
-        internal_host = CONF.undercloud_admin_vip
+        public_host = CONF.undercloud_public_host
+        internal_host = CONF.undercloud_admin_host
         public_proto = 'https'
         zaqar_ws_public_proto = 'wss'
 
@@ -953,9 +955,9 @@ def _generate_environment(instack_root):
     _write_password_file(instack_env)
 
     if CONF.generate_service_certificate:
-        public_vip = CONF.undercloud_public_vip
+        public_host = CONF.undercloud_public_host
         instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = (
-            '/etc/pki/tls/certs/undercloud-%s.pem' % public_vip)
+            '/etc/pki/tls/certs/undercloud-%s.pem' % public_host)
 
     _member_role_exists(instack_env)
 

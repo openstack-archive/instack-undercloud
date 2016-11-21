@@ -73,11 +73,16 @@ def _validate_value_formats(params, error_callback):
 def _validate_in_cidr(params, error_callback):
     cidr = netaddr.IPNetwork(params['network_cidr'])
 
-    def validate_addr_in_cidr(params, name, pretty_name=None):
-        if netaddr.IPAddress(params[name]) not in cidr:
-            message = ('%s "%s" not in defined CIDR "%s"' %
-                       (pretty_name or name, params[name], cidr))
-            error_callback(message)
+    def validate_addr_in_cidr(params, name, pretty_name=None, require_ip=True):
+        try:
+            if netaddr.IPAddress(params[name]) not in cidr:
+                message = ('%s "%s" not in defined CIDR "%s"' %
+                           (pretty_name or name, params[name], cidr))
+                error_callback(message)
+        except netaddr.core.AddrFormatError:
+            if require_ip:
+                message = 'Invalid IP address: %s' % params[name]
+                error_callback(message)
 
     params['just_local_ip'] = params['local_ip'].split('/')[0]
     # undercloud.conf uses inspection_iprange, the configuration wizard
@@ -88,9 +93,12 @@ def _validate_in_cidr(params, error_callback):
         params['inspection_end'] = inspection_iprange[1]
     validate_addr_in_cidr(params, 'just_local_ip', 'local_ip')
     validate_addr_in_cidr(params, 'network_gateway')
-    if params['undercloud_service_certificate']:
-        validate_addr_in_cidr(params, 'undercloud_public_vip')
-        validate_addr_in_cidr(params, 'undercloud_admin_vip')
+    if (params['undercloud_service_certificate'] or
+            params['generate_service_certificate']):
+        validate_addr_in_cidr(params, 'undercloud_public_host',
+                              require_ip=False)
+        validate_addr_in_cidr(params, 'undercloud_admin_host',
+                              require_ip=False)
     validate_addr_in_cidr(params, 'dhcp_start')
     validate_addr_in_cidr(params, 'dhcp_end')
     validate_addr_in_cidr(params, 'inspection_start', 'Inspection range start')
