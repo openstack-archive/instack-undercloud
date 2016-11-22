@@ -735,8 +735,9 @@ tripleo::firewall::firewall_rules:
   '137 ironic-inspector':
     dport: 5050
   '138 docker registry':
-    dport: 8787
-    dport: 13787
+    dport:
+      - 8787
+      - 13787
   '139 apache vhost':
     dport: "%{hiera('ironic_ipxe_port')}"
   '140 network cidr nat':
