@@ -121,3 +121,13 @@ class TestValidator(base.BaseTestCase):
         save_params = dict(params)
         validator.validate_config(params, lambda x: None)
         self.assertEqual(save_params, params)
+
+    def test_valid_undercloud_nameserver_passes(self):
+        self.conf.config(undercloud_nameservers=['192.168.24.4',
+                                                 '192.168.24.5'])
+        undercloud._validate_network()
+
+    def test_invalid_undercloud_nameserver_fails(self):
+        self.conf.config(undercloud_nameservers=['Iamthewalrus'])
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
