@@ -26,7 +26,8 @@ if hiera('update_packages') {
       $pkg_upgrade_cmd = 'yum -y update'
     }
     default: {
-      warning('Please specify a package upgrade command for distribution.')
+      fail("Unsupported OS. Set undercloud_update_packages to false to bypass \
+this error on ${::operatingsystem}.")
     }
   }
   exec { 'package-upgrade':
@@ -40,7 +41,7 @@ if hiera('update_packages') {
 Package<| tag == 'openstack' |> { ensure => latest }
 # Ensure we upgrade all packages after managing OpenStack packages, so Puppet
 # can notify services and db_sync commands.
-Package<| tag == 'openstack' |> -> Exec['package-upgrade']
+Package<| tag == 'openstack' |> -> Exec<| title == 'package-upgrade' |>
 
 # Run  OpenStack db-sync at every puppet run, in any case.
 Exec<| title == 'neutron-db-sync' |> { refreshonly => false }
