@@ -159,6 +159,10 @@
 # (boolean value)
 #enable_validations = true
 
+# Whether to install the Volume service to be boot overcloud nodes
+# from remote volumes. (boolean value)
+#enable_cinder = false
+
 # Whether to use iPXE for deploy and inspection. (boolean value)
 # Deprecated group/name - [DEFAULT]/ipxe_deploy
 #ipxe_enabled = true
@@ -285,3 +289,7 @@
 # Horizon secret key. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_horizon_secret_key = <None>
+
+# Cinder service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_cinder_password = <None>
