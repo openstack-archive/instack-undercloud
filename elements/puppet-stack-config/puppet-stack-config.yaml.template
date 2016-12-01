@@ -150,7 +150,10 @@ heat::engine::trusts_delegated_roles: []
 heat::engine::auth_encryption_key: {{UNDERCLOUD_HEAT_ENCRYPTION_KEY}}
 heat::engine::max_resources_per_stack: -1
 heat::engine::convergence_engine: false
-heat::engine::num_engine_workers: "%{::os_workers}"
+# NOTE(trown): We need to give heat engine more workers because we are throwing huge
+# nested stacks at it for the deploy. By not setting this, we get the heat default,
+# which is max(#CPUs,4).
+#heat::engine::num_engine_workers:
 heat::engine::max_nested_stack_depth: 6
 heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
