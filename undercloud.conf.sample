@@ -36,6 +36,9 @@
 # services. Only used with SSL. (string value)
 #undercloud_admin_vip = 192.168.24.3
 
+# DNS nameserver(s) to use for the undercloud node. (list value)
+#undercloud_nameservers =
+
 # Certificate file to use for OpenStack service SSL connections.
 # Setting this enables SSL for the OpenStack API endpoints, leaving it
 # unset disables SSL. (string value)

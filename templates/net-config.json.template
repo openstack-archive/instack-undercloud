@@ -10,7 +10,8 @@
     "type": "interface",
     "name": "{{LOCAL_INTERFACE}}",
     "primary": "true",
-    "mtu": {{LOCAL_MTU}}
+    "mtu": {{LOCAL_MTU}},
+    "dns_servers": {{UNDERCLOUD_NAMESERVERS}}
    }
   ],
   "addresses": [

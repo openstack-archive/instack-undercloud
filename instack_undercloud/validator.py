@@ -34,6 +34,18 @@ def validate_config(params, error_callback):
     _validate_dhcp_range(local_params, error_callback)
     _validate_inspection_range(local_params, error_callback)
     _validate_no_overlap(local_params, error_callback)
+    _validate_ips(local_params, error_callback)
+
+
+def _validate_ips(params, error_callback):
+    def is_ip(value, param_name):
+        try:
+            netaddr.IPAddress(value)
+        except netaddr.core.AddrFormatError:
+            error_callback(
+                '%s "%s" must be a valid IP address' % (param_name, value))
+    for ip in params['undercloud_nameservers']:
+        is_ip(ip, 'undercloud_nameservers')
 
 
 def _validate_value_formats(params, error_callback):

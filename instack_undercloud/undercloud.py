@@ -135,6 +135,10 @@ _opts = [
                help=('Virtual IP address to use for the admin endpoints of '
                      'Undercloud services. Only used with SSL.')
                ),
+    cfg.ListOpt('undercloud_nameservers',
+                default=[],
+                help=('DNS nameserver(s) to use for the undercloud node.'),
+                ),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
                help=('Certificate file to use for OpenStack service SSL '
@@ -928,6 +932,8 @@ def _generate_init_data(instack_env):
             open(_get_template_path('net-config.json.template')).read()
 
     context['HIERADATA_OVERRIDE'] = hiera_entry
+    context['UNDERCLOUD_NAMESERVERS'] = json.dumps(
+        CONF.undercloud_nameservers)
 
     partials = {'net_config': net_config_json}
     renderer = pystache.Renderer(partials=partials)
@@ -936,6 +942,7 @@ def _generate_init_data(instack_env):
     with open(template) as f:
         config_json = renderer.render(f.read(), context)
 
+    config_json = config_json.replace('&quot;', '"')
     cfn_path = '/var/lib/heat-cfntools/cfn-init-data'
     tmp_json = tempfile.mkstemp()[1]
     with open(tmp_json, 'w') as f:
