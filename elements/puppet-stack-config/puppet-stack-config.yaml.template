@@ -668,6 +668,7 @@ enable_mistral: {{ENABLE_MISTRAL}}
 enable_zaqar: {{ENABLE_ZAQAR}}
 enable_validations: {{ENABLE_VALIDATIONS}}
 enable_telemetry: {{ENABLE_TELEMETRY}}
+enable_legacy_ceilometer_api: {{ENABLE_LEGACY_CEILOMETER_API}}
 enable_ui: {{ENABLE_UI}}
 enable_cinder: {{ENABLE_CINDER}}
 
