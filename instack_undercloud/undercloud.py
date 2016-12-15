@@ -290,6 +290,10 @@ _opts = [
                 help=('Whether to install requirements to run the TripleO '
                       'validations.')
                 ),
+    cfg.BoolOpt('enable_cinder',
+                default=False,
+                help=('Whether to install the Volume service to be boot '
+                      'overcloud nodes from remote volumes.')),
     cfg.BoolOpt('ipxe_enabled',
                 default=True,
                 help=('Whether to use iPXE for deploy and inspection.'),
@@ -416,6 +420,10 @@ _auth_opts = [
                ),
     cfg.StrOpt('undercloud_horizon_secret_key',
                help=('Horizon secret key. '
+                     'If left unset, one will be automatically generated.')
+               ),
+    cfg.StrOpt('undercloud_cinder_password',
+               help=('Cinder service password. '
                      'If left unset, one will be automatically generated.')
                ),
 ]
@@ -707,6 +715,10 @@ def _generate_endpoints(instack_env):
             '%s://%s:%d',
             {'host': public_host, 'port': 8888, 'ssl_port': 13888},
             {'host': internal_host, 'port': 8888}),
+        ('cinder',
+            '%s://%s:%d/v1/%%(tenant_id)s',
+            {'host': public_host, 'port': 8776, 'ssl_port': 13776},
+            {'host': internal_host, 'port': 8776}),
     ]
     for endpoint_data in endpoint_list:
         endpoints.update(

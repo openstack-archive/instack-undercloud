@@ -56,6 +56,7 @@ Exec<| title == 'ironic-dbsync' |> { refreshonly => false }
 Exec<| title == 'mistral-db-sync' |> { refreshonly => false }
 Exec<| title == 'mistral-db-populate' |> { refreshonly => false }
 Exec<| title == 'zaqar-manage db_sync' |> { refreshonly => false }
+Exec<| title == 'cinder-manage db_sync' |> { refreshonly => false }
 
 if count(hiera('ntp::servers')) > 0 {
   include ::ntp
@@ -543,6 +544,40 @@ if str2bool(hiera('enable_zaqar', true)) {
   include ::zaqar::server
   zaqar::server_instance{ '1':
     transport => 'websocket'
+  }
+}
+
+if str2bool(hiera('enable_cinder', true)) {
+  $cinder_dsn = split(hiera('cinder::database_connection'), '[@:/?]')
+  class { '::cinder::db::mysql':
+    user          => $cinder_dsn[3],
+    password      => $cinder_dsn[4],
+    host          => $cinder_dsn[5],
+    dbname        => $cinder_dsn[6],
+    allowed_hosts => $allowed_hosts,
+  }
+  include ::cinder::keystone::auth
+
+  include ::cinder
+  include ::cinder::api
+  include ::cinder::cron::db_purge
+  include ::cinder::config
+  include ::cinder::glance
+  include ::cinder::scheduler
+  include ::cinder::volume
+  include ::cinder::wsgi::apache
+
+  $cinder_backend_name = hiera('cinder_backend_name')
+  cinder::backend::iscsi { $cinder_backend_name:
+    iscsi_ip_address => hiera('cinder_iscsi_address'),
+    iscsi_helper     => 'lioadm',
+    iscsi_protocol   => 'iscsi'
+  }
+
+  include ::cinder::backends
+
+  if str2bool(hiera('cinder_enable_test_volume', false)) {
+    include ::cinder::setup_test_volume
   }
 }
 

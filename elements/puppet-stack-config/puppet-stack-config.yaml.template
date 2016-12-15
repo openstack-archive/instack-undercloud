@@ -534,6 +534,39 @@ zaqar::messaging::mongodb::uri: mongodb://127.0.0.1:27017
 zaqar::message_pipeline: 'zaqar.notification.notifier'
 zaqar::max_messages_post_size: 1048576
 
+# Cinder
+cinder_backend_name: 'undercloud_iscsi'
+cinder_enable_test_volume: false
+cinder_iscsi_address: {{LOCAL_IP}}
+cinder::api::enable_proxy_headers_parsing: true
+cinder::api::service_name: 'httpd'
+cinder::api::nova_catalog_info: 'compute:Compute Service:internalURL'
+cinder::backends::enabled_backends: ["%{hiera('cinder_backend_name')}"]
+cinder::cron::db_purge::destination: "/dev/null"
+cinder::database_connection: mysql+pymysql://cinder:{{UNDERCLOUD_CINDER_PASSWORD}}@{{LOCAL_IP}}/cinder
+cinder::db::database_db_max_retries: -1
+cinder::db::database_max_retries: -1
+cinder::debug: "%{hiera('debug')}"
+cinder::glance::glance_api_servers: {{UNDERCLOUD_ENDPOINT_GLANCE_PUBLIC}}
+cinder::keystone::auth::tenant: 'service'
+cinder::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_CINDER_PUBLIC}}
+cinder::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_CINDER_INTERNAL}}
+cinder::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_CINDER_ADMIN}}
+cinder::keystone::auth::region: 'regionOne'
+cinder::keystone::auth::password: {{UNDERCLOUD_CINDER_PASSWORD}}
+cinder::keystone::authtoken::project_name: 'service'
+cinder::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+cinder::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
+cinder::keystone::authtoken::password: {{UNDERCLOUD_CINDER_PASSWORD}}
+cinder::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
+cinder::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
+cinder::rabbit_host: {{LOCAL_IP}}
+cinder::scheduler::scheduler_driver: cinder.scheduler.filter_scheduler.FilterScheduler
+cinder::setup_test_volume::size: '10280M'
+cinder::wsgi::apache::bind_host: {{LOCAL_IP}}
+cinder::wsgi::apache::ssl: false
+cinder::wsgi::apache::workers: "%{::os_workers}"
+
 # HAproxy
 tripleo::profile::base::haproxy::step: 1
 tripleo::haproxy::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
@@ -602,6 +635,7 @@ enable_zaqar: {{ENABLE_ZAQAR}}
 enable_validations: {{ENABLE_VALIDATIONS}}
 enable_telemetry: {{ENABLE_TELEMETRY}}
 enable_ui: {{ENABLE_UI}}
+enable_cinder: {{ENABLE_CINDER}}
 
 # Path to install configuration files
 tripleo_install_user: {{TRIPLEO_INSTALL_USER}}
