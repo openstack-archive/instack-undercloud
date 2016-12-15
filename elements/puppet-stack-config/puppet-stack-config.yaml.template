@@ -394,6 +394,8 @@ ironic::conductor::api_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
 ironic::conductor::force_power_state_during_sync: false
 ironic::conductor::automated_clean: {{CLEAN_NODES}}
 ironic::conductor::cleaning_disk_erase: 'metadata'
+ironic::conductor::cleaning_network: 'ctlplane'
+ironic::conductor::provisioning_network: 'ctlplane'
 ironic::conductor::default_boot_option: 'local'
 ironic::keystone::auth::tenant: 'service'
 ironic::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}
