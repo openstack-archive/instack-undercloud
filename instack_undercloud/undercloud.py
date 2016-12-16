@@ -976,6 +976,13 @@ def _run_instack(instack_env):
     LOG.info('Instack completed successfully')
 
 
+def _run_yum_update(instack_env):
+    args = ['sudo', 'yum', 'update', '-y']
+    LOG.info('Running yum update')
+    _run_live_command(args, instack_env, 'yum-update')
+    LOG.info('yum-update completed successfully')
+
+
 def _run_orc(instack_env):
     args = ['sudo', 'os-refresh-config']
     LOG.info('Running os-refresh-config')
@@ -1188,6 +1195,8 @@ def install(instack_root):
     _validate_configuration()
     instack_env = _generate_environment(instack_root)
     _generate_init_data(instack_env)
+    if CONF.undercloud_update_packages:
+        _run_yum_update(instack_env)
     _run_instack(instack_env)
     _run_orc(instack_env)
     _post_config(instack_env)

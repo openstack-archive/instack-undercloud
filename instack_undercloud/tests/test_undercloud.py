@@ -46,13 +46,14 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_command')
     @mock.patch('instack_undercloud.undercloud._post_config')
     @mock.patch('instack_undercloud.undercloud._run_orc')
+    @mock.patch('instack_undercloud.undercloud._run_yum_update')
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install(self, mock_load_config, mock_generate_environment,
-                     mock_run_instack, mock_run_orc, mock_post_config,
-                     mock_run_command, mock_validate_configuration,
-                     mock_configure_logging):
+                     mock_run_yum_update, mock_run_instack, mock_run_orc,
+                     mock_post_config, mock_run_command,
+                     mock_validate_configuration, mock_configure_logging):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.')

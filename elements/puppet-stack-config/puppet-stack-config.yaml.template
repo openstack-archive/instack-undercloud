@@ -4,7 +4,6 @@ keystone_auth_uri_v2: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v2.0
 keystone_region: 'regionOne'
 
 debug: {{UNDERCLOUD_DEBUG}}
-update_packages: {{UNDERCLOUD_UPDATE_PACKAGES}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 controller_admin_vip: {{UNDERCLOUD_ADMIN_VIP}}
 controller_public_vip: {{UNDERCLOUD_PUBLIC_VIP}}
