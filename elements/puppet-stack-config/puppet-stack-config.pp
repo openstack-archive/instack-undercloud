@@ -19,27 +19,6 @@ class { '::tripleo::network::os_net_config':
   stage => 'setup',
 }
 
-# Upgrade packaging.
-case $::osfamily {
-  'RedHat': {
-    $pkg_upgrade_cmd = 'yum -y update'
-  }
-  default: {
-    warning('Please specify a package upgrade command for distribution.')
-  }
-}
-exec { 'package-upgrade':
-  command => $pkg_upgrade_cmd,
-  path    => '/usr/bin',
-  timeout => 0,
-}
-# Ensure Puppet will update packages using Package provider
-# so Puppet OpenStack modules will notify db_sync commands for each service.
-Package<| tag == 'openstack' |> { ensure => latest }
-# Ensure we upgrade all packages after managing OpenStack packages, so Puppet
-# can notify services and db_sync commands.
-Package<| tag == 'openstack' |> -> Exec['package-upgrade']
-
 # Run  OpenStack db-sync at every puppet run, in any case.
 Exec<| title == 'neutron-db-sync' |> { refreshonly => false }
 Exec<| title == 'keystone-manage db_sync' |> { refreshonly => false }
