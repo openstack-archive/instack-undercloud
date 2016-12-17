@@ -5,9 +5,11 @@ set -eux
 source /root/tripleo-undercloud-passwords
 source /root/stackrc
 
-export INSTACK_ROOT=${INSTACK_ROOT:-""}
+INSTACK_ROOT=${INSTACK_ROOT:-""}
+export INSTACK_ROOT
 if [ -n "$INSTACK_ROOT" ]; then
-    export PATH=$PATH:$INSTACK_ROOT/instack-undercloud/scripts
+    PATH=$PATH:$INSTACK_ROOT/instack-undercloud/scripts
+    export PATH
 fi
 
 if [ ! -f /root/.ssh/authorized_keys ]; then
@@ -23,7 +25,8 @@ fi
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-export UNDERCLOUD_IP=$(os-apply-config --key local-ip --type netaddress)
+UNDERCLOUD_IP=$(os-apply-config --key local-ip --type netaddress)
+export UNDERCLOUD_IP
 
 DHCP_START=$(os-apply-config --key neutron.dhcp_start --type netaddress)
 DHCP_END=$(os-apply-config --key neutron.dhcp_end --type netaddress)
