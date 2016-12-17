@@ -182,7 +182,7 @@ while true; do
         break
     fi
     sleep 3
-    (( elapsed_seconds += 3 ))
+    elapsed_seconds=$((elapsed_seconds + 3))
     if [ $elapsed_seconds -ge $timeout_seconds ]; then
         set +x
         echo "$UNDERCLOUD_VM_NAME never got an IP address from the libvirt default network."

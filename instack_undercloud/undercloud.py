@@ -52,6 +52,8 @@ class Paths(object):
     @property
     def LOG_FILE(self):
         return os.path.expanduser('~/.instack/install-undercloud.log')
+
+
 PATHS = Paths()
 DEFAULT_LOG_LEVEL = logging.DEBUG
 DEFAULT_LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s'
@@ -741,6 +743,13 @@ def _run_instack(instack_env):
     LOG.info('Instack completed successfully')
 
 
+def _run_yum_update(instack_env):
+    args = ['sudo', 'yum', 'update', '-y']
+    LOG.info('Running yum update')
+    _run_live_command(args, instack_env, 'yum-update')
+    LOG.info('yum-update completed successfully')
+
+
 def _run_orc(instack_env):
     args = ['sudo', 'os-refresh-config']
     LOG.info('Running os-refresh-config')
@@ -853,6 +862,7 @@ def install(instack_root):
     _check_memory()
     _clean_os_refresh_config()
     instack_env = _generate_environment(instack_root)
+    _run_yum_update(instack_env)
     _run_instack(instack_env)
     _run_orc(instack_env)
     _post_config()

@@ -1,15 +1,26 @@
-export NOVA_VERSION=1.1
-export OS_PASSWORD=$(sudo hiera admin_password)
+NOVA_VERSION=1.1
+export NOVA_VERSION
+OS_PASSWORD=$(sudo hiera admin_password)
+export OS_PASSWORD
 {{#service_certificate}}
-export OS_AUTH_URL=https://{{public_vip}}:13000/v2.0
-export PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
+OS_AUTH_URL=https://{{public_vip}}:13000/v2.0
+PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
+export OS_AUTH_URL
+export PYTHONWARNINGS
 {{/service_certificate}}
 {{^service_certificate}}
-export OS_AUTH_URL=http://{{local-ip}}:5000/v2.0
+OS_AUTH_URL=http://{{local-ip}}:5000/v2.0
+export OS_AUTH_URL
 {{/service_certificate}}
-export OS_USERNAME=admin
-export OS_TENANT_NAME=admin
-export COMPUTE_API_VERSION=1.1
-export OS_NO_CACHE=True
-export OS_CLOUDNAME=undercloud
-export OS_IMAGE_API_VERSION=1
+OS_USERNAME=admin
+OS_TENANT_NAME=admin
+COMPUTE_API_VERSION=1.1
+OS_NO_CACHE=True
+OS_CLOUDNAME=undercloud
+OS_IMAGE_API_VERSION=1
+export OS_USERNAME
+export OS_TENANT_NAME
+export COMPUTE_API_VERSION
+export OS_NO_CACHE
+export OS_CLOUDNAME
+export OS_IMAGE_API_VERSION
