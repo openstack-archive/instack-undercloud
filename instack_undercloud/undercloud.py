@@ -88,6 +88,17 @@ secured.
 
 #############################################################################
 """
+FAILURE_MESSAGE = """
+#############################################################################
+Undercloud install failed.
+
+Reason: %(exception)s
+
+See the previous output for details about what went wrong.  The full install
+log can be found at %(log_file)s.
+
+#############################################################################
+"""
 # We need 4 GB, leave a little room for variation in what 4 GB means on
 # different platforms.
 REQUIRED_MB = 3750
@@ -1188,18 +1199,25 @@ def install(instack_root):
     :param instack_root: The path containing the instack-undercloud elements
         and json files.
     """
-    _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
-    LOG.info('Logging to %s', PATHS.LOG_FILE)
-    _load_config()
-    _clean_os_refresh_config()
-    _validate_configuration()
-    instack_env = _generate_environment(instack_root)
-    _generate_init_data(instack_env)
-    if CONF.undercloud_update_packages:
-        _run_yum_update(instack_env)
-    _run_instack(instack_env)
-    _run_orc(instack_env)
-    _post_config(instack_env)
-    _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
-    LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
-             'stackrc_path': os.path.expanduser('~/stackrc')})
+    try:
+        _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
+        LOG.info('Logging to %s', PATHS.LOG_FILE)
+        _load_config()
+        _clean_os_refresh_config()
+        _validate_configuration()
+        instack_env = _generate_environment(instack_root)
+        _generate_init_data(instack_env)
+        if CONF.undercloud_update_packages:
+            _run_yum_update(instack_env)
+        _run_instack(instack_env)
+        _run_orc(instack_env)
+        _post_config(instack_env)
+        _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
+    except Exception as e:
+        LOG.error(FAILURE_MESSAGE, {'exception': six.text_type(e),
+                                    'log_file': PATHS.LOG_FILE})
+        if CONF.undercloud_debug:
+            raise
+    else:
+        LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
+                 'stackrc_path': os.path.expanduser('~/stackrc')})
