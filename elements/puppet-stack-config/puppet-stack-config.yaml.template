@@ -288,6 +288,13 @@ ceilometer::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_INTER
 ceilometer::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_ADMIN}}
 ceilometer::keystone::auth::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::auth::region: "%{hiera('keystone_region')}"
+# gnocchi dispatcher config
+ceilometer::collector::meter_dispatcher: 'gnocchi'
+ceilometer::dispatcher::gnocchi::url: {{UNDERCLOUD_ENDPOINT_GNOCCHI_INTERNAL}}
+ceilometer::dispatcher::gnocchi::filter_project: 'service'
+ceilometer::dispatcher::gnocchi::archive_policy: 'low'
+ceilometer::dispatcher::gnocchi::resources_definition_file: 'gnocchi_resources.yaml'
+
 
 # Aodh
 aodh::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
@@ -309,6 +316,31 @@ aodh::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_AODH_INTERNAL}}
 aodh::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_AODH_ADMIN}}
 aodh::keystone::auth::password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::auth::region: "%{hiera('keystone_region')}"
+
+
+# Gnocchi
+gnocchi_backend: 'file'
+gnocchi::wsgi::apache::ssl: false
+gnocchi::wsgi::apache::bind_host: {{LOCAL_IP}}
+gnocchi::api::service_name: 'httpd'
+gnocchi::api::host: {{LOCAL_IP}}
+gnocchi::keystone::authtoken::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
+gnocchi::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+gnocchi::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
+gnocchi::db::mysql::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
+gnocchi::db::database_connection: mysql+pymysql://gnocchi:{{UNDERCLOUD_GNOCCHI_PASSWORD}}@{{LOCAL_IP}}/gnocchi
+gnocchi::db::sync::extra_opts: '--create-legacy-resource-types'
+gnocchi::storage::swift::swift_user: 'service:gnocchi'
+gnocchi::storage::swift::swift_auth_version: 2
+gnocchi::storage::swift::swift_authurl: "%{hiera('keystone_auth_uri')}"
+gnocchi::storage::swift::swift_key: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
+#Gnocchi statsd
+gnocchi::statsd::resource_id: '0a8b55df-f90f-491c-8cb9-7cdecec6fc26'
+gnocchi::statsd::user_id: '27c0d3f8-e7ee-42f0-8317-72237d1c5ae3'
+gnocchi::statsd::project_id: '6c38cd8d-099a-4cb2-aecf-17be688e8616'
+gnocchi::statsd::flush_delay: 10
+gnocchi::statsd::archive_policy_name: 'low'
+
 
 # Nova
 nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
@@ -585,6 +617,7 @@ tripleo::haproxy::swift_proxy_server: true
 tripleo::haproxy::heat_api: true
 tripleo::haproxy::ceilometer: "%{hiera('enable_telemetry')}"
 tripleo::haproxy::aodh: "%{hiera('enable_telemetry')}"
+tripleo::haproxy::gnocchi: "%{hiera('enable_telemetry')}"
 tripleo::haproxy::ironic: true
 tripleo::haproxy::ironic_inspector: true
 tripleo::haproxy::rabbitmq: true
@@ -618,6 +651,7 @@ swift::proxy::cors_allow_origin: '*'
 # service tenant
 ceilometer::keystone::authtoken::project_name: 'service'
 aodh::keystone::authtoken::project_name: 'service'
+gnocchi::keystone::authtoken::project_name: 'service'
 cinder::keystone::authtoken::project_name: 'service'
 heat::keystone::authtoken::project_name: 'service'
 glance::api::authtoken::project_name: 'service'
