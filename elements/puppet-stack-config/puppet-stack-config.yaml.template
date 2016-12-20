@@ -222,7 +222,7 @@ enable_galera: true
 mysql_max_connections: '4096'
 tripleo::profile::base::database::mysql::step: 2
 tripleo::profile::base::database::mysql::manage_resources: true
-tripleo::profile::base::database::mysql::remove_default_accounts: false
+tripleo::profile::base::database::mysql::remove_default_accounts: true
 tripleo::profile::base::database::mysql::mysql_server_options:
   'mysqld':
     bind-address: "%{hiera('controller_host')}"
