@@ -64,6 +64,29 @@ class TestUndercloud(BaseTestCase):
         mock_run_command.assert_called_with(
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
 
+    @mock.patch('instack_undercloud.undercloud._configure_logging')
+    def test_install_exception(self, mock_configure_logging):
+        mock_configure_logging.side_effect = RuntimeError('foo')
+        self.assertRaises(RuntimeError, undercloud.install, '.')
+        log_dict = {'exception': 'foo',
+                    'log_file': undercloud.PATHS.LOG_FILE
+                    }
+        self.assertIn(undercloud.FAILURE_MESSAGE % log_dict,
+                      self.logger.output)
+
+    @mock.patch('instack_undercloud.undercloud._configure_logging')
+    def test_install_exception_no_debug(self, mock_configure_logging):
+        mock_configure_logging.side_effect = RuntimeError('foo')
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(undercloud_debug=False)
+        undercloud.install('.')
+        log_dict = {'exception': 'foo',
+                    'log_file': undercloud.PATHS.LOG_FILE
+                    }
+        self.assertIn(undercloud.FAILURE_MESSAGE % log_dict,
+                      self.logger.output)
+
     def test_generate_password(self):
         first = undercloud._generate_password()
         second = undercloud._generate_password()
