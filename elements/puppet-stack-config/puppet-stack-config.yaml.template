@@ -827,4 +827,6 @@ tripleo::firewall::firewall_rules:
     chain: FORWARD
     destination: 192.168.122.0/24
   '142 tripleo-ui':
-    dport: 3000
+    dport:
+      - 3000
+      - 443
