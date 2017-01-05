@@ -743,6 +743,14 @@ def _generate_endpoints(instack_env):
             '%s://%s:%d/v1/%%(tenant_id)s',
             {'host': public_host, 'port': 8776, 'ssl_port': 13776},
             {'host': internal_host, 'port': 8776}),
+        ('cinder_v2',
+            '%s://%s:%d/v2/%%(tenant_id)s',
+            {'host': public_host, 'port': 8776, 'ssl_port': 13776},
+            {'host': internal_host, 'port': 8776}),
+        ('cinder_v3',
+            '%s://%s:%d/v3/%%(tenant_id)s',
+            {'host': public_host, 'port': 8776, 'ssl_port': 13776},
+            {'host': internal_host, 'port': 8776}),
     ]
     for endpoint_data in endpoint_list:
         endpoints.update(
