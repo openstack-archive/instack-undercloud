@@ -109,20 +109,8 @@ glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_log_file: ''
 glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
-glance::registry::debug: "%{hiera('debug')}"
-glance::registry::bind_host: {{LOCAL_IP}}
-glance::registry::authtoken::password: {{UNDERCLOUD_GLANCE_PASSWORD}}
-glance::registry::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
-glance::registry::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
-glance::registry::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
-glance::registry::registry_host: {{LOCAL_IP}}
-glance::registry::bind_host: {{LOCAL_IP}}
-glance::registry::manage_service: true
-glance::registry::pipeline: 'keystone'
-glance::registry::workers: "%{::os_workers}"
-glance::registry::auth_host: false
-glance::registry::auth_port: false
-glance::registry::auth_protocol: false
+glance::api::enable_v1_api: false
+glance::api::enable_v2_api: true
 glance::keystone::auth::tenant: 'service'
 glance::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_GLANCE_PUBLIC}}
 glance::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}

@@ -313,7 +313,6 @@ if str2bool(hiera('member_role_exists', false)) {
 class { '::glance::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
-include ::glance::registry
 include ::glance::backend::swift
 include ::glance::notify::rabbitmq
 
