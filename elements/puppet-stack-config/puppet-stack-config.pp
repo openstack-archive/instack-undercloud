@@ -433,16 +433,7 @@ augeas { 'lvm.conf':
 }
 
 if str2bool(hiera('enable_docker_registry', true)) {
-  package{'docker-registry': }
-  augeas { 'docker-registry':
-    context => '/files/etc/sysconfig/docker-registry',
-    changes => 'set REGISTRY_PORT 8787',
-    notify  => Service['docker-registry'],
-  }
-  service { 'docker-registry':
-    ensure  => running,
-    require => Package['docker-registry'],
-  }
+  include ::tripleo::profile::base::docker_registry
 }
 
 if str2bool(hiera('enable_mistral', true)) {
