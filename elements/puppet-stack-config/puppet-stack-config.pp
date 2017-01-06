@@ -309,7 +309,7 @@ Exec['stop_nova-api'] -> Service['httpd']
 class { '::nova::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
-include ::nova::wsgi::apache
+include ::nova::wsgi::apache_api
 include ::nova::cert
 include ::nova::cron::archive_deleted_rows
 include ::nova::conductor
