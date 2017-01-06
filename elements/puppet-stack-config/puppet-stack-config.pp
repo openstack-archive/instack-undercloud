@@ -515,35 +515,7 @@ augeas { 'lvm.conf':
 }
 
 if str2bool(hiera('enable_docker_registry', true)) {
-  package{'docker-registry': }
-  package{'docker': }
-  augeas { 'docker-registry':
-    context => '/files/etc/sysconfig/docker-registry',
-    changes => [
-      'set REGISTRY_PORT 8787',
-      join(['set REGISTRY_ADDRESS ', hiera('controller_host')])
-    ],
-    notify  => Service['docker-registry'],
-  }
-  file_line { 'docker insecure registry':
-    path   => '/etc/sysconfig/docker',
-    line   => join ([
-      'INSECURE_REGISTRY="',
-      '--insecure-registry ', hiera('controller_host'), ':8787 ',
-      '--insecure-registry ', hiera('controller_admin_host'), ':8787"']),
-    match  => 'INSECURE_REGISTRY=',
-    notify => Service['docker'],
-  }
-  service { 'docker-registry':
-    ensure  => running,
-    enable  => true,
-    require => Package['docker-registry'],
-  }
-  service { 'docker':
-    ensure  => running,
-    enable  => true,
-    require => Package['docker'],
-  }
+  include ::tripleo::profile::base::docker_registry
 }
 
 include ::mistral
