@@ -126,6 +126,14 @@ class { '::nova::db::mysql_api':
   dbname        => $nova_api_dsn[6],
   allowed_hosts => $allowed_hosts,
 }
+$nova_placement_dsn = split(hiera('nova::placement_database_connection'), '[@:/?]')
+class { '::nova::db::mysql_placement':
+  user          => $nova_placement_dsn[3],
+  password      => $nova_placement_dsn[4],
+  host          => $nova_placement_dsn[5],
+  dbname        => $nova_placement_dsn[6],
+  allowed_hosts => $allowed_hosts,
+}
 $neutron_dsn = split(hiera('neutron::server::database_connection'), '[@:/?]')
 class { '::neutron::db::mysql':
   user          => $neutron_dsn[3],
@@ -258,6 +266,7 @@ include ::heat::keystone::auth
 include ::neutron::keystone::auth
 include ::glance::keystone::auth
 include ::nova::keystone::auth
+include ::nova::keystone::auth_placement
 include ::swift::keystone::auth
 include ::ironic::keystone::auth
 include ::ironic::keystone::auth_inspector
@@ -309,7 +318,9 @@ Exec['stop_nova-api'] -> Service['httpd']
 class { '::nova::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
+include ::nova::placement
 include ::nova::wsgi::apache_api
+include ::nova::wsgi::apache_placement
 include ::nova::cert
 include ::nova::cron::archive_deleted_rows
 include ::nova::conductor
