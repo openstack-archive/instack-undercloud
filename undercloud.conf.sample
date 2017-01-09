@@ -165,6 +165,15 @@
 # Undercloud. (boolean value)
 #enable_legacy_ceilometer_api = false
 
+# Whether to install novajoin metadata service in the Undercloud.
+# (boolean value)
+#enable_novajoin = false
+
+# One Time Password to register Undercloud node with IPA server.
+# Required when enable_novajoin = true.
+#  (string value)
+#ipa_otp =
+
 # Whether to use iPXE for deploy and inspection. (boolean value)
 # Deprecated group/name - [DEFAULT]/ipxe_deploy
 #ipxe_enabled = true
