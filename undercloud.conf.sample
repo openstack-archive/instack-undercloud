@@ -146,7 +146,7 @@
 # Whether to install Zaqar services in the Undercloud. (boolean value)
 #enable_zaqar = true
 
-# Whether to install Telemetry services (ceilometer, aodh) in the
+# Whether to install Telemetry services (ceilometer, aodh, gnocchi, panko) in the
 # Undercloud. (boolean value)
 #enable_telemetry = true
 
@@ -251,6 +251,10 @@
 # Ceilometer service password. If left unset, one will be
 # automatically generated. (string value)
 #undercloud_ceilometer_password = <None>
+
+# Panko service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_panko_password = <None>
 
 # Ceilometer metering secret. If left unset, one will be automatically
 # generated. (string value)

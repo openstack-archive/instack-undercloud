@@ -400,6 +400,10 @@ _auth_opts = [
                help=('Ceilometer service password. '
                      'If left unset, one will be automatically generated.')
                ),
+    cfg.StrOpt('undercloud_panko_password',
+               help=('Panko service password. '
+                     'If left unset, one will be automatically generated.')
+               ),
     cfg.StrOpt('undercloud_ceilometer_metering_secret',
                help=('Ceilometer metering secret. '
                      'If left unset, one will be automatically generated.')
@@ -749,6 +753,10 @@ def _generate_endpoints(instack_env):
             '%s://%s:%d',
             {'host': public_host, 'port': 8041, 'ssl_port': 13041},
             {'host': internal_host, 'port': 8041}),
+        ('panko',
+            '%s://%s:%d',
+            {'host': public_host, 'port': 8779, 'ssl_port': 13779},
+            {'host': internal_host, 'port': 8779}),
         ('mistral',
             '%s://%s:%d/v2',
             {'host': public_host, 'port': 8989, 'ssl_port': 13989},
