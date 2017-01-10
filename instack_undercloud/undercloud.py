@@ -306,9 +306,12 @@ _opts = [
                 help=('Whether to install the Volume service to be boot '
                       'overcloud nodes from remote volumes.')),
     cfg.BoolOpt('enable_legacy_ceilometer_api',
-                default=False,
+                default=True,
                 help=('Whether to enable legacy ceilometer api '
-                      'in the Undercloud.')
+                      'in the Undercloud. '
+                      'Note: Ceilometer API has been deprecated and will be '
+                      'removed in future release. Please consider moving to '
+                      'gnocchi/Aodh/Panko API instead.')
                 ),
     cfg.BoolOpt('ipxe_enabled',
                 default=True,
