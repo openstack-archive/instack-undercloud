@@ -624,8 +624,3 @@ Service[$needless_services] {
   enable => false,
   ensure => stopped,
 }
-
-# novajoin install
-if str2bool(hiera('enable_novajoin', false)) {
-  include ::nova::metadata::novajoin::api
-}
