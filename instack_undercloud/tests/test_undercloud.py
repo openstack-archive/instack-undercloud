@@ -17,6 +17,7 @@ import io
 import json
 import os
 import subprocess
+import tempfile
 
 import fixtures
 import mock
@@ -41,6 +42,7 @@ class BaseTestCase(base.BaseTestCase):
 
 
 class TestUndercloud(BaseTestCase):
+    @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._validate_configuration')
     @mock.patch('instack_undercloud.undercloud._run_command')
@@ -53,7 +55,8 @@ class TestUndercloud(BaseTestCase):
     def test_install(self, mock_load_config, mock_generate_environment,
                      mock_run_yum_update, mock_run_instack, mock_run_orc,
                      mock_post_config, mock_run_command,
-                     mock_validate_configuration, mock_configure_logging):
+                     mock_validate_configuration, mock_configure_logging,
+                     mock_upgrade_fact):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.')
@@ -63,6 +66,33 @@ class TestUndercloud(BaseTestCase):
         mock_run_orc.assert_called_with(fake_env)
         mock_run_command.assert_called_with(
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
+        mock_upgrade_fact.assert_called_with(False)
+
+    @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
+    @mock.patch('instack_undercloud.undercloud._configure_logging')
+    @mock.patch('instack_undercloud.undercloud._validate_configuration')
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    @mock.patch('instack_undercloud.undercloud._post_config')
+    @mock.patch('instack_undercloud.undercloud._run_orc')
+    @mock.patch('instack_undercloud.undercloud._run_yum_update')
+    @mock.patch('instack_undercloud.undercloud._run_instack')
+    @mock.patch('instack_undercloud.undercloud._generate_environment')
+    @mock.patch('instack_undercloud.undercloud._load_config')
+    def test_install_upgrade(self, mock_load_config, mock_generate_environment,
+                             mock_run_yum_update, mock_run_instack,
+                             mock_run_orc, mock_post_config, mock_run_command,
+                             mock_validate_configuration,
+                             mock_configure_logging, mock_upgrade_fact):
+        fake_env = mock.MagicMock()
+        mock_generate_environment.return_value = fake_env
+        undercloud.install('.', upgrade=True)
+        self.assertTrue(mock_validate_configuration.called)
+        mock_generate_environment.assert_called_with('.')
+        mock_run_instack.assert_called_with(fake_env)
+        mock_run_orc.assert_called_with(fake_env)
+        mock_run_command.assert_called_with(
+            ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
+        mock_upgrade_fact.assert_called_with(True)
 
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     def test_install_exception(self, mock_configure_logging):
@@ -744,3 +774,64 @@ class TestPostConfig(base.BaseTestCase):
         mock_instance.flavors.list.return_value = mock_flavors
         undercloud._delete_default_flavors(mock_instance)
         mock_instance.flavors.delete.assert_called_once_with('8ar')
+
+
+class TestUpgradeFact(base.BaseTestCase):
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    @mock.patch('os.path.dirname')
+    @mock.patch('os.path.exists')
+    @mock.patch.object(tempfile, 'mkstemp', return_value=(1, '/tmp/file'))
+    def test_upgrade_fact(self, mock_mkstemp, mock_exists,  mock_dirname,
+                          mock_run):
+        fact_path = '/etc/facter/facts.d/undercloud_upgrade.txt'
+        mock_dirname.return_value = '/etc/facter/facts.d'
+        mock_exists.side_effect = [False, True]
+
+        with mock.patch('instack_undercloud.undercloud.open') as mock_open:
+            undercloud._handle_upgrade_fact(True)
+            mock_open.assert_called_with('/tmp/file', 'w')
+
+        run_calls = [
+            mock.call(['sudo', 'mkdir', '-p', '/etc/facter/facts.d']),
+            mock.call(['sudo', 'mv', '/tmp/file', fact_path]),
+            mock.call(['sudo', 'chmod', '0644', fact_path])
+        ]
+        mock_run.assert_has_calls(run_calls)
+        self.assertEqual(mock_run.call_count, 3)
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    @mock.patch('os.path.dirname')
+    @mock.patch('os.path.exists')
+    @mock.patch.object(tempfile, 'mkstemp', return_value=(1, '/tmp/file'))
+    def test_upgrade_fact_install(self, mock_mkstemp, mock_exists,
+                                  mock_dirname, mock_run):
+        mock_dirname.return_value = '/etc/facter/facts.d'
+        mock_exists.return_value = False
+
+        with mock.patch('instack_undercloud.undercloud.open') as mock_open:
+            undercloud._handle_upgrade_fact(False)
+            mock_open.assert_not_called()
+
+        mock_run.assert_not_called()
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    @mock.patch('os.path.dirname')
+    @mock.patch('os.path.exists')
+    @mock.patch.object(tempfile, 'mkstemp', return_value=(1, '/tmp/file'))
+    def test_upgrade_fact_upgrade_after_install(self, mock_mkstemp,
+                                                mock_exists, mock_dirname,
+                                                mock_run):
+        fact_path = '/etc/facter/facts.d/undercloud_upgrade.txt'
+        mock_dirname.return_value = '/etc/facter/facts.d'
+        mock_exists.return_value = True
+
+        with mock.patch('instack_undercloud.undercloud.open') as open_m:
+            undercloud._handle_upgrade_fact(True)
+            open_m.assert_called_with('/tmp/file', 'w')
+
+        run_calls = [
+            mock.call(['sudo', 'mv', '/tmp/file', fact_path]),
+            mock.call(['sudo', 'chmod', '0644', fact_path])
+        ]
+        mock_run.assert_has_calls(run_calls)
+        self.assertEqual(mock_run.call_count, 2)
