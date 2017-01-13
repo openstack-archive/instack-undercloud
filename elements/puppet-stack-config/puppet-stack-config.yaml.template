@@ -3,9 +3,6 @@ keystone_auth_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v3
 keystone_auth_uri_v2: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v2.0
 keystone_region: 'regionOne'
 
-# default transport url for the (rabbit) messaging backend
-undercloud_default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
-
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 controller_admin_vip: {{UNDERCLOUD_ADMIN_VIP}}
@@ -347,7 +344,7 @@ gnocchi::statsd::archive_policy_name: 'low'
 
 
 # Nova
-nova::default_transport_url: "%{hiera('undercloud_default_transport_url')}"
+nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
 nova::notification_driver: messaging
 nova::rpc_response_timeout: '600'
 nova::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
@@ -406,9 +403,6 @@ nova::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::keystone::auth::configure_ec2_endpoint: false
 
 nova::glance_api_servers: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
-
-nova::db::mysql_api::setup_cell0: true
-nova::db::sync_cell_v2::transport_url: "%{hiera('undercloud_default_transport_url')}"
 
 # Ironic
 ironic::debug: "%{hiera('debug')}"
