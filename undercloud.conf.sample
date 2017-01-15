@@ -163,7 +163,7 @@
 
 # Whether to enable legacy ceilometer api service in the
 # Undercloud. (boolean value)
-#enable_legacy_ceilometer_api = false
+#enable_legacy_ceilometer_api = true
 
 # Whether to use iPXE for deploy and inspection. (boolean value)
 # Deprecated group/name - [DEFAULT]/ipxe_deploy
