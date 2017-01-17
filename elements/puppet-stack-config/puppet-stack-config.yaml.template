@@ -362,10 +362,16 @@ nova::api::osapi_compute_workers: "%{::os_workers}"
 nova::api::metadata_workers: "%{::os_workers}"
 nova::wsgi::apache_api::ssl: false
 nova::wsgi::apache_api::bind_host: {{LOCAL_IP}}
+nova::wsgi::apache_placement::ssl: false
+nova::wsgi::apache_placement::bind_host: {{LOCAL_IP}}
+nova::wsgi::apache_placement::api_port: '8778'
+nova::placement::auth_url: "%{hiera('keystone_auth_uri')}"
+nova::placement::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::conductor::enabled: true
 nova::conductor::workers: "%{::os_workers}"
 nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
 nova::api_database_connection: mysql+pymysql://nova_api:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova_api
+nova::placement_database_connection: mysql+pymysql://nova_placement:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova_placement
 nova::notify_on_state_change: 'vm_and_task_state'
 nova::scheduler::enabled: true
 nova::network::neutron::dhcp_domain: ''
@@ -401,6 +407,13 @@ nova::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NOVA_ADMIN}}
 nova::keystone::auth::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::keystone::auth::region: "%{hiera('keystone_region')}"
 nova::keystone::auth::configure_ec2_endpoint: false
+
+nova::keystone::auth_placement::tenant: 'service'
+nova::keystone::auth_placement::public_url: {{UNDERCLOUD_ENDPOINT_PLACEMENT_PUBLIC}}
+nova::keystone::auth_placement::internal_url: {{UNDERCLOUD_ENDPOINT_PLACEMENT_INTERNAL}}
+nova::keystone::auth_placement::admin_url: {{UNDERCLOUD_ENDPOINT_PLACEMENT_ADMIN}}
+nova::keystone::auth_placement::password: {{UNDERCLOUD_NOVA_PASSWORD}}
+nova::keystone::auth_placement::region: "%{hiera('keystone_region')}"
 
 nova::glance_api_servers: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
 
@@ -618,6 +631,7 @@ tripleo::haproxy::neutron: true
 tripleo::haproxy::glance_api: true
 tripleo::haproxy::glance_registry: true
 tripleo::haproxy::nova_osapi: true
+tripleo::haproxy::nova_placement: true
 tripleo::haproxy::nova_metadata: true
 tripleo::haproxy::swift_proxy_server: true
 tripleo::haproxy::heat_api: true
