@@ -25,6 +25,7 @@ Exec<| title == 'keystone-manage db_sync' |> { refreshonly => false }
 Exec<| title == 'glance-manage db_sync' |> { refreshonly => false }
 Exec<| title == 'nova-db-sync-api' |> { refreshonly => false }
 Exec<| title == 'nova-db-sync' |> { refreshonly => false }
+Exec<| title == 'nova-db-online-data-migrations' |> { refreshonly => false }
 Exec<| title == 'heat-dbsync' |> { refreshonly => false }
 Exec<| title == 'ceilometer-dbsync' |> { refreshonly => false }
 Exec<| title == 'aodh-db-sync' |> { refreshonly => false }
