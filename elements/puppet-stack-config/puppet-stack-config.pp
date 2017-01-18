@@ -208,6 +208,7 @@ if str2bool(hiera('enable_telemetry', true)) {
     allowed_hosts => $allowed_hosts,
   }
   include ::gnocchi
+  include ::gnocchi::keystone::auth
   include ::gnocchi::api
   include ::gnocchi::wsgi::apache
   include ::gnocchi::client

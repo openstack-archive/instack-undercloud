@@ -328,6 +328,12 @@ gnocchi::api::host: {{LOCAL_IP}}
 gnocchi::keystone::authtoken::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
 gnocchi::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 gnocchi::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
+gnocchi::keystone::auth::tenant: 'service'
+gnocchi::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_GNOCCHI_PUBLIC}}
+gnocchi::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_GNOCCHI_INTERNAL}}
+gnocchi::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_GNOCCHI_ADMIN}}
+gnocchi::keystone::auth::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
+gnocchi::keystone::auth::region: "%{hiera('keystone_region')}"
 gnocchi::db::mysql::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
 gnocchi::db::database_connection: mysql+pymysql://gnocchi:{{UNDERCLOUD_GNOCCHI_PASSWORD}}@{{LOCAL_IP}}/gnocchi
 gnocchi::db::sync::extra_opts: '--create-legacy-resource-types'
