@@ -35,7 +35,7 @@ Exec<| title == 'zaqar-manage db_sync' |> { refreshonly => false }
 Exec<| title == 'cinder-manage db_sync' |> { refreshonly => false }
 
 if count(hiera('ntp::servers')) > 0 {
-  include ::ntp
+  include ::tripleo::profile::base::ntp
 }
 
 include ::rabbitmq
