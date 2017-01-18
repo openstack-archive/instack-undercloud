@@ -755,6 +755,8 @@ tripleo::firewall::firewall_rules:
       - 13773
       - 8774
       - 13774
+      - 8778
+      - 13778
       - 8775
       - 13775
   '114 neutron server':
