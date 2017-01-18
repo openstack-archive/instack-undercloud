@@ -223,6 +223,23 @@ if str2bool(hiera('enable_telemetry', true)) {
       'rbd': { include ::gnocchi::storage::ceph }
       default: { fail('Unrecognized gnocchi_backend parameter.') }
   }
+
+  # Panko
+  $panko_dsn = split(hiera('panko::db::database_connection'), '[@:/?]')
+  class { '::panko::db::mysql':
+    user          => $panko_dsn[3],
+    password      => $panko_dsn[4],
+    host          => $panko_dsn[5],
+    dbname        => $panko_dsn[6],
+    allowed_hosts => $allowed_hosts,
+  }
+  include ::panko
+  include ::panko::keystone::auth
+  include ::panko::config
+  include ::panko::db
+  include ::panko::db::sync
+  include ::panko::api
+  include ::panko::wsgi::apache
 }
 
 $ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
