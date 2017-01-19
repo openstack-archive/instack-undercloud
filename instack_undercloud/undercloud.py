@@ -1236,7 +1236,36 @@ def _post_config(instack_env):
         _post_config_mistral(instack_env, mistral)
 
 
-def install(instack_root):
+def _handle_upgrade_fact(upgrade=False):
+    """Create an upgrade fact for use in puppet
+
+    Since we don't run different puppets depending on if it's an upgrade or
+    not, we need to be able to pass a flag into puppet to let it know if
+    we're doing an upgrade. This is helpful when trying to handle state
+    transitions from an already installed undercloud. This function creates
+    a static fact named undercloud_upgrade only after the install has occured.
+    When invoked with upgrade=True, the $::undercloud_upgrade fact should
+    be set to true.
+
+    :param upgrade: Boolean indicating if this is an upgrade action or not
+    """
+
+    fact_string = 'undercloud_upgrade={}'.format(upgrade)
+    fact_path = '/etc/facter/facts.d/undercloud_upgrade.txt'
+    if not os.path.exists(os.path.dirname(fact_path)) and upgrade:
+        _run_command(['sudo', 'mkdir', '-p', os.path.dirname(fact_path)])
+
+    # We only need to ensure the fact is correct when we've already installed
+    # the undercloud.
+    if os.path.exists(os.path.dirname(fact_path)):
+        tmp_fact = tempfile.mkstemp()[1]
+        with open(tmp_fact, 'w') as f:
+            f.write(fact_string.lower())
+        _run_command(['sudo', 'mv', tmp_fact, fact_path])
+        _run_command(['sudo', 'chmod', '0644', fact_path])
+
+
+def install(instack_root, upgrade=False):
     """Install the undercloud
 
     :param instack_root: The path containing the instack-undercloud elements
@@ -1252,6 +1281,7 @@ def install(instack_root):
         _generate_init_data(instack_env)
         if CONF.undercloud_update_packages:
             _run_yum_update(instack_env)
+        _handle_upgrade_fact(upgrade)
         _run_instack(instack_env)
         _run_orc(instack_env)
         _post_config(instack_env)
