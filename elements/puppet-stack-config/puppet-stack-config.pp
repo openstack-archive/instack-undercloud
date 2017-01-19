@@ -527,34 +527,32 @@ if str2bool(hiera('enable_docker_registry', true)) {
   }
 }
 
-if str2bool(hiera('enable_mistral', true)) {
-  include ::mistral
-  $mistral_dsn = split(hiera('mistral::database_connection'), '[@:/?]')
-  class { '::mistral::db::mysql':
-    user          => $mistral_dsn[3],
-    password      => $mistral_dsn[4],
-    host          => $mistral_dsn[5],
-    dbname        => $mistral_dsn[6],
-    allowed_hosts => $allowed_hosts,
-  }
-  include ::mistral::keystone::auth
-  include ::mistral::db::sync
-  include ::mistral::api
-  include ::mistral::engine
-  include ::mistral::executor
-  include ::mistral::cors
-
-  # ensure TripleO common entrypoints for custom Mistral actions
-  # are installed before performing the Mistral action population
-  package {'openstack-tripleo-common': }
-  Package['openstack-tripleo-common'] ~> Exec['mistral-db-populate']
-  # If ironic inspector is not running, mistral-db-populate will have invalid
-  # actions for it.
-  Class['::ironic::inspector'] ~> Exec['mistral-db-populate']
-  # db-populate calls inspectorclient, which will use the keystone endpoint to
-  # check inspector's version. So that's needed before db-populate is executed.
-  Class['::ironic::keystone::auth_inspector']  ~> Exec['mistral-db-populate']
+include ::mistral
+$mistral_dsn = split(hiera('mistral::database_connection'), '[@:/?]')
+class { '::mistral::db::mysql':
+  user          => $mistral_dsn[3],
+  password      => $mistral_dsn[4],
+  host          => $mistral_dsn[5],
+  dbname        => $mistral_dsn[6],
+  allowed_hosts => $allowed_hosts,
 }
+include ::mistral::keystone::auth
+include ::mistral::db::sync
+include ::mistral::api
+include ::mistral::engine
+include ::mistral::executor
+include ::mistral::cors
+
+# ensure TripleO common entrypoints for custom Mistral actions
+# are installed before performing the Mistral action population
+package {'openstack-tripleo-common': }
+Package['openstack-tripleo-common'] ~> Exec['mistral-db-populate']
+# If ironic inspector is not running, mistral-db-populate will have invalid
+# actions for it.
+Class['::ironic::inspector'] ~> Exec['mistral-db-populate']
+# db-populate calls inspectorclient, which will use the keystone endpoint to
+# check inspector's version. So that's needed before db-populate is executed.
+Class['::ironic::keystone::auth_inspector']  ~> Exec['mistral-db-populate']
 
 if str2bool(hiera('enable_ui', true)) {
   include ::tripleo::profile::base::ui
@@ -564,23 +562,21 @@ if str2bool(hiera('enable_validations', true)) {
   include ::tripleo::profile::base::validations
 }
 
-if str2bool(hiera('enable_zaqar', true)) {
-  include ::mongodb::globals
-  include ::mongodb::server
-  include ::mongodb::client
+include ::mongodb::globals
+include ::mongodb::server
+include ::mongodb::client
 
-  include ::zaqar
-  include ::zaqar::management::mongodb
-  include ::zaqar::messaging::mongodb
-  include ::zaqar::keystone::auth
-  include ::zaqar::keystone::auth_websocket
-  include ::zaqar::transport::websocket
-  include ::zaqar::transport::wsgi
+include ::zaqar
+include ::zaqar::management::mongodb
+include ::zaqar::messaging::mongodb
+include ::zaqar::keystone::auth
+include ::zaqar::keystone::auth_websocket
+include ::zaqar::transport::websocket
+include ::zaqar::transport::wsgi
 
-  include ::zaqar::server
-  zaqar::server_instance{ '1':
-    transport => 'websocket'
-  }
+include ::zaqar::server
+zaqar::server_instance{ '1':
+  transport => 'websocket'
 }
 
 if str2bool(hiera('enable_cinder', true)) {

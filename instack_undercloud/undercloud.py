@@ -279,14 +279,6 @@ _opts = [
                 default=True,
                 help=('Whether to install Tempest in the Undercloud.')
                 ),
-    cfg.BoolOpt('enable_mistral',
-                default=True,
-                help=('Whether to install Mistral services in the Undercloud.')
-                ),
-    cfg.BoolOpt('enable_zaqar',
-                default=True,
-                help=('Whether to install Zaqar services in the Undercloud.')
-                ),
     cfg.BoolOpt('enable_telemetry',
                 default=True,
                 help=('Whether to install Telemetry services '
@@ -1225,15 +1217,14 @@ def _post_config(instack_env):
     _ensure_flavor(nova, 'block-storage', 'block-storage')
     _ensure_flavor(nova, 'swift-storage', 'swift-storage')
 
-    if CONF.enable_mistral:
-        mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
-        mistral = mistralclient.client(
-            mistral_url=mistral_url,
-            username=user,
-            api_key=password,
-            project_name=tenant,
-            auth_url=auth_url)
-        _post_config_mistral(instack_env, mistral)
+    mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
+    mistral = mistralclient.client(
+        mistral_url=mistral_url,
+        username=user,
+        api_key=password,
+        project_name=tenant,
+        auth_url=auth_url)
+    _post_config_mistral(instack_env, mistral)
 
 
 def _handle_upgrade_fact(upgrade=False):

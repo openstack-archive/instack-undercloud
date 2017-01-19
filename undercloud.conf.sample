@@ -139,14 +139,7 @@
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = true
 
-# Whether to install Mistral services in the Undercloud. (boolean
-# value)
-#enable_mistral = true
-
-# Whether to install Zaqar services in the Undercloud. (boolean value)
-#enable_zaqar = true
-
-# Whether to install Telemetry services (ceilometer, aodh, gnocchi, panko) in the
+# Whether to install Telemetry services (ceilometer, aodh) in the
 # Undercloud. (boolean value)
 #enable_telemetry = true
 
