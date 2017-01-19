@@ -633,10 +633,7 @@ ensure_resource('package', 'parted')
 ensure_resource('package', 'psmisc')
 ensure_resource('package', 'ipxe-bootimgs')
 
-service { 'sshd':
-  ensure => running,
-  enable => true,
-}
+include ::tripleo::profile::base::sshd
 
 # Swift is using only a single replica on the undercloud. Therefore recovering
 # from a corrupted or lost object is not possible, and running replicators and
