@@ -389,8 +389,10 @@ nova::wsgi::apache_api::bind_host: {{LOCAL_IP}}
 nova::wsgi::apache_placement::ssl: false
 nova::wsgi::apache_placement::bind_host: {{LOCAL_IP}}
 nova::wsgi::apache_placement::api_port: '8778'
-nova::placement::auth_url: "%{hiera('keystone_auth_uri')}"
+nova::placement::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::placement::password: {{UNDERCLOUD_NOVA_PASSWORD}}
+nova::placement::project_name: 'service'
+nova::placement::os_region_name: 'regionOne'
 nova::conductor::enabled: true
 nova::conductor::workers: "%{::os_workers}"
 nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
