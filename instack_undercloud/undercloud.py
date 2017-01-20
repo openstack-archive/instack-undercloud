@@ -267,6 +267,22 @@ _opts = [
                 help=('Whether to support introspection of nodes that have '
                       'UEFI-only firmware.')
                 ),
+    cfg.BoolOpt('enable_node_discovery',
+                default=False,
+                help=('Makes ironic-inspector enroll any unknown node that '
+                      'PXE-boots introspection ramdisk in Ironic. By default, '
+                      'the "fake" driver is used for new nodes (it is '
+                      'automatically enabled when this option is set to True).'
+                      ' Set discovery_default_driver to override. '
+                      'Introspection rules can also be used to specify driver '
+                      'information for newly enrolled nodes.')
+                ),
+    cfg.StrOpt('discovery_default_driver',
+               default='fake',
+               help=('The default driver to use for newly discovered nodes '
+                     '(requires enable_node_discovery set to True). This '
+                     'driver is automatically added to enabled_drivers.')
+               ),
     cfg.BoolOpt('undercloud_debug',
                 default=True,
                 help=('Whether to enable the debug log level for Undercloud '
@@ -925,8 +941,15 @@ def _generate_environment(instack_root):
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
 
     # Ensure correct rendering of the list and uniqueness of the items
+    enabled_drivers = set(CONF.enabled_drivers)
+    if CONF.enable_node_discovery:
+        enabled_drivers.add(CONF.discovery_default_driver)
+        instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = 'enroll'
+    else:
+        instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = ''
+
     instack_env['ENABLED_DRIVERS'] = (
-        '[%s]' % ', '.join('"%s"' % drv for drv in set(CONF.enabled_drivers)))
+        '[%s]' % ', '.join('"%s"' % drv for drv in set(enabled_drivers)))
 
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
