@@ -666,9 +666,9 @@ tripleo::haproxy::panko: "%{hiera('enable_telemetry')}"
 tripleo::haproxy::ironic: true
 tripleo::haproxy::ironic_inspector: true
 tripleo::haproxy::rabbitmq: true
-tripleo::haproxy::mistral: {{ENABLE_MISTRAL}}
-tripleo::haproxy::zaqar_api: {{ENABLE_ZAQAR}}
-tripleo::haproxy::zaqar_ws: {{ENABLE_ZAQAR}}
+tripleo::haproxy::mistral: true
+tripleo::haproxy::zaqar_api: true
+tripleo::haproxy::zaqar_ws: true
 tripleo::haproxy::docker_registry: true
 
 # Keepalived
@@ -709,8 +709,6 @@ mistral::keystone_tenant: 'service'
 swift::proxy::workers: "%{::os_workers}"
 # Options
 enable_tempest: {{ENABLE_TEMPEST}}
-enable_mistral: {{ENABLE_MISTRAL}}
-enable_zaqar: {{ENABLE_ZAQAR}}
 enable_validations: {{ENABLE_VALIDATIONS}}
 enable_telemetry: {{ENABLE_TELEMETRY}}
 enable_legacy_ceilometer_api: {{ENABLE_LEGACY_CEILOMETER_API}}
