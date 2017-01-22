@@ -1234,7 +1234,7 @@ def _handle_upgrade_fact(upgrade=False):
     not, we need to be able to pass a flag into puppet to let it know if
     we're doing an upgrade. This is helpful when trying to handle state
     transitions from an already installed undercloud. This function creates
-    a static fact named undercloud_upgrade only after the install has occured.
+    a static fact named undercloud_upgrade only after the install has occurred.
     When invoked with upgrade=True, the $::undercloud_upgrade fact should
     be set to true.
 
