@@ -1,0 +1,24 @@
+---
+prelude: >
+    6.0.0 is the final release for Ocata.
+    It's the first release where release notes are added.
+features:
+  - Support for gnocchi service on undercloud to provide metrics support in
+    Telemetry. This will only be enabled when enable_telemetry is true.
+  - Support for panko service on undercloud to provide events support in
+    Telemetry. This will only be enabled when enable_telemetry is true.
+  - Remove Glance Registry from undercloud. It also means Glance API v1 won't
+    be available anymore.
+  - Validate vips when generating certificate.
+  - Improve upgrade process to include upgrade flag. This flag will be used
+    by the Puppet manifest to knows when an upgrade happens.
+  - Deploy Nova Placement API service.
+  - Novajoin service support.
+  - Run `yum update -y` before Puppet run.
+  - Optional Cinder support for undercloud.
+  - When Cinder is enabled, deploy both v2 and v3 APIs.
+deprecations:
+  - Ceilometer API is officially deprecated. The service is still enabled
+    when enable_telemetry is true. This can be disabled using the
+    enable_legacy_ceilometer_api option in undercloud.conf. Users should
+    start migrating to aodh, gnocchi and panko in future.
