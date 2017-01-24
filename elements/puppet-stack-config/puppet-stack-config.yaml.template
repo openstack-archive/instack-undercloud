@@ -683,6 +683,18 @@ mistral::cors::allowed_origin: '*'
 mistral::cors::allow_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma,X-Auth-Token'
 mistral::cors::expose_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma'
 swift::proxy::cors_allow_origin: '*'
+tripleo::ui::endpoint_proxy_zaqar: {{UNDERCLOUD_ENDPOINT_ZAQAR_UI_PROXY_INTERNAL}}
+tripleo::ui::endpoint_proxy_keystone: {{UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL}}
+tripleo::ui::endpoint_proxy_heat: {{UNDERCLOUD_ENDPOINT_HEAT_UI_PROXY_INTERNAL}}
+tripleo::ui::endpoint_proxy_ironic: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
+tripleo::ui::endpoint_proxy_mistral: {{UNDERCLOUD_ENDPOINT_MISTRAL_UI_PROXY_INTERNAL}}
+tripleo::ui::endpoint_proxy_swift: {{UNDERCLOUD_ENDPOINT_SWIFT_UI_PROXY_INTERNAL}}
+tripleo::ui::endpoint_config_zaqar: {{UNDERCLOUD_ENDPOINT_ZAQAR_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_keystone: {{UNDERCLOUD_ENDPOINT_KEYSTONE_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_heat: {{UNDERCLOUD_ENDPOINT_HEAT_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_ironic: {{UNDERCLOUD_ENDPOINT_IRONIC_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_mistral: {{UNDERCLOUD_ENDPOINT_MISTRAL_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_swift: {{UNDERCLOUD_ENDPOINT_SWIFT_UI_CONFIG_PUBLIC}}
 
 # service tenant
 ceilometer::keystone::authtoken::project_name: 'service'
