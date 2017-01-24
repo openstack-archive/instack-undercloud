@@ -3,7 +3,7 @@ export NOVA_VERSION
 OS_PASSWORD=$(sudo hiera admin_password)
 export OS_PASSWORD
 {{#service_certificate}}
-OS_AUTH_URL=https://{{public_vip}}:13000/v2.0
+OS_AUTH_URL=https://{{public_host}}:13000/v2.0
 PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
 export OS_AUTH_URL
 export PYTHONWARNINGS

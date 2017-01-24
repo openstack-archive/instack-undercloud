@@ -129,5 +129,26 @@ class TestValidator(base.BaseTestCase):
 
     def test_invalid_undercloud_nameserver_fails(self):
         self.conf.config(undercloud_nameservers=['Iamthewalrus'])
+
+    def test_fail_on_invalid_public_host(self):
+        self.conf.config(undercloud_public_host='192.0.3.2',
+                         undercloud_service_certificate='foo.pem')
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
+
+    def test_fail_on_invalid_admin_host(self):
+        self.conf.config(undercloud_admin_host='192.0.3.3',
+                         generate_service_certificate=True)
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
+
+    def test_ssl_hosts_allowed(self):
+        self.conf.config(undercloud_public_host='public.domain',
+                         undercloud_admin_host='admin.domain',
+                         undercloud_service_certificate='foo.pem')
+        undercloud._validate_network()
+
+    def test_fail_on_invalid_ip(self):
+        self.conf.config(dhcp_start='foo.bar')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)

@@ -264,7 +264,7 @@ class { '::ironic::inspector::db::mysql':
 include ::swift
 
 if hiera('tripleo::haproxy::service_certificate', undef) {
-  $keystone_public_endpoint = join(['https://', hiera('controller_public_vip'), ':13000'])
+  $keystone_public_endpoint = join(['https://', hiera('controller_public_host'), ':13000'])
   $enable_proxy_headers_parsing = true
 } else {
   $keystone_public_endpoint = undef
@@ -510,7 +510,7 @@ if str2bool(hiera('enable_docker_registry', true)) {
     line   => join ([
       'INSECURE_REGISTRY="',
       '--insecure-registry ', hiera('controller_host'), ':8787 ',
-      '--insecure-registry ', hiera('controller_admin_vip'), ':8787"']),
+      '--insecure-registry ', hiera('controller_admin_host'), ':8787"']),
     match  => 'INSECURE_REGISTRY=',
     notify => Service['docker'],
   }

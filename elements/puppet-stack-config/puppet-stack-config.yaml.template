@@ -5,8 +5,8 @@ keystone_region: 'regionOne'
 
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
-controller_admin_vip: {{UNDERCLOUD_ADMIN_VIP}}
-controller_public_vip: {{UNDERCLOUD_PUBLIC_VIP}}
+controller_admin_host: {{UNDERCLOUD_ADMIN_HOST}}
+controller_public_host: {{UNDERCLOUD_PUBLIC_HOST}}
 ntp::servers:
   -
 
@@ -24,7 +24,7 @@ tripleo::profile::base::haproxy::certificates_specs:
     service_pem: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
     service_certificate: '/etc/pki/tls/certs/undercloud-front.crt'
     service_key: '/etc/pki/tls/private/undercloud-front.key'
-    hostname: "%{hiera('controller_public_vip')}"
+    hostname: "%{hiera('controller_public_host')}"
     postsave_cmd: "/usr/bin/instack-haproxy-cert-update '/etc/pki/tls/certs/undercloud-front.crt' '/etc/pki/tls/private/undercloud-front.key' {{UNDERCLOUD_SERVICE_CERTIFICATE}}"
     principal: {{SERVICE_PRINCIPAL}}
 
@@ -635,9 +635,9 @@ cinder::wsgi::apache::workers: "%{::os_workers}"
 # HAproxy
 tripleo::profile::base::haproxy::step: 1
 tripleo::haproxy::haproxy_stats_password: {{UNDERCLOUD_HAPROXY_STATS_PASSWORD}}
-tripleo::haproxy::controller_virtual_ip: "%{hiera('controller_admin_vip')}"
+tripleo::haproxy::controller_virtual_ip: "%{hiera('controller_admin_host')}"
 tripleo::haproxy::controller_hosts: "%{hiera('controller_host')}"
-tripleo::haproxy::public_virtual_ip: "%{hiera('controller_public_vip')}"
+tripleo::haproxy::public_virtual_ip: "%{hiera('controller_public_host')}"
 tripleo::haproxy::public_virtual_interface: 'br-ctlplane'
 tripleo::haproxy::keystone_admin: true
 tripleo::haproxy::keystone_public: true
@@ -662,9 +662,9 @@ tripleo::haproxy::zaqar_ws: true
 tripleo::haproxy::docker_registry: true
 
 # Keepalived
-tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_vip')}"
+tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_host')}"
 tripleo::keepalived::control_virtual_interface: 'br-ctlplane'
-tripleo::keepalived::public_virtual_ip: "%{hiera('controller_public_vip')}"
+tripleo::keepalived::public_virtual_ip: "%{hiera('controller_public_host')}"
 tripleo::keepalived::public_virtual_interface: 'br-ctlplane'
 
 # UI
