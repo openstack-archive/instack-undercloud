@@ -49,11 +49,13 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._post_config')
     @mock.patch('instack_undercloud.undercloud._run_orc')
     @mock.patch('instack_undercloud.undercloud._run_yum_update')
+    @mock.patch('instack_undercloud.undercloud._run_yum_clean_all')
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install(self, mock_load_config, mock_generate_environment,
-                     mock_run_yum_update, mock_run_instack, mock_run_orc,
+                     mock_run_instack, mock_run_clean_all,
+                     mock_run_yum_update, mock_run_orc,
                      mock_post_config, mock_run_command,
                      mock_validate_configuration, mock_configure_logging,
                      mock_upgrade_fact):
@@ -75,12 +77,14 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._post_config')
     @mock.patch('instack_undercloud.undercloud._run_orc')
     @mock.patch('instack_undercloud.undercloud._run_yum_update')
+    @mock.patch('instack_undercloud.undercloud._run_yum_clean_all')
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
     def test_install_upgrade(self, mock_load_config, mock_generate_environment,
-                             mock_run_yum_update, mock_run_instack,
-                             mock_run_orc, mock_post_config, mock_run_command,
+                             mock_run_instack, mock_run_yum_clean_all,
+                             mock_run_yum_update, mock_run_orc,
+                             mock_post_config, mock_run_command,
                              mock_validate_configuration,
                              mock_configure_logging, mock_upgrade_fact):
         fake_env = mock.MagicMock()

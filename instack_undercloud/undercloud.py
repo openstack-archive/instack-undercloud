@@ -1024,6 +1024,13 @@ def _run_instack(instack_env):
     LOG.info('Instack completed successfully')
 
 
+def _run_yum_clean_all(instack_env):
+    args = ['sudo', 'yum', 'clean', 'all']
+    LOG.info('Running yum clean all')
+    _run_live_command(args, instack_env, 'yum-clean-all')
+    LOG.info('yum-clean-all completed successfully')
+
+
 def _run_yum_update(instack_env):
     args = ['sudo', 'yum', 'update', '-y']
     LOG.info('Running yum update')
@@ -1273,6 +1280,7 @@ def install(instack_root, upgrade=False):
         instack_env = _generate_environment(instack_root)
         _generate_init_data(instack_env)
         if CONF.undercloud_update_packages:
+            _run_yum_clean_all(instack_env)
             _run_yum_update(instack_env)
         _handle_upgrade_fact(upgrade)
         _run_instack(instack_env)
