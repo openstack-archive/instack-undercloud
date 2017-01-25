@@ -186,6 +186,14 @@ if str2bool(hiera('enable_telemetry', true)) {
   }
 
   # Aodh
+  $aodh_dsn = split(hiera('aodh::db::database_connection'), '[@:/?]')
+  class { '::aodh::db::mysql':
+    user          => $aodh_dsn[3],
+    password      => $aodh_dsn[4],
+    host          => $aodh_dsn[5],
+    dbname        => $aodh_dsn[6],
+    allowed_hosts => $allowed_hosts,
+  }
   include ::aodh
   include ::aodh::api
   include ::aodh::wsgi::apache
@@ -195,8 +203,6 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::aodh::client
   include ::aodh::db::sync
   include ::aodh::auth
-  # To manage the upgrade:
-  Exec['ceilometer-dbsync'] -> Exec['aodh-db-sync']
 
   # Gnocchi
   $gnocchi_dsn = split(hiera('gnocchi::db::database_connection'), '[@:/?]')

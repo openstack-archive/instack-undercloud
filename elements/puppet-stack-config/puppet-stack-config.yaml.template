@@ -297,8 +297,7 @@ aodh::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 aodh::api::service_name: 'httpd'
 aodh::wsgi::apache::ssl: false
 aodh::wsgi::apache::bind_host: {{LOCAL_IP}}
-# for a migration path from ceilometer-alarm to aodh, we use the same database
-aodh::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
+aodh::db::database_connection: mysql+pymysql://aodh:{{UNDERCLOUD_AODH_PASSWORD}}@{{LOCAL_IP}}/aodh
 aodh::auth::auth_password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::auth::tenant: 'service'
 aodh::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_AODH_PUBLIC}}
