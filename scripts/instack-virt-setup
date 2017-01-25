@@ -1,5 +1,12 @@
 #!/bin/bash
 
+echo
+echo "#######################################################################"
+echo "WARNING: instack-virt-setup is DEPRECATED in Ocata and will be removed "
+echo "in a future release"
+echo "#######################################################################"
+echo
+
 if [ $EUID -eq 0 ]; then
     echo "This script cannot be run as root."
     exit 1
