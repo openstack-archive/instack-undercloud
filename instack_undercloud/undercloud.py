@@ -1303,6 +1303,13 @@ def install(instack_root, upgrade=False):
         _validate_configuration()
         instack_env = _generate_environment(instack_root)
         _generate_init_data(instack_env)
+        # We didn't complete the M->N upgrades correctly with a
+        # `nova-manage db online_data_migrations` command before. This could
+        # cause the post-upgrade db sync to fail. Better be safe than sorry and
+        # run it before package upgrade.
+        if upgrade:
+            _run_command(['sudo', '/usr/bin/nova-manage', 'db',
+                          'online_data_migrations'])
         if CONF.undercloud_update_packages:
             _run_yum_clean_all(instack_env)
             _run_yum_update(instack_env)
