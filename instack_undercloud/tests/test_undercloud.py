@@ -102,7 +102,8 @@ class TestUndercloud(BaseTestCase):
     def test_install_exception(self, mock_configure_logging):
         mock_configure_logging.side_effect = RuntimeError('foo')
         self.assertRaises(RuntimeError, undercloud.install, '.')
-        log_dict = {'exception': 'foo',
+        log_dict = {'undercloud_operation': "install",
+                    'exception': 'foo',
                     'log_file': undercloud.PATHS.LOG_FILE
                     }
         self.assertIn(undercloud.FAILURE_MESSAGE % log_dict,
@@ -115,7 +116,8 @@ class TestUndercloud(BaseTestCase):
         self.useFixture(conf)
         conf.config(undercloud_debug=False)
         undercloud.install('.')
-        log_dict = {'exception': 'foo',
+        log_dict = {'undercloud_operation': "install",
+                    'exception': 'foo',
                     'log_file': undercloud.PATHS.LOG_FILE
                     }
         self.assertIn(undercloud.FAILURE_MESSAGE % log_dict,
