@@ -392,11 +392,11 @@ nova::compute::vnc_enabled: false
 nova::cron::archive_deleted_rows::destination: '/dev/null'
 nova_sync_power_state_interval: -1
 
-nova::ironic::common::admin_username: 'ironic'
-nova::ironic::common::admin_password: {{UNDERCLOUD_IRONIC_PASSWORD}}
-nova::ironic::common::admin_tenant_name: 'service'
+nova::ironic::common::username: 'ironic'
+nova::ironic::common::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+nova::ironic::common::project_name: 'service'
 nova::ironic::common::api_endpoint: "{{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}/v1"
-nova::ironic::common::admin_url: "%{hiera('keystone_identity_uri')}/v2.0"
+nova::ironic::common::auth_url: "%{hiera('keystone_identity_uri')}/v2.0"
 
 nova::network::neutron::neutron_auth_url: "%{hiera('keystone_auth_uri')}"
 nova::network::neutron::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
@@ -446,12 +446,9 @@ ironic::api::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 ironic::api::host_ip: {{LOCAL_IP}}
 ironic::api::workers: "%{::os_workers}"
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
+ironic::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
 ironic::glance::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::glance::auth_url: "%{hiera('keystone_identity_uri')}"
-ironic::rabbit_host: {{LOCAL_IP}}
-ironic::rabbit_hosts: {{LOCAL_IP:5672}}
-ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-ironic::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 # Ironic conductor forces deployments to use http
 # https://bugs.launchpad.net/tripleo/+bug/1613088
 ironic::conductor::api_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
