@@ -73,24 +73,15 @@ if [ "$net_create" -eq "1" ]; then
         neutron net-delete ctlplane
     fi
 
-    NETWORK_JSON=$(mktemp)
-    NETWORK_JSON_DATA='{"physical":{}}'
-    NETWORK_JSON_DATA=$(jq '.physical = .physical + {
-        "gateway": "'$NETWORK_GATEWAY'",
-        "metadata_server": "'$UNDERCLOUD_IP'",
-        "cidr": "'$NETWORK_CIDR'",
-        "allocation_start": "'$DHCP_START'",
-        "allocation_end": "'$DHCP_END'",
-        "name": "'$PHYSICAL_NETWORK'",
-    }' <<< $NETWORK_JSON_DATA)
-    if [ -n "${UNDERCLOUD_NAMESERVER:-}" ]; then
-        NETWORK_JSON_DATA=$(jq '.physical = .physical + {
-            "nameserver": "'$UNDERCLOUD_NAMESERVER'",
-        }' <<< $NETWORK_JSON_DATA)
-    fi
-    jq . > $NETWORK_JSON <<< $NETWORK_JSON_DATA
-    setup-neutron -n $NETWORK_JSON
-    rm $NETWORK_JSON
+    neutron net-create ctlplane \
+        --provider:network_type flat \
+        --provider:physical_network ctlplane
+
+    neutron subnet-create --name ctlplane-subnet \
+        --allocation-pool start=$DHCP_START,end=$DHCP_END \
+        --gateway $NETWORK_GATEWAY \
+        --host-route destination=169.254.169.254/32,nexthop=$METADATA_SERVER \
+        ctlplane $NETWORK_CIDR
 fi
 
 # Disable nova quotas
