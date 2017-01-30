@@ -17,6 +17,7 @@ features:
   - Run `yum update -y` before Puppet run.
   - Optional Cinder support for undercloud.
   - When Cinder is enabled, deploy both v2 and v3 APIs.
+  - Aodh is now configured by default to use its own mysql backend.
 deprecations:
   - Ceilometer API is officially deprecated. The service is still enabled
     when enable_telemetry is true. This can be disabled using the
