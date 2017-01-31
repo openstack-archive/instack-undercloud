@@ -130,6 +130,19 @@
 # firmware. (boolean value)
 #inspection_enable_uefi = true
 
+# Makes ironic-inspector enroll any unknown node that PXE-boots
+# introspection ramdisk in Ironic. By default, the "fake" driver is
+# used for new nodes (it is automatically enabled when this option is
+# set to True). Set discovery_default_driver to override.
+# Introspection rules can also be used to specify driver information
+# for newly enrolled nodes. (boolean value)
+#enable_node_discovery = false
+
+# The default driver to use for newly discovered nodes (requires
+# enable_node_discovery set to True). This driver is automatically
+# added to enabled_drivers. (string value)
+#discovery_default_driver = fake
+
 # Whether to enable the debug log level for Undercloud OpenStack
 # services. (boolean value)
 #undercloud_debug = true

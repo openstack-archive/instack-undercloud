@@ -502,6 +502,8 @@ ironic::inspector::ramdisk_collectors: {{INSPECTION_COLLECTORS}}
 ironic::inspector::additional_processing_hooks: 'extra_hardware'
 ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}
 ironic::inspector::ipxe_timeout: 60
+ironic::inspector::node_not_found_hook: {{INSPECTION_NODE_NOT_FOUND_HOOK}}
+ironic::inspector::discovery_default_driver: {{DISCOVERY_DEFAULT_DRIVER}}
 
 # Ironic PXE driver
 ironic::drivers::pxe::ipxe_timeout: 60
