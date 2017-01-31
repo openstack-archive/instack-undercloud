@@ -36,6 +36,7 @@ from keystoneclient import session
 from keystoneclient import discover
 from mistralclient.api import client as mistralclient
 from mistralclient.api import base as mistralclient_base
+import novaclient as nc
 from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
@@ -1237,7 +1238,12 @@ def _post_config_mistral(instack_env, mistral):
 def _post_config(instack_env):
     _copy_stackrc()
     user, password, tenant, auth_url = _get_auth_values()
-    nova = novaclient.Client(2, user, password, tenant, auth_url)
+    # TODO(andreykurilin): remove this check with support of novaclient 6.0.0
+    if nc.__version__[0] == "6":
+        nova = novaclient.Client(2, user, password, tenant, auth_url=auth_url)
+    else:
+        nova = novaclient.Client(2, user, password, auth_url=auth_url,
+                                 project_name=tenant)
 
     _configure_ssh_keys(nova)
     _delete_default_flavors(nova)

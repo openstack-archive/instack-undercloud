@@ -596,8 +596,9 @@ class TestPostConfig(base.BaseTestCase):
         mock_instance_mistral = mock.Mock()
         mock_mistral_client.return_value = mock_instance_mistral
         undercloud._post_config(instack_env)
-        mock_nova_client.assert_called_with(2, 'aturing', '3nigma', 'hut8',
-                                            'http://bletchley:5000/v2.0')
+        mock_nova_client.assert_called_with(
+            2, 'aturing', '3nigma', project_name='hut8',
+            auth_url='http://bletchley:5000/v2.0')
         self.assertTrue(mock_copy_stackrc.called)
         mock_configure_ssh_keys.assert_called_with(mock_instance)
         calls = [mock.call(mock_instance, 'baremetal'),
