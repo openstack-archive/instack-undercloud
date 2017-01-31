@@ -856,3 +856,23 @@ class TestUpgradeFact(base.BaseTestCase):
         ]
         mock_run.assert_has_calls(run_calls)
         self.assertEqual(mock_run.call_count, 2)
+
+
+class TestInstackEnvironment(BaseTestCase):
+    def test_set_allowed_keys(self):
+        env = undercloud.InstackEnvironment()
+        env['HOSTNAME'] = 'localhost1'
+        env['INSPECTION_COLLECTORS'] = 'a,b,c'
+
+    def test_set_unknown_keys(self):
+        env = undercloud.InstackEnvironment()
+
+        def _set():
+            env['CATS_AND_DOGS_PATH'] = '/home'
+
+        self.assertRaisesRegexp(KeyError, 'CATS_AND_DOGS_PATH', _set)
+
+    def test_get_always_allowed(self):
+        env = undercloud.InstackEnvironment()
+        env.get('HOSTNAME')
+        env.get('CATS_AND_DOGS_PATH')

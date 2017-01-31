@@ -27,28 +27,8 @@ template = os.path.join(os.path.dirname(__file__),
                         '..',
                         'puppet-stack-config.yaml.template')
 
-# Only variables that are not oslo.config opts need to be added here
-context = {
-    'INSPECTION_COLLECTORS': os.environ['INSPECTION_COLLECTORS'],
-    'INSPECTION_KERNEL_ARGS': os.environ['INSPECTION_KERNEL_ARGS'],
-    'TRIPLEO_INSTALL_USER': os.environ['TRIPLEO_INSTALL_USER'],
-    'TRIPLEO_UNDERCLOUD_CONF_FILE':
-        os.environ['TRIPLEO_UNDERCLOUD_CONF_FILE'],
-    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE':
-        os.environ['TRIPLEO_UNDERCLOUD_PASSWORD_FILE'],
-    'MEMBER_ROLE_EXISTS': os.environ.get('MEMBER_ROLE_EXISTS', 'false'),
-}
-
-# Include all config opts in the context
-for _, group in undercloud.list_opts():
-    for opt in group:
-        upper_name = opt.name.upper()
-        context[upper_name] = os.environ[upper_name]
-
-# Mustache conditional logic requires ENABLE_NOVAJOIN to be undefined
-# when novajoin is not enabled.
-if context['ENABLE_NOVAJOIN'].lower() == 'false':
-    del context['ENABLE_NOVAJOIN']
+context = {item: os.environ.get(item)
+           for item in undercloud.InstackEnvironment.PUPPET_KEYS}
 
 endpoint_context = {}
 for k, v in os.environ.items():
