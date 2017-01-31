@@ -278,7 +278,7 @@ _opts = [
                       'information for newly enrolled nodes.')
                 ),
     cfg.StrOpt('discovery_default_driver',
-               default='fake',
+               default='pxe_ipmitool',
                help=('The default driver to use for newly discovered nodes '
                      '(requires enable_node_discovery set to True). This '
                      'driver is automatically added to enabled_drivers.')

@@ -350,14 +350,14 @@ class TestGenerateEnvironment(BaseTestCase):
     def test_enabled_discovery(self):
         conf = config_fixture.Config()
         self.useFixture(conf)
-        conf.config(enable_node_discovery=True)
+        conf.config(enable_node_discovery=True,
+                    discovery_default_driver='foobar')
         env = undercloud._generate_environment('.')
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
         drivers = json.loads(env['ENABLED_DRIVERS'])
-        # Discovery requires enabling the default driver, which is fake by
-        # default
-        self.assertEqual(sorted(drivers), ['fake', 'pxe_drac', 'pxe_ilo',
+        # Discovery requires enabling the default driver
+        self.assertEqual(sorted(drivers), ['foobar', 'pxe_drac', 'pxe_ilo',
                                            'pxe_ipmitool', 'pxe_ssh'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], 'enroll')
 

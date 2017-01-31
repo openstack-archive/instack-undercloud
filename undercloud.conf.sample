@@ -141,7 +141,7 @@
 # The default driver to use for newly discovered nodes (requires
 # enable_node_discovery set to True). This driver is automatically
 # added to enabled_drivers. (string value)
-#discovery_default_driver = fake
+#discovery_default_driver = pxe_ipmitool
 
 # Whether to enable the debug log level for Undercloud OpenStack
 # services. (boolean value)

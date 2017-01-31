@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    Allow enabling auto-discovery of ironic nodes by setting new option
+    ``enable_node_discovery=True`` in the ``undercloud.conf``. When enabled,
+    adds unknown nodes that boot the introspection ramdisk to ironic in the
+    ``enroll`` provisioning state and the driver set to the value of
+    ``discovery_default_driver`` configuration option (``pxe_ipmitool`` by
+    default). See ironic-inspector documentation for more details:
+    http://docs.openstack.org/developer/ironic-inspector/usage.html#discovery.
