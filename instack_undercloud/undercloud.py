@@ -76,7 +76,7 @@ LOG = None
 CONF = cfg.CONF
 COMPLETION_MESSAGE = """
 #############################################################################
-Undercloud install complete.
+Undercloud %(undercloud_operation)s complete.
 
 The file containing this installation's passwords is at
 %(password_path)s.
@@ -90,7 +90,7 @@ secured.
 """
 FAILURE_MESSAGE = """
 #############################################################################
-Undercloud install failed.
+Undercloud %(undercloud_operation)s failed.
 
 Reason: %(exception)s
 
@@ -1271,6 +1271,7 @@ def install(instack_root, upgrade=False):
     :param instack_root: The path containing the instack-undercloud elements
         and json files.
     """
+    undercloud_operation = "upgrade" if upgrade else "install"
     try:
         _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
         LOG.info('Logging to %s', PATHS.LOG_FILE)
@@ -1288,10 +1289,14 @@ def install(instack_root, upgrade=False):
         _post_config(instack_env)
         _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
     except Exception as e:
-        LOG.error(FAILURE_MESSAGE, {'exception': six.text_type(e),
-                                    'log_file': PATHS.LOG_FILE})
+        LOG.error(FAILURE_MESSAGE,
+                  {'undercloud_operation': undercloud_operation,
+                   'exception': six.text_type(e),
+                   'log_file': PATHS.LOG_FILE})
         if CONF.undercloud_debug:
             raise
     else:
-        LOG.info(COMPLETION_MESSAGE, {'password_path': PATHS.PASSWORD_PATH,
-                 'stackrc_path': os.path.expanduser('~/stackrc')})
+        LOG.info(COMPLETION_MESSAGE,
+                 {'undercloud_operation': undercloud_operation,
+                  'password_path': PATHS.PASSWORD_PATH,
+                  'stackrc_path': os.path.expanduser('~/stackrc')})
