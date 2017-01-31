@@ -713,6 +713,9 @@ tripleo_undercloud_password_file: {{TRIPLEO_UNDERCLOUD_PASSWORD_FILE}}
 
 # Novajoin
 {{#ENABLE_NOVAJOIN}}
+novajoin_listen_port: 9090
+nova::metadata::novajoin::api::bind_address: "{{LOCAL_IP}}"
+nova::metadata::novajoin::api::join_listen_port: "%{hiera('novajoin_listen_port')}"
 nova::metadata::novajoin::api::keystone_auth_url: "%{hiera('keystone_auth_uri')}"
 nova::metadata::novajoin::api::nova_password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::metadata::novajoin::api::transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
@@ -721,7 +724,7 @@ ipaclient::hostname: {{UNDERCLOUD_HOSTNAME}}
 enable_novajoin: true
 nova::api::vendordata_jsonfile_path: '/etc/nova/cloud-config-novajoin.json'
 nova::api::vendordata_providers: ['StaticJSON', 'DynamicJSON']
-nova::api::vendordata_dynamic_targets: ['join@http://127.0.0.1:9999/v1/']
+nova::api::vendordata_dynamic_targets: ["join@http://{{LOCAL_IP}}:%{hiera('novajoin_listen_port')}/v1/"]
 nova::notification_topics: 'notifications'
 nova::notify_on_state_change: 'vm_state'
 {{/ENABLE_NOVAJOIN}}
