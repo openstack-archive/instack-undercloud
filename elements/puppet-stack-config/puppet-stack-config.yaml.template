@@ -482,7 +482,6 @@ ironic::inspector::authtoken::username: 'ironic'
 ironic::inspector::authtoken::password: "%{hiera('ironic::api::authtoken::password')}"
 ironic::inspector::authtoken::project_name: 'service'
 ironic::inspector::db::database_connection: mysql+pymysql://ironic-inspector:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic-inspector
-ironic::inspector::enable_setting_ipmi_credentials: true
 ironic::inspector::keep_ports: 'added'
 ironic::inspector::ironic_username: 'ironic'
 ironic::inspector::ironic_password: "%{hiera('ironic::api::authtoken::password')}"
