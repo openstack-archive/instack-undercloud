@@ -3,4 +3,4 @@ require 'puppet-lint/tasks/puppet-lint'
 
 PuppetLint.configuration.fail_on_warnings = true
 PuppetLint.configuration.send('disable_80chars')
-
+PuppetSyntax.fail_on_deprecation_notices = false
