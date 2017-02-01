@@ -1,0 +1,9 @@
+---
+upgrade:
+  - |
+    During the upgrade to Ocata, ironic-inspector is switched from a local
+    SQLite database to the same MySQL/MariaDB all other services are using.
+    Please make sure that no introspections are in progress during upgrade.
+    Please re-create introspection rules after the upgrade.
+    This change does not affect the ability to retrieve introspection data
+    from introspection runs before the upgrade.
