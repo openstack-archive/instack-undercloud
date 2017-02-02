@@ -1,6 +1,0 @@
-#!/bin/bash
-
-set -eux
-set -o pipefail
-
-dracut -f -v -N
