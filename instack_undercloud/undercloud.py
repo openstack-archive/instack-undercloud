@@ -861,6 +861,40 @@ def _member_role_exists(instack_env):
     instack_env['MEMBER_ROLE_EXISTS'] = six.text_type(role_exists)
 
 
+class InstackEnvironment(dict):
+    """An environment to pass to Puppet with some safety checks.
+
+    Keeps lists of variables we add to the operating system environment,
+    and ensures that we don't anything not defined there.
+    """
+
+    INSTACK_KEYS = {'HOSTNAME', 'ELEMENTS_PATH', 'NODE_DIST', 'JSONFILE',
+                    'REG_METHOD', 'REG_HALT_UNREGISTER', 'PUBLIC_INTERFACE_IP'}
+    """The variables instack and/or used elements can read."""
+
+    DYNAMIC_KEYS = {'INSPECTION_COLLECTORS', 'INSPECTION_KERNEL_ARGS',
+                    'INSPECTION_NODE_NOT_FOUND_HOOK',
+                    'TRIPLEO_INSTALL_USER', 'TRIPLEO_UNDERCLOUD_CONF_FILE',
+                    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE', 'MEMBER_ROLE_EXISTS'}
+    """The variables we calculate in _generate_environment call."""
+
+    PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
+                                  for opt in group}
+    """Keys we pass for formatting the resulting hieradata."""
+
+    SET_ALLOWED_KEYS = DYNAMIC_KEYS | INSTACK_KEYS | PUPPET_KEYS
+    """Keys which we allow to add/change in this environment."""
+
+    def __init__(self):
+        super(InstackEnvironment, self).__init__(os.environ)
+
+    def __setitem__(self, key, value):
+        if key not in self.SET_ALLOWED_KEYS:
+            raise KeyError('Key %s is not allowed for an InstackEnvironment' %
+                           key)
+        return super(InstackEnvironment, self).__setitem__(key, value)
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -870,7 +904,7 @@ def _generate_environment(instack_root):
     :param instack_root: The path containing the instack-undercloud elements
         and json files.
     """
-    instack_env = dict(os.environ)
+    instack_env = InstackEnvironment()
     # Rabbit uses HOSTNAME, so we need to make sure it's right
     instack_env['HOSTNAME'] = CONF.undercloud_hostname or socket.gethostname()
 
@@ -965,6 +999,11 @@ def _generate_environment(instack_root):
     instack_env['TRIPLEO_INSTALL_USER'] = getpass.getuser()
     instack_env['TRIPLEO_UNDERCLOUD_CONF_FILE'] = PATHS.CONF_PATH
     instack_env['TRIPLEO_UNDERCLOUD_PASSWORD_FILE'] = PATHS.PASSWORD_PATH
+
+    # Mustache conditional logic requires ENABLE_NOVAJOIN to be undefined
+    # when novajoin is not enabled.
+    if instack_env['ENABLE_NOVAJOIN'].lower() == 'false':
+        del instack_env['ENABLE_NOVAJOIN']
 
     _generate_endpoints(instack_env)
 
