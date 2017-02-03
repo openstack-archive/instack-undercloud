@@ -365,7 +365,7 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         endpoint_vars = {k: v for (k, v) in env.items()
                          if k.startswith('UNDERCLOUD_ENDPOINT')}
-        self.assertEqual(57, len(endpoint_vars))
+        self.assertEqual(87, len(endpoint_vars))
         # Spot check one service
         self.assertEqual('http://192.168.24.1:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
@@ -389,6 +389,8 @@ class TestGenerateEnvironment(BaseTestCase):
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
         self.assertEqual('http://192.168.24.3:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
+        self.assertEqual('https://192.168.24.2:443/keystone/v2.0',
+                         env['UNDERCLOUD_ENDPOINT_KEYSTONE_UI_CONFIG_PUBLIC'])
         # Also check that the tenant id part is preserved
         self.assertEqual('https://192.168.24.2:13808/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
