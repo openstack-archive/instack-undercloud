@@ -465,8 +465,11 @@ include ::ironic::drivers::ilo
 include ::ironic::drivers::ipmi
 include ::ironic::drivers::pxe
 include ::ironic::drivers::ssh
+include ::ironic::glance
 include ::ironic::inspector
+include ::ironic::neutron
 include ::ironic::pxe
+include ::ironic::swift
 include ::ironic::cors
 
 Keystone_endpoint<||> -> Service['ironic-api']
