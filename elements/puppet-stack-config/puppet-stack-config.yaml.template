@@ -442,6 +442,8 @@ ironic::api::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
 ironic::api::host_ip: {{LOCAL_IP}}
 ironic::api::workers: "%{::os_workers}"
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
+ironic::glance::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+ironic::glance::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::rabbit_host: {{LOCAL_IP}}
 ironic::rabbit_hosts: {{LOCAL_IP:5672}}
 ironic::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
@@ -693,6 +695,7 @@ heat::keystone::authtoken::project_name: 'service'
 glance::api::authtoken::project_name: 'service'
 glance::registry::authtoken::project_name: 'service'
 ironic::api::authtoken::project_name: 'service'
+ironic::glance::project_name: 'service'
 nova::keystone::authtoken::project_name: 'service'
 swift::proxy::authtoken::project_name: 'service'
 mistral::keystone_tenant: 'service'
