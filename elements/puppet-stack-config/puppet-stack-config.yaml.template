@@ -368,11 +368,8 @@ nova::api::enabled_apis:
   - osapi_compute
   - metadata
 nova::api::sync_db_api: true
-nova::api::service_name: 'httpd'
 nova::api::osapi_compute_workers: "%{::os_workers}"
 nova::api::metadata_workers: "%{::os_workers}"
-nova::wsgi::apache_api::ssl: false
-nova::wsgi::apache_api::bind_host: {{LOCAL_IP}}
 nova::wsgi::apache_placement::ssl: false
 nova::wsgi::apache_placement::bind_host: {{LOCAL_IP}}
 nova::wsgi::apache_placement::api_port: '8778'

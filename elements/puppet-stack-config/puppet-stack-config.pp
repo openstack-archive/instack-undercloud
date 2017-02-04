@@ -327,24 +327,11 @@ class { '::nova':
   debug              => hiera('debug'),
 }
 
-# Manages the migration to Nova API in mod_wsgi with Apache.
-# - First update nova.conf with new parameters
-# - Stop nova-api process before starting apache to avoid binding error
-# - Start apache after configuring all vhosts
-exec { 'stop_nova-api':
-  command     => 'service openstack-nova-api stop',
-  path        => '/usr/sbin',
-  refreshonly => true,
-}
-Nova_config<||> ~> Exec['stop_nova-api']
-Exec['stop_nova-api'] -> Service['httpd']
-
 class { '::nova::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
 include ::nova::cell_v2::simple_setup
 include ::nova::placement
-include ::nova::wsgi::apache_api
 include ::nova::wsgi::apache_placement
 include ::nova::cert
 include ::nova::cron::archive_deleted_rows
