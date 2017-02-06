@@ -427,6 +427,13 @@ nova::keystone::auth_placement::region: "%{hiera('keystone_region')}"
 
 nova::glance_api_servers: {{UNDERCLOUD_ENDPOINT_GLANCE_INTERNAL}}
 
+# NOTE(aschultz): raise upper limit on nova DB syncs for undercloud only.
+# There is no way this should take 15 minutes and if it does we now have way
+# different problems. But rather than block undercloud installs let's increase
+# the timeout for these actions. See LP#1661396 for more details.
+nova::db::sync::db_sync_timeout: 900
+nova::db::sync_api::db_sync_timeout: 900
+
 # Ironic
 ironic::debug: "%{hiera('debug')}"
 ironic::my_ip: {{LOCAL_IP}}
