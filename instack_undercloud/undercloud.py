@@ -656,7 +656,7 @@ def _validate_configuration():
         _check_sysctl()
         _validate_network()
     except RuntimeError as e:
-        LOG.error('An error occured during configuration validation, '
+        LOG.error('An error occurred during configuration validation, '
                   'please check your host configuration and try again. '
                   'Error message: {error}'.format(error=e))
         sys.exit(1)
