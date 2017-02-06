@@ -1,5 +1,5 @@
 # Clear any old environment that may conflict.
-for key in $( set | awk '{FS=\"=\"}  /^OS_/ {print $1}' ); do unset $key ; done
+for key in $( set | awk '{FS="="}  /^OS_/ {print $1}' ); do unset $key ; done
 NOVA_VERSION=1.1
 export NOVA_VERSION
 OS_PASSWORD=$(sudo hiera admin_password)
