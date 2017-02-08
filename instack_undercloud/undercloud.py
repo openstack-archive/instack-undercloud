@@ -108,12 +108,6 @@ REQUIRED_MB = 3750
 # When adding new options to the lists below, make sure to regenerate the
 # sample config by running "tox -e genconfig" in the project root.
 _opts = [
-    cfg.StrOpt('image_path',
-               default='.',
-               help=('Local file path to the necessary images. The path '
-                     'should be a directory readable by the current user '
-                     'that contains the full set of images.'),
-               ),
     cfg.StrOpt('undercloud_hostname',
                help=('Fully qualified hostname (including domain) to set on '
                      'the Undercloud. If left unset, the '
