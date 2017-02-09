@@ -472,6 +472,10 @@ include ::ironic::cors
 Keystone_endpoint<||> -> Service['ironic-api']
 Keystone_endpoint<||> -> Service['ironic-inspector']
 
+# https://bugs.launchpad.net/tripleo/+bug/1663273
+Keystone_endpoint <||> -> Service['nova-compute']
+Keystone_service <||> -> Service['nova-compute']
+
 if str2bool(hiera('enable_tempest', true)) {
   # tempest
   # TODO: when puppet-tempest supports install by package, do that instead
