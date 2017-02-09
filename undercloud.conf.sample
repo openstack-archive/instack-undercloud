@@ -4,11 +4,6 @@
 # From instack-undercloud
 #
 
-# Local file path to the necessary images. The path should be a
-# directory readable by the current user that contains the full set of
-# images. (string value)
-#image_path = .
-
 # Fully qualified hostname (including domain) to set on the
 # Undercloud. If left unset, the current hostname will be used, but
 # the user is responsible for configuring all system hostname settings
