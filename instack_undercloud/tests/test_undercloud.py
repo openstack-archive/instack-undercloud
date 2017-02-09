@@ -26,7 +26,6 @@ from novaclient import exceptions
 from oslo_config import fixture as config_fixture
 from oslotest import base
 from oslotest import log
-from oslotest import mockpatch
 from six.moves import configparser
 
 from instack_undercloud import undercloud
@@ -41,8 +40,8 @@ class BaseTestCase(base.BaseTestCase):
         self.logger = self.useFixture(log.ConfigureLogging()).logger
         # Otherwise our test logger doesn't see the log messages
         self.useFixture(
-            mockpatch.Patch('instack_undercloud.undercloud.LOG.propagate',
-                            True))
+            fixtures.MockPatch('instack_undercloud.undercloud.LOG.propagate',
+                               True))
 
 
 class TestUndercloud(BaseTestCase):
@@ -268,16 +267,16 @@ class TestGenerateEnvironment(BaseTestCase):
         super(TestGenerateEnvironment, self).setUp()
         # Things that need to always be mocked out, but that the tests
         # don't want to care about.
-        self.useFixture(mockpatch.Patch(
+        self.useFixture(fixtures.MockPatch(
             'instack_undercloud.undercloud._write_password_file'))
-        self.useFixture(mockpatch.Patch(
+        self.useFixture(fixtures.MockPatch(
             'instack_undercloud.undercloud._load_config'))
-        mock_isdir = mockpatch.Patch('os.path.isdir')
+        mock_isdir = fixtures.MockPatch('os.path.isdir')
         self.useFixture(mock_isdir)
         mock_isdir.mock.return_value = False
         # Some tests do care about this, but they can override the default
         # return value, and then the tests that don't care can ignore it.
-        self.mock_distro = mockpatch.Patch('platform.linux_distribution')
+        self.mock_distro = fixtures.MockPatch('platform.linux_distribution')
         self.useFixture(self.mock_distro)
         self.mock_distro.mock.return_value = [
             'Red Hat Enterprise Linux Server 7.1']
