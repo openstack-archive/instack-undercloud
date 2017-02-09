@@ -1,0 +1,10 @@
+---
+fixes:
+  - |
+    The default ``IRONIC_API_VERSION`` in ``stackrc`` is now set to the same
+    value as ``OS_BAREMETAL_API_VERSION`` for consistency between two clients.
+other:
+  - |
+    The default ``OS_BAREMETAL_API_VERSION`` in ``stackrc`` was bumped to 1.29,
+    which corresponds to Ocata final and allows using all recent features
+    without specifying and explicit version.
