@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    The required memory for an undercloud install has been increased from 4 GB
+    to 8 GB.  Note that this is an absolute minimum.  More memory is
+    recommended for production installs.

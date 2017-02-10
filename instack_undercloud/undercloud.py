@@ -100,9 +100,9 @@ log can be found at %(log_file)s.
 
 #############################################################################
 """
-# We need 4 GB, leave a little room for variation in what 4 GB means on
+# We need 8 GB, leave a little room for variation in what 8 GB means on
 # different platforms.
-REQUIRED_MB = 3750
+REQUIRED_MB = 7750
 
 
 # When adding new options to the lists below, make sure to regenerate the
