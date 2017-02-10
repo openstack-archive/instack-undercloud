@@ -30,7 +30,7 @@ import tempfile
 import time
 import uuid
 
-from keystoneclient import exceptions as ks_exceptions
+from keystoneauth1 import exceptions as ks_exceptions
 from keystoneclient import auth
 from keystoneclient import session
 from keystoneclient import discover
@@ -901,39 +901,40 @@ def _write_password_file(instack_env):
             password_file.write('%s=%s\n' % (opt.name, value))
 
 
-def _member_role_exists(instack_env):
+def _member_role_exists():
     # This is a workaround for puppet removing the deprecated _member_
-    # role on upgrade - if it exists we must not remove role assignments
+    # role on upgrade - if it exists we must restore role assignments
     # or trusts stored in the undercloud heat will break
-    if not _stackrc_exists():
-        instack_env['MEMBER_ROLE_EXISTS'] = 'False'
-        return
     user, password, tenant, auth_url = _get_auth_values()
-    role_exists = False
+    # Note this is made somewhat verbose due to trying to handle
+    # any format auth_url (versionless, v2,0/v3 suffix)
+    auth_plugin_class = auth.get_plugin_class('password')
+    auth_kwargs = {
+        'auth_url': auth_url,
+        'username': user,
+        'password': password,
+        'project_name': tenant}
+    if 'v2.0' not in auth_url:
+        auth_kwargs.update({
+            'project_domain_name': 'default',
+            'user_domain_name': 'default'})
+    auth_plugin = auth_plugin_class(**auth_kwargs)
+    sess = session.Session(auth=auth_plugin)
+    disc = discover.Discover(session=sess)
+    c = disc.create_client()
     try:
-        # Note this is made somewhat verbose due to trying to handle
-        # any format auth_url (versionless, v2,0/v3 suffix)
-        auth_plugin_class = auth.get_plugin_class('password')
-        auth_kwargs = {
-            'auth_url': auth_url,
-            'username': user,
-            'password': password,
-            'project_name': tenant}
-        if 'v2.0' not in auth_url:
-            auth_kwargs.update({
-                'project_domain_name': 'default',
-                'user_domain_name': 'default'})
-        auth_plugin = auth_plugin_class(**auth_kwargs)
-        sess = session.Session(auth=auth_plugin)
-        disc = discover.Discover(session=sess)
-        c = disc.create_client()
-        role_names = [r.name for r in c.roles.list()]
-        role_exists = '_member_' in role_names
-    except ks_exceptions.ConnectionError:
-        # This will happen on initial deployment, assume False
-        # as no new deployments should have _member_
-        role_exists = False
-    instack_env['MEMBER_ROLE_EXISTS'] = six.text_type(role_exists)
+        member_role = [r for r in c.roles.list() if r.name == '_member_'][0]
+    except IndexError:
+        # Do nothing if there is no _member_ role
+        return
+    admin_tenant = [t for t in c.tenants.list() if t.name == 'admin'][0]
+    admin_user = [u for u in c.users.list() if u.name == 'admin'][0]
+    try:
+        c.roles.add_user_role(admin_user, member_role, admin_tenant.id)
+        LOG.info('Added _member_ role to admin user')
+    except ks_exceptions.http.Conflict:
+        # They already had the role
+        pass
 
 
 class InstackEnvironment(dict):
@@ -950,7 +951,7 @@ class InstackEnvironment(dict):
     DYNAMIC_KEYS = {'INSPECTION_COLLECTORS', 'INSPECTION_KERNEL_ARGS',
                     'INSPECTION_NODE_NOT_FOUND_HOOK',
                     'TRIPLEO_INSTALL_USER', 'TRIPLEO_UNDERCLOUD_CONF_FILE',
-                    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE', 'MEMBER_ROLE_EXISTS'}
+                    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1088,8 +1089,6 @@ def _generate_environment(instack_root):
         public_host = CONF.undercloud_public_host
         instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = (
             '/etc/pki/tls/certs/undercloud-%s.pem' % public_host)
-
-    _member_role_exists(instack_env)
 
     return instack_env
 
@@ -1257,14 +1256,6 @@ def _ensure_flavor(nova, name, profile=None):
     LOG.info(message, name, profile)
 
 
-def _stackrc_exists():
-    user_stackrc = os.path.expanduser('~/stackrc')
-    # We gotta check if the copying of stackrc has already been done.
-    if os.path.isfile('/root/stackrc') and os.path.isfile(user_stackrc):
-        return True
-    return False
-
-
 def _copy_stackrc():
     args = ['sudo', 'cp', '/root/stackrc', os.path.expanduser('~')]
     try:
@@ -1377,6 +1368,8 @@ def _post_config(instack_env):
         project_name=tenant,
         auth_url=auth_url)
     _post_config_mistral(instack_env, mistral)
+
+    _member_role_exists()
 
 
 def _handle_upgrade_fact(upgrade=False):

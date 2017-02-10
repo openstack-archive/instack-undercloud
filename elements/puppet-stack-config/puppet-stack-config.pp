@@ -307,15 +307,6 @@ keystone_config {
   'ec2/driver': value => 'keystone.contrib.ec2.backends.sql.Ec2';
 }
 
-if str2bool(hiera('member_role_exists', false)) {
-  # Old deployments where assigning _member_ role to admin user.
-  # The _member_ role is needed because it's delegated via heat trusts in
-  # existing deployments, hence existing role assignments can't just be
-  # deleted. This Puppet Collector will allow to update deployments with
-  # admin role managed by Puppet.
-  Keystone_user_role<| title == 'admin@admin' |> { roles +> ['_member_'] }
-}
-
 # TODO: notifications, scrubber, etc.
 class { '::glance::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
