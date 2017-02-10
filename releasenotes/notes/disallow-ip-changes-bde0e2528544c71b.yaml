@@ -1,0 +1,11 @@
+---
+upgrade:
+  - |
+    Network configuration changes are no longer allowed during undercloud
+    upgrades.  Changing the local_ip of a deployed undercloud causes problems
+    with some of the services, so a pre-deployment check was added to prevent
+    such changes.
+
+    Because the default CIDR was changed in this release, the check also
+    prevents accidental reconfiguration of the ctlplane network if the old
+    default is still in use, but not explicitly configured.
