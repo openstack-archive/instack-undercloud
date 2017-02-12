@@ -1,0 +1,7 @@
+---
+issues:
+  - Deploy Nova API in eventlet instead of WSGI like it's suggested by
+    Nova team.
+    It's causing some issues that we didn't catch until now.
+    Related to `bug 1661360
+    <https://bugs.launchpad.net/tripleo/+bug/1661360>`__.

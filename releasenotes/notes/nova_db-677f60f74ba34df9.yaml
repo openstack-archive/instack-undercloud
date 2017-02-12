@@ -1,0 +1,10 @@
+---
+other:
+  - |
+    Increase sync timeout for nova db syncs.
+    We have seen on lower quality hardware that the nova db syncs can take
+    an excessive amount of time. In order to still support deploying on this
+    hardware, we now increase the timeout from the default 300 seconds to 900
+    seconds to allow for this less performant gear.
+    This value should never be bumped to more than 900. If we ever happen to
+    hit such time outs again, we'll have to investigate and fix the root cause.
