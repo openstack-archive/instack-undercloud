@@ -38,6 +38,9 @@ member_role_exists: {{MEMBER_ROLE_EXISTS}}
 # Common Hiera data gets applied to all nodes
 ssh::server::storeconfigs_enabled: false
 
+# memcached
+memcached::max_memory: '50%'
+
 # Apache
 apache::server_signature: 'Off'
 apache::server_tokens: 'Prod'
