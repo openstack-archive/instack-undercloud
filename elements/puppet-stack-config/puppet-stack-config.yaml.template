@@ -7,8 +7,7 @@ debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 controller_admin_vip: {{UNDERCLOUD_ADMIN_VIP}}
 controller_public_vip: {{UNDERCLOUD_PUBLIC_VIP}}
-ntp::servers:
-  -
+ntp::servers: {{UNDERCLOUD_NTP_SERVERS}}
 
 sysctl_settings:
   net.ipv4.ip_nonlocal_bind:

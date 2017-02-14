@@ -154,6 +154,9 @@ _opts = [
                help=('Virtual IP address to use for the admin endpoints of '
                      'Undercloud services. Only used with SSL.')
                ),
+    cfg.ListOpt('undercloud_ntp_servers',
+                default=[],
+                help=('List of ntp servers to use.')),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
                help=('Certificate file to use for OpenStack service SSL '
@@ -978,7 +981,6 @@ def _generate_init_data(instack_env):
             open(_get_template_path('net-config.json.template')).read()
 
     context['HIERADATA_OVERRIDE'] = hiera_entry
-
     partials = {'net_config': net_config_json}
     renderer = pystache.Renderer(partials=partials)
     template = _get_template_path('config.json.template')

@@ -50,7 +50,7 @@ Exec<| title == 'mistral-db-populate' |> { refreshonly => false }
 Exec<| title == 'zaqar-manage db_sync' |> { refreshonly => false }
 
 if count(hiera('ntp::servers')) > 0 {
-  include ::ntp
+  include ::tripleo::profile::base::time::ntp
 }
 
 include ::rabbitmq
