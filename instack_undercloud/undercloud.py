@@ -147,6 +147,9 @@ _opts = [
                 default=[],
                 help=('DNS nameserver(s) to use for the undercloud node.'),
                 ),
+    cfg.ListOpt('undercloud_ntp_servers',
+                default=[],
+                help=('List of ntp servers to use.')),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
                help=('Certificate file to use for OpenStack service SSL '
@@ -348,7 +351,6 @@ _opts = [
     cfg.ListOpt('enabled_drivers',
                 default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo', 'pxe_ssh'],
                 help=('List of enabled bare metal drivers.')),
-
 ]
 
 # Passwords, tokens, hashes
@@ -1102,7 +1104,6 @@ def _generate_init_data(instack_env):
     context['HIERADATA_OVERRIDE'] = hiera_entry
     context['UNDERCLOUD_NAMESERVERS'] = json.dumps(
         CONF.undercloud_nameservers)
-
     partials = {'net_config': net_config_json}
     renderer = pystache.Renderer(partials=partials)
     template = _get_template_path('config.json.template')

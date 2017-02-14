@@ -1,0 +1,5 @@
+---
+features:
+  - Add a UNDERCLOUD_NTP_SERVERS configuration in undercloud.conf
+fixes:
+  - Fixes `bug 1664537 <https://launchpad.net/bugs/1664537>`__ undercloud ntp configuration.

@@ -36,6 +36,9 @@
 # DNS nameserver(s) to use for the undercloud node. (list value)
 #undercloud_nameservers =
 
+# List of ntp servers to use. (list value)
+#undercloud_ntp_servers =
+
 # Certificate file to use for OpenStack service SSL connections.
 # Setting this enables SSL for the OpenStack API endpoints, leaving it
 # unset disables SSL. (string value)
