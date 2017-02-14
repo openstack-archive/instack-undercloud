@@ -237,7 +237,7 @@ class TestCheckMemory(BaseTestCase):
     @mock.patch('psutil.virtual_memory')
     def test_sufficient_memory(self, mock_vm):
         mock_vm.return_value = mock.Mock()
-        mock_vm.return_value.total = 4143927296
+        mock_vm.return_value.total = 8589934592
         undercloud._check_memory()
 
     @mock.patch('psutil.virtual_memory')
