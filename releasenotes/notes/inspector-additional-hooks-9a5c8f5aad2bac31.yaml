@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Add new plugins for lldp processing (``lldp_basic``) and switch
+    port link information (``local_link_connection``) to
+    ``processing_hooks`` in inspector.conf.
