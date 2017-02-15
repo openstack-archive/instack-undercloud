@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Use Swift as a backend of Zaqar. This effectively removes the new of
+    MongoDB on the undercloud.

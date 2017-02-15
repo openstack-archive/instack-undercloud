@@ -593,8 +593,11 @@ zaqar::keystone::auth_websocket::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::unreliable: true
 zaqar::transport::websocket::bind: {{LOCAL_IP}}
 zaqar::transport::wsgi::bind: {{LOCAL_IP}}
-zaqar::management::mongodb::uri: mongodb://127.0.0.1:27017
-zaqar::messaging::mongodb::uri: mongodb://127.0.0.1:27017
+zaqar::message_store: swift
+zaqar::management_store: sqlalchemy
+zaqar::management::sqlalchemy::uri: mysql+pymysql://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@{{LOCAL_IP}}/zaqar
+zaqar::messaging::swift::uri: swift://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@/service
+zaqar::messaging::swift::auth_url: "%{hiera('keystone_auth_uri')}"
 zaqar::message_pipeline: 'zaqar.notification.notifier'
 zaqar::max_messages_post_size: 1048576
 
@@ -749,12 +752,6 @@ nova::notify_on_state_change: 'vm_state'
 # Firewall
 tripleo::firewall::manage_firewall: true
 tripleo::firewall::firewall_rules:
-  '101 mongodb_config':
-    dport: 27019
-  '102 mongodb_sharding':
-    dport: 27018
-  '103 mongod':
-    dport: 27017
   '105 ntp':
     dport: 123
     proto: udp

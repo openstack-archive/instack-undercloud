@@ -560,13 +560,9 @@ if str2bool(hiera('enable_validations', true)) {
   include ::tripleo::profile::base::validations
 }
 
-include ::mongodb::globals
-include ::mongodb::server
-include ::mongodb::client
-
 include ::zaqar
-include ::zaqar::management::mongodb
-include ::zaqar::messaging::mongodb
+include ::zaqar::management::sqlalchemy
+include ::zaqar::messaging::swift
 include ::zaqar::keystone::auth
 include ::zaqar::keystone::auth_websocket
 include ::zaqar::transport::websocket
