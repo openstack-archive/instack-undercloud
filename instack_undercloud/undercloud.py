@@ -609,9 +609,9 @@ def _check_memory():
     mem = psutil.virtual_memory()
     total_mb = mem.total / 1024 / 1024
     if total_mb < REQUIRED_MB:
-        LOG.error('At least 4 GB of memory is required for undercloud '
-                  'installation.  A minimum of 6 GB is recommended. '
-                  'Only detected %d MB' % total_mb)
+        LOG.error('At least %d MB of memory is required for undercloud '
+                  'installation.  A minimum of 8 GB is recommended. '
+                  'Only detected %d MB' % (REQUIRED_MB, total_mb))
         raise RuntimeError('Insufficient memory available')
 
 
