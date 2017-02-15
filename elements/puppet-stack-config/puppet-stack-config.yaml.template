@@ -503,7 +503,7 @@ ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
 ironic::inspector::ramdisk_collectors: {{INSPECTION_COLLECTORS}}
-ironic::inspector::additional_processing_hooks: 'extra_hardware'
+ironic::inspector::additional_processing_hooks: 'extra_hardware,lldp_basic,local_link_connection'
 ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}
 ironic::inspector::ipxe_timeout: 60
 ironic::inspector::node_not_found_hook: {{INSPECTION_NODE_NOT_FOUND_HOOK}}
