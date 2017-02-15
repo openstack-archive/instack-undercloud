@@ -29,6 +29,7 @@ from oslotest import log
 from six.moves import configparser
 
 from instack_undercloud import undercloud
+from instack_undercloud import validator
 
 
 undercloud._configure_logging(undercloud.DEFAULT_LOG_LEVEL, None)
@@ -144,10 +145,12 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._check_memory')
     @mock.patch('instack_undercloud.undercloud._check_sysctl')
     @mock.patch('instack_undercloud.undercloud._validate_network')
-    def test_validate_configuration(self, mock_validate_network,
+    @mock.patch('instack_undercloud.undercloud._validate_no_ip_change')
+    def test_validate_configuration(self, mock_vnic, mock_validate_network,
                                     mock_check_memory, mock_check_hostname,
                                     mock_check_sysctl):
         undercloud._validate_configuration()
+        self.assertTrue(mock_vnic.called)
         self.assertTrue(mock_validate_network.called)
         self.assertTrue(mock_check_memory.called)
         self.assertTrue(mock_check_hostname.called)
@@ -260,6 +263,48 @@ class TestCheckSysctl(BaseTestCase):
     def test_available_option(self, mock_isfile):
         mock_isfile.return_value = True
         undercloud._check_sysctl()
+
+
+class TestNoIPChange(BaseTestCase):
+    @mock.patch('os.path.isfile', return_value=False)
+    def test_new_install(self, mock_isfile):
+        undercloud._validate_no_ip_change()
+
+    @mock.patch('instack_undercloud.undercloud.open')
+    @mock.patch('json.loads')
+    @mock.patch('os.path.isfile', return_value=True)
+    def test_update_matches(self, mock_isfile, mock_loads, mock_open):
+        mock_members = [{'name': 'eth0'},
+                        {'name': 'br-ctlplane',
+                         'addresses': [{'ip_netmask': '192.168.24.1/24'}]
+                         }
+                        ]
+        mock_config = {'network_config': mock_members}
+        mock_loads.return_value = mock_config
+        undercloud._validate_no_ip_change()
+
+    @mock.patch('instack_undercloud.undercloud.open')
+    @mock.patch('json.loads')
+    @mock.patch('os.path.isfile', return_value=True)
+    def test_update_mismatch(self, mock_isfile, mock_loads, mock_open):
+        mock_members = [{'name': 'eth0'},
+                        {'name': 'br-ctlplane',
+                         'addresses': [{'ip_netmask': '192.168.0.1/24'}]
+                         }
+                        ]
+        mock_config = {'network_config': mock_members}
+        mock_loads.return_value = mock_config
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_no_ip_change)
+
+    @mock.patch('instack_undercloud.undercloud.open')
+    @mock.patch('json.loads')
+    @mock.patch('os.path.isfile', return_value=True)
+    def test_update_no_network(self, mock_isfile, mock_loads, mock_open):
+        mock_members = [{'name': 'eth0'}]
+        mock_config = {'network_config': mock_members}
+        mock_loads.return_value = mock_config
+        undercloud._validate_no_ip_change()
 
 
 class TestGenerateEnvironment(BaseTestCase):

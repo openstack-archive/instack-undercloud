@@ -646,12 +646,42 @@ def _validate_network():
     validator.validate_config(params, error_handler)
 
 
+def _validate_no_ip_change():
+    """Disallow provisioning interface IP changes
+
+    Changing the provisioning network IP causes a number of issues, so we
+    need to disallow it early in the install before configurations start to
+    be changed.
+    """
+    os_net_config_file = '/etc/os-net-config/config.json'
+    # Nothing to do if we haven't already installed
+    if not os.path.isfile(
+            os.path.expanduser(os_net_config_file)):
+        return
+    with open(os_net_config_file) as f:
+        network_config = json.loads(f.read())
+    try:
+        ctlplane = [i for i in network_config.get('network_config', [])
+                    if i['name'] == 'br-ctlplane'][0]
+    except IndexError:
+        # Nothing to check if br-ctlplane wasn't configured
+        return
+    existing_ip = ctlplane['addresses'][0]['ip_netmask']
+    if existing_ip != CONF.local_ip:
+        message = ('Changing the local_ip is not allowed.  Existing IP: '
+                   '%s, Configured IP: %s') % (existing_ip,
+                                               CONF.network_cidr)
+        LOG.error(message)
+        raise validator.FailedValidation(message)
+
+
 def _validate_configuration():
     try:
         _check_hostname()
         _check_memory()
         _check_sysctl()
         _validate_network()
+        _validate_no_ip_change()
     except RuntimeError as e:
         LOG.error('An error occurred during configuration validation, '
                   'please check your host configuration and try again. '
