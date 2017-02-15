@@ -501,6 +501,7 @@ def _configure_logging(level, filename):
     formatter = logging.Formatter(DEFAULT_LOG_FORMAT)
     handler.setFormatter(formatter)
     LOG.addHandler(handler)
+    LOG.propagate = False
 
 
 def _load_config():
