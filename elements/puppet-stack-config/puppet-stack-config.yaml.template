@@ -354,7 +354,7 @@ panko::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_PANKO_INTERNAL}}
 panko::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_PANKO_ADMIN}}
 panko::keystone::auth::password: {{UNDERCLOUD_PANKO_PASSWORD}}
 panko::keystone::auth::region: "%{hiera('keystone_region')}"
-
+panko::keystone::authtoken::project_name: 'service'
 
 # Nova
 nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
