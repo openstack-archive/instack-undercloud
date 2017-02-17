@@ -391,6 +391,8 @@ nova::compute::force_config_drive: true
 nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
 nova::compute::reserved_host_memory: '0'
 nova::compute::vnc_enabled: false
+nova::compute::instance_usage_audit: true
+nova::compute::instance_usage_audit_period: 'hour'
 nova::cron::archive_deleted_rows::destination: '/dev/null'
 nova_sync_power_state_interval: -1
 
