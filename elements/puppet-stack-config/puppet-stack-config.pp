@@ -247,6 +247,27 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::panko::db::sync
   include ::panko::api
   include ::panko::wsgi::apache
+} else {
+  # If Telemetry is disabled, ensure we tear down everything:
+  # packages, services, configuration files.
+  Package { [
+    'python-aodh',
+    'python-ceilometer',
+    'python-gnocchi',
+    'python-panko'
+  ]:
+    ensure => 'purged',
+    notify => Service['httpd'],
+  }
+  File { [
+    '/etc/httpd/conf.d/10-aodh_wsgi.conf',
+    '/etc/httpd/conf.d/10-ceilometer_wsgi.conf',
+    '/etc/httpd/conf.d/10-gnocchi_wsgi.conf',
+    '/etc/httpd/conf.d/10-panko_wsgi.conf',
+  ]:
+    ensure => absent,
+    notify => Service['httpd'],
+  }
 }
 
 $ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
