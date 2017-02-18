@@ -240,17 +240,32 @@ class TestCheckHostname(BaseTestCase):
 
 
 class TestCheckMemory(BaseTestCase):
+    @mock.patch('psutil.swap_memory')
     @mock.patch('psutil.virtual_memory')
-    def test_sufficient_memory(self, mock_vm):
+    def test_sufficient_memory(self, mock_vm, mock_sm):
         mock_vm.return_value = mock.Mock()
         mock_vm.return_value.total = 8589934592
+        mock_sm.return_value = mock.Mock()
+        mock_sm.return_value.total = 0
         undercloud._check_memory()
 
+    @mock.patch('psutil.swap_memory')
     @mock.patch('psutil.virtual_memory')
-    def test_insufficient_memory(self, mock_vm):
+    def test_insufficient_memory(self, mock_vm, mock_sm):
         mock_vm.return_value = mock.Mock()
         mock_vm.return_value.total = 2071963648
+        mock_sm.return_value = mock.Mock()
+        mock_sm.return_value.total = 0
         self.assertRaises(RuntimeError, undercloud._check_memory)
+
+    @mock.patch('psutil.swap_memory')
+    @mock.patch('psutil.virtual_memory')
+    def test_sufficient_swap(self, mock_vm, mock_sm):
+        mock_vm.return_value = mock.Mock()
+        mock_vm.return_value.total = 6442450944
+        mock_sm.return_value = mock.Mock()
+        mock_sm.return_value.total = 2147483648
+        undercloud._check_memory()
 
 
 class TestCheckSysctl(BaseTestCase):

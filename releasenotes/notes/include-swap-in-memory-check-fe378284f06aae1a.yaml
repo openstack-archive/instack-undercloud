@@ -1,0 +1,7 @@
+---
+other:
+  - |
+    Swap memory is now included in the minimum memory check.  While relying on
+    swap is still not recommended for production deployments, it is not
+    uncommon for developers to use SSD-backed swap to fit more instances into
+    a system with limited memory.

@@ -607,7 +607,8 @@ def _check_memory():
     proceeding with install.
     """
     mem = psutil.virtual_memory()
-    total_mb = mem.total / 1024 / 1024
+    swap = psutil.swap_memory()
+    total_mb = (mem.total + swap.total) / 1024 / 1024
     if total_mb < REQUIRED_MB:
         LOG.error('At least %d MB of memory is required for undercloud '
                   'installation.  A minimum of 8 GB is recommended. '
