@@ -113,8 +113,10 @@ class TestUndercloud(BaseTestCase):
         self.assertIn(undercloud.FAILURE_MESSAGE % log_dict,
                       self.logger.output)
 
+    @mock.patch('sys.exit')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
-    def test_install_exception_no_debug(self, mock_configure_logging):
+    def test_install_exception_no_debug(self, mock_configure_logging,
+                                        mock_exit):
         mock_configure_logging.side_effect = RuntimeError('foo')
         conf = config_fixture.Config()
         self.useFixture(conf)
@@ -126,6 +128,7 @@ class TestUndercloud(BaseTestCase):
                     }
         self.assertIn(undercloud.FAILURE_MESSAGE % log_dict,
                       self.logger.output)
+        mock_exit.assert_called_with(1)
 
     def test_generate_password(self):
         first = undercloud._generate_password()

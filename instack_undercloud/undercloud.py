@@ -1447,6 +1447,7 @@ def install(instack_root, upgrade=False):
                    'log_file': PATHS.LOG_FILE})
         if CONF.undercloud_debug:
             raise
+        sys.exit(1)
     else:
         LOG.info(COMPLETION_MESSAGE,
                  {'undercloud_operation': undercloud_operation,
