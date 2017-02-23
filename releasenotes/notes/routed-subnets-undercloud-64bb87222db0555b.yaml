@@ -1,0 +1,93 @@
+---
+prelude: >
+    With support for routed networks, several options are deprecated and the
+    way undercloud networking is defined in the configuration file has several
+    changes. Please refer to the **Deprecation Notes** and **Upgrade notes**
+    section for details.
+features:
+  - Routed networks support adds the ability to configure Ironic Inspector
+    and Neutron provisioning network in the undercloud to enable provisioning
+    of nodes via DHCP-relay to the undercloud from remote routed network
+    segments.
+upgrade:
+  - |
+    With support for routed network segments, several options are deprecated
+    and the way undercloud networking is defined in the configuration file has
+    several changes.
+
+    **New option:** ``subnets`` A list of subnets. One entry for each routed
+    network segment used for provisioning and introspection. For each network
+    segment a section/group needs to be added to the configuration file
+    specifying the following subnet options:
+
+    ======================  ================================================
+    option                  Description
+    ======================  ================================================
+    ``cidr``                Network CIDR for the subnet.
+    ``dhcp_start``          Start of DHCP allocation range for PXE and DHCP.
+    ``dhcp_end``            End of DHCP allocation range for PXE and DHCP.
+    ``inspection_iprange``  Temporary IP range that will be given to nodes
+                            during the inspection process.
+    ``gateway``             Network(subnet) gateway/router.
+    ``masquerade``          (Boolean) If ``True`` the undercloud will
+                            masquerade this network for external access.
+    ======================  ================================================
+
+    **New option:** ``local_subnet`` The name of the local subnet, where the
+    PXE boot and DHCP interfaces for overcloud instances is located. The IP
+    address of the local_ip/local_interface should reside in this subnet.
+
+    .. Note:: Upgrade with migration to routed networks support is not
+              possible.
+
+              Routed networks use the neutron segments service_plugin, this
+              plugin adds functionality that allows subnet to be associated
+              with a network segment. It is currently not possible to add
+              segment association to an existing subnet, because of this we
+              cannot add segment association to the existing ctlplane subnet
+              on the upgraded undercloud. The existing ctlplane network and
+              subnet will still be in place after an upgrade and the upgraded
+              undercloud can continue to manage the existing overcloud.
+
+    The following example shows what changes to make to the configuration to
+    move to the new model.
+
+    Replace usage of deprecated options::
+
+      [DEFAULT]
+      network_gateway = 192.168.24.1
+      network_cidr = 192.168.24.0/24
+      dhcp_start = 192.168.24.5
+      dhcp_end = 192.168.24.24
+      inspection_iprange = 192.168.24.100,192.168.24.120
+      masquerade_network = 192.168.24.0/24
+
+    replace with::
+
+      [DEFAULT]
+      subnets = subnet0
+      local_subnet = subnet0
+
+      [subnet0]
+      cidr = 192.168.24.0/24
+      dhcp_start = 192.168.24.5
+      dhcp_end = 192.168.24.24
+      inspection_iprange = 192.168.24.100,192.168.24.120
+      gateway = 192.168.24.1
+      masquerade = True
+deprecations:
+  - With support for routed networks/subnets the ``network_gateway`` option in
+    the ``[DEFAULT]`` section is deprecated. Moved to per-subnet options
+    group.
+  - With support for routed networks/subnets the ``network_cidr`` option in
+    the ``[DEFAULT]`` section is deprecated. Moved to per-subnet options
+    group.
+  - With support for routed networks/subnets the ``dhcp_start`` and
+    ``dhcp_end`` options in the ``[DEFAULT]`` section are deprecated. Moved to
+    per-subnet options group.
+  - With support for routed networks/subnets the ``inspection_iprange`` option
+    in the ``[DEFAULT]`` section is deprecated. Moved to per-subnet options
+    group.
+  - With support for routed networks/subnets the ``masquerade_network``
+    option in the ``[DEFAULT]`` section is deprecated. Use the boolean option
+    in each subnet group.

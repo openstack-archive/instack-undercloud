@@ -2033,6 +2033,11 @@ def _ensure_neutron_network(sdk):
                 name=PHYSICAL_NETWORK, provider_network_type='flat',
                 provider_physical_network=PHYSICAL_NETWORK)
             LOG.info("Network created %s", network)
+            # (hjensas) Delete the default segment, we create a new segment
+            # per subnet later.
+            segments = list(sdk.network.segments(network=network.id))
+            sdk.network.delete_segment(segments[0].id)
+            LOG.info("Default segment on network %s deleted.", network.name)
         else:
             LOG.info("Not creating %s network, because it already exists.",
                      PHYSICAL_NETWORK)
@@ -2045,7 +2050,7 @@ def _ensure_neutron_network(sdk):
 
 
 def _neutron_subnet_create(sdk, network_id, cidr, gateway, host_routes,
-                           allocation_pool, name):
+                           allocation_pool, name, segment_id):
     try:
         # DHCP_START contains a ":" then assume a IPv6 subnet
         if ':' in allocation_pool[0]['start']:
@@ -2060,7 +2065,8 @@ def _neutron_subnet_create(sdk, network_id, cidr, gateway, host_routes,
                 ipv6_address_mode='dhcpv6-stateless',
                 ipv6_ra_mode='dhcpv6-stateless',
                 allocation_pools=allocation_pool,
-                network_id=network_id)
+                network_id=network_id,
+                segment_id=segment_id)
         else:
             subnet = sdk.network.create_subnet(
                 name=name,
@@ -2070,7 +2076,8 @@ def _neutron_subnet_create(sdk, network_id, cidr, gateway, host_routes,
                 enable_dhcp=True,
                 ip_version='4',
                 allocation_pools=allocation_pool,
-                network_id=network_id)
+                network_id=network_id,
+                segment_id=segment_id)
         LOG.info("Subnet created %s", subnet)
     except Exception as e:
         LOG.error("Create subnet %s failed: %s", name, e)
@@ -2097,6 +2104,30 @@ def _neutron_subnet_update(sdk, subnet_id, gateway, host_routes,
         raise
 
 
+def _neutron_segment_create(sdk, name, network_id, phynet):
+    try:
+        segment = sdk.network.create_segment(
+                    name=name,
+                    network_id=network_id,
+                    physical_network=phynet,
+                    network_type='flat')
+        LOG.info("Neutron Segment created %s", segment)
+    except Exception as e:
+        LOG.info("Neutron Segment %s create failed %s", name, e)
+        raise
+
+    return segment
+
+
+def _neutron_segment_update(sdk, segment_id, name):
+    try:
+        segment = sdk.network.update_segment(segment_id, name=name)
+        LOG.info("Neutron Segment updated %s", segment)
+    except Exception as e:
+        LOG.info("Neutron Segment %s update failed %s", name, e)
+        raise
+
+
 def _ensure_neutron_router(sdk, name, subnet_id):
     try:
         router = sdk.network.create_router(name=name, admin_state_up='true')
@@ -2115,25 +2146,79 @@ def _get_subnet(sdk, cidr, network_id):
     return False if not subnet else subnet[0]
 
 
+def _get_segment(sdk, phy, network_id):
+    try:
+        segment = list(sdk.network.segments(physical_network=phy,
+                                            network_id=network_id))
+    except Exception:
+        raise
+
+    return False if not segment else segment[0]
+
+
 def _config_neutron_segments_and_subnets(sdk, ctlplane_id):
     s = CONF.get(CONF.local_subnet)
-    host_routes = [{'destination': '169.254.169.254/32',
-                    'nexthop': str(netaddr.IPNetwork(CONF.local_ip).ip)}]
-    allocation_pool = [{'start': s.dhcp_start, 'end': s.dhcp_end}]
-
-    subnet = _get_subnet(sdk, CONF.network_cidr, ctlplane_id)
-    if subnet:
+    subnet = _get_subnet(sdk, s.cidr, ctlplane_id)
+    if subnet and not subnet.segment_id:
+        LOG.warn("Local subnet %s already exists and is not associated with a "
+                 "network segment. Any additional subnets will be ignored.",
+                 CONF.local_subnet)
+        host_routes = [{'destination': '169.254.169.254/32',
+                        'nexthop': str(netaddr.IPNetwork(CONF.local_ip).ip)}]
+        allocation_pool = [{'start': s.dhcp_start, 'end': s.dhcp_end}]
         _neutron_subnet_update(sdk, subnet.id, s.gateway, host_routes,
                                allocation_pool, CONF.local_subnet)
+        # If the subnet is IPv6 we need to start a router so that router
+        # advertisments are sent out for stateless IP addressing to work.
+        if ':' in s.dhcp_start:
+            _ensure_neutron_router(sdk, CONF.local_subnet, subnet.id)
     else:
-        subnet = _neutron_subnet_create(sdk, ctlplane_id, s.cidr, s.gateway,
-                                        host_routes, allocation_pool,
-                                        CONF.local_subnet)
+        for name in CONF.subnets:
+            s = CONF.get(name)
 
-    # If the subnet is IPv6 we need to start a router so that router
-    # advertisments are sent out for stateless IP addressing to work.
-    if ':' in CONF.dhcp_start:
-        _ensure_neutron_router(sdk, CONF.local_subnet, subnet.id)
+            phynet = name
+            if name == CONF.local_subnet:
+                phynet = PHYSICAL_NETWORK
+
+            metadata_nexthop = s.gateway
+            if str(netaddr.IPNetwork(CONF.local_ip).ip) in s.cidr:
+                metadata_nexthop = str(netaddr.IPNetwork(CONF.local_ip).ip)
+
+            host_routes = [{'destination': '169.254.169.254/32',
+                            'nexthop': metadata_nexthop}]
+            allocation_pool = [{'start': s.dhcp_start, 'end': s.dhcp_end}]
+
+            subnet = _get_subnet(sdk, s.cidr, ctlplane_id)
+            segment = _get_segment(sdk, phynet, ctlplane_id)
+
+            if name == CONF.local_subnet:
+                if ((subnet and not segment) or
+                   (subnet and segment and subnet.segment_id != segment.id)):
+                    LOG.error(
+                      'The cidr: %s of the local subnet is already used in '
+                      'subnet: %s associated with segment_id: %s.' %
+                      (s.cidr, subnet.id, subnet.segment_id))
+                    raise RuntimeError('Local subnet cidr already associated.')
+
+            if subnet:
+                _neutron_segment_update(sdk, subnet.segment_id, name)
+                _neutron_subnet_update(sdk, subnet.id, s.gateway, host_routes,
+                                       allocation_pool, name)
+            else:
+                if segment:
+                    _neutron_segment_update(sdk, segment.id, name)
+                else:
+                    segment = _neutron_segment_create(sdk, name,
+                                                      ctlplane_id, phynet)
+                subnet = _neutron_subnet_create(sdk, ctlplane_id, s.cidr,
+                                                s.gateway, host_routes,
+                                                allocation_pool, name,
+                                                segment.id)
+
+            # If the subnet is IPv6 we need to start a router so that router
+            # advertisments are sent out for stateless IP addressing to work.
+            if ':' in s.dhcp_start:
+                _ensure_neutron_router(sdk, name, subnet.id)
 
 
 def _handle_upgrade_fact(upgrade=False):

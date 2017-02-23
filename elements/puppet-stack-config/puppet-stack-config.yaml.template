@@ -275,6 +275,7 @@ neutron::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_ADMIN}}
 neutron::keystone::auth::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::keystone::auth::region: "%{hiera('keystone_region')}"
 neutron::plugins::ml2::extension_drivers: 'port_security'
+neutron::service_plugins: ['segments']
 
 # Ceilometer
 ceilometer::debug: "%{hiera('debug')}"

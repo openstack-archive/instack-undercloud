@@ -907,7 +907,7 @@ class TestConfigureSshKeys(base.BaseTestCase):
         self._test_configure_ssh_keys(mock_eui, False)
 
 
-class TestPostConfig(base.BaseTestCase):
+class TestPostConfig(BaseTestCase):
     @mock.patch('os_client_config.make_client')
     @mock.patch('instack_undercloud.undercloud._migrate_to_convergence')
     @mock.patch('instack_undercloud.undercloud._ensure_node_resource_classes')
@@ -1430,6 +1430,8 @@ class TestPostConfig(base.BaseTestCase):
     def _neutron_mocks(self):
         mock_sdk = mock.MagicMock()
         mock_sdk.network.create_network = mock.Mock()
+        mock_sdk.network.create_segment = mock.Mock()
+        mock_sdk.network.update_segment = mock.Mock()
         mock_sdk.network.delete_segment = mock.Mock()
         mock_sdk.network.create_subnet = mock.Mock()
         mock_sdk.network.update_subnet = mock.Mock()
@@ -1445,11 +1447,35 @@ class TestPostConfig(base.BaseTestCase):
           name='ctlplane', provider_network_type='flat',
           provider_physical_network='ctlplane')
 
+    def test_delete_default_segment(self):
+        mock_sdk = self._neutron_mocks()
+        mock_sdk.network.networks.return_value = iter([])
+        segment_mock = mock.Mock()
+        mock_sdk.network.segments.return_value = iter([segment_mock])
+        undercloud._ensure_neutron_network(mock_sdk)
+        mock_sdk.network.delete_segment.assert_called_with(
+          segment_mock.id)
+
     def test_network_exists(self):
         mock_sdk = self._neutron_mocks()
         mock_sdk.network.networks.return_value = iter(['ctlplane'])
         undercloud._ensure_neutron_network(mock_sdk)
         mock_sdk.network.create_network.assert_not_called()
+
+    def test_segment_create(self):
+        mock_sdk = self._neutron_mocks()
+        undercloud._neutron_segment_create(mock_sdk, 'ctlplane-subnet',
+                                           'network_id', 'ctlplane')
+        mock_sdk.network.create_segment.assert_called_with(
+          name='ctlplane-subnet', network_id='network_id',
+          physical_network='ctlplane', network_type='flat')
+
+    def test_segment_update(self):
+        mock_sdk = self._neutron_mocks()
+        undercloud._neutron_segment_update(mock_sdk,
+                                           'network_id', 'ctlplane-subnet')
+        mock_sdk.network.update_segment.assert_called_with(
+            'network_id', name='ctlplane-subnet')
 
     def test_subnet_create(self):
         mock_sdk = self._neutron_mocks()
@@ -1459,12 +1485,12 @@ class TestPostConfig(base.BaseTestCase):
         undercloud._neutron_subnet_create(mock_sdk, 'network_id',
                                           '192.168.24.0/24', '192.168.24.1',
                                           host_routes, allocation_pool,
-                                          'ctlplane-subnet')
+                                          'ctlplane-subnet', 'segment_id')
         mock_sdk.network.create_subnet.assert_called_with(
           name='ctlplane-subnet', cidr='192.168.24.0/24',
           gateway_ip='192.168.24.1', host_routes=host_routes, enable_dhcp=True,
           ip_version='4', allocation_pools=allocation_pool,
-          network_id='network_id')
+          network_id='network_id', segment_id='segment_id')
 
     def test_subnet_update(self):
         mock_sdk = self._neutron_mocks()
@@ -1477,6 +1503,86 @@ class TestPostConfig(base.BaseTestCase):
         mock_sdk.network.update_subnet.assert_called_with(
           'subnet_id', name='ctlplane-subnet', gateway_ip='192.168.24.1',
           host_routes=host_routes, allocation_pools=allocation_pool)
+
+    @mock.patch('instack_undercloud.undercloud._neutron_subnet_update')
+    @mock.patch('instack_undercloud.undercloud._get_subnet')
+    def test_no_neutron_segments_if_pre_segments_undercloud(
+      self, mock_get_subnet, mock_neutron_subnet_update):
+        mock_sdk = self._neutron_mocks()
+        mock_subnet = mock.Mock()
+        mock_subnet.segment_id = None
+        mock_get_subnet.return_value = mock_subnet
+        undercloud._config_neutron_segments_and_subnets(mock_sdk,
+                                                        'ctlplane_id')
+        mock_sdk.network.create_segment.assert_not_called()
+        mock_sdk.network.update_segment.assert_not_called()
+        mock_neutron_subnet_update.called_once()
+
+    @mock.patch('instack_undercloud.undercloud._neutron_segment_create')
+    @mock.patch('instack_undercloud.undercloud._neutron_subnet_create')
+    @mock.patch('instack_undercloud.undercloud._get_segment')
+    @mock.patch('instack_undercloud.undercloud._get_subnet')
+    def test_segment_and_subnet_create(self, mock_get_subnet, mock_get_segment,
+                                       mock_neutron_subnet_create,
+                                       mock_neutron_segment_create):
+        mock_sdk = self._neutron_mocks()
+        mock_get_subnet.return_value = None
+        mock_get_segment.return_value = None
+        undercloud._config_neutron_segments_and_subnets(mock_sdk,
+                                                        'ctlplane_id')
+        mock_neutron_segment_create.assert_called_with(
+          mock_sdk, 'ctlplane-subnet', 'ctlplane_id', 'ctlplane')
+        host_routes = [{'destination': '169.254.169.254/32',
+                        'nexthop': '192.168.24.1'}]
+        allocation_pool = [{'start': '192.168.24.5', 'end': '192.168.24.24'}]
+        mock_neutron_subnet_create.assert_called_with(
+          mock_sdk, 'ctlplane_id', '192.168.24.0/24', '192.168.24.1',
+          host_routes, allocation_pool, 'ctlplane-subnet',
+          mock_neutron_segment_create().id)
+
+    @mock.patch('instack_undercloud.undercloud._neutron_segment_update')
+    @mock.patch('instack_undercloud.undercloud._neutron_subnet_update')
+    @mock.patch('instack_undercloud.undercloud._get_segment')
+    @mock.patch('instack_undercloud.undercloud._get_subnet')
+    def test_segment_and_subnet_update(self, mock_get_subnet, mock_get_segment,
+                                       mock_neutron_subnet_update,
+                                       mock_neutron_segment_update):
+        mock_sdk = self._neutron_mocks()
+        mock_subnet = mock.Mock()
+        mock_subnet.id = 'subnet_id'
+        mock_subnet.segment_id = 'segment_id'
+        mock_get_subnet.return_value = mock_subnet
+        mock_segment = mock.Mock()
+        mock_get_segment.return_value = mock_segment
+        mock_segment.id = 'segment_id'
+        undercloud._config_neutron_segments_and_subnets(mock_sdk,
+                                                        'ctlplane_id')
+        mock_neutron_segment_update.assert_called_with(
+          mock_sdk, mock_subnet.segment_id, 'ctlplane-subnet')
+        host_routes = [{'destination': '169.254.169.254/32',
+                        'nexthop': '192.168.24.1'}]
+        allocation_pool = [{'start': '192.168.24.5', 'end': '192.168.24.24'}]
+        mock_neutron_subnet_update.assert_called_with(
+          mock_sdk, 'subnet_id', '192.168.24.1', host_routes,
+          allocation_pool, 'ctlplane-subnet')
+
+    @mock.patch('instack_undercloud.undercloud._get_segment')
+    @mock.patch('instack_undercloud.undercloud._get_subnet')
+    def test_local_subnet_cidr_conflict(self, mock_get_subnet,
+                                        mock_get_segment):
+        mock_sdk = self._neutron_mocks()
+        mock_sdk = self._neutron_mocks()
+        mock_subnet = mock.Mock()
+        mock_subnet.id = 'subnet_id'
+        mock_subnet.segment_id = 'existing_segment_id'
+        mock_get_subnet.return_value = mock_subnet
+        mock_segment = mock.Mock()
+        mock_get_segment.return_value = mock_segment
+        mock_segment.id = 'segment_id'
+        self.assertRaises(
+          RuntimeError,
+          undercloud._config_neutron_segments_and_subnets, [mock_sdk],
+          ['ctlplane_id'])
 
 
 class TestUpgradeFact(base.BaseTestCase):
