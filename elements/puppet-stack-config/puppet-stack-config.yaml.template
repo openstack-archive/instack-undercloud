@@ -197,6 +197,7 @@ keystone::endpoint::public_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
 keystone::endpoint::internal_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL}}
 keystone::endpoint::admin_url: "%{hiera('keystone_identity_uri')}"
 keystone::endpoint::region: "%{hiera('keystone_region')}"
+keystone::endpoint::version: ''
 keystone::wsgi::apache::ssl: false
 keystone::wsgi::apache::bind_host: {{LOCAL_IP}}
 keystone::notification_driver: messaging
