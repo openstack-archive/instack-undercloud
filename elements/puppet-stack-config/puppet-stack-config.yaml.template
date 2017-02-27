@@ -746,7 +746,7 @@ enable_novajoin: true
 nova::api::vendordata_jsonfile_path: '/etc/nova/cloud-config-novajoin.json'
 nova::api::vendordata_providers: ['StaticJSON', 'DynamicJSON']
 nova::api::vendordata_dynamic_targets: ["join@http://{{LOCAL_IP}}:%{hiera('novajoin_listen_port')}/v1/"]
-nova::notification_topics: 'notifications'
+nova::notification_topics: ['notifications', 'novajoin_notifications']
 nova::notify_on_state_change: 'vm_state'
 {{/ENABLE_NOVAJOIN}}
 
