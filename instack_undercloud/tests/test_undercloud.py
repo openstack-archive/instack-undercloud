@@ -39,10 +39,6 @@ class BaseTestCase(base.BaseTestCase):
     def setUp(self):
         super(BaseTestCase, self).setUp()
         self.logger = self.useFixture(log.ConfigureLogging()).logger
-        # Otherwise our test logger doesn't see the log messages
-        self.useFixture(
-            fixtures.MockPatch('instack_undercloud.undercloud.LOG.propagate',
-                               True))
 
 
 class TestUndercloud(BaseTestCase):
