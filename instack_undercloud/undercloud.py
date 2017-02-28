@@ -497,10 +497,11 @@ def _configure_logging(level, filename):
                         level=level)
     global LOG
     LOG = logging.getLogger(__name__)
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter(DEFAULT_LOG_FORMAT)
-    handler.setFormatter(formatter)
-    LOG.addHandler(handler)
+    if os.environ.get('OS_LOG_CAPTURE') != '1':
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(DEFAULT_LOG_FORMAT)
+        handler.setFormatter(formatter)
+        LOG.addHandler(handler)
 
 
 def _load_config():
