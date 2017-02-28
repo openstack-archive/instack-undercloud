@@ -1285,6 +1285,12 @@ def _clean_os_refresh_config():
     _run_command(args, name='Clean os-refresh-config')
 
 
+def _clean_os_collect_config():
+    occ_dir = '/var/lib/os-collect-config'
+    args = ['sudo', 'rm', '-fr', occ_dir]
+    _run_command(args, name='Clean os-collect-config')
+
+
 def _create_mistral_config_environment(instack_env, mistral):
     # Store the snmpd password in a Mistral environment so it can be accessed
     # by the Mistral actions.
@@ -1423,6 +1429,7 @@ def install(instack_root, upgrade=False):
         LOG.info('Logging to %s', PATHS.LOG_FILE)
         _load_config()
         _clean_os_refresh_config()
+        _clean_os_collect_config()
         _validate_configuration()
         instack_env = _generate_environment(instack_root)
         _generate_init_data(instack_env)
