@@ -127,8 +127,10 @@ glance::backend::swift::swift_store_create_container_on_put: true
 glance::notify::rabbitmq::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 glance::notify::rabbitmq::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 glance::notify::rabbitmq::rabbit_host: {{LOCAL_IP}}
+glance::registry::debug: "%{hiera('debug')}"
 
 # Heat
+heat::debug:  "%{hiera('debug')}"
 heat_stack_domain_admin_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
 heat::engine::configure_delegated_roles: false
 heat::engine::heat_stack_user_role: 'heat_stack_user'
@@ -231,6 +233,7 @@ tripleo::profile::base::database::mysql::mysql_server_options:
 mysql::server::restart: true
 
 # Neutron
+neutron::debug: "%{hiera('debug')}"
 neutron::bind_host: {{LOCAL_IP}}
 neutron::core_plugin: ml2
 neutron::dhcp_agents_per_network: 2
@@ -265,6 +268,7 @@ neutron::keystone::auth::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::keystone::auth::region: "%{hiera('keystone_region')}"
 
 # Ceilometer
+ceilometer::debug: "%{hiera('debug')}"
 ceilometer::expirer::time_to_live: undef
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
 ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
@@ -299,6 +303,7 @@ ceilometer::dispatcher::gnocchi::resources_definition_file: 'gnocchi_resources.y
 ceilometer::collector::event_dispatcher: 'panko'
 
 # Aodh
+aodh::debug: "%{hiera('debug')}"
 aodh::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 aodh::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 aodh::rabbit_host: {{LOCAL_IP}}
@@ -320,6 +325,7 @@ aodh::keystone::auth::region: "%{hiera('keystone_region')}"
 
 
 # Gnocchi
+gnocchi::debug: "%{hiera('debug')}"
 gnocchi_backend: 'file'
 gnocchi::wsgi::apache::ssl: false
 gnocchi::wsgi::apache::bind_host: {{LOCAL_IP}}
@@ -349,6 +355,7 @@ gnocchi::statsd::flush_delay: 10
 gnocchi::statsd::archive_policy_name: 'low'
 
 # Panko
+panko::logging::debug: "%{hiera('debug')}"
 panko::wsgi::apache::ssl: false
 panko::wsgi::apache::bind_host: {{LOCAL_IP}}
 panko::api::service_name: 'httpd'
@@ -367,6 +374,7 @@ panko::keystone::auth::region: "%{hiera('keystone_region')}"
 panko::keystone::authtoken::project_name: 'service'
 
 # Nova
+nova::debug:  "%{hiera('debug')}"
 nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
 nova::notification_driver: messaging
 nova::rpc_response_timeout: '600'
@@ -557,6 +565,7 @@ rabbitmq::default_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 rabbitmq::default_pass: {{UNDERCLOUD_RABBIT_PASSWORD}}
 
 # Horizon
+horizon::django_debug: "%{hiera('debug')}"
 horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}
 horizon::allowed_hosts:
  - "%{::fqdn}"
@@ -565,6 +574,7 @@ horizon::wsgi::apache::priority: 10
 horizon::openstack_endpoint_type: internalURL
 
 # Mistral
+mistral::debug: "%{hiera('debug')}"
 mistral::api::bind_host: {{LOCAL_IP}}
 mistral::api::api_workers: "%{::os_workers}"
 mistral::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
@@ -614,6 +624,7 @@ zaqar::message_pipeline: 'zaqar.notification.notifier'
 zaqar::max_messages_post_size: 1048576
 
 # Cinder
+cinder::debug: "%{hiera('debug')}"
 cinder_backend_name: 'undercloud_iscsi'
 cinder_enable_test_volume: false
 cinder_iscsi_address: {{LOCAL_IP}}
