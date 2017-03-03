@@ -1,0 +1,9 @@
+---
+upgrade:
+  - |
+    The _member_ role (if it exists) on the admin user will now be retained
+    automatically during undercloud upgrades.  This functionality was
+    originally added to work around an issue with upgrading very old versions
+    of TripleO, but was broken by changes to the upgrade process.  It will
+    no longer be necessary to manually add the _member_ role to the admin user
+    after upgrading an affected deployment.

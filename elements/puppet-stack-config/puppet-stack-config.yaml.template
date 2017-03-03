@@ -30,10 +30,6 @@ tripleo::profile::base::haproxy::certificates_specs:
 # CA defaults
 certmonger_ca: {{CERTIFICATE_GENERATION_CA}}
 
-# Workaround for puppet deleting _member_ role assignment on old deployments
-member_role_exists: {{MEMBER_ROLE_EXISTS}}
-
-
 # Common Hiera data gets applied to all nodes
 ssh::server::storeconfigs_enabled: false
 
