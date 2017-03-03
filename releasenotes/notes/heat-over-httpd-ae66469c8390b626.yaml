@@ -1,0 +1,3 @@
+---
+features:
+  - Heat APIs (API, CFN and Cloudwatch) now run over httpd in the undercloud.
