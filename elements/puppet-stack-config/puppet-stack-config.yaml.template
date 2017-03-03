@@ -24,7 +24,7 @@ tripleo::profile::base::haproxy::certificates_specs:
     service_certificate: '/etc/pki/tls/certs/undercloud-front.crt'
     service_key: '/etc/pki/tls/private/undercloud-front.key'
     hostname: "%{hiera('controller_public_host')}"
-    postsave_cmd: "/usr/bin/instack-haproxy-cert-update '/etc/pki/tls/certs/undercloud-front.crt' '/etc/pki/tls/private/undercloud-front.key' {{UNDERCLOUD_SERVICE_CERTIFICATE}}"
+    postsave_cmd: "/usr/bin/instack-haproxy-cert-update '/etc/pki/tls/certs/undercloud-front.crt' '/etc/pki/tls/private/undercloud-front.key' {{UNDERCLOUD_SERVICE_CERTIFICATE}} undercloud-haproxy-public-cert"
     principal: {{SERVICE_PRINCIPAL}}
 
 # CA defaults

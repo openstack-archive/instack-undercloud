@@ -2,6 +2,7 @@
 CERT_FILE="$1"
 KEY_FILE="$2"
 OUTPUT_FILE="$3"
+REQUEST_NICKNAME="$4"
 
 if [[ -z "$CERT_FILE" || -z "$KEY_FILE" || -z "$OUTPUT_FILE" ]]; then
     echo "You need to provide CERT_FILE KEY_FILE and finally OUTPUT_FILE" \
@@ -12,5 +13,15 @@ if [[ ! -f "$CERT_FILE" || ! -f "$KEY_FILE" ]]; then
     echo "Certificate and key files must exist!"
     exit 1
 fi
+if [ -z "$REQUEST_NICKNAME" ]; then
+    echo "Request nickname must be specified in arguments."
+    exit 1
+fi
+
+# add additional EKUs so clients that rely strictly on RFC5280 understand that
+# they are allowed to accept the certificate as having valid extensions
+getcert resubmit -i "$REQUEST_NICKNAME" -w -v -U id-kp-clientAuth \
+    -U id-kp-serverAuth
+
 cat $CERT_FILE $KEY_FILE > $OUTPUT_FILE
 systemctl reload haproxy
