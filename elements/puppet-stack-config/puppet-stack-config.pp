@@ -497,8 +497,11 @@ ensure_resource('package', 'python-dracclient')
 # dependency of pxe_ilo
 ensure_resource('package', 'python-proliantutils')
 
+# firewalld is a dependency of some anaconda packages, so we need to use purge
+# to ensure all the things that it might be a dependency for are also
+# removed. See LP#1669915
 ensure_resource('package', 'firewalld', {
-  'ensure' => 'absent',
+  'ensure' => 'purged',
 })
 ensure_resource('package', 'os-cloud-config')
 ensure_resource('package', 'openstack-selinux')
