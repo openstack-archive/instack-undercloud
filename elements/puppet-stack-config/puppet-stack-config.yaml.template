@@ -155,16 +155,8 @@ heat::keystone::domain::domain_name: 'heat_stack'
 heat::keystone::domain::domain_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
 heat::api::bind_host: {{LOCAL_IP}}
 heat::api::workers: "%{::os_workers}"
-heat::api::service_name: 'httpd'
 heat::api_cfn::bind_host: {{LOCAL_IP}}
 heat::api_cfn::workers: "%{::os_workers}"
-heat::api_cfn::service_name: 'httpd'
-heat::wsgi::apache_api::ssl: false
-heat::wsgi::apache_api::bind_host: {{LOCAL_IP}}
-heat::wsgi::apache_api::workers: "%{hiera('heat::api::workers')}"
-heat::wsgi::apache_api_cfn::ssl: false
-heat::wsgi::apache_api_cfn::bind_host: {{LOCAL_IP}}
-heat::wsgi::apache_api_cfn::workers: "%{hiera('heat::api_cfn::workers')}"
 heat::database_connection: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat_dsn: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
 heat::rpc_response_timeout: 600

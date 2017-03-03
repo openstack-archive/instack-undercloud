@@ -459,15 +459,16 @@ heat_config {
   'clients/endpoint_type': value => 'internal',
 }
 include ::heat::api
-include ::heat::wsgi::apache_api
 include ::heat::api_cfn
-include ::heat::wsgi::apache_api_cfn
 include ::heat::engine
 include ::heat::keystone::domain
 include ::heat::cron::purge_deleted
 include ::heat::cors
 
+# We're creating the admin role and heat domain user in puppet and need
+# to make sure they are done in order.
 include ::keystone::roles::admin
+Service['httpd'] -> Class['::keystone::roles::admin'] -> Class['::heat::keystone::domain']
 
 nova_config {
   'DEFAULT/sync_power_state_interval': value => hiera('nova_sync_power_state_interval');
