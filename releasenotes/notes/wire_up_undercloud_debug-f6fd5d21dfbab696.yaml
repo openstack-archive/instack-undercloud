@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    undercloud_debug is now wired up for additional OpenStack services. See
+    `bug 1669895 <https://bugs.launchpad.net/tripleo/+bug/1669895>`__ for more
+    information.
