@@ -600,9 +600,11 @@ zaqar::keystone::auth_websocket::internal_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSO
 zaqar::keystone::auth_websocket::admin_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSOCKET_ADMIN}}
 zaqar::keystone::auth_websocket::region: 'regionOne'
 zaqar::keystone::auth_websocket::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
+zaqar::server::service_name: 'httpd'
 zaqar::unreliable: true
 zaqar::transport::websocket::bind: {{LOCAL_IP}}
-zaqar::transport::wsgi::bind: {{LOCAL_IP}}
+zaqar::wsgi::apache::bind_host: {{LOCAL_IP}}
+zaqar::wsgi::apache::ssl: false
 zaqar::message_store: swift
 zaqar::management_store: sqlalchemy
 zaqar::management::sqlalchemy::uri: mysql+pymysql://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@{{LOCAL_IP}}/zaqar

@@ -553,6 +553,8 @@ include ::zaqar::transport::websocket
 include ::zaqar::transport::wsgi
 
 include ::zaqar::server
+include ::zaqar::wsgi::apache
+
 zaqar::server_instance{ '1':
   transport => 'websocket'
 }
