@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    When sourcing the stackrc on the undercloud, the command prompt will show
+    that the credentials have been loaded by being prepended with
+    '(undercloud) '. For example, '(undercloud) [stack@undercloud ~]$ '

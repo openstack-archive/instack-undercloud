@@ -1,3 +1,5 @@
+# Indicate that the undercloud credentials have been loaded via command prompt
+export PROMPT_COMMAND="echo -n '(undercloud) '"
 # Clear any old environment that may conflict.
 for key in $( set | awk '{FS="="}  /^OS_/ {print $1}' ); do unset $key ; done
 NOVA_VERSION=1.1
