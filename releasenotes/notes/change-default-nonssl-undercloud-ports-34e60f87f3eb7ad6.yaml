@@ -1,0 +1,12 @@
+---
+upgrade:
+  - |
+    Changed the configuration of endpoints that UI uses in order to connect to
+    the Undercloud in a non-SSL deployment.  The port number that the UI now
+    uses to communicate with the Undercloud for non-SSL connections is 3000,
+    which supports endpoint proxy configuration.  Previously, this port number
+    was the default port number for the service endpoint that UI connected to.
+fixes:
+  - |
+    Fixes `bug 1663199 <https://bugs.launchpad.net/tripleo/+bug/1663199>`__ UI doesn't work without manual update on HTTP undercloud
+
