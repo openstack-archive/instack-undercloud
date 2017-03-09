@@ -1,6 +1,5 @@
 keystone_identity_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN}}
 keystone_auth_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v3
-keystone_auth_uri_v2: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v2.0
 keystone_region: 'regionOne'
 
 debug: {{UNDERCLOUD_DEBUG}}
@@ -46,7 +45,7 @@ aodh::auth::auth_region: 'regionOne'
 ceilometer::agent::auth::auth_tenant_name: 'service'
 aodh::auth::auth_tenant_name: 'service'
 ceilometer::agent::auth::auth_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
-aodh::auth::auth_url: "%{hiera('keystone_auth_uri_v2')}"
+aodh::auth::auth_url: "%{hiera('keystone_auth_uri')}"
 
 # Swift
 swift::proxy::proxy_local_net_ip: {{LOCAL_IP}}
@@ -406,7 +405,7 @@ nova::ironic::common::username: 'ironic'
 nova::ironic::common::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 nova::ironic::common::project_name: 'service'
 nova::ironic::common::api_endpoint: "{{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}/v1"
-nova::ironic::common::auth_url: "%{hiera('keystone_identity_uri')}/v2.0"
+nova::ironic::common::auth_url: "%{hiera('keystone_identity_uri')}"
 
 nova::network::neutron::neutron_auth_url: "%{hiera('keystone_auth_uri')}"
 nova::network::neutron::neutron_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_PUBLIC}}
@@ -499,14 +498,18 @@ ironic::inspector::keep_ports: 'added'
 ironic::inspector::ironic_username: 'ironic'
 ironic::inspector::ironic_password: "%{hiera('ironic::api::authtoken::password')}"
 ironic::inspector::ironic_tenant_name: 'service'
-ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri_v2')}"
+ironic::inspector::ironic_project_domain_name: 'Default'
+ironic::inspector::ironic_user_domain_name: 'Default'
+ironic::inspector::ironic_auth_url: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::ironic_max_retries: 6
 ironic::inspector::ironic_retry_interval: 10
 ironic::inspector::store_data: 'swift'
 ironic::inspector::swift_username: 'ironic'
 ironic::inspector::swift_password: "%{hiera('ironic::api::authtoken::password')}"
 ironic::inspector::swift_tenant_name: 'service'
-ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri_v2')}"
+ironic::inspector::swift_project_domain_name: 'Default'
+ironic::inspector::swift_user_domain_name: 'Default'
+ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}

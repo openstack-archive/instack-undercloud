@@ -443,7 +443,7 @@ include ::apache
 # Heat
 class { '::heat':
   debug                        => hiera('debug'),
-  keystone_ec2_uri             => join([hiera('keystone_auth_uri_v2'), '/ec2tokens']),
+  keystone_ec2_uri             => join([hiera('keystone_auth_uri'), '/ec2tokens']),
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
 heat_config {
