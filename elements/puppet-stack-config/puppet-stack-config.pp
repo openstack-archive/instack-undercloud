@@ -45,6 +45,9 @@ include ::tripleo::selinux
 include ::tripleo::profile::base::kernel
 
 if hiera('tripleo::haproxy::service_certificate', undef) {
+  if str2bool(hiera('generate_service_certificates')) {
+    include ::tripleo::profile::base::certmonger_user
+  }
   class {'::tripleo::profile::base::haproxy':
     enable_load_balancer => true,
   }
