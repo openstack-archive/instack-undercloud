@@ -463,7 +463,7 @@ augeas { 'lvm.conf':
   changes => 'set auto_activation_volume_list/list ""'
 }
 
-if str2bool(hiera('enable_docker_registry', true)) {
+if str2bool(hiera('enable_docker_registry', false)) {
   package{'docker-registry': }
   augeas { 'docker-registry':
     context => '/files/etc/sysconfig/docker-registry',
