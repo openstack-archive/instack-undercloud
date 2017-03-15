@@ -1,0 +1,4 @@
+---
+fixes:
+  - Add OS_AUTH_TYPE to undercloud stackrc file. Not all clients default to
+    keystone auth, so lets explicitly set the auth type in env.
