@@ -1,0 +1,6 @@
+---
+features:
+  - Update undercloud stackrc to use Keystone v3 API.
+    It updates OS_AUTH_URL to use a versionless endpoint, change OS_TENANT_NAME
+    to OS_PROJECT_NAME, force OS_IDENTITY_API_VERSION to 3 and
+    add OS_PROJECT_DOMAIN_NAME pointing to default domain.

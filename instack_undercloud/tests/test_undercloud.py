@@ -22,7 +22,6 @@ import tempfile
 import fixtures
 from keystoneauth1 import exceptions as ks_exceptions
 import mock
-from mistralclient.api import base as mistralclient_base
 from novaclient import exceptions
 from oslo_config import fixture as config_fixture
 from oslotest import base
@@ -135,10 +134,10 @@ class TestUndercloud(BaseTestCase):
     def test_extract_from_stackrc(self):
         with open(os.path.expanduser('~/stackrc'), 'w') as f:
             f.write('OS_USERNAME=aturing\n')
-            f.write('OS_AUTH_URL=http://bletchley:5000/v2.0\n')
+            f.write('OS_AUTH_URL=http://bletchley:5000/\n')
         self.assertEqual('aturing',
                          undercloud._extract_from_stackrc('OS_USERNAME'))
-        self.assertEqual('http://bletchley:5000/v2.0',
+        self.assertEqual('http://bletchley:5000/',
                          undercloud._extract_from_stackrc('OS_AUTH_URL'))
 
     @mock.patch('instack_undercloud.undercloud._check_hostname')
@@ -662,7 +661,7 @@ class TestPostConfig(base.BaseTestCase):
                 'http://192.168.24.1:8989/v2',
         }
         mock_get_auth_values.return_value = ('aturing', '3nigma', 'hut8',
-                                             'http://bletchley:5000/v2.0')
+                                             'http://bletchley:5000/')
         mock_instance_nova = mock.Mock()
         mock_nova_client.return_value = mock_instance_nova
         mock_instance_swift = mock.Mock()
@@ -672,7 +671,7 @@ class TestPostConfig(base.BaseTestCase):
         undercloud._post_config(instack_env)
         mock_nova_client.assert_called_with(
             2, 'aturing', '3nigma', project_name='hut8',
-            auth_url='http://bletchley:5000/v2.0')
+            auth_url='http://bletchley:5000/')
         self.assertTrue(mock_copy_stackrc.called)
         mock_configure_ssh_keys.assert_called_with(mock_instance_nova)
         calls = [mock.call(mock_instance_nova, 'baremetal'),
@@ -710,7 +709,7 @@ class TestPostConfig(base.BaseTestCase):
     def test_create_config_environment(self):
         mock_mistral = mock.Mock()
         mock_mistral.environments.get.side_effect = (
-            mistralclient_base.APIException)
+            ks_exceptions.NotFound)
 
         env = {
             "UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD": "snmpd-pass"
@@ -770,7 +769,7 @@ class TestPostConfig(base.BaseTestCase):
 
     def _mock_ksclient_roles(self, mock_auth_values, mock_ksdiscover, roles):
         mock_auth_values.return_value = ('user', 'password',
-                                         'tenant', 'http://test:123')
+                                         'project', 'http://test:123')
         mock_discover = mock.Mock()
         mock_ksdiscover.return_value = mock_discover
         mock_client = mock.Mock()
@@ -784,12 +783,14 @@ class TestPostConfig(base.BaseTestCase):
         mock_client.roles = mock_roles
         mock_discover.create_client.return_value = mock_client
 
-        mock_tenant_list = [mock.Mock(), mock.Mock()]
-        mock_tenant_list[0].name = 'admin'
-        mock_tenant_list[0].id = 'admin-id'
-        mock_tenant_list[1].name = 'service'
-        mock_tenant_list[1].id = 'service-id'
-        mock_client.tenants.list.return_value = mock_tenant_list
+        mock_client.version = 'v3'
+
+        mock_project_list = [mock.Mock(), mock.Mock()]
+        mock_project_list[0].name = 'admin'
+        mock_project_list[0].id = 'admin-id'
+        mock_project_list[1].name = 'service'
+        mock_project_list[1].id = 'service-id'
+        mock_client.projects.list.return_value = mock_project_list
 
         mock_user_list = [mock.Mock(), mock.Mock()]
         mock_user_list[0].name = 'admin'
@@ -807,7 +808,7 @@ class TestPostConfig(base.BaseTestCase):
                                                 mock_ksdiscover,
                                                 ['admin'])
         undercloud._member_role_exists()
-        self.assertFalse(mock_client.tenants.list.called)
+        self.assertFalse(mock_client.projects.list.called)
 
     @mock.patch('keystoneclient.discover.Discover')
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
@@ -821,8 +822,8 @@ class TestPostConfig(base.BaseTestCase):
         undercloud._member_role_exists()
         mock_user = mock_client.users.list.return_value[0]
         mock_role = mock_client.roles.list.return_value[1]
-        mock_client.roles.add_user_role.assert_called_once_with(
-            mock_user, mock_role, 'admin-id')
+        mock_client.roles.grant.assert_called_once_with(
+            mock_role, user=mock_user, project='admin-id')
 
     @mock.patch('keystoneclient.discover.Discover')
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
@@ -834,12 +835,12 @@ class TestPostConfig(base.BaseTestCase):
                                                 mock_ksdiscover,
                                                 ['admin', '_member_'])
         fake_exception = ks_exceptions.http.Conflict('test')
-        mock_client.roles.add_user_role.side_effect = fake_exception
+        mock_client.roles.grant.side_effect = fake_exception
         undercloud._member_role_exists()
         mock_user = mock_client.users.list.return_value[0]
         mock_role = mock_client.roles.list.return_value[1]
-        mock_client.roles.add_user_role.assert_called_once_with(
-            mock_user, mock_role, 'admin-id')
+        mock_client.roles.grant.assert_called_once_with(
+            mock_role, user=mock_user, project='admin-id')
 
     def _create_flavor_mocks(self):
         mock_nova = mock.Mock()

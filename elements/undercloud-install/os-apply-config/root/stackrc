@@ -7,17 +7,17 @@ export OS_PASSWORD
 OS_AUTH_TYPE=password
 export OS_AUTH_TYPE
 {{#service_certificate}}
-OS_AUTH_URL=https://{{public_host}}:13000/v2.0
+OS_AUTH_URL=https://{{public_host}}:13000/
 PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
 export OS_AUTH_URL
 export PYTHONWARNINGS
 {{/service_certificate}}
 {{^service_certificate}}
-OS_AUTH_URL=http://{{local-ip}}:5000/v2.0
+OS_AUTH_URL=http://{{local-ip}}:5000/
 export OS_AUTH_URL
 {{/service_certificate}}
 OS_USERNAME=admin
-OS_TENANT_NAME=admin
+OS_PROJECT_NAME=admin
 COMPUTE_API_VERSION=1.1
 # 1.29 is the latest API version in Ironic Ocata supported by ironicclient
 IRONIC_API_VERSION=1.29
@@ -25,12 +25,18 @@ OS_BAREMETAL_API_VERSION=$IRONIC_API_VERSION
 OS_NO_CACHE=True
 OS_CLOUDNAME=undercloud
 export OS_USERNAME
-export OS_TENANT_NAME
+export OS_PROJECT_NAME
 export COMPUTE_API_VERSION
 export IRONIC_API_VERSION
 export OS_BAREMETAL_API_VERSION
 export OS_NO_CACHE
 export OS_CLOUDNAME
+OS_IDENTITY_API_VERSION='3'
+export OS_IDENTITY_API_VERSION
+OS_PROJECT_DOMAIN_NAME='Default'
+export OS_PROJECT_DOMAIN_NAME
+OS_USER_DOMAIN_NAME='Default'
+export OS_USER_DOMAIN_NAME
 
 # Add OS_CLOUDNAME to PS1
 if [ -z "${CLOUDPROMPT_ENABLED:-}" ]; then

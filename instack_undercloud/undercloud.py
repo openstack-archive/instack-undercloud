@@ -31,12 +31,11 @@ import time
 import uuid
 import yaml
 
-from keystoneauth1 import exceptions as ks_exceptions
 from keystoneauth1 import session
-from keystoneclient import auth
+from keystoneauth1 import exceptions as ks_exceptions
 from keystoneclient import discover
+import keystoneauth1.identity.generic as ks_auth
 from mistralclient.api import client as mistralclient
-from mistralclient.api import base as mistralclient_base
 import novaclient as nc
 from novaclient import client as novaclient
 from novaclient import exceptions
@@ -941,20 +940,16 @@ def _member_role_exists():
     # This is a workaround for puppet removing the deprecated _member_
     # role on upgrade - if it exists we must restore role assignments
     # or trusts stored in the undercloud heat will break
-    user, password, tenant, auth_url = _get_auth_values()
-    # Note this is made somewhat verbose due to trying to handle
-    # any format auth_url (versionless, v2,0/v3 suffix)
-    auth_plugin_class = auth.get_plugin_class('password')
+    user, password, project, auth_url = _get_auth_values()
     auth_kwargs = {
         'auth_url': auth_url,
         'username': user,
         'password': password,
-        'project_name': tenant}
-    if 'v2.0' not in auth_url:
-        auth_kwargs.update({
-            'project_domain_name': 'default',
-            'user_domain_name': 'default'})
-    auth_plugin = auth_plugin_class(**auth_kwargs)
+        'project_name': project,
+        'project_domain_name': 'Default',
+        'user_domain_name': 'Default',
+    }
+    auth_plugin = ks_auth.Password(**auth_kwargs)
     sess = session.Session(auth=auth_plugin)
     disc = discover.Discover(session=sess)
     c = disc.create_client()
@@ -963,14 +958,28 @@ def _member_role_exists():
     except IndexError:
         # Do nothing if there is no _member_ role
         return
-    admin_tenant = [t for t in c.tenants.list() if t.name == 'admin'][0]
+    if c.version == 'v2.0':
+        client_projects = c.tenants
+    else:
+        client_projects = c.projects
+    admin_project = [t for t in client_projects.list() if t.name == 'admin'][0]
     admin_user = [u for u in c.users.list() if u.name == 'admin'][0]
-    try:
-        c.roles.add_user_role(admin_user, member_role, admin_tenant.id)
-        LOG.info('Added _member_ role to admin user')
-    except ks_exceptions.http.Conflict:
-        # They already had the role
-        pass
+    if c.version == 'v2.0':
+        try:
+            c.roles.add_user_role(admin_user, member_role, admin_project.id)
+            LOG.info('Added _member_ role to admin user')
+        except ks_exceptions.http.Conflict:
+            # They already had the role
+            pass
+    else:
+        try:
+            c.roles.grant(member_role,
+                          user=admin_user,
+                          project=admin_project.id)
+            LOG.info('Added _member_ role to admin user')
+        except ks_exceptions.http.Conflict:
+            # They already had the role
+            pass
 
 
 class InstackEnvironment(dict):
@@ -1243,14 +1252,14 @@ def _ensure_user_identity(id_path):
 def _get_auth_values():
     """Get auth values from stackrc
 
-    Returns the user, password, tenant and auth_url as read from stackrc,
+    Returns the user, password, project and auth_url as read from stackrc,
     in that order as a tuple.
     """
     user = _extract_from_stackrc('OS_USERNAME')
     password = _run_command(['sudo', 'hiera', 'admin_password']).rstrip()
-    tenant = _extract_from_stackrc('OS_TENANT_NAME')
+    project = _extract_from_stackrc('OS_PROJECT_NAME')
     auth_url = _extract_from_stackrc('OS_AUTH_URL')
-    return user, password, tenant, auth_url
+    return user, password, project, auth_url
 
 
 def _configure_ssh_keys(nova):
@@ -1325,7 +1334,7 @@ def _create_mistral_config_environment(instack_env, mistral):
     env_name = "tripleo.undercloud-config"
     try:
         mistral.environments.get(env_name)
-    except mistralclient_base.APIException:
+    except ks_exceptions.NotFound:
         mistral.environments.create(
             name=env_name,
             variables=json.dumps({
@@ -1411,13 +1420,23 @@ def _post_config_mistral(instack_env, mistral, swift):
 
 def _post_config(instack_env):
     _copy_stackrc()
-    user, password, tenant, auth_url = _get_auth_values()
+    user, password, project, auth_url = _get_auth_values()
+    auth_kwargs = {
+        'auth_url': auth_url,
+        'username': user,
+        'password': password,
+        'project_name': project,
+        'project_domain_name': 'Default',
+        'user_domain_name': 'Default',
+    }
+    auth_plugin = ks_auth.Password(**auth_kwargs)
+    sess = session.Session(auth=auth_plugin)
     # TODO(andreykurilin): remove this check with support of novaclient 6.0.0
     if nc.__version__[0] == "6":
-        nova = novaclient.Client(2, user, password, tenant, auth_url=auth_url)
+        nova = novaclient.Client(2, user, password, project, auth_url=auth_url)
     else:
         nova = novaclient.Client(2, user, password, auth_url=auth_url,
-                                 project_name=tenant)
+                                 project_name=project)
 
     _configure_ssh_keys(nova)
     _delete_default_flavors(nova)
@@ -1432,18 +1451,11 @@ def _post_config(instack_env):
     mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
     mistral = mistralclient.client(
         mistral_url=mistral_url,
-        username=user,
-        api_key=password,
-        project_name=tenant,
-        auth_url=auth_url)
+        session=sess)
     swift = swiftclient.Connection(
         authurl=auth_url,
-        user=user,
-        key=password,
-        tenant_name=tenant,
-        auth_version='2.0'
+        session=sess
     )
-
     _post_config_mistral(instack_env, mistral, swift)
     _member_role_exists()
 
