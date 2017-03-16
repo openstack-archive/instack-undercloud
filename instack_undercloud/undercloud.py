@@ -903,6 +903,7 @@ def _write_password_file(instack_env):
                 LOG.info('Generated new password for %s', opt.name)
             instack_env[env_name] = value
             password_file.write('%s=%s\n' % (opt.name, value))
+    os.chmod(PATHS.PASSWORD_PATH, 0o600)
 
 
 def _member_role_exists():
