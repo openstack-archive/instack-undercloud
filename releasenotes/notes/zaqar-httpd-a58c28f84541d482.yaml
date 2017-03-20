@@ -1,0 +1,3 @@
+---
+features:
+  - Zaqar API now run over httpd in the undercloud.
