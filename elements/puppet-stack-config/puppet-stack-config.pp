@@ -448,9 +448,7 @@ class { '::heat':
   debug                        => hiera('debug'),
   keystone_ec2_uri             => join([hiera('keystone_auth_uri'), '/ec2tokens']),
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
-}
-heat_config {
-  'clients/endpoint_type': value => 'internal',
+  heat_clients_endpoint_type   => hiera('heat_clients_endpoint_type', 'internal'),
 }
 include ::heat::api
 include ::heat::wsgi::apache_api
