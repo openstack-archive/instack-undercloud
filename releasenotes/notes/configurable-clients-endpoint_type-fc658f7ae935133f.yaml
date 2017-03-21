@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    In /etc/heat/heat.conf, [clients]/endpoint_type was configured to use the
+    internal endpoints and this was hardcoded in puppet-stack-config.pp so
+    there was no way to change it. It's now configurable via the hiera key
+    heat_clients_endpoint_type.
