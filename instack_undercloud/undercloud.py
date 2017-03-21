@@ -379,6 +379,10 @@ _auth_opts = [
                help=('Heat service password. '
                      'If left unset, one will be automatically generated.')
                ),
+    cfg.StrOpt('undercloud_heat_cfn_password',
+               help=('Heat cfn service password. '
+                     'If left unset, one will be automatically generated.')
+               ),
     cfg.StrOpt('undercloud_neutron_password',
                help=('Neutron service password. '
                      'If left unset, one will be automatically generated.')
@@ -741,6 +745,10 @@ def _generate_endpoints(instack_env):
             '%s://%s:%d/v1/%%(tenant_id)s',
             {'host': public_host, 'port': 8004, 'ssl_port': 13004},
             {'host': internal_host, 'port': 8004}),
+        ('heat-cfn',
+            '%s://%s:%d/v1/%%(tenant_id)s',
+            {'host': public_host, 'port': 8000, 'ssl_port': 13800},
+            {'host': internal_host, 'port': 8000}),
         ('heat-ui-proxy',
             '%s://%s:%d',
             {'host': public_host, 'port': 8004, 'ssl_port': 13004},
