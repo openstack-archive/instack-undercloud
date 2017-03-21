@@ -171,6 +171,12 @@ heat::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_HEAT_INTERNAL}}
 heat::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_HEAT_ADMIN}}
 heat::keystone::auth::password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::keystone::auth::region: "%{hiera('keystone_region')}"
+heat::keystone::auth_cfn::tenant: 'service'
+heat::keystone::auth_cfn::region: "%{hiera('keystone_region')}"
+heat::keystone::auth_cfn::password: {{UNDERCLOUD_HEAT_CFN_PASSWORD}}
+heat::keystone::auth_cfn::public_url: {{UNDERCLOUD_ENDPOINT_HEAT_CFN_PUBLIC}}
+heat::keystone::auth_cfn::internal_url: {{UNDERCLOUD_ENDPOINT_HEAT_CFN_INTERNAL}}
+heat::keystone::auth_cfn::admin_url: {{UNDERCLOUD_ENDPOINT_HEAT_CFN_ADMIN}}
 heat::cron::purge_deleted::age: 1
 heat::cron::purge_deleted::age_type: 'days'
 heat::cron::purge_deleted::destination: '/dev/null'
