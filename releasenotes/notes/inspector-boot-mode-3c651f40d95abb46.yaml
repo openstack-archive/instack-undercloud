@@ -1,0 +1,16 @@
+---
+features:
+  - |
+    Introspection now detects and properly set boot mode (BIOS or UEFI) for
+    ironic nodes.
+upgrade:
+  - |
+    The boot mode (BIOS or UEFI) is now detected on introspection and stored
+    on nodes as part of ``boot_mode`` capability. This has two consequences:
+
+    * If you change the actual boot mode via hardware management interface,
+      you have to either re-run introspection or update it manually.
+
+    * If you set **expected** boot mode on Ironic nodes manually (for drivers
+      that support it, e.g. ``pxe_ilo``), you have to double-check it after
+      every introspection run and fix if necessary.
