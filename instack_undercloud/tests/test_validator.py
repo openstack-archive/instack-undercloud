@@ -132,21 +132,29 @@ class TestValidator(base.BaseTestCase):
 
     def test_fail_on_invalid_public_host(self):
         self.conf.config(undercloud_public_host='192.0.3.2',
-                         undercloud_service_certificate='foo.pem')
+                         undercloud_service_certificate='foo.pem',
+                         enable_ui=False)
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_invalid_admin_host(self):
         self.conf.config(undercloud_admin_host='192.0.3.3',
-                         generate_service_certificate=True)
+                         generate_service_certificate=True,
+                         enable_ui=False)
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_ssl_hosts_allowed(self):
         self.conf.config(undercloud_public_host='public.domain',
                          undercloud_admin_host='admin.domain',
-                         undercloud_service_certificate='foo.pem')
+                         undercloud_service_certificate='foo.pem',
+                         enable_ui=False)
         undercloud._validate_network()
+
+    def test_allow_all_with_ui(self):
+        self.conf.config(undercloud_admin_host='10.0.0.10',
+                         generate_service_certificate=True,
+                         enable_ui=True)
 
     def test_fail_on_invalid_ip(self):
         self.conf.config(dhcp_start='foo.bar')

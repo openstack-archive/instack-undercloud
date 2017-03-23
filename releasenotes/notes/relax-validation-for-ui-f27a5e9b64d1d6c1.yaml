@@ -1,0 +1,17 @@
+---
+fixes:
+  - |
+    Previously, when an IP value was provided for the undercloud_public_host
+    or undercloud_admin_host config value, it was validated to ensure it fell
+    within the network_cidr.  This was to avoid problems when the CIDR was
+    changed but the IPs were not.  However, this validation was broken for a
+    time in the case where generate_service_certificate was used.  During this
+    time, the UI began to depend on the broken validation as it needs to
+    listen on a routable network, which the provisioning network often is not.
+    When the validation was fixed, the user was no longer able to configure
+    the host values to listen on a different routable network.
+
+    To enable this UI functionality again, the host validation has been
+    disabled when enable_ui is true.  This means the user is responsible for
+    selecting functional host values, but the UI can once again be configured
+    to listen on a separate network.
