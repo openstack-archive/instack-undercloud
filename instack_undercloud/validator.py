@@ -76,7 +76,7 @@ def _validate_in_cidr(params, error_callback):
         params['inspection_end'] = inspection_iprange[1]
     validate_addr_in_cidr(params, 'just_local_ip', 'local_ip')
     validate_addr_in_cidr(params, 'network_gateway')
-    if params['undercloud_service_certificate']:
+    if params['undercloud_service_certificate'] and not params['enable_ui']:
         validate_addr_in_cidr(params, 'undercloud_public_vip')
         validate_addr_in_cidr(params, 'undercloud_admin_vip')
     validate_addr_in_cidr(params, 'dhcp_start')

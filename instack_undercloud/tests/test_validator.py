@@ -119,3 +119,8 @@ class TestValidator(base.BaseTestCase):
         save_params = dict(params)
         validator.validate_config(params, lambda x: None)
         self.assertEqual(save_params, params)
+
+    def test_allow_all_with_ui(self):
+        self.conf.config(undercloud_admin_vip='10.0.0.10',
+                         generate_service_certificate=True,
+                         enable_ui=True)
