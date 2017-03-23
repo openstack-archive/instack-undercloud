@@ -93,8 +93,13 @@ def _validate_in_cidr(params, error_callback):
         params['inspection_end'] = inspection_iprange[1]
     validate_addr_in_cidr(params, 'just_local_ip', 'local_ip')
     validate_addr_in_cidr(params, 'network_gateway')
-    if (params['undercloud_service_certificate'] or
-            params['generate_service_certificate']):
+    # NOTE(bnemec): The ui needs to be externally accessible, which means in
+    # many cases we can't have the public vip on the provisioning network.
+    # In that case users are on their own to ensure they've picked valid
+    # values for the VIP hosts.
+    if ((params['undercloud_service_certificate'] or
+            params['generate_service_certificate']) and
+            not params['enable_ui']):
         validate_addr_in_cidr(params, 'undercloud_public_host',
                               require_ip=False)
         validate_addr_in_cidr(params, 'undercloud_admin_host',
