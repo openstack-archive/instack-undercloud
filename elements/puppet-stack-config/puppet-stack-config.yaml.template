@@ -2,6 +2,7 @@ keystone_identity_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN}}
 keystone_auth_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v3
 keystone_auth_uri_v2: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v2.0
 keystone_region: 'regionOne'
+keystone_default_domain: 'Default'
 
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4

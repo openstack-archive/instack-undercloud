@@ -34,6 +34,10 @@ Exec<| title == 'mistral-db-populate' |> { refreshonly => false }
 Exec<| title == 'zaqar-manage db_sync' |> { refreshonly => false }
 Exec<| title == 'cinder-manage db_sync' |> { refreshonly => false }
 
+Keystone::Resource::Service_identity {
+  default_domain => hiera('keystone_default_domain'),
+}
+
 if count(hiera('ntp::servers')) > 0 {
   include ::tripleo::profile::base::time::ntp
 }
