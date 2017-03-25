@@ -401,7 +401,6 @@ nova::notify_on_state_change: 'vm_and_task_state'
 nova::scheduler::enabled: true
 nova::network::neutron::dhcp_domain: ''
 nova::compute::force_config_drive: true
-nova::compute::compute_manager: 'ironic.nova.compute.manager.ClusteredComputeManager'
 nova::compute::reserved_host_memory: '0'
 nova::compute::vnc_enabled: false
 nova::compute::instance_usage_audit: true
