@@ -27,7 +27,6 @@ Exec<| title == 'nova-db-sync-api' |> { refreshonly => false }
 Exec<| title == 'nova-db-sync' |> { refreshonly => false }
 Exec<| title == 'nova-db-online-data-migrations' |> { refreshonly => false }
 Exec<| title == 'heat-dbsync' |> { refreshonly => false }
-Exec<| title == 'ceilometer-dbsync' |> { refreshonly => false }
 Exec<| title == 'aodh-db-sync' |> { refreshonly => false }
 Exec<| title == 'ironic-dbsync' |> { refreshonly => false }
 Exec<| title == 'mistral-db-sync' |> { refreshonly => false }
@@ -183,6 +182,30 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::ceilometer::collector
   include ::ceilometer::agent::auth
   include ::ceilometer::dispatcher::gnocchi
+
+  # We need to use exec as the keystone dependency wouldnt allow
+  # us to wait until service is up before running upgrade. This
+  # is because both keystone, gnocchi and ceilometer run under apache.
+  exec { 'ceilo-gnocchi-upgrade':
+    command => 'ceilometer-upgrade --skip-metering-database',
+    path    => ['/usr/bin', '/usr/sbin'],
+  }
+
+  # This ensures we can do service validation on gnocchi api before
+  # running ceilometer-upgrade
+  $command = join(['curl -s',
+                  hiera('gnocchi_healthcheck_url')], ' ')
+
+  openstacklib::service_validation { 'gnocchi-status':
+    command     => $command,
+    tries       => 20,
+    refreshonly => true,
+    subscribe   => Anchor['gnocchi::service::end']
+  }
+
+# Ensure all endpoint exists and only then run the upgrade.
+  Keystone::Resource::Service_identity<||> ->
+  Openstacklib::Service_validation['gnocchi-status'] -> Exec['ceilo-gnocchi-upgrade']
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
