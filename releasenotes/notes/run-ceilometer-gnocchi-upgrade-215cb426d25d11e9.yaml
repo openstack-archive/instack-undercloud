@@ -1,0 +1,4 @@
+---
+fixes:
+  - Run ceilometer-upgrade conditionally when gnocchi is running so that
+    gnocchi resource types are created.
