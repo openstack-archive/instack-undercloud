@@ -464,10 +464,15 @@ ironic::api::host_ip: {{LOCAL_IP}}
 ironic::api::workers: "%{::os_workers}"
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
 ironic::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
+ironic::drivers::inspector::enabled: true
+ironic::drivers::inspector::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+ironic::drivers::inspector::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::glance::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::glance::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::neutron::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::neutron::auth_url: "%{hiera('keystone_identity_uri')}"
+ironic::service_catalog::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+ironic::service_catalog::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::swift::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::swift::auth_url: "%{hiera('keystone_identity_uri')}"
 # Ironic conductor forces deployments to use http
@@ -740,8 +745,10 @@ heat::keystone::authtoken::project_name: 'service'
 glance::api::authtoken::project_name: 'service'
 glance::registry::authtoken::project_name: 'service'
 ironic::api::authtoken::project_name: 'service'
+ironic::drivers::inspector::project_name: 'service'
 ironic::glance::project_name: 'service'
 ironic::neutron::project_name: 'service'
+ironic::service_catalog::project_name: 'service'
 ironic::swift::project_name: 'service'
 nova::keystone::authtoken::project_name: 'service'
 swift::proxy::authtoken::project_name: 'service'
