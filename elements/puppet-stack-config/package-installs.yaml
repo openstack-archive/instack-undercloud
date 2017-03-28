@@ -1,3 +1,2 @@
-os-cloud-config:
 pystache:
 python-oslo-concurrency:

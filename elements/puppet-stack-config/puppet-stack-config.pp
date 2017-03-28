@@ -347,12 +347,6 @@ include ::swift::keystone::auth
 include ::ironic::keystone::auth
 include ::ironic::keystone::auth_inspector
 
-# Because os-cloud-config/tree/os_cloud_config/keystone.py already managed
-# it but with a different service name than Puppet will do (novav3), we want Puppet
-# to making sure computev3 is not here anymore and we will add novav3 later.
-keystone_service { 'nova::computev3': ensure => absent }
-Keystone_service<||> -> Keystone_endpoint<||>
-
 #TODO: need a cleanup-keystone-tokens.sh solution here
 keystone_config {
   'ec2/driver': value => 'keystone.contrib.ec2.backends.sql.Ec2';
@@ -636,7 +630,6 @@ ensure_resource('package', 'python-proliantutils')
 ensure_resource('package', 'firewalld', {
   'ensure' => 'purged',
 })
-ensure_resource('package', 'os-cloud-config')
 ensure_resource('package', 'openstack-selinux')
 ensure_resource('package', 'syslinux-extlinux')
 ensure_resource('package', 'tftp-server')
