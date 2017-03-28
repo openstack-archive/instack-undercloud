@@ -41,8 +41,8 @@ apache::server_signature: 'Off'
 apache::server_tokens: 'Prod'
 
 # ceilometer settings used by compute and controller ceilo auth settings
-ceilometer::agent::auth::auth_region: 'regionOne'
-aodh::auth::auth_region: 'regionOne'
+ceilometer::agent::auth::auth_region: "%{hiera('keystone_region')}"
+aodh::auth::auth_region: "%{hiera('keystone_region')}"
 ceilometer::agent::auth::auth_tenant_name: 'service'
 aodh::auth::auth_tenant_name: 'service'
 ceilometer::agent::auth::auth_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
@@ -393,7 +393,7 @@ nova::wsgi::apache_placement::api_port: '8778'
 nova::placement::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::placement::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::placement::project_name: 'service'
-nova::placement::os_region_name: 'regionOne'
+nova::placement::os_region_name: "%{hiera('keystone_region')}"
 nova::conductor::enabled: true
 nova::conductor::workers: "%{::os_workers}"
 nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
@@ -596,7 +596,7 @@ mistral::keystone_password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC}}
 mistral::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_INTERNAL}}
 mistral::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_ADMIN}}
-mistral::keystone::auth::region: 'regionOne'
+mistral::keystone::auth::region: "%{hiera('keystone_region')}"
 mistral::keystone::auth::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::tenant: 'service'
 mistral::engine::older_than: 2880
@@ -612,13 +612,13 @@ zaqar::keystone::auth::tenant: 'service'
 zaqar::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_PUBLIC}}
 zaqar::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_INTERNAL}}
 zaqar::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_ADMIN}}
-zaqar::keystone::auth::region: 'regionOne'
+zaqar::keystone::auth::region: "%{hiera('keystone_region')}"
 zaqar::keystone::auth::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::keystone::auth_websocket::tenant: 'service'
 zaqar::keystone::auth_websocket::public_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSOCKET_PUBLIC}}
 zaqar::keystone::auth_websocket::internal_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSOCKET_INTERNAL}}
 zaqar::keystone::auth_websocket::admin_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSOCKET_ADMIN}}
-zaqar::keystone::auth_websocket::region: 'regionOne'
+zaqar::keystone::auth_websocket::region: "%{hiera('keystone_region')}"
 zaqar::keystone::auth_websocket::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::server::service_name: 'httpd'
 zaqar::unreliable: true
@@ -658,7 +658,7 @@ cinder::keystone::auth::admin_url_v2: {{UNDERCLOUD_ENDPOINT_CINDER_V2_ADMIN}}
 cinder::keystone::auth::public_url_v3: {{UNDERCLOUD_ENDPOINT_CINDER_V3_PUBLIC}}
 cinder::keystone::auth::internal_url_v3: {{UNDERCLOUD_ENDPOINT_CINDER_V3_INTERNAL}}
 cinder::keystone::auth::admin_url_v3: {{UNDERCLOUD_ENDPOINT_CINDER_V3_ADMIN}}
-cinder::keystone::auth::region: 'regionOne'
+cinder::keystone::auth::region: "%{hiera('keystone_region')}"
 cinder::keystone::auth::password: {{UNDERCLOUD_CINDER_PASSWORD}}
 cinder::keystone::authtoken::project_name: 'service'
 cinder::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
