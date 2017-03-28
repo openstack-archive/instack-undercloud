@@ -333,7 +333,6 @@ gnocchi::keystone::auth::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
 gnocchi::keystone::auth::region: "%{hiera('keystone_region')}"
 gnocchi::db::mysql::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
 gnocchi::db::database_connection: mysql+pymysql://gnocchi:{{UNDERCLOUD_GNOCCHI_PASSWORD}}@{{LOCAL_IP}}/gnocchi
-gnocchi::db::sync::extra_opts: '--create-legacy-resource-types'
 gnocchi::storage::swift::swift_user: 'service:gnocchi'
 gnocchi::storage::swift::swift_auth_version: 2
 gnocchi::storage::swift::swift_authurl: "%{hiera('keystone_auth_uri')}"
