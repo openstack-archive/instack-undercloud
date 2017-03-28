@@ -1,0 +1,4 @@
+---
+fixes:
+  - Add gnocchi to events dispatcher so ceilometer can
+    publish events to panko and gnocchi.
