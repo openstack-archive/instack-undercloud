@@ -790,6 +790,14 @@ nova::api::vendordata_jsonfile_path: '/etc/nova/cloud-config-novajoin.json'
 nova::api::vendordata_providers: ['StaticJSON', 'DynamicJSON']
 nova::api::vendordata_dynamic_targets: ["join@http://{{LOCAL_IP}}:%{hiera('novajoin_listen_port')}/v1/"]
 nova::api::vendordata_dynamic_failure_fatal: true
+nova::api::vendordata_dynamic_auth_auth_type: 'password'
+nova::api::vendordata_dynamic_auth_auth_url: "%{hiera('keystone_auth_uri')}"
+nova::api::vendordata_dynamic_auth_os_region_name: "%{hiera('keystone_region')}"
+nova::api::vendordata_dynamic_auth_username: 'nova'
+nova::api::vendordata_dynamic_auth_project_name: 'service'
+nova::api::vendordata_dynamic_auth_project_domain_name: 'Default'
+nova::api::vendordata_dynamic_auth_user_domain_name: 'Default'
+nova::api::vendordata_dynamic_auth_password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::notification_topics: ['notifications', 'novajoin_notifications']
 nova::notify_on_state_change: 'vm_state'
 {{/ENABLE_NOVAJOIN}}
