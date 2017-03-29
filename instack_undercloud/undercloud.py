@@ -31,8 +31,8 @@ import time
 import uuid
 
 from keystoneauth1 import exceptions as ks_exceptions
+from keystoneauth1 import session
 from keystoneclient import auth
-from keystoneclient import session
 from keystoneclient import discover
 from mistralclient.api import client as mistralclient
 from mistralclient.api import base as mistralclient_base
