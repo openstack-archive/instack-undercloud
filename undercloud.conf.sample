@@ -92,8 +92,8 @@
 
 # Path to hieradata override file. If set, the file will be copied
 # under /etc/puppet/hieradata and set as the first file in the hiera
-# hierarchy. This can be used to custom configure services beyond
-# what undercloud.conf provides (string value)
+# hierarchy. This can be used to custom configure services beyond what
+# undercloud.conf provides (string value)
 #hieradata_override =
 
 # Path to network config override template. If set, this template will
@@ -229,6 +229,10 @@
 # Heat service password. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_heat_password = <None>
+
+# Heat cfn service password. If left unset, one will be automatically
+# generated. (string value)
+#undercloud_heat_cfn_password = <None>
 
 # Neutron service password. If left unset, one will be automatically
 # generated. (string value)

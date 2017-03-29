@@ -339,6 +339,7 @@ include ::keystone::endpoint
 include ::keystone::cors
 
 include ::heat::keystone::auth
+include ::heat::keystone::auth_cfn
 include ::neutron::keystone::auth
 include ::glance::keystone::auth
 include ::nova::keystone::auth

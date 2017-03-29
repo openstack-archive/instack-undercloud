@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    The Heat CFN endpoint is now created in Keystone during the undercloud
+    install. A new configuration option, undercloud_heat_cfn_password is added
+    for the heat_cfn service user associated with the endpoint.
