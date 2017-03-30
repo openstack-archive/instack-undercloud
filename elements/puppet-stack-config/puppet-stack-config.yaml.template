@@ -178,6 +178,7 @@ heat::cron::purge_deleted::destination: '/dev/null'
 heat::notification_driver: 'messaging'
 heat::yaql_memory_quota: 100000
 heat::yaql_limit_iterators: 1000
+heat::max_json_body_size: 2097152
 
 # Keystone
 keystone::debug:  "%{hiera('debug')}"
