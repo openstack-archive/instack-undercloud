@@ -302,7 +302,7 @@ ceilometer::dispatcher::gnocchi::archive_policy: 'low'
 ceilometer::dispatcher::gnocchi::resources_definition_file: 'gnocchi_resources.yaml'
 
 # events dispatcher config
-ceilometer::collector::event_dispatcher: 'panko'
+ceilometer::collector::event_dispatcher: ['panko', 'gnocchi']
 
 # Aodh
 aodh::debug: "%{hiera('debug')}"
