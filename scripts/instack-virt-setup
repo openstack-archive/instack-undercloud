@@ -3,7 +3,8 @@
 echo
 echo "#######################################################################"
 echo "WARNING: instack-virt-setup is DEPRECATED in Ocata and will be removed "
-echo "in a future release"
+echo "in a future release. Check out"
+echo "https://github.com/openstack/tripleo-quickstart as a replacement"
 echo "#######################################################################"
 echo
 
