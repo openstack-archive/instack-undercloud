@@ -204,8 +204,10 @@ if str2bool(hiera('enable_telemetry', true)) {
   }
 
 # Ensure all endpoint exists and only then run the upgrade.
+# ensure we restart ceilometer collector as well
   Keystone::Resource::Service_identity<||> ->
-  Openstacklib::Service_validation['gnocchi-status'] -> Exec['ceilo-gnocchi-upgrade']
+  Openstacklib::Service_validation['gnocchi-status'] ->
+  Exec['ceilo-gnocchi-upgrade'] ~> Service['ceilometer-collector']
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
