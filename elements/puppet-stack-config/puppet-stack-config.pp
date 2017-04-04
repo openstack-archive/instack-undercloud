@@ -173,8 +173,8 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::ceilometer
   if str2bool(hiera('enable_legacy_ceilometer_api', true)) {
     include ::ceilometer::api
+    include ::ceilometer::wsgi::apache
   }
-  include ::ceilometer::wsgi::apache
   include ::ceilometer::db
   include ::ceilometer::agent::notification
   include ::ceilometer::agent::central
