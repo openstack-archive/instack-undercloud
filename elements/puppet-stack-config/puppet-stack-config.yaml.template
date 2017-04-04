@@ -620,6 +620,9 @@ zaqar::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_INTERNAL}}
 zaqar::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_ADMIN}}
 zaqar::keystone::auth::region: "%{hiera('keystone_region')}"
 zaqar::keystone::auth::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
+zaqar::keystone::auth::roles:
+  - admin
+  - ResellerAdmin
 zaqar::keystone::auth_websocket::tenant: 'service'
 zaqar::keystone::auth_websocket::public_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSOCKET_PUBLIC}}
 zaqar::keystone::auth_websocket::internal_url: {{UNDERCLOUD_ENDPOINT_ZAQAR_WEBSOCKET_INTERNAL}}
