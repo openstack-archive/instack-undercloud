@@ -349,7 +349,7 @@ _opts = [
                 help=('Whether to clean overcloud nodes (wipe the hard drive) '
                       'between deployments and after the introspection.')),
     cfg.ListOpt('enabled_drivers',
-                default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo', 'pxe_ssh'],
+                default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo'],
                 help=('List of enabled bare metal drivers.')),
 ]
 

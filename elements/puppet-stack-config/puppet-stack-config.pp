@@ -499,7 +499,6 @@ include ::ironic::drivers::ilo
 include ::ironic::drivers::inspector
 include ::ironic::drivers::ipmi
 include ::ironic::drivers::pxe
-include ::ironic::drivers::ssh
 include ::ironic::glance
 include ::ironic::inspector
 include ::ironic::neutron
