@@ -1,0 +1,4 @@
+---
+fixes:
+  - Add a dependency to restart collector after other services are
+    up and ceilometer upgrade is complete.
