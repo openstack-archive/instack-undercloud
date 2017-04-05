@@ -160,14 +160,23 @@ class { '::heat::db::mysql':
 if str2bool(hiera('enable_telemetry', true)) {
 
   # Ceilometer
-  $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
-  class { '::ceilometer::db::mysql':
-    user          => $ceilometer_dsn[3],
-    password      => $ceilometer_dsn[4],
-    host          => $ceilometer_dsn[5],
-    dbname        => $ceilometer_dsn[6],
-    allowed_hosts => $allowed_hosts,
+
+  if str2bool(hiera('enable_legacy_ceilometer_collector', false)) {
+    $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
+    class { '::ceilometer::db::mysql':
+      user          => $ceilometer_dsn[3],
+      password      => $ceilometer_dsn[4],
+      host          => $ceilometer_dsn[5],
+      dbname        => $ceilometer_dsn[6],
+      allowed_hosts => $allowed_hosts,
+    }
+    include ::ceilometer::db
+    include ::ceilometer::collector
+
+    # ensure we restart ceilometer collector as well
+    Keystone::Resource::Service_identity<||> -> Service['ceilometer-collector']
   }
+
   include ::ceilometer::keystone::auth
   include ::aodh::keystone::auth
   include ::ceilometer
@@ -175,11 +184,9 @@ if str2bool(hiera('enable_telemetry', true)) {
     include ::ceilometer::api
     include ::ceilometer::wsgi::apache
   }
-  include ::ceilometer::db
   include ::ceilometer::agent::notification
   include ::ceilometer::agent::central
   include ::ceilometer::expirer
-  include ::ceilometer::collector
   include ::ceilometer::agent::auth
   include ::ceilometer::dispatcher::gnocchi
 
@@ -204,10 +211,9 @@ if str2bool(hiera('enable_telemetry', true)) {
   }
 
 # Ensure all endpoint exists and only then run the upgrade.
-# ensure we restart ceilometer collector as well
   Keystone::Resource::Service_identity<||> ->
   Openstacklib::Service_validation['gnocchi-status'] ->
-  Exec['ceilo-gnocchi-upgrade'] ~> Service['ceilometer-collector']
+  Exec['ceilo-gnocchi-upgrade']
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }

@@ -173,6 +173,12 @@
 # (boolean value)
 #enable_legacy_ceilometer_api = false
 
+# Whether to enable legacy ceilometer collector in the Undercloud. Note:
+# Ceilometer collector has been deprecated and will be removed in future
+# release.
+# (boolean value)
+#enable_legacy_ceilometer_collector = false
+
 # Whether to install novajoin metadata service in the Undercloud.
 # (boolean value)
 #enable_novajoin = false

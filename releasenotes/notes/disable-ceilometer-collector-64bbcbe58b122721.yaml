@@ -1,0 +1,6 @@
+---
+deprecations:
+  - Ceilometer collector service is deprecated in pike release.
+fixes:
+  - Disable ceilometer collector by default as its deprecated. All the
+    data will now be dispatched through pipeline directly.
