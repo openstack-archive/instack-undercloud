@@ -314,7 +314,7 @@ _opts = [
                 help=('Whether to install the Volume service to be boot '
                       'overcloud nodes from remote volumes.')),
     cfg.BoolOpt('enable_legacy_ceilometer_api',
-                default=True,
+                default=False,
                 help=('Whether to enable legacy ceilometer api '
                       'in the Undercloud. '
                       'Note: Ceilometer API has been deprecated and will be '
