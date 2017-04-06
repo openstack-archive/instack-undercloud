@@ -1,0 +1,6 @@
+---
+deprecations:
+  - Ceilometer API is deprecated since ocata release.
+fixes:
+  - Ceilometer API is now disabled by default. This has been deprecated
+    since ocata release. Use gnocchi/aodh and panko APIs instead.
