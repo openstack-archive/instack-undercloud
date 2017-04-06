@@ -402,7 +402,7 @@ class TestGenerateEnvironment(BaseTestCase):
         # Instead make sure that it looks like a valid list by parsing it.
         drivers = json.loads(env['ENABLED_DRIVERS'])
         self.assertEqual(sorted(drivers), ['pxe_drac', 'pxe_ilo',
-                                           'pxe_ipmitool', 'pxe_ssh'])
+                                           'pxe_ipmitool'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], '')
 
     def test_enabled_discovery(self):
@@ -416,7 +416,7 @@ class TestGenerateEnvironment(BaseTestCase):
         drivers = json.loads(env['ENABLED_DRIVERS'])
         # Discovery requires enabling the default driver
         self.assertEqual(sorted(drivers), ['foobar', 'pxe_drac', 'pxe_ilo',
-                                           'pxe_ipmitool', 'pxe_ssh'])
+                                           'pxe_ipmitool'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], 'enroll')
 
     def test_generate_endpoints(self):

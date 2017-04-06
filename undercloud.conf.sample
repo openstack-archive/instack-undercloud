@@ -197,7 +197,7 @@
 #clean_nodes = false
 
 # List of enabled bare metal drivers. (list value)
-#enabled_drivers = pxe_ipmitool,pxe_drac,pxe_ilo,pxe_ssh
+#enabled_drivers = pxe_ipmitool,pxe_drac,pxe_ilo
 
 
 [auth]
