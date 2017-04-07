@@ -713,6 +713,9 @@ tripleo::haproxy::docker_registry: true
 
 # Docker
 tripleo::profile::base::docker::step: 1
+{{#DOCKER_REGISTRY_MIRROR}}
+tripleo::profile::base::docker::registry_mirror: {{DOCKER_REGISTRY_MIRROR}}
+{{/DOCKER_REGISTRY_MIRROR}}
 
 # Keepalived
 tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_host')}"

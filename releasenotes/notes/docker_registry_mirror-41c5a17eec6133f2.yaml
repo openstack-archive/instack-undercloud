@@ -1,0 +1,6 @@
+---
+features:
+  - Add a new docker_registry_mirror option which can be used to
+    configure a registry mirror in the /etc/docker/daemon.json file.
+    The motivation for this change is to help support pulling images
+    from HTTP mirrors within CI.

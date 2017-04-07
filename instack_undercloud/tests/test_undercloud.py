@@ -419,6 +419,15 @@ class TestGenerateEnvironment(BaseTestCase):
                                            'pxe_ipmitool'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], 'enroll')
 
+    def test_docker_registry_mirror(self):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(docker_registry_mirror='http://foo/bar')
+        env = undercloud._generate_environment('.')
+        # Spot check one service
+        self.assertEqual('http://foo/bar',
+                         env['DOCKER_REGISTRY_MIRROR'])
+
     def test_generate_endpoints(self):
         env = undercloud._generate_environment('.')
         endpoint_vars = {k: v for (k, v) in env.items()

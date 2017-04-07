@@ -200,6 +200,10 @@
 #enabled_drivers = pxe_ipmitool,pxe_drac,pxe_ilo
 
 
+# An optional docker 'registry-mirror' that will be
+# configured in /etc/docker/daemon.json.
+#docker_registry_mirror =
+
 [auth]
 
 #
