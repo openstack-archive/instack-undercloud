@@ -711,6 +711,9 @@ tripleo::haproxy::zaqar_api: true
 tripleo::haproxy::zaqar_ws: true
 tripleo::haproxy::docker_registry: true
 
+# Docker
+tripleo::profile::base::docker::step: 1
+
 # Keepalived
 tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_host')}"
 tripleo::keepalived::control_virtual_interface: 'br-ctlplane'
