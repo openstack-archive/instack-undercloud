@@ -581,6 +581,15 @@ if str2bool(hiera('enable_validations', true)) {
 }
 
 include ::zaqar
+$zaqar_dsn = split(hiera('zaqar::management::sqlalchemy::uri'), '[@:/?]')
+class { '::zaqar::db::mysql':
+  user          => $zaqar_dsn[3],
+  password      => $zaqar_dsn[4],
+  host          => $zaqar_dsn[5],
+  dbname        => $zaqar_dsn[6],
+  allowed_hosts => $allowed_hosts,
+}
+include ::zaqar::db::sync
 include ::zaqar::management::sqlalchemy
 include ::zaqar::messaging::swift
 include ::zaqar::keystone::auth
