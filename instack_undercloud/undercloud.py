@@ -351,6 +351,11 @@ _opts = [
     cfg.ListOpt('enabled_drivers',
                 default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo'],
                 help=('List of enabled bare metal drivers.')),
+    cfg.StrOpt('docker_registry_mirror',
+               default='',
+               help=('An optional docker \'registry-mirror\' that will be'
+                     'configured in /etc/docker/daemon.json.')
+               ),
 ]
 
 # Passwords, tokens, hashes
@@ -1078,6 +1083,9 @@ def _generate_environment(instack_root):
 
     instack_env['ENABLED_DRIVERS'] = (
         '[%s]' % ', '.join('"%s"' % drv for drv in set(enabled_drivers)))
+
+    if CONF.docker_registry_mirror:
+        instack_env['DOCKER_REGISTRY_MIRROR'] = CONF.docker_registry_mirror
 
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
