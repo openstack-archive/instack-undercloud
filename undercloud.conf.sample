@@ -199,6 +199,10 @@
 # List of enabled bare metal drivers. (list value)
 #enabled_drivers = pxe_ipmitool,pxe_drac,pxe_ilo
 
+# Whether to enable docker container images to be build on the undercloud.
+# Note this installs the required packages but does not build the images
+# automatically.
+#enable_container_images_build = true
 
 # An optional docker 'registry-mirror' that will be
 # configured in /etc/docker/daemon.json.
