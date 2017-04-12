@@ -54,6 +54,7 @@ swift::proxy::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 swift::proxy::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 swift::proxy::node_timeout: 60
 swift::proxy::workers: "%{::os_workers}"
+swift::proxy::log_facility: LOG_LOCAL2
 swift::storage::all::storage_local_net_ip: {{LOCAL_IP}}
 swift::storage::all::incoming_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
 swift::storage::all::outgoing_chmod: 'Du=rwx,g=rx,o=rx,Fu=rw,g=r,o=r'
