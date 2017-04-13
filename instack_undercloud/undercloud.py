@@ -333,6 +333,11 @@ _opts = [
                 help=('Whether to install novajoin metadata service in '
                       'the Undercloud.')
                 ),
+    cfg.BoolOpt('enable_container_images_build',
+                default=True,
+                help=('Whether to enable docker container images to be build '
+                      'on the undercloud.')
+                ),
     cfg.StrOpt('ipa_otp',
                default='',
                help=('One Time Password to register Undercloud node with '
