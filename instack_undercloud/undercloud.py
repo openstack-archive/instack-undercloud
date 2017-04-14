@@ -29,6 +29,7 @@ import sys
 import tempfile
 import time
 import uuid
+import yaml
 
 from keystoneauth1 import exceptions as ks_exceptions
 from keystoneauth1 import session
@@ -43,6 +44,7 @@ from oslo_config import cfg
 import psutil
 import pystache
 import six
+from swiftclient import client as swiftclient
 
 from instack_undercloud import validator
 
@@ -1331,11 +1333,31 @@ def _create_mistral_config_environment(instack_env, mistral):
             }))
 
 
-def _create_default_plan(mistral, timeout=360):
+def _migrate_plans(mistral, swift, plans):
+    """Migrate plan environments from Mistral to Swift."""
+    plan_env_filename = 'plan-environment.yaml'
+
+    for plan in plans:
+        headers, objects = swift.get_container(plan)
+
+        if headers.get('x-container-meta-usage-tripleo') != 'plan':
+            continue
+
+        try:
+            swift.get_object(plan, plan_env_filename)
+        except swiftclient.ClientException:
+            LOG.info('Migrating environment for plan %s to Swift.' % plan)
+            env = mistral.environments.get(plan).variables
+            yaml_string = yaml.safe_dump(env, default_flow_style=False)
+            swift.put_object(plan, plan_env_filename, yaml_string)
+            mistral.environments.delete(plan)
+
+
+def _create_default_plan(mistral, plans, timeout=360):
     plan_name = 'overcloud'
     queue_name = str(uuid.uuid4())
 
-    if plan_name in [env.name for env in mistral.environments.list()]:
+    if plan_name in plans:
         LOG.info('Not creating default plan "%s" because it already exists.',
                  plan_name)
         return
@@ -1373,10 +1395,12 @@ def _prepare_ssh_environment(mistral):
     mistral.executions.create('tripleo.validations.v1.copy_ssh_key')
 
 
-def _post_config_mistral(instack_env, mistral):
+def _post_config_mistral(instack_env, mistral, swift):
+    plans = [container["name"] for container in swift.get_account()[1]]
 
     _create_mistral_config_environment(instack_env, mistral)
-    _create_default_plan(mistral)
+    _migrate_plans(mistral, swift, plans)
+    _create_default_plan(mistral, plans)
 
     if CONF.enable_validations:
         _prepare_ssh_environment(mistral)
@@ -1409,8 +1433,15 @@ def _post_config(instack_env):
         api_key=password,
         project_name=tenant,
         auth_url=auth_url)
-    _post_config_mistral(instack_env, mistral)
+    swift = swiftclient.Connection(
+        authurl=auth_url,
+        user=user,
+        key=password,
+        tenant_name=tenant,
+        auth_version='2.0'
+    )
 
+    _post_config_mistral(instack_env, mistral, swift)
     _member_role_exists()
 
 
