@@ -722,6 +722,7 @@ tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_host')}"
 tripleo::keepalived::control_virtual_interface: 'br-ctlplane'
 tripleo::keepalived::public_virtual_ip: "%{hiera('controller_public_host')}"
 tripleo::keepalived::public_virtual_interface: 'br-ctlplane'
+tripleo::keepalived::virtual_router_id_base: 40
 
 # UI
 keystone::cors::allowed_origin: '*'
