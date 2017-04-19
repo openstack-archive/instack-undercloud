@@ -644,6 +644,7 @@ class TestConfigureSshKeys(base.BaseTestCase):
 class TestPostConfig(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._member_role_exists')
     @mock.patch('novaclient.client.Client', autospec=True)
+    @mock.patch('swiftclient.client.Connection', autospec=True)
     @mock.patch('mistralclient.api.client.client', autospec=True)
     @mock.patch('instack_undercloud.undercloud._delete_default_flavors')
     @mock.patch('instack_undercloud.undercloud._copy_stackrc')
@@ -654,15 +655,18 @@ class TestPostConfig(base.BaseTestCase):
     def test_post_config(self, mock_post_config_mistral, mock_ensure_flavor,
                          mock_configure_ssh_keys, mock_get_auth_values,
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
-                         mock_nova_client, mock_member_role_exists):
+                         mock_swift_client, mock_nova_client,
+                         mock_member_role_exists):
         instack_env = {
             'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC':
                 'http://192.168.24.1:8989/v2',
         }
         mock_get_auth_values.return_value = ('aturing', '3nigma', 'hut8',
                                              'http://bletchley:5000/v2.0')
-        mock_instance = mock.Mock()
-        mock_nova_client.return_value = mock_instance
+        mock_instance_nova = mock.Mock()
+        mock_nova_client.return_value = mock_instance_nova
+        mock_instance_swift = mock.Mock()
+        mock_swift_client.return_value = mock_instance_swift
         mock_instance_mistral = mock.Mock()
         mock_mistral_client.return_value = mock_instance_mistral
         undercloud._post_config(instack_env)
@@ -670,24 +674,26 @@ class TestPostConfig(base.BaseTestCase):
             2, 'aturing', '3nigma', project_name='hut8',
             auth_url='http://bletchley:5000/v2.0')
         self.assertTrue(mock_copy_stackrc.called)
-        mock_configure_ssh_keys.assert_called_with(mock_instance)
-        calls = [mock.call(mock_instance, 'baremetal'),
-                 mock.call(mock_instance, 'control', 'control'),
-                 mock.call(mock_instance, 'compute', 'compute'),
-                 mock.call(mock_instance, 'ceph-storage', 'ceph-storage'),
-                 mock.call(mock_instance, 'block-storage', 'block-storage'),
-                 mock.call(mock_instance, 'swift-storage', 'swift-storage'),
+        mock_configure_ssh_keys.assert_called_with(mock_instance_nova)
+        calls = [mock.call(mock_instance_nova, 'baremetal'),
+                 mock.call(mock_instance_nova, 'control', 'control'),
+                 mock.call(mock_instance_nova, 'compute', 'compute'),
+                 mock.call(mock_instance_nova, 'ceph-storage', 'ceph-storage'),
+                 mock.call(mock_instance_nova,
+                           'block-storage', 'block-storage'),
+                 mock.call(mock_instance_nova,
+                           'swift-storage', 'swift-storage'),
                  ]
         mock_ensure_flavor.assert_has_calls(calls)
-        mock_post_config_mistral.assert_called_once_with(instack_env,
-                                                         mock_instance_mistral)
+        mock_post_config_mistral.assert_called_once_with(
+            instack_env, mock_instance_mistral, mock_instance_swift)
 
     def test_create_default_plan(self):
         mock_mistral = mock.Mock()
         mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.return_value = mock.Mock(state="SUCCESS")
 
-        undercloud._create_default_plan(mock_mistral)
+        undercloud._create_default_plan(mock_mistral, [])
         mock_mistral.executions.create.assert_called_once_with(
             'tripleo.plan_management.v1.create_default_deployment_plan',
             workflow_input={
@@ -698,12 +704,7 @@ class TestPostConfig(base.BaseTestCase):
 
     def test_create_default_plan_existing(self):
         mock_mistral = mock.Mock()
-        environment = collections.namedtuple('environment', ['name'])
-        mock_mistral.environments.list.return_value = [
-            environment(name='overcloud')
-        ]
-
-        undercloud._create_default_plan(mock_mistral)
+        undercloud._create_default_plan(mock_mistral, ['overcloud'])
         mock_mistral.executions.create.assert_not_called()
 
     def test_create_config_environment(self):
@@ -743,21 +744,19 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('time.sleep')
     def test_create_default_plan_timeout(self, mock_sleep):
         mock_mistral = mock.Mock()
-        mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.return_value = mock.Mock(state="RUNNING")
 
         self.assertRaises(
             RuntimeError,
-            undercloud._create_default_plan, mock_mistral, timeout=0)
+            undercloud._create_default_plan, mock_mistral, [], timeout=0)
 
     def test_create_default_plan_failed(self):
         mock_mistral = mock.Mock()
-        mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.return_value = mock.Mock(state="ERROR")
 
         self.assertRaises(
             RuntimeError,
-            undercloud._create_default_plan, mock_mistral)
+            undercloud._create_default_plan, mock_mistral, [])
 
     @mock.patch('instack_undercloud.undercloud._run_command')
     def test_copy_stackrc(self, mock_run):
