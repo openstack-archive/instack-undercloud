@@ -1,0 +1,10 @@
+---
+upgrade:
+  - If you had telemetry enabled in Ocata and you upgrade to pike with
+    defaults, the telemetry services will be disabled upon upgrade. If
+    you choose to keep it enabled, set the enable_telemetry option to
+    true before upgrade and services will continue to be enabled after upgrade.
+fixes:
+  - Finally disabling telemetry services on undercloud by default. Telemetry
+    use case has been quite limited on undercloud and it makes sense to
+    disable by default and let user enabl based on need.

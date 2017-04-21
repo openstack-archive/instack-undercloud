@@ -157,7 +157,7 @@ class { '::heat::db::mysql':
   dbname        => $heat_dsn[6],
   allowed_hosts => $allowed_hosts,
 }
-if str2bool(hiera('enable_telemetry', true)) {
+if str2bool(hiera('enable_telemetry', false)) {
 
   # Ceilometer
 

@@ -298,9 +298,9 @@ _opts = [
                 help=('Whether to install Tempest in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_telemetry',
-                default=True,
+                default=False,
                 help=('Whether to install Telemetry services '
-                      '(ceilometer, aodh) in the Undercloud.')
+                      '(ceilometer, gnocchi, aodh, panko ) in the Undercloud.')
                 ),
     cfg.BoolOpt('enable_ui',
                 default=True,
