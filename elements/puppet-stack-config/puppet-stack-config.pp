@@ -503,6 +503,7 @@ include ::nova::network::neutron
 include ::ironic
 include ::ironic::api
 include ::ironic::conductor
+include ::ironic::drivers::drac
 include ::ironic::drivers::ilo
 include ::ironic::drivers::inspector
 include ::ironic::drivers::ipmi
@@ -644,11 +645,6 @@ if str2bool(hiera('enable_cinder', true)) {
   }
 }
 
-# dependency of pxe_drac
-ensure_resource('package', 'python-dracclient')
-# dependency of pxe_ilo
-ensure_resource('package', 'python-proliantutils')
-
 # firewalld is a dependency of some anaconda packages, so we need to use purge
 # to ensure all the things that it might be a dependency for are also
 # removed. See LP#1669915
@@ -656,11 +652,8 @@ ensure_resource('package', 'firewalld', {
   'ensure' => 'purged',
 })
 ensure_resource('package', 'openstack-selinux')
-ensure_resource('package', 'syslinux-extlinux')
-ensure_resource('package', 'tftp-server')
 ensure_resource('package', 'parted')
 ensure_resource('package', 'psmisc')
-ensure_resource('package', 'ipxe-bootimgs')
 
 include ::tripleo::profile::base::sshd
 
