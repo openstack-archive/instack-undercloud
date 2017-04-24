@@ -505,8 +505,10 @@ include ::ironic::conductor
 include ::ironic::drivers::drac
 include ::ironic::drivers::ilo
 include ::ironic::drivers::inspector
+include ::ironic::drivers::interfaces
 include ::ironic::drivers::ipmi
 include ::ironic::drivers::pxe
+include ::ironic::drivers::redfish
 include ::ironic::glance
 include ::ironic::inspector
 include ::ironic::neutron

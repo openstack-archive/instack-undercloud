@@ -418,6 +418,23 @@ class TestGenerateEnvironment(BaseTestCase):
                                            'pxe_ipmitool'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], 'enroll')
 
+    def test_enabled_hardware_types(self):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(enable_node_discovery=True,
+                    discovery_default_driver='foobar',
+                    enabled_hardware_types=['ipmi', 'foobar'])
+        env = undercloud._generate_environment('.')
+        # The list is generated from a set, so we can't rely on ordering.
+        # Instead make sure that it looks like a valid list by parsing it.
+        drivers = json.loads(env['ENABLED_DRIVERS'])
+        hw_types = json.loads(env['ENABLED_HARDWARE_TYPES'])
+        # The driver is already in hardware types, so we don't try adding it to
+        # the driver list.
+        self.assertEqual(sorted(drivers), ['pxe_drac', 'pxe_ilo',
+                                           'pxe_ipmitool'])
+        self.assertEqual(sorted(hw_types), ['foobar', 'ipmi'])
+
     def test_docker_registry_mirror(self):
         conf = config_fixture.Config()
         self.useFixture(conf)

@@ -1,0 +1,11 @@
+---
+features:
+  - |
+    Allow configuring enabled hardware types via new ``enabled_hardware_types``
+    configuration option. See `the driver composition reform spec
+    <http://specs.openstack.org/openstack/ironic-specs/specs/approved/driver-composition-reform.html>`_
+    for details. Enabled management and power interfaces are derived for
+    known hardware types. Inspection via **ironic-inspector** and
+    ``socat``-based serial console support is enabled by default.
+  - |
+    Support Redfish-compatible hardware via ``redfish`` hardware type.
