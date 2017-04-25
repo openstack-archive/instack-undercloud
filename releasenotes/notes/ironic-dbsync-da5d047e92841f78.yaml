@@ -1,0 +1,9 @@
+---
+upgrade:
+  - |
+    Undercloud upgrade will handle the change of ownership for ironic-dbsync.log
+    to become ironic:ironic instead of root:root.
+    Indeed, https://review.openstack.org/#/c/457478/ broke TripleO upgrades but
+    it's to fix a valid issue in the puppet-ironic module. We still want to handle
+    upgrades for existing deployments, that's why we manage the ownership change
+    in instack-undercloud.
