@@ -91,14 +91,14 @@ openstack quota set --cores -1 --instances -1 --ram -1 $(openstack project show 
 rm -rf $HOME/.novaclient
 
 # load workflows
-for workbook in $(mistral workbook-list | grep tripleo | cut -f 2 -d ' '); do
-    mistral workbook-delete $workbook
+for workbook in $(openstack workbook list -f value -c Name | grep tripleo); do
+    openstack workbook delete $workbook
 done
-for workflow in $(mistral workflow-list | grep tripleo | cut -f 2 -d ' '); do
-    mistral workflow-delete $workflow
+for workflow in $(openstack workflow list -f value -c Name | grep tripleo); do
+    openstack workflow delete $workflow
 done
 for workbook in $(ls /usr/share/openstack-tripleo-common/workbooks/*); do
-    mistral workbook-create $workbook
+    openstack workbook create $workbook
 done
 
 # IP forwarding is needed to allow the overcloud nodes access to the outside
