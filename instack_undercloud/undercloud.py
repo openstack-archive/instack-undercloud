@@ -1238,6 +1238,18 @@ def install(instack_root):
     _validate_configuration()
     instack_env = _generate_environment(instack_root)
     _generate_init_data(instack_env)
+    # Even if we backport https://review.openstack.org/#/c/457478/
+    # into stable branches of puppet-ironic, we still need a way
+    # to handle existing deployments.
+    # This task will fix ironic-dbsync.log ownership on existing
+    # deployments during an upgrade. It can be removed after we
+    # release Pike.
+    try:
+        _run_command(['sudo', '/usr/bin/chown', 'ironic:ironic',
+                      '/var/log/ironic/ironic-dbsync.log'])
+    except subprocess.CalledProcessError:
+        # assume it's a fresh installation, and the file does not exist
+        pass
     _die_tuskar_die()
     _run_yum_update(instack_env)
     _run_instack(instack_env)
