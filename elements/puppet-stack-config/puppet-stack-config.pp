@@ -378,7 +378,6 @@ class { '::nova::api':
 include ::nova::cell_v2::simple_setup
 include ::nova::placement
 include ::nova::wsgi::apache_placement
-include ::nova::cert
 include ::nova::cron::archive_deleted_rows
 include ::nova::conductor
 include ::nova::scheduler
