@@ -152,8 +152,8 @@
 # Whether to install Tempest in the Undercloud. (boolean value)
 #enable_tempest = true
 
-# Whether to install Telemetry services (ceilometer, aodh) in the
-# Undercloud. (boolean value)
+# Whether to install Telemetry services (ceilometer, gnocchi, aodh,
+# panko ) in the Undercloud. (boolean value)
 #enable_telemetry = false
 
 # Whether to install the TripleO UI. (boolean value)
@@ -173,15 +173,18 @@
 # (boolean value)
 #enable_legacy_ceilometer_api = false
 
-# Whether to enable legacy ceilometer collector in the Undercloud. Note:
-# Ceilometer collector has been deprecated and will be removed in future
-# release.
-# (boolean value)
+# Whether to enable legacy ceilometer collector in the Undercloud.
+# Note: Ceilometer collector has been deprecated and will be removed
+# in future release. (boolean value)
 #enable_legacy_ceilometer_collector = false
 
 # Whether to install novajoin metadata service in the Undercloud.
 # (boolean value)
 #enable_novajoin = false
+
+# Whether to enable docker container images to be build on the
+# undercloud. (boolean value)
+#enable_container_images_build = true
 
 # One Time Password to register Undercloud node with an IPA server.
 # Required when enable_novajoin = True. (string value)
@@ -205,14 +208,10 @@
 # List of enabled bare metal drivers. (list value)
 #enabled_drivers = pxe_ipmitool,pxe_drac,pxe_ilo
 
-# Whether to enable docker container images to be build on the undercloud.
-# Note this installs the required packages but does not build the images
-# automatically.
-#enable_container_images_build = true
-
-# An optional docker 'registry-mirror' that will be
-# configured in /etc/docker/daemon.json.
+# An optional docker 'registry-mirror' that will beconfigured in
+# /etc/docker/daemon.json. (string value)
 #docker_registry_mirror =
+
 
 [auth]
 
@@ -333,3 +332,7 @@
 # Cinder service password. If left unset, one will be automatically
 # generated. (string value)
 #undercloud_cinder_password = <None>
+
+# Novajoin vendordata plugin service password. If left unset, one will
+# be automatically generated. (string value)
+#undercloud_novajoin_password = <None>
