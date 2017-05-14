@@ -10,7 +10,6 @@ NETWORK={{.}}
 # Workaround iptables not permitting two -d parameters in one call.
 iptables -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK -d 192.168.122.1 -j RETURN
 iptables -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK ! -d $NETWORK -j MASQUERADE
-iptables -w -t nat -A POSTROUTING -s $NETWORK -o eth0 -j MASQUERADE
 {{/masquerade_networks}}
 # Link it in.
 iptables -w -t nat -I POSTROUTING -j BOOTSTACK_MASQ_NEW
