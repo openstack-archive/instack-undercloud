@@ -364,6 +364,10 @@ _opts = [
     cfg.ListOpt('enabled_drivers',
                 default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo'],
                 help=('List of enabled bare metal drivers.')),
+    cfg.ListOpt('enabled_hardware_types',
+                default=['ipmi', 'redfish'],
+                help=('List of enabled bare metal hardware types (next '
+                      'generation drivers).')),
     cfg.StrOpt('docker_registry_mirror',
                default='',
                help=('An optional docker \'registry-mirror\' that will be'
@@ -996,7 +1000,9 @@ class InstackEnvironment(dict):
     DYNAMIC_KEYS = {'INSPECTION_COLLECTORS', 'INSPECTION_KERNEL_ARGS',
                     'INSPECTION_NODE_NOT_FOUND_HOOK',
                     'TRIPLEO_INSTALL_USER', 'TRIPLEO_UNDERCLOUD_CONF_FILE',
-                    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE'}
+                    'TRIPLEO_UNDERCLOUD_PASSWORD_FILE',
+                    'ENABLED_POWER_INTERFACES',
+                    'ENABLED_MANAGEMENT_INTERFACES'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1014,6 +1020,11 @@ class InstackEnvironment(dict):
             raise KeyError('Key %s is not allowed for an InstackEnvironment' %
                            key)
         return super(InstackEnvironment, self).__setitem__(key, value)
+
+
+def _make_list(values):
+    """Generate a list suitable to pass to templates."""
+    return '[%s]' % ', '.join('"%s"' % item for item in values)
 
 
 def _generate_environment(instack_root):
@@ -1098,14 +1109,29 @@ def _generate_environment(instack_root):
 
     # Ensure correct rendering of the list and uniqueness of the items
     enabled_drivers = set(CONF.enabled_drivers)
+    enabled_hardware_types = set(CONF.enabled_hardware_types)
     if CONF.enable_node_discovery:
-        enabled_drivers.add(CONF.discovery_default_driver)
+        if (CONF.discovery_default_driver not in (enabled_drivers |
+                                                  enabled_hardware_types)):
+            enabled_drivers.add(CONF.discovery_default_driver)
         instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = 'enroll'
     else:
         instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = ''
 
-    instack_env['ENABLED_DRIVERS'] = (
-        '[%s]' % ', '.join('"%s"' % drv for drv in set(enabled_drivers)))
+    # In most cases power and management interfaces are called the same, so we
+    # use one variable for them.
+    enabled_interfaces = set()
+    if 'ipmi' in enabled_hardware_types:
+        enabled_interfaces.add('ipmitool')
+    if 'redfish' in enabled_hardware_types:
+        enabled_interfaces.add('redfish')
+
+    instack_env['ENABLED_DRIVERS'] = _make_list(enabled_drivers)
+    instack_env['ENABLED_HARDWARE_TYPES'] = _make_list(enabled_hardware_types)
+
+    enabled_interfaces = _make_list(enabled_interfaces)
+    instack_env['ENABLED_POWER_INTERFACES'] = enabled_interfaces
+    instack_env['ENABLED_MANAGEMENT_INTERFACES'] = enabled_interfaces
 
     if CONF.docker_registry_mirror:
         instack_env['DOCKER_REGISTRY_MIRROR'] = CONF.docker_registry_mirror
