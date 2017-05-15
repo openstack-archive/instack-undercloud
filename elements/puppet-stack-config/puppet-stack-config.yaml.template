@@ -966,10 +966,6 @@ tripleo::firewall::firewall_rules:
   '140 network cidr nat':
     chain: FORWARD
     destination: {{NETWORK_CIDR}}
-  # TODO: Do we still want this?
-  '141 libvirt network nat':
-    chain: FORWARD
-    destination: 192.168.122.0/24
   '142 tripleo-ui':
     dport:
       - 3000
