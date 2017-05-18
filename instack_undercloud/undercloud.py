@@ -1515,6 +1515,18 @@ def _handle_upgrade_fact(upgrade=False):
         _run_command(['sudo', 'chmod', '0644', fact_path])
 
 
+def _die_tuskar_die():
+    """Remove tuskar* packages
+
+    Make sure to remove tuskar https://bugs.launchpad.net/tripleo/+bug/1691744
+    # openstack-[tuskar, tuskar-ui, tuskar-ui-extras] & python-tuskarclient
+    """
+    try:
+        _run_command(['sudo', 'yum', 'remove', '-y', '*tuskar*'])
+    except subprocess.CalledProcessError as e:
+        LOG.error('Error with tuskar removal task %s - continuing', e.output)
+
+
 def install(instack_root, upgrade=False):
     """Install the undercloud
 
@@ -1546,6 +1558,7 @@ def install(instack_root, upgrade=False):
             # release Pike.
             _run_command(['sudo', '/usr/bin/chown', 'ironic:ironic',
                           '/var/log/ironic/ironic-dbsync.log'])
+            _die_tuskar_die()
         if CONF.undercloud_update_packages:
             _run_yum_clean_all(instack_env)
             _run_yum_update(instack_env)
