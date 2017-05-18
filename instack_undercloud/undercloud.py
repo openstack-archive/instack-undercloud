@@ -1196,6 +1196,18 @@ def _post_config(instack_env):
         _post_config_mistral(instack_env, mistral)
 
 
+def _die_tuskar_die():
+    """Remove tuskar* packages
+
+    Make sure to remove tuskar https://bugs.launchpad.net/tripleo/+bug/1691744
+    # openstack-[tuskar, tuskar-ui, tuskar-ui-extras] & python-tuskarclient
+    """
+    try:
+        _run_command(['sudo', 'yum', 'remove', '-y', '*tuskar*'])
+    except subprocess.CalledProcessError as e:
+        LOG.error('Error with tuskar removal task %s - continuing', e.output)
+
+
 def install(instack_root):
     """Install the undercloud
 
@@ -1209,6 +1221,7 @@ def install(instack_root):
     _validate_configuration()
     instack_env = _generate_environment(instack_root)
     _generate_init_data(instack_env)
+    _die_tuskar_die()
     _run_yum_update(instack_env)
     _run_instack(instack_env)
     _run_orc(instack_env)
