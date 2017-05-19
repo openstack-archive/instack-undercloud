@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    The TripleO UI now supports Keystone v3 and %(project_id)s
+    placeholders in URLs. Updated the endpoints in the configuration to
+    reflect this. (Fixes bug `bug 1692046
+    <https://bugs.launchpad.net/tripleo/+bug/1692046>`__)
