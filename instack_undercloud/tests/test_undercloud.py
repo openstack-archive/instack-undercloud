@@ -53,9 +53,10 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
-    def test_install(self, mock_load_config, mock_generate_environment,
-                     mock_run_instack, mock_run_clean_all,
-                     mock_run_yum_update, mock_run_orc,
+    @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
+    def test_install(self, mock_die_tuskar_die, mock_load_config,
+                     mock_generate_environment, mock_run_instack,
+                     mock_run_clean_all, mock_run_yum_update, mock_run_orc,
                      mock_post_config, mock_run_command,
                      mock_validate_configuration, mock_configure_logging,
                      mock_upgrade_fact):
@@ -69,6 +70,7 @@ class TestUndercloud(BaseTestCase):
         mock_run_command.assert_called_with(
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         mock_upgrade_fact.assert_called_with(False)
+        mock_die_tuskar_die.assert_not_called()
 
     @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
@@ -81,10 +83,11 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
-    def test_install_upgrade(self, mock_load_config, mock_generate_environment,
-                             mock_run_instack, mock_run_yum_clean_all,
-                             mock_run_yum_update, mock_run_orc,
-                             mock_post_config, mock_run_command,
+    @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
+    def test_install_upgrade(self, mock_die_tuskar_die, mock_load_config,
+                             mock_generate_environment, mock_run_instack,
+                             mock_run_yum_clean_all, mock_run_yum_update,
+                             mock_run_orc, mock_post_config, mock_run_command,
                              mock_validate_configuration,
                              mock_configure_logging, mock_upgrade_fact):
         fake_env = mock.MagicMock()
@@ -97,6 +100,7 @@ class TestUndercloud(BaseTestCase):
         mock_run_command.assert_called_with(
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         mock_upgrade_fact.assert_called_with(True)
+        mock_die_tuskar_die.assert_called_once()
 
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     def test_install_exception(self, mock_configure_logging):
