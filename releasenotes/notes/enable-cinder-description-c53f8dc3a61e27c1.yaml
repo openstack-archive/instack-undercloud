@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    The description of the ``enable_cinder`` option was fixed to not imply
+    that booting from Cinder volumes is implemented in the undercloud.
