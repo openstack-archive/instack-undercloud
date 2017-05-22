@@ -288,8 +288,8 @@ ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ceilometer::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
 ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer_compute_agent: ''
-snmpd_readonly_user_name: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
-snmpd_readonly_user_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}
+ceilometer::snmpd_readonly_username: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
+ceilometer::snmpd_readonly_user_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}
 ceilometer::keystone::auth::tenant: 'service'
 ceilometer::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_PUBLIC}}
 ceilometer::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_INTERNAL}}

@@ -220,12 +220,6 @@ if str2bool(hiera('enable_telemetry', false)) {
   Cron <| title == 'ceilometer-expirer' |> { command =>
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
 
-  # TODO: add support for setting these to puppet-ceilometer
-  ceilometer_config {
-    'hardware/readonly_user_name': value => hiera('snmpd_readonly_user_name');
-    'hardware/readonly_user_password': value => hiera('snmpd_readonly_user_password');
-  }
-
   # Aodh
   $aodh_dsn = split(hiera('aodh::db::database_connection'), '[@:/?]')
   class { '::aodh::db::mysql':
