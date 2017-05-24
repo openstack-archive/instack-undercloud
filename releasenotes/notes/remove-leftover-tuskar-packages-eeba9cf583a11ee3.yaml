@@ -1,0 +1,10 @@
+---
+upgrade:
+  - During upgrade make sure to remove any left over tuskar packages. This
+    has been known to cause problems during the upgrade. See bug 1691744
+    for more information
+fixes:
+  - Closes bug https://bugs.launchpad.net/tripleo/+bug/1691744 which is
+    caused by left-over tuskar packages. This would only affect environments
+    deployed with TripleoO since Kilo and for which tuskar has not explicitly
+    been removed.
