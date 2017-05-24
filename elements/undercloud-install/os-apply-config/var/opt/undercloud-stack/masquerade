@@ -7,8 +7,6 @@ iptables -w -t nat -N BOOTSTACK_MASQ_NEW
 # Build the chain we want.
 {{#masquerade_networks}}
 NETWORK={{.}}
-# Workaround iptables not permitting two -d parameters in one call.
-iptables -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK -d 192.168.122.1 -j RETURN
 iptables -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK ! -d $NETWORK -j MASQUERADE
 {{/masquerade_networks}}
 # Link it in.
