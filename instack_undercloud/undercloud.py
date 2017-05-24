@@ -312,8 +312,8 @@ _opts = [
                 ),
     cfg.BoolOpt('enable_cinder',
                 default=False,
-                help=('Whether to install the Volume service to be boot '
-                      'overcloud nodes from remote volumes.')),
+                help=('Whether to install the Volume service. It is not '
+                      'currently used in the undercloud.')),
     cfg.BoolOpt('enable_legacy_ceilometer_api',
                 default=False,
                 help=('Whether to enable legacy ceilometer api '

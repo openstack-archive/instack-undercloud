@@ -163,8 +163,8 @@
 # (boolean value)
 #enable_validations = true
 
-# Whether to install the Volume service to be boot overcloud nodes
-# from remote volumes. (boolean value)
+# Whether to install the Volume service. It is not currently used in
+# the undercloud. (boolean value)
 #enable_cinder = false
 
 # Whether to enable legacy ceilometer api in the Undercloud. Note:
