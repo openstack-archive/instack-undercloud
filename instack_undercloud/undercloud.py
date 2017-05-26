@@ -1568,6 +1568,7 @@ def install(instack_root, upgrade=False):
         _post_config(instack_env)
         _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
     except Exception as e:
+        LOG.debug("An exception occurred", exc_info=True)
         LOG.error(FAILURE_MESSAGE,
                   {'undercloud_operation': undercloud_operation,
                    'exception': six.text_type(e),
