@@ -1008,6 +1008,14 @@ class TestPostConfig(base.BaseTestCase):
         mock_workbooks[0].name = 'foo'
         mock_workbooks[1].name = 'tripleo.bar'
         mock_mistral.workbooks.list.return_value = mock_workbooks
+
+        mock_triggers = [mock.Mock() for m in range(2)]
+        mock_triggers[0].name = 'foobar'
+        mock_triggers[0].workflow_name = 'foo'
+        mock_triggers[1].name = 'delete_me'
+        mock_triggers[1].workflow_name = 'tripleo.bar'
+        mock_mistral.cron_triggers.list.return_value = mock_triggers
+
         mock_workflows = [mock.Mock() for m in range(2)]
         mock_workflows[0].name = 'foo'
         mock_workflows[1].name = 'tripleo.bar'
@@ -1020,6 +1028,8 @@ class TestPostConfig(base.BaseTestCase):
                          mock_mistral.workbooks.delete.mock_calls)
         self.assertEqual([mock.call('tripleo.bar')],
                          mock_mistral.workflows.delete.mock_calls)
+        self.assertEqual([mock.call('delete_me')],
+                         mock_mistral.cron_triggers.delete.mock_calls)
         self.assertEqual([mock.call(undercloud.PATHS.WORKBOOK_PATH +
                                     '/foo.yaml'),
                          mock.call(undercloud.PATHS.WORKBOOK_PATH +
@@ -1048,18 +1058,27 @@ class TestPostConfig(base.BaseTestCase):
         mock_workbooks[0].name = 'foo'
         mock_workbooks[1].name = 'tripleo.bar'
         mock_mistral.workbooks.list.return_value = mock_workbooks
+        mock_triggers = [mock.Mock() for m in range(2)]
+        mock_triggers[0].name = 'dont_delete_me'
+        mock_triggers[0].workflow_name = 'tripleo.foo'
+        mock_triggers[1].name = 'delete_me'
+        mock_triggers[1].workflow_name = 'tripleo.bar'
+        mock_mistral.cron_triggers.list.return_value = mock_triggers
         mock_workflows = [mock.Mock() for m in range(2)]
         mock_workflows[0].name = 'tripleo.foo'
         mock_workflows[1].name = 'tripleo.bar'
         mock_workflows[0].tags = []
         mock_workflows[1].tags = ['tripleo-common-managed', ]
         mock_mistral.workflows.list.return_value = mock_workflows
+
         mock_listdir.return_value = ['foo.yaml', 'bar.yaml']
         undercloud._post_config_mistral(instack_env, mock_mistral, mock_swift)
         self.assertEqual([mock.call('tripleo.bar')],
                          mock_mistral.workbooks.delete.mock_calls)
         self.assertEqual([mock.call('tripleo.bar')],
                          mock_mistral.workflows.delete.mock_calls)
+        self.assertEqual([mock.call('delete_me')],
+                         mock_mistral.cron_triggers.delete.mock_calls)
         self.assertEqual([mock.call(undercloud.PATHS.WORKBOOK_PATH +
                                     '/foo.yaml'),
                          mock.call(undercloud.PATHS.WORKBOOK_PATH +
@@ -1076,7 +1095,7 @@ class TestUpgradeFact(base.BaseTestCase):
     @mock.patch('os.path.dirname')
     @mock.patch('os.path.exists')
     @mock.patch.object(tempfile, 'mkstemp', return_value=(1, '/tmp/file'))
-    def test_upgrade_fact(self, mock_mkstemp, mock_exists,  mock_dirname,
+    def test_upgrade_fact(self, mock_mkstemp, mock_exists, mock_dirname,
                           mock_run):
         fact_path = '/etc/facter/facts.d/undercloud_upgrade.txt'
         mock_dirname.return_value = '/etc/facter/facts.d'

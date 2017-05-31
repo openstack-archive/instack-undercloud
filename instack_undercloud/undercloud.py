@@ -1537,11 +1537,20 @@ def _prepare_ssh_environment(mistral):
     mistral.executions.create('tripleo.validations.v1.copy_ssh_key')
 
 
+def _create_logging_cron(mistral):
+    LOG.info('Configuring an hourly cron trigger for tripleo-ui logging')
+    mistral.cron_triggers.create(
+        'publish-ui-logs-hourly',
+        'tripleo.plan_management.v1.publish_ui_logs_to_swift',
+        pattern='0 * * * *'
+    )
+
+
 def _post_config_mistral(instack_env, mistral, swift):
     LOG.info('Configuring Mistral workbooks')
 
     for workbook in [w for w in mistral.workbooks.list()
-                     if 'tripleo' in w.name]:
+                     if w.name.startswith('tripleo')]:
         mistral.workbooks.delete(workbook.name)
 
     managed_tag = 'tripleo-common-managed'
@@ -1557,12 +1566,19 @@ def _post_config_mistral(instack_env, mistral, swift):
     # TODO(d0ugal): From Q onwards we should only ever delete workflows with
     # the tripleo-common tag.
     if 'tripleo-common-managed' in workflow_tags:
-        workflows_delete = [w for w in all_workflows if managed_tag in w.tags]
+        workflows_delete = [w.name for w in all_workflows
+                            if managed_tag in w.tags]
     else:
-        workflows_delete = [w for w in all_workflows if 'tripleo' in w.name]
+        workflows_delete = [w.name for w in all_workflows
+                            if w.name.startswith('tripleo')]
 
-    for workflow in workflows_delete:
-        mistral.workflows.delete(workflow.name)
+    # in order to delete workflows they should have no triggers associated
+    for trigger in [t for t in mistral.cron_triggers.list()
+                    if t.workflow_name in workflows_delete]:
+        mistral.cron_triggers.delete(trigger.name)
+
+    for workflow_name in workflows_delete:
+        mistral.workflows.delete(workflow_name)
 
     for workbook in [f for f in os.listdir(PATHS.WORKBOOK_PATH)
                      if os.path.isfile(os.path.join(PATHS.WORKBOOK_PATH, f))]:
@@ -1574,6 +1590,7 @@ def _post_config_mistral(instack_env, mistral, swift):
     _create_mistral_config_environment(instack_env, mistral)
     _migrate_plans(mistral, swift, plans)
     _create_default_plan(mistral, plans)
+    _create_logging_cron(mistral)
 
     if CONF.enable_validations:
         _prepare_ssh_environment(mistral)
