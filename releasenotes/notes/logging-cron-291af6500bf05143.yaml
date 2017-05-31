@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Implements `websocket-logging <https://blueprints.launchpad.net/openstack/?searchtext=websocket-logging>`__
+    Add an hourly cron trigger for tripleo-ui logging
