@@ -151,6 +151,12 @@ _opts = [
     cfg.ListOpt('undercloud_ntp_servers',
                 default=[],
                 help=('List of ntp servers to use.')),
+    cfg.StrOpt('overcloud_domain_name',
+               default='localdomain',
+               help=('DNS domain name to use when deploying the overcloud. '
+                     'The overcloud parameter "CloudDomain" must be set to a '
+                     'matching value.')
+               ),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
                help=('Certificate file to use for OpenStack service SSL '
