@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Add tripleo::ui::endpoint_proxy_ironic_inspector and
+    tripleo::ui::endpoint_config_ironic_inspector variables to elements for
+    use in new proxy config for ironic-inspector API service

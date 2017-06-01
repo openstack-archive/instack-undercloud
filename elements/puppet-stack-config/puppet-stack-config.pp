@@ -508,6 +508,7 @@ include ::ironic::drivers::pxe
 include ::ironic::drivers::redfish
 include ::ironic::glance
 include ::ironic::inspector
+include ::ironic::inspector::cors
 include ::ironic::neutron
 include ::ironic::pxe
 include ::ironic::service_catalog
