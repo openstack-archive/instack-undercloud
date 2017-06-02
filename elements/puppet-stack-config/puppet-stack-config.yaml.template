@@ -803,7 +803,7 @@ novajoin_listen_port: 9090
 nova::metadata::novajoin::api::bind_address: "{{LOCAL_IP}}"
 nova::metadata::novajoin::api::join_listen_port: "%{hiera('novajoin_listen_port')}"
 nova::metadata::novajoin::api::keystone_auth_url: "%{hiera('keystone_auth_uri')}"
-nova::metadata::novajoin::api::nova_password: {{UNDERCLOUD_NOVA_PASSWORD}}
+nova::metadata::novajoin::api::service_password: {{UNDERCLOUD_NOVAJOIN_PASSWORD}}
 nova::metadata::novajoin::api::transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
 nova::metadata::novajoin::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::metadata::novajoin::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
