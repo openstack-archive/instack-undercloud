@@ -3,7 +3,7 @@
 set -eux
 set -o pipefail
 
-# Per http://seven.centos.org/?p=303 we need to update before we can
-# enable the cr repo.
+# Per https://seven.centos.org/2015/03/centos-7-cr-repo-has-been-populated/
+# we need to update before we can enable the cr repo.
 yum -y update
 yum-config-manager --enable cr
