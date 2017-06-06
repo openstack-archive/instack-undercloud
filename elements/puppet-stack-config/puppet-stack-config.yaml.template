@@ -143,7 +143,7 @@ heat::engine::convergence_engine: false
 # nested stacks at it for the deploy. By not setting this, we get the heat default,
 # which is max(#CPUs,4).
 #heat::engine::num_engine_workers:
-heat::engine::max_nested_stack_depth: 6
+heat::engine::max_nested_stack_depth: 7
 heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
