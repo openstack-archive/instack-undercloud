@@ -988,7 +988,7 @@ class TestInstackEnvironment(BaseTestCase):
         def _set():
             env['CATS_AND_DOGS_PATH'] = '/home'
 
-        self.assertRaisesRegexp(KeyError, 'CATS_AND_DOGS_PATH', _set)
+        self.assertRaisesRegex(KeyError, 'CATS_AND_DOGS_PATH', _set)
 
     def test_get_always_allowed(self):
         env = undercloud.InstackEnvironment()
