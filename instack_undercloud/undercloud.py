@@ -632,7 +632,7 @@ def _check_hostname():
 def _check_memory():
     """Check system memory
 
-    The undercloud will not run properly in less than 4 GB of memory.
+    The undercloud will not run properly in less than 8 GB of memory.
     This function verifies that at least that much is available before
     proceeding with install.
     """
