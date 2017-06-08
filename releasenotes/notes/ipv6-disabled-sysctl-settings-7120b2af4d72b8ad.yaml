@@ -1,0 +1,6 @@
+---
+fixes:
+  - The undercloud installer now checks if IPv6 is enabled before applying IPv6
+    specific sysctl settings that is only available when IPv6 is not disabled.
+    (Fixes `bug 1675917 <https://bugs.launchpad.net/tripleo/+bug/1675917>`__)
+
