@@ -646,14 +646,23 @@ def _check_memory():
         raise RuntimeError('Insufficient memory available')
 
 
+def _check_ipv6_enabled():
+    """Test if IPv6 is enabled
+
+    If /proc/net/if_inet6 exist ipv6 sysctl settings are available.
+    """
+    return os.path.isfile('/proc/net/if_inet6')
+
+
 def _check_sysctl():
     """Check sysctl option availability
 
     The undercloud will not install properly if some of the expected sysctl
     values are not available to be set.
     """
-    options = ['net.ipv4.ip_forward', 'net.ipv4.ip_nonlocal_bind',
-               'net.ipv6.ip_nonlocal_bind']
+    options = ['net.ipv4.ip_forward', 'net.ipv4.ip_nonlocal_bind']
+    if _check_ipv6_enabled():
+        options.append('net.ipv6.ip_nonlocal_bind')
 
     not_available = []
     for option in options:
@@ -1002,7 +1011,7 @@ class InstackEnvironment(dict):
                     'TRIPLEO_INSTALL_USER', 'TRIPLEO_UNDERCLOUD_CONF_FILE',
                     'TRIPLEO_UNDERCLOUD_PASSWORD_FILE',
                     'ENABLED_POWER_INTERFACES',
-                    'ENABLED_MANAGEMENT_INTERFACES'}
+                    'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1025,6 +1034,14 @@ class InstackEnvironment(dict):
 def _make_list(values):
     """Generate a list suitable to pass to templates."""
     return '[%s]' % ', '.join('"%s"' % item for item in values)
+
+
+def _generate_sysctl_settings():
+    sysctl_settings = {}
+    sysctl_settings.update({"net.ipv4.ip_nonlocal_bind": {"value": 1}})
+    if _check_ipv6_enabled():
+        sysctl_settings.update({"net.ipv6.ip_nonlocal_bind": {"value": 1}})
+    return json.dumps(sysctl_settings)
 
 
 def _generate_environment(instack_root):
@@ -1132,6 +1149,8 @@ def _generate_environment(instack_root):
     enabled_interfaces = _make_list(enabled_interfaces)
     instack_env['ENABLED_POWER_INTERFACES'] = enabled_interfaces
     instack_env['ENABLED_MANAGEMENT_INTERFACES'] = enabled_interfaces
+
+    instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()
 
     if CONF.docker_registry_mirror:
         instack_env['DOCKER_REGISTRY_MIRROR'] = CONF.docker_registry_mirror
