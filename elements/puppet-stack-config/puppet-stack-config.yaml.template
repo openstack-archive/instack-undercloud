@@ -816,7 +816,7 @@ nova::metadata::novajoin::auth::region: "%{hiera('keystone_region')}"
 ipaclient::password: {{IPA_OTP}}
 ipaclient::hostname: {{UNDERCLOUD_HOSTNAME}}
 enable_novajoin: true
-nova::api::vendordata_jsonfile_path: '/etc/nova/cloud-config-novajoin.json'
+nova::api::vendordata_jsonfile_path: '/etc/novajoin/cloud-config-novajoin.json'
 nova::api::vendordata_providers: ['StaticJSON', 'DynamicJSON']
 nova::api::vendordata_dynamic_targets: ["join@http://{{LOCAL_IP}}:%{hiera('novajoin_listen_port')}/v1/"]
 nova::api::vendordata_dynamic_failure_fatal: true
