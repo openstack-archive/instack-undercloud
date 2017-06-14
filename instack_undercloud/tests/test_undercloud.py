@@ -398,7 +398,7 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         # Just spot check, we don't want to replicate the entire opt list here
         self.assertEqual(env['INSPECTION_COLLECTORS'],
-                         'default,extra-hardware,logs')
+                         'default,extra-hardware,numa-topology,logs')
         self.assertEqual('192.168.24.1/24', env['PUBLIC_INTERFACE_IP'])
         self.assertEqual('192.168.24.1', env['LOCAL_IP'])
         # The list is generated from a set, so we can't rely on ordering.

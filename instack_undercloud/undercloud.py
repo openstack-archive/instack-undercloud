@@ -1109,7 +1109,8 @@ def _generate_environment(instack_root):
         raise RuntimeError('inspection_extras must be enabled for '
                            'inspection_runbench to work')
     if CONF.inspection_extras:
-        instack_env['INSPECTION_COLLECTORS'] = 'default,extra-hardware,logs'
+        instack_env['INSPECTION_COLLECTORS'] = ('default,extra-hardware,'
+                                                'numa-topology,logs')
     else:
         instack_env['INSPECTION_COLLECTORS'] = 'default,logs'
 

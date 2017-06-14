@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Add 'numa-topology' collector to 'ipa-inspection-collectors' if
+    'inspection_extras' is true. The 'numa-topology' collector will fetch the
+    details about memory, cpu, nics associated with each NUMA node during
+    introspection. These details will be necessary in deriving the deployment
+    parameters for NFV usecases.
