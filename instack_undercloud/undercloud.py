@@ -1410,10 +1410,7 @@ def _migrate_plans(mistral, swift, plans):
             env = mistral.environments.get(plan).variables
             yaml_string = yaml.safe_dump(env, default_flow_style=False)
             swift.put_object(plan, plan_env_filename, yaml_string)
-            # TODO(jpichon): delete env from Mistral once triple-common
-            # change merges (https://review.openstack.org/#/c/452291/).
-            # Right now plan operations still expect a Mistral environment.
-            # mistral.environments.delete(plan)
+            mistral.environments.delete(plan)
 
 
 def _create_default_plan(mistral, plans, timeout=360):
