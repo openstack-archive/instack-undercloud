@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    The DNS domain for overcloud nodes can now be set in undercloud.conf
+    via the overcloud_domain_name option.  The same value used for this option
+    must be passed to the overcloud deploy in the CloudDomain parameter.
