@@ -976,5 +976,5 @@ tripleo::firewall::firewall_rules:
       - 443
   '143 panko-api':
     dport:
-      - 8779
+      - 8977
       - 13779
