@@ -1,0 +1,7 @@
+---
+features:
+  - the dns_domain parameter in neutron.conf is now configurable through the
+    overcloud_domain_name configuration parameter in undercloud.conf. In the
+    absence of this parameter, the installation will try to use the domain
+    from the undercloud, and if this fails, it will then just use the default
+    from neutron.conf.
