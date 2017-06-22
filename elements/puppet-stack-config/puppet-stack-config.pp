@@ -582,7 +582,7 @@ Class['::ironic::inspector'] ~> Exec['mistral-db-populate']
 Class['::ironic::keystone::auth_inspector']  ~> Exec['mistral-db-populate']
 
 if str2bool(hiera('enable_ui', true)) {
-  include ::tripleo::profile::base::ui
+  include ::tripleo::ui
 }
 
 if str2bool(hiera('enable_validations', true)) {
