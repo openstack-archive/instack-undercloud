@@ -380,11 +380,9 @@ include ::nova::scheduler
 include ::nova::scheduler::filter
 include ::nova::compute
 
-$neutron_dns_domain = pick(hiera('overcloud_domain_name', $::domain), $::os_service_default)
 class { '::neutron':
   rabbit_hosts => [hiera('controller_host')],
   debug        => hiera('debug'),
-  dns_domain   => $neutron_dns_domain
 }
 
 include ::neutron::server
@@ -493,9 +491,7 @@ nova_config {
 }
 
 include ::nova::compute::ironic
-class { '::nova::network::neutron':
-  dhcp_domain => $neutron_dns_domain
-}
+include ::nova::network::neutron
 
 # Ironic
 

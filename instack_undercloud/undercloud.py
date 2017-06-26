@@ -156,12 +156,10 @@ _opts = [
                 default=[],
                 help=('List of ntp servers to use.')),
     cfg.StrOpt('overcloud_domain_name',
-               default='',
+               default='localdomain',
                help=('DNS domain name to use when deploying the overcloud. '
                      'The overcloud parameter "CloudDomain" must be set to a '
-                     'matching value. When unset, the installation will try '
-                     'to use the undercloud\'s domain name, and if that fails '
-                     'it\'ll use the default from neutron.conf.')
+                     'matching value.')
                ),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
