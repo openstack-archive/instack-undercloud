@@ -630,12 +630,29 @@ def _validate_cidr():
         CONF.set_override('network_cidr', '192.0.2.0/24')
 
 
+def _validate_passwords_file():
+    """Disallow updates if the passwords file is missing
+
+    If the undercloud was already deployed, the passwords file needs to be
+    present so passwords that can't be changed are persisted.  If the file
+    is missing it will break the undercloud, so we should fail-fast and let
+    the user know about the problem.
+    """
+    if (os.path.isfile(os.path.expanduser('~/stackrc')) and
+            not os.path.isfile(PATHS.PASSWORD_PATH)):
+        message = ('The %s file is missing.  This will cause all service '
+                   'passwords to change and break the existing undercloud. ' %
+                   PATHS.PASSWORD_PATH)
+        raise validator.FailedValidation(message)
+
+
 def _validate_configuration():
     try:
         _check_hostname()
         _check_memory()
         _check_sysctl()
         _validate_network()
+        _validate_passwords_file()
     except RuntimeError as e:
         LOG.error('ERROR: An error occured during configuration validation, '
                   'please check your host configuration and try again. '

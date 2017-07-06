@@ -28,6 +28,7 @@ from oslotest import mockpatch
 from six.moves import configparser
 
 from instack_undercloud import undercloud
+from instack_undercloud import validator
 
 
 undercloud._configure_logging(undercloud.DEFAULT_LOG_LEVEL, None)
@@ -81,10 +82,13 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._check_memory')
     @mock.patch('instack_undercloud.undercloud._check_sysctl')
     @mock.patch('instack_undercloud.undercloud._validate_network')
-    def test_validate_configuration(self, mock_validate_network,
+    @mock.patch('instack_undercloud.undercloud._validate_passwords_file')
+    def test_validate_configuration(self, mock_vpf,
+                                    mock_validate_network,
                                     mock_check_memory, mock_check_hostname,
                                     mock_check_sysctl):
         undercloud._validate_configuration()
+        self.assertTrue(mock_vpf.called)
         self.assertTrue(mock_validate_network.called)
         self.assertTrue(mock_check_memory.called)
         self.assertTrue(mock_check_hostname.called)
@@ -197,6 +201,22 @@ class TestCheckSysctl(BaseTestCase):
     def test_available_option(self, mock_isfile):
         mock_isfile.return_value = True
         undercloud._check_sysctl()
+
+
+@mock.patch('os.path.isfile')
+class TestPasswordsFileExists(BaseTestCase):
+    def test_new_install(self, mock_isfile):
+        mock_isfile.side_effect = [False]
+        undercloud._validate_passwords_file()
+
+    def test_update_exists(self, mock_isfile):
+        mock_isfile.side_effect = [True, True]
+        undercloud._validate_passwords_file()
+
+    def test_update_missing(self, mock_isfile):
+        mock_isfile.side_effect = [True, False]
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_passwords_file)
 
 
 class TestGenerateEnvironment(BaseTestCase):
