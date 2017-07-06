@@ -149,10 +149,13 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._check_sysctl')
     @mock.patch('instack_undercloud.undercloud._validate_network')
     @mock.patch('instack_undercloud.undercloud._validate_no_ip_change')
-    def test_validate_configuration(self, mock_vnic, mock_validate_network,
+    @mock.patch('instack_undercloud.undercloud._validate_passwords_file')
+    def test_validate_configuration(self, mock_vpf, mock_vnic,
+                                    mock_validate_network,
                                     mock_check_memory, mock_check_hostname,
                                     mock_check_sysctl):
         undercloud._validate_configuration()
+        self.assertTrue(mock_vpf.called)
         self.assertTrue(mock_vnic.called)
         self.assertTrue(mock_validate_network.called)
         self.assertTrue(mock_check_memory.called)
@@ -323,6 +326,22 @@ class TestNoIPChange(BaseTestCase):
         mock_config = {'network_config': mock_members}
         mock_loads.return_value = mock_config
         undercloud._validate_no_ip_change()
+
+
+@mock.patch('os.path.isfile')
+class TestPasswordsFileExists(BaseTestCase):
+    def test_new_install(self, mock_isfile):
+        mock_isfile.side_effect = [False]
+        undercloud._validate_passwords_file()
+
+    def test_update_exists(self, mock_isfile):
+        mock_isfile.side_effect = [True, True]
+        undercloud._validate_passwords_file()
+
+    def test_update_missing(self, mock_isfile):
+        mock_isfile.side_effect = [True, False]
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_passwords_file)
 
 
 class TestGenerateEnvironment(BaseTestCase):
