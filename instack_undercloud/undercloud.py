@@ -1606,3 +1606,17 @@ def install(instack_root, upgrade=False):
                  {'undercloud_operation': undercloud_operation,
                   'password_path': PATHS.PASSWORD_PATH,
                   'stackrc_path': os.path.expanduser('~/stackrc')})
+
+
+def pre_upgrade():
+    _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
+    args = ['sudo', 'systemctl', 'stop', 'openstack-*', 'neutron-*',
+            'openvswitch', 'httpd']
+    LOG.info('Stopping OpenStack and related services')
+    _run_live_command(args, name='systemctl stop')
+    LOG.info('Services stopped successfully')
+
+    args = ['sudo', 'yum', 'update', '-y']
+    LOG.info('Updating full system')
+    _run_live_command(args, name='systemctl stop')
+    LOG.info('Update completed successfully')

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python -c "from instack_undercloud import undercloud; undercloud.pre_upgrade()"
