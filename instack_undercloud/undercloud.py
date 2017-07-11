@@ -70,6 +70,10 @@ class Paths(object):
     def LOG_FILE(self):
         return os.path.expanduser('~/.instack/install-undercloud.log')
 
+    @property
+    def WORKBOOK_PATH(self):
+        return '/usr/share/openstack-tripleo-common/workbooks'
+
 
 PATHS = Paths()
 DEFAULT_LOG_LEVEL = logging.DEBUG
@@ -1459,6 +1463,18 @@ def _prepare_ssh_environment(mistral):
 
 
 def _post_config_mistral(instack_env, mistral, swift):
+    LOG.info('Configuring Mistral workbooks')
+    for workbook in [w for w in mistral.workbooks.list()
+                     if 'tripleo' in w.name]:
+        mistral.workbooks.delete(workbook.name)
+    for workflow in [w for w in mistral.workflows.list()
+                     if 'tripleo' in w.name]:
+        mistral.workflows.delete(workflow.name)
+    for workbook in [f for f in os.listdir(PATHS.WORKBOOK_PATH)
+                     if os.path.isfile(os.path.join(PATHS.WORKBOOK_PATH, f))]:
+        mistral.workbooks.create(os.path.join(PATHS.WORKBOOK_PATH, workbook))
+    LOG.info('Mistral workbooks configured successfully')
+
     plans = [container["name"] for container in swift.get_account()[1]]
 
     _create_mistral_config_environment(instack_env, mistral)
