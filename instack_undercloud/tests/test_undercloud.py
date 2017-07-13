@@ -933,6 +933,43 @@ class TestPostConfig(base.BaseTestCase):
         undercloud._delete_default_flavors(mock_instance)
         mock_instance.flavors.delete.assert_called_once_with('8ar')
 
+    @mock.patch('os.path.isfile', return_value=True)
+    @mock.patch('os.listdir')
+    @mock.patch('instack_undercloud.undercloud._create_mistral_config_'
+                'environment')
+    @mock.patch('instack_undercloud.undercloud._migrate_plans')
+    @mock.patch('instack_undercloud.undercloud._create_default_plan')
+    def test_post_config_mistral(self, mock_create, mock_migrate, mock_cmce,
+                                 mock_listdir, mock_isfile):
+        instack_env = {}
+        mock_mistral = mock.Mock()
+        mock_swift = mock.Mock()
+        mock_swift.get_account.return_value = [None, [{'name': 'hut8'}]]
+
+        mock_workbooks = [mock.Mock() for m in range(2)]
+        mock_workbooks[0].name = 'foo'
+        mock_workbooks[1].name = 'tripleo.bar'
+        mock_mistral.workbooks.list.return_value = mock_workbooks
+        mock_workflows = [mock.Mock() for m in range(2)]
+        mock_workflows[0].name = 'foo'
+        mock_workflows[1].name = 'tripleo.bar'
+        mock_mistral.workflows.list.return_value = mock_workflows
+        mock_listdir.return_value = ['foo.yaml', 'bar.yaml']
+        undercloud._post_config_mistral(instack_env, mock_mistral, mock_swift)
+        self.assertEqual([mock.call('tripleo.bar')],
+                         mock_mistral.workbooks.delete.mock_calls)
+        self.assertEqual([mock.call('tripleo.bar')],
+                         mock_mistral.workflows.delete.mock_calls)
+        self.assertEqual([mock.call(undercloud.PATHS.WORKBOOK_PATH +
+                                    '/foo.yaml'),
+                         mock.call(undercloud.PATHS.WORKBOOK_PATH +
+                                   '/bar.yaml')],
+                         mock_mistral.workbooks.create.mock_calls)
+        mock_cmce.assert_called_once_with(instack_env, mock_mistral)
+        mock_migrate.assert_called_once_with(mock_mistral, mock_swift,
+                                             ['hut8'])
+        mock_create.assert_called_once_with(mock_mistral, ['hut8'])
+
 
 class TestUpgradeFact(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_command')
