@@ -763,7 +763,7 @@ tripleo::ui::endpoint_config_zaqar: {{UNDERCLOUD_ENDPOINT_ZAQAR_UI_CONFIG_PUBLIC
 tripleo::ui::endpoint_config_keystone: {{UNDERCLOUD_ENDPOINT_KEYSTONE_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_heat: {{UNDERCLOUD_ENDPOINT_HEAT_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_ironic: {{UNDERCLOUD_ENDPOINT_IRONIC_UI_CONFIG_PUBLIC}}
-tripleo::ui::endpoint_config_ironic_inspector: {{UNDERCLOUD_ENDPOINT_IRONIC_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_ironic_inspector: {{UNDERCLOUD_ENDPOINT_IRONIC_INSPECTOR_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_mistral: {{UNDERCLOUD_ENDPOINT_MISTRAL_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_swift: {{UNDERCLOUD_ENDPOINT_SWIFT_UI_CONFIG_PUBLIC}}
 
