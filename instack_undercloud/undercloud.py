@@ -1655,5 +1655,5 @@ def pre_upgrade():
 
     args = ['sudo', 'yum', 'update', '-y']
     LOG.info('Updating full system')
-    _run_live_command(args, name='systemctl stop')
+    _run_live_command(args, name='yum update')
     LOG.info('Update completed successfully')
