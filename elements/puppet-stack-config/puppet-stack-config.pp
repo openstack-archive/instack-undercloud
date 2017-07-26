@@ -213,9 +213,9 @@ if str2bool(hiera('enable_telemetry', false)) {
   }
 
 # Ensure all endpoint exists and only then run the upgrade.
-  Keystone::Resource::Service_identity<||> ->
-  Openstacklib::Service_validation['gnocchi-status'] ->
-  Exec['ceilo-gnocchi-upgrade']
+  Keystone::Resource::Service_identity<||>
+  -> Openstacklib::Service_validation['gnocchi-status']
+  -> Exec['ceilo-gnocchi-upgrade']
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
@@ -711,10 +711,10 @@ if str2bool($::undercloud_upgrade) {
     subscribe => Anchor['nova::db::end']
   }
 
-  Class['nova::cell_v2::simple_setup'] ~>
-    Anchor['nova::dbsync::begin'] ~>
-      Anchor['nova::dbsync::end'] ~>
-        Class['nova::cell_v2::map_cell_and_hosts'] ~>
-          Class['nova::cell_v2::map_instances'] ~>
-            Anchor['nova::dbsync_api::begin']
+  Class['nova::cell_v2::simple_setup']
+  ~> Anchor['nova::dbsync::begin']
+  ~> Anchor['nova::dbsync::end']
+  ~> Class['nova::cell_v2::map_cell_and_hosts']
+  ~> Class['nova::cell_v2::map_instances']
+  ~> Anchor['nova::dbsync_api::begin']
 }
