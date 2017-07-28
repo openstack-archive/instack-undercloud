@@ -1,0 +1,5 @@
+---
+upgrade:
+  - |
+    The default bare metal API version used by the undercloud was bumped
+    to 1.34, which is latest API version supported by Pike ironicclient.
