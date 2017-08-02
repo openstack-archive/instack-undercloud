@@ -281,6 +281,7 @@ if str2bool(hiera('enable_telemetry', false)) {
   include ::panko::db::sync
   include ::panko::api
   include ::panko::wsgi::apache
+  include ::panko::client
 } else {
   # If Telemetry is disabled, ensure we tear down everything:
   # packages, services, configuration files.
