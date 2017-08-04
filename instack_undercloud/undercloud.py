@@ -31,6 +31,7 @@ import time
 import uuid
 import yaml
 
+from ironicclient import client as ir_client
 from keystoneauth1 import session
 from keystoneauth1 import exceptions as ks_exceptions
 from keystoneclient import discover
@@ -78,6 +79,7 @@ class Paths(object):
 PATHS = Paths()
 DEFAULT_LOG_LEVEL = logging.DEBUG
 DEFAULT_LOG_FORMAT = '%(asctime)s %(levelname)s: %(message)s'
+DEFAULT_NODE_RESOURCE_CLASS = 'baremetal'
 LOG = None
 CONF = cfg.CONF
 COMPLETION_MESSAGE = """
@@ -1366,18 +1368,63 @@ def _delete_default_flavors(nova):
             nova.flavors.delete(f.id)
 
 
-def _ensure_flavor(nova, name, profile=None):
-    try:
+def _ensure_flavor(nova, existing, name, profile=None):
+    rc_key_name = 'resources:CUSTOM_%s' % DEFAULT_NODE_RESOURCE_CLASS.upper()
+    keys = {
+        # First, make it request the default resource class
+        rc_key_name: "1",
+        # Then disable scheduling based on everything else
+        "resources:DISK_GB": "0",
+        "resources:MEMORY_MB": "0",
+        "resources:VCPU": "0"
+    }
+
+    if existing is None:
         flavor = nova.flavors.create(name, 4096, 1, 40)
-    except exceptions.Conflict:
+
+        keys['capabilities:boot_option'] = 'local'
+        if profile is not None:
+            keys['capabilities:profile'] = profile
+        flavor.set_keys(keys)
+        message = 'Created flavor "%s" with profile "%s"'
+
+        LOG.info(message, name, profile)
+    else:
         LOG.info('Not creating flavor "%s" because it already exists.', name)
-        return
-    keys = {'capabilities:boot_option': 'local'}
-    if profile is not None:
-        keys['capabilities:profile'] = profile
-    flavor.set_keys(keys)
-    message = 'Created flavor "%s" with profile "%s"'
-    LOG.info(message, name, profile)
+
+        # NOTE(dtantsur): it is critical to ensure that the flavors request
+        # the correct resource class, otherwise scheduling will fail.
+        old_keys = existing.get_keys()
+        for key in old_keys:
+            if key.startswith('resources:CUSTOM_') and key != rc_key_name:
+                LOG.warning('Not updating flavor %s, as it already has a '
+                            'custom resource class %s. Make sure you have '
+                            'enough nodes with this resource class.',
+                            existing.name, key)
+                return
+
+        # Keep existing values
+        keys.update(old_keys)
+        existing.set_keys(keys)
+        LOG.info('Flavor %s updated to use custom resource class %s',
+                 name, DEFAULT_NODE_RESOURCE_CLASS)
+
+
+def _ensure_node_resource_classes(ironic):
+    for node in ironic.node.list(limit=-1, fields=['uuid', 'resource_class']):
+        if node.resource_class:
+            if node.resource_class != DEFAULT_NODE_RESOURCE_CLASS:
+                LOG.warning('Node %s is using a resource class %s instead '
+                            'of the default %s. Make sure you use the correct '
+                            'flavor for it.', node.uuid, node.resource_class,
+                            DEFAULT_NODE_RESOURCE_CLASS)
+            continue
+
+        ironic.node.update(node.uuid,
+                           [{'path': '/resource_class', 'op': 'add',
+                             'value': DEFAULT_NODE_RESOURCE_CLASS}])
+        LOG.info('Node %s resource class was set to %s',
+                 node.uuid, DEFAULT_NODE_RESOURCE_CLASS)
 
 
 def _copy_stackrc():
@@ -1524,15 +1571,22 @@ def _post_config(instack_env):
         nova = novaclient.Client(2, user, password, auth_url=auth_url,
                                  project_name=project)
 
+    ironic = ir_client.get_client(1, session=sess,
+                                  os_ironic_api_version='1.21')
+
     _configure_ssh_keys(nova)
     _delete_default_flavors(nova)
 
-    _ensure_flavor(nova, 'baremetal')
-    _ensure_flavor(nova, 'control', 'control')
-    _ensure_flavor(nova, 'compute', 'compute')
-    _ensure_flavor(nova, 'ceph-storage', 'ceph-storage')
-    _ensure_flavor(nova, 'block-storage', 'block-storage')
-    _ensure_flavor(nova, 'swift-storage', 'swift-storage')
+    _ensure_node_resource_classes(ironic)
+
+    all_flavors = {f.name: f for f in nova.flavors.list()}
+    for name, profile in [('baremetal', None),
+                          ('control', 'control'),
+                          ('compute', 'compute'),
+                          ('ceph-storage', 'ceph-storage'),
+                          ('block-storage', 'block-storage'),
+                          ('swift-storage', 'swift-storage')]:
+        _ensure_flavor(nova, all_flavors.get(name), name, profile)
 
     mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
     mistral = mistralclient.client(
