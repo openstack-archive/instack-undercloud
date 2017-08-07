@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import mock
+
 from oslo_config import fixture as config_fixture
 from oslotest import base
 
@@ -25,7 +27,9 @@ class TestValidator(base.BaseTestCase):
         self.conf = config_fixture.Config()
         self.useFixture(self.conf)
 
-    def test_validation_passes(self):
+    @mock.patch('netifaces.interfaces')
+    def test_validation_passes(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth1']
         undercloud._validate_network()
 
     def test_fail_on_local_ip(self):
@@ -122,7 +126,9 @@ class TestValidator(base.BaseTestCase):
         validator.validate_config(params, lambda x: None)
         self.assertEqual(save_params, params)
 
-    def test_valid_undercloud_nameserver_passes(self):
+    @mock.patch('netifaces.interfaces')
+    def test_valid_undercloud_nameserver_passes(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth1']
         self.conf.config(undercloud_nameservers=['192.168.24.4',
                                                  '192.168.24.5'])
         undercloud._validate_network()
@@ -144,19 +150,44 @@ class TestValidator(base.BaseTestCase):
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
-    def test_ssl_hosts_allowed(self):
+    @mock.patch('netifaces.interfaces')
+    def test_ssl_hosts_allowed(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth1']
         self.conf.config(undercloud_public_host='public.domain',
                          undercloud_admin_host='admin.domain',
                          undercloud_service_certificate='foo.pem',
                          enable_ui=False)
         undercloud._validate_network()
 
-    def test_allow_all_with_ui(self):
+    @mock.patch('netifaces.interfaces')
+    def test_allow_all_with_ui(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth1']
         self.conf.config(undercloud_admin_host='10.0.0.10',
                          generate_service_certificate=True,
                          enable_ui=True)
 
-    def test_fail_on_invalid_ip(self):
+    @mock.patch('netifaces.interfaces')
+    def test_fail_on_invalid_ip(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth1']
         self.conf.config(dhcp_start='foo.bar')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
+
+    @mock.patch('netifaces.interfaces')
+    def test_validate_interface_exists(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth0', 'eth1']
+        self.conf.config(local_interface='eth0')
+        undercloud._validate_network()
+
+    @mock.patch('netifaces.interfaces')
+    def test_fail_validate_interface_missing(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth0', 'eth1']
+        self.conf.config(local_interface='em1')
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
+
+    @mock.patch('netifaces.interfaces')
+    def test_validate_interface_with_net_config_override(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth0', 'eth1']
+        self.conf.config(local_interface='em2', net_config_override='foo')
+        undercloud._validate_network()

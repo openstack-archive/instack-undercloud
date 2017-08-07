@@ -550,6 +550,8 @@ def _load_config():
         conf_params += ['--config-file', PATHS.PASSWORD_PATH]
     if os.path.isfile(PATHS.CONF_PATH):
         conf_params += ['--config-file', PATHS.CONF_PATH]
+    else:
+        LOG.warning('%s does not exist. Using defaults.' % PATHS.CONF_PATH)
     CONF(conf_params)
 
 
