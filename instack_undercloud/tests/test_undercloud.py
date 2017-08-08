@@ -196,7 +196,8 @@ class TestCheckHostname(BaseTestCase):
             undercloud._check_hostname()
             mock_run_command.assert_called_with([
                 'sudo', '/bin/bash', '-c',
-                'echo 127.0.0.1 test.hostname test >> /etc/hosts'],
+                'sed -i "s/127.0.0.1\(\s*\)/127.0.0.1\\1test.hostname test /" '
+                '/etc/hosts'],
                 name='hostname-to-etc-hosts')
 
     @mock.patch('instack_undercloud.undercloud._run_command')
@@ -212,7 +213,8 @@ class TestCheckHostname(BaseTestCase):
             undercloud._check_hostname()
             mock_run_command.assert_called_with([
                 'sudo', '/bin/bash', '-c',
-                'echo 127.0.0.1 test.hostname test >> /etc/hosts'],
+                'sed -i "s/127.0.0.1\(\s*\)/127.0.0.1\\1test.hostname test /" '
+                '/etc/hosts'],
                 name='hostname-to-etc-hosts')
 
     @mock.patch('instack_undercloud.undercloud._run_command')
@@ -230,7 +232,9 @@ class TestCheckHostname(BaseTestCase):
             undercloud._check_hostname()
         mock_run_command.assert_called_with([
             'sudo', '/bin/bash', '-c',
-            'echo 127.0.0.1 test-hostname.domain test-hostname >> /etc/hosts'],
+            'sed -i "s/127.0.0.1\(\s*\)/'
+            '127.0.0.1\\1test-hostname.domain test-hostname /" '
+            '/etc/hosts'],
             name='hostname-to-etc-hosts')
 
     @mock.patch('instack_undercloud.undercloud._run_command')
