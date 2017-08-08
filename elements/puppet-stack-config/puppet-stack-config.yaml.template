@@ -721,6 +721,8 @@ tripleo::haproxy::docker_registry: true
 
 # Docker
 tripleo::profile::base::docker::step: 1
+# Undercloud should not have --iptables=false by default hence this override (LP#1709325)
+tripleo::profile::base::docker::docker_options: '--log-driver=journald --signature-verification=false'
 {{#DOCKER_REGISTRY_MIRROR}}
 tripleo::profile::base::docker::registry_mirror: {{DOCKER_REGISTRY_MIRROR}}
 {{/DOCKER_REGISTRY_MIRROR}}
