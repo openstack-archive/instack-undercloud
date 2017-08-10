@@ -13,6 +13,7 @@
 # under the License.
 
 import netaddr
+import netifaces
 
 
 class FailedValidation(Exception):
@@ -35,6 +36,7 @@ def validate_config(params, error_callback):
     _validate_inspection_range(local_params, error_callback)
     _validate_no_overlap(local_params, error_callback)
     _validate_ips(local_params, error_callback)
+    _validate_interface_exists(local_params, error_callback)
 
 
 def _validate_ips(params, error_callback):
@@ -142,4 +144,14 @@ def _validate_no_overlap(params, error_callback):
                    'DHCP range "%s-%s".' %
                    (params['inspection_start'], params['inspection_end'],
                     params['dhcp_start'], params['dhcp_end']))
+        error_callback(message)
+
+
+def _validate_interface_exists(params, error_callback):
+    """Validate the provided local interface exists"""
+    local_interface = params['local_interface']
+    net_override = params['net_config_override']
+    if not net_override and local_interface not in netifaces.interfaces():
+        message = ('Invalid local_interface specified. %s is not available.' %
+                   local_interface)
         error_callback(message)

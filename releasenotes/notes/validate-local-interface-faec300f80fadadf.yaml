@@ -1,0 +1,9 @@
+---
+fixes:
+  - |
+    Validate the local_interface for the undercloud install to fail fast if
+    the interface does not actually exist on the system. If net_config_override
+    is configured, the local_interface will not be validated.
+  - |
+    Log a warning if undercloud.conf is missing to indicate that the defaults
+    will be used.
