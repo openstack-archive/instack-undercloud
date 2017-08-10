@@ -678,40 +678,7 @@ if str2bool(hiera('enable_novajoin', false)) {
   include ::nova::metadata::novajoin::api
 }
 
-# Upgrade Special Snowflakes
+# Any special handling that need to be done during the upgrade.
 if str2bool($::undercloud_upgrade) {
-  # NOTE(aschultz): Since we did not deploy cell v2 in newton, we need to be
-  # able to run the cell v2 setup prior to the api db sync call. This affects
-  # upgrades only.  The normal clean install process requires that the api db
-  # sync occur prior to the cell v2 simple setup so we have to reorder these
-  # only for upgrades. See LP#1649341
-  include ::nova::deps
-  include ::nova::cell_v2::map_cell_and_hosts
-  class { '::nova::cell_v2::map_instances':
-    cell_name => 'default',
-  }
-  # NOTE(aschultz): this should pull the cell v2 items out and run them before
-  # the api db sync.
-  # The order should be:
-  #  - cell v2 setup
-  #  - db sync
-  #  - cell v2 map cell and hosts
-  #  - cell v2 instances
-  #  - api db sync
-  Anchor<| title == 'nova::cell_v2::begin' |> {
-    subscribe => Anchor['nova::db::end']
-  }
-  Anchor<| title == 'nova::cell_v2::end' |> {
-    notify => Anchor['nova::dbsync_api::begin']
-  }
-  Anchor<| title == 'nova::dbsync::begin' |> {
-    subscribe => Anchor['nova::db::end']
-  }
-
-  Class['nova::cell_v2::simple_setup']
-  ~> Anchor['nova::dbsync::begin']
-  ~> Anchor['nova::dbsync::end']
-  ~> Class['nova::cell_v2::map_cell_and_hosts']
-  ~> Class['nova::cell_v2::map_instances']
-  ~> Anchor['nova::dbsync_api::begin']
+  # Noop
 }
