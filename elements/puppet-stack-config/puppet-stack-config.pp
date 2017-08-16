@@ -104,60 +104,61 @@ service { 'systemd-journald':
 # Create all the database schemas
 # Example DSN format: mysql+pymysql://user:password@host/dbname
 $allowed_hosts = ['%',hiera('controller_host')]
-$keystone_dsn = split(hiera('keystone::database_connection'), '[@:/?]')
+$re_dsn = '//([^:]+):([^@]+)@\[?([^/]+?)\]?/([a-z_-]+)'
+$keystone_dsn = match(hiera('keystone::database_connection'), $re_dsn)
 class { '::keystone::db::mysql':
-  user          => $keystone_dsn[3],
-  password      => $keystone_dsn[4],
-  host          => $keystone_dsn[5],
-  dbname        => $keystone_dsn[6],
+  user          => $keystone_dsn[1],
+  password      => $keystone_dsn[2],
+  host          => $keystone_dsn[3],
+  dbname        => $keystone_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
-$glance_dsn = split(hiera('glance::api::database_connection'), '[@:/?]')
+$glance_dsn = match(hiera('glance::api::database_connection'), $re_dsn)
 class { '::glance::db::mysql':
-  user          => $glance_dsn[3],
-  password      => $glance_dsn[4],
-  host          => $glance_dsn[5],
-  dbname        => $glance_dsn[6],
+  user          => $glance_dsn[1],
+  password      => $glance_dsn[2],
+  host          => $glance_dsn[3],
+  dbname        => $glance_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
-$nova_dsn = split(hiera('nova::database_connection'), '[@:/?]')
+$nova_dsn = match(hiera('nova::database_connection'), $re_dsn)
 class { '::nova::db::mysql':
-  user          => $nova_dsn[3],
-  password      => $nova_dsn[4],
-  host          => $nova_dsn[5],
-  dbname        => $nova_dsn[6],
+  user          => $nova_dsn[1],
+  password      => $nova_dsn[2],
+  host          => $nova_dsn[3],
+  dbname        => $nova_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
-$nova_api_dsn = split(hiera('nova::api_database_connection'), '[@:/?]')
+$nova_api_dsn = match(hiera('nova::api_database_connection'), $re_dsn)
 class { '::nova::db::mysql_api':
-  user          => $nova_api_dsn[3],
-  password      => $nova_api_dsn[4],
-  host          => $nova_api_dsn[5],
-  dbname        => $nova_api_dsn[6],
+  user          => $nova_api_dsn[1],
+  password      => $nova_api_dsn[2],
+  host          => $nova_api_dsn[3],
+  dbname        => $nova_api_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
-$nova_placement_dsn = split(hiera('nova::placement_database_connection'), '[@:/?]')
+$nova_placement_dsn = match(hiera('nova::placement_database_connection'), $re_dsn)
 class { '::nova::db::mysql_placement':
-  user          => $nova_placement_dsn[3],
-  password      => $nova_placement_dsn[4],
-  host          => $nova_placement_dsn[5],
-  dbname        => $nova_placement_dsn[6],
+  user          => $nova_placement_dsn[1],
+  password      => $nova_placement_dsn[2],
+  host          => $nova_placement_dsn[3],
+  dbname        => $nova_placement_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
-$neutron_dsn = split(hiera('neutron::server::database_connection'), '[@:/?]')
+$neutron_dsn = match(hiera('neutron::server::database_connection'), $re_dsn)
 class { '::neutron::db::mysql':
-  user          => $neutron_dsn[3],
-  password      => $neutron_dsn[4],
-  host          => $neutron_dsn[5],
-  dbname        => $neutron_dsn[6],
+  user          => $neutron_dsn[1],
+  password      => $neutron_dsn[2],
+  host          => $neutron_dsn[3],
+  dbname        => $neutron_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
-$heat_dsn = split(hiera('heat_dsn'), '[@:/?]')
+$heat_dsn = match(hiera('heat_dsn'), $re_dsn)
 class { '::heat::db::mysql':
-  user          => $heat_dsn[3],
-  password      => $heat_dsn[4],
-  host          => $heat_dsn[5],
-  dbname        => $heat_dsn[6],
+  user          => $heat_dsn[1],
+  password      => $heat_dsn[2],
+  host          => $heat_dsn[3],
+  dbname        => $heat_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
 if str2bool(hiera('enable_telemetry', false)) {
@@ -165,12 +166,12 @@ if str2bool(hiera('enable_telemetry', false)) {
   # Ceilometer
 
   if str2bool(hiera('enable_legacy_ceilometer_collector', false)) {
-    $ceilometer_dsn = split(hiera('ceilometer::db::database_connection'), '[@:/?]')
+    $ceilometer_dsn = match(hiera('ceilometer::db::database_connection'), $re_dsn)
     class { '::ceilometer::db::mysql':
-      user          => $ceilometer_dsn[3],
-      password      => $ceilometer_dsn[4],
-      host          => $ceilometer_dsn[5],
-      dbname        => $ceilometer_dsn[6],
+      user          => $ceilometer_dsn[1],
+      password      => $ceilometer_dsn[2],
+      host          => $ceilometer_dsn[3],
+      dbname        => $ceilometer_dsn[4],
       allowed_hosts => $allowed_hosts,
     }
     include ::ceilometer::db
@@ -222,12 +223,12 @@ if str2bool(hiera('enable_telemetry', false)) {
     "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
 
   # Aodh
-  $aodh_dsn = split(hiera('aodh::db::database_connection'), '[@:/?]')
+  $aodh_dsn = match(hiera('aodh::db::database_connection'), $re_dsn)
   class { '::aodh::db::mysql':
-    user          => $aodh_dsn[3],
-    password      => $aodh_dsn[4],
-    host          => $aodh_dsn[5],
-    dbname        => $aodh_dsn[6],
+    user          => $aodh_dsn[1],
+    password      => $aodh_dsn[2],
+    host          => $aodh_dsn[3],
+    dbname        => $aodh_dsn[4],
     allowed_hosts => $allowed_hosts,
   }
   include ::aodh
@@ -241,12 +242,12 @@ if str2bool(hiera('enable_telemetry', false)) {
   include ::aodh::auth
 
   # Gnocchi
-  $gnocchi_dsn = split(hiera('gnocchi::db::database_connection'), '[@:/?]')
+  $gnocchi_dsn = match(hiera('gnocchi::db::database_connection'), $re_dsn)
   class { '::gnocchi::db::mysql':
-    user          => $gnocchi_dsn[3],
-    password      => $gnocchi_dsn[4],
-    host          => $gnocchi_dsn[5],
-    dbname        => $gnocchi_dsn[6],
+    user          => $gnocchi_dsn[1],
+    password      => $gnocchi_dsn[2],
+    host          => $gnocchi_dsn[3],
+    dbname        => $gnocchi_dsn[4],
     allowed_hosts => $allowed_hosts,
   }
   include ::gnocchi
@@ -267,12 +268,12 @@ if str2bool(hiera('enable_telemetry', false)) {
   }
 
   # Panko
-  $panko_dsn = split(hiera('panko::db::database_connection'), '[@:/?]')
+  $panko_dsn = match(hiera('panko::db::database_connection'), $re_dsn)
   class { '::panko::db::mysql':
-    user          => $panko_dsn[3],
-    password      => $panko_dsn[4],
-    host          => $panko_dsn[5],
-    dbname        => $panko_dsn[6],
+    user          => $panko_dsn[1],
+    password      => $panko_dsn[2],
+    host          => $panko_dsn[3],
+    dbname        => $panko_dsn[4],
     allowed_hosts => $allowed_hosts,
   }
   include ::panko
@@ -306,21 +307,21 @@ if str2bool(hiera('enable_telemetry', false)) {
   }
 }
 
-$ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
+$ironic_dsn = match(hiera('ironic::database_connection'), $re_dsn)
 class { '::ironic::db::mysql':
-  user          => $ironic_dsn[3],
-  password      => $ironic_dsn[4],
-  host          => $ironic_dsn[5],
-  dbname        => $ironic_dsn[6],
+  user          => $ironic_dsn[1],
+  password      => $ironic_dsn[2],
+  host          => $ironic_dsn[3],
+  dbname        => $ironic_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
 
-$ironic_inspector_dsn = split(hiera('ironic::inspector::db::database_connection'), '[@:/?]')
+$ironic_inspector_dsn = match(hiera('ironic::inspector::db::database_connection'), $re_dsn)
 class { '::ironic::inspector::db::mysql':
-  user          => $ironic_inspector_dsn[3],
-  password      => $ironic_inspector_dsn[4],
-  host          => $ironic_inspector_dsn[5],
-  dbname        => $ironic_inspector_dsn[6],
+  user          => $ironic_inspector_dsn[1],
+  password      => $ironic_inspector_dsn[2],
+  host          => $ironic_inspector_dsn[3],
+  dbname        => $ironic_inspector_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
 
@@ -553,12 +554,12 @@ if str2bool(hiera('enable_docker_registry', true)) {
 }
 
 include ::mistral
-$mistral_dsn = split(hiera('mistral::database_connection'), '[@:/?]')
+$mistral_dsn = match(hiera('mistral::database_connection'), $re_dsn)
 class { '::mistral::db::mysql':
-  user          => $mistral_dsn[3],
-  password      => $mistral_dsn[4],
-  host          => $mistral_dsn[5],
-  dbname        => $mistral_dsn[6],
+  user          => $mistral_dsn[1],
+  password      => $mistral_dsn[2],
+  host          => $mistral_dsn[3],
+  dbname        => $mistral_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
 include ::mistral::keystone::auth
@@ -588,12 +589,12 @@ if str2bool(hiera('enable_validations', true)) {
 }
 
 include ::zaqar
-$zaqar_dsn = split(hiera('zaqar::management::sqlalchemy::uri'), '[@:/?]')
+$zaqar_dsn = match(hiera('zaqar::management::sqlalchemy::uri'), $re_dsn)
 class { '::zaqar::db::mysql':
-  user          => $zaqar_dsn[3],
-  password      => $zaqar_dsn[4],
-  host          => $zaqar_dsn[5],
-  dbname        => $zaqar_dsn[6],
+  user          => $zaqar_dsn[1],
+  password      => $zaqar_dsn[2],
+  host          => $zaqar_dsn[3],
+  dbname        => $zaqar_dsn[4],
   allowed_hosts => $allowed_hosts,
 }
 include ::zaqar::db::sync
@@ -612,12 +613,12 @@ zaqar::server_instance{ '1':
 }
 
 if str2bool(hiera('enable_cinder', true)) {
-  $cinder_dsn = split(hiera('cinder::database_connection'), '[@:/?]')
+  $cinder_dsn = match(hiera('cinder::database_connection'), $re_dsn)
   class { '::cinder::db::mysql':
-    user          => $cinder_dsn[3],
-    password      => $cinder_dsn[4],
-    host          => $cinder_dsn[5],
-    dbname        => $cinder_dsn[6],
+    user          => $cinder_dsn[1],
+    password      => $cinder_dsn[2],
+    host          => $cinder_dsn[3],
+    dbname        => $cinder_dsn[4],
     allowed_hosts => $allowed_hosts,
   }
   include ::cinder::keystone::auth
