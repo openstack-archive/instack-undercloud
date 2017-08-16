@@ -41,6 +41,7 @@ import novaclient as nc
 from novaclient import client as novaclient
 from novaclient import exceptions
 from oslo_config import cfg
+from oslo_utils import netutils
 import psutil
 import pystache
 import six
@@ -668,6 +669,14 @@ def _check_ipv6_enabled():
     return os.path.isfile('/proc/net/if_inet6')
 
 
+def _wrap_ipv6(ip):
+    """Wrap a IP address in square brackets if IPv6
+    """
+    if netutils.is_valid_ipv6(ip):
+        return "[%s]" % ip
+    return ip
+
+
 def _check_sysctl():
     """Check sysctl option availability
 
@@ -1046,7 +1055,8 @@ class InstackEnvironment(dict):
                     'TRIPLEO_INSTALL_USER', 'TRIPLEO_UNDERCLOUD_CONF_FILE',
                     'TRIPLEO_UNDERCLOUD_PASSWORD_FILE',
                     'ENABLED_POWER_INTERFACES',
-                    'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS'}
+                    'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
+                    'LOCAL_IP_WRAPPED'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1193,6 +1203,7 @@ def _generate_environment(instack_root):
 
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
+    instack_env['LOCAL_IP_WRAPPED'] = _wrap_ipv6(instack_env['LOCAL_IP'])
     if instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
         instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = os.path.abspath(
             instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
