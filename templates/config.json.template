@@ -9,6 +9,7 @@
    "puppet-stack-config"
   ]},
   "local-ip": "{{LOCAL_IP}}",
+  "local-ip-wrapped": "{{LOCAL_IP_WRAPPED}}",
   "masquerade_networks": ["{{MASQUERADE_NETWORK}}"],
   "service_certificate": "{{UNDERCLOUD_SERVICE_CERTIFICATE}}",
   "public_host": "{{UNDERCLOUD_PUBLIC_HOST}}",
