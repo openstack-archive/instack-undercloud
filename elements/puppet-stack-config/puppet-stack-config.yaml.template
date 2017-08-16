@@ -5,6 +5,7 @@ keystone_default_domain: 'Default'
 
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
+controller_host_wrapped: "{{LOCAL_IP_WRAPPED}}"
 controller_admin_host: {{UNDERCLOUD_ADMIN_HOST}}
 controller_public_host: {{UNDERCLOUD_PUBLIC_HOST}}
 ntp::servers: {{UNDERCLOUD_NTP_SERVERS}}
@@ -103,7 +104,7 @@ glance::api::default_store: 'glance.store.swift.Store'
 glance::api::pipeline: 'keystone'
 # used to construct glance_api_servers
 glance_log_file: ''
-glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP}}/glance
+glance::api::database_connection: mysql+pymysql://glance:{{UNDERCLOUD_GLANCE_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/glance
 glance::api::enable_v1_api: false
 glance::api::enable_v2_api: true
 glance::keystone::auth::tenant: 'service'
@@ -119,7 +120,7 @@ glance::backend::swift::swift_store_key: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::backend::swift::swift_store_create_container_on_put: true
 glance::notify::rabbitmq::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 glance::notify::rabbitmq::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-glance::notify::rabbitmq::rabbit_host: {{LOCAL_IP}}
+glance::notify::rabbitmq::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 glance::registry::debug: "%{hiera('debug')}"
 
 # Heat
@@ -143,7 +144,7 @@ heat::engine::max_nested_stack_depth: 7
 heat::instance_user: heat-admin
 heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-heat::rabbit_host: {{LOCAL_IP}}
+heat::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 heat::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 heat::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 heat::keystone::authtoken::password: {{UNDERCLOUD_HEAT_PASSWORD}}
@@ -161,8 +162,8 @@ heat::wsgi::apache_api::workers: "%{hiera('heat::api::workers')}"
 heat::wsgi::apache_api_cfn::ssl: false
 heat::wsgi::apache_api_cfn::bind_host: {{LOCAL_IP}}
 heat::wsgi::apache_api_cfn::workers: "%{hiera('heat::api_cfn::workers')}"
-heat::database_connection: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
-heat_dsn: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP}}/heat
+heat::database_connection: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/heat
+heat_dsn: mysql+pymysql://heat:{{UNDERCLOUD_HEAT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/heat
 heat::rpc_response_timeout: 600
 heat::keystone::auth::tenant: 'service'
 heat::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_HEAT_PUBLIC}}
@@ -197,7 +198,7 @@ keystone::service_name: 'httpd'
 keystone_ca_certificate: '{{KEYSTONE_CA_CERTIFICATE}}'
 keystone_signing_key: '{{KEYSTONE_SIGNING_KEY}}'
 keystone_signing_certificate: '{{KEYSTONE_SIGNING_CERTIFICATE}}'
-keystone::database_connection: mysql+pymysql://keystone:{{UNDERCLOUD_ADMIN_TOKEN}}@{{LOCAL_IP}}/keystone
+keystone::database_connection: mysql+pymysql://keystone:{{UNDERCLOUD_ADMIN_TOKEN}}@{{LOCAL_IP_WRAPPED}}/keystone
 keystone::cron::token_flush::destination: '/dev/null'
 keystone::roles::admin::password: {{UNDERCLOUD_ADMIN_PASSWORD}}
 keystone::roles::admin::email: 'root@localhost'
@@ -215,7 +216,7 @@ keystone::notification_driver: messaging
 keystone::notification_topics: notifications
 keystone::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 keystone::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-keystone::rabbit_host: {{LOCAL_IP}}
+keystone::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 keystone::enable_credential_setup: true
 keystone::fernet_max_active_keys: 2
 
@@ -246,7 +247,7 @@ neutron::keystone::authtoken::project_name: "%{hiera('neutron::keystone::auth::t
 neutron::server::notifications::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 neutron::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 neutron::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
-neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP}}/neutron
+neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/neutron
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::local_ip: {{LOCAL_IP}}
 neutron::plugins::ml2::mechanism_drivers: ['openvswitch']
@@ -274,7 +275,7 @@ ceilometer::expirer::time_to_live: undef
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
 ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-ceilometer::rabbit_host: {{LOCAL_IP}}
+ceilometer::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 ceilometer::api::host: {{LOCAL_IP}}
 ceilometer::api::service_name: 'httpd'
 ceilometer::wsgi::apache::ssl: false
@@ -282,7 +283,7 @@ ceilometer::wsgi::apache::bind_host: {{LOCAL_IP}}
 ceilometer::keystone::authtoken::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
-ceilometer::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP}}/ceilometer
+ceilometer::db::database_connection: mysql+pymysql://ceilometer:{{UNDERCLOUD_CEILOMETER_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/ceilometer
 ceilometer::agent::auth::auth_password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer_compute_agent: ''
 ceilometer::snmpd_readonly_username: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
@@ -307,7 +308,7 @@ ceilometer::collector::event_dispatcher: ['panko', 'gnocchi']
 aodh::debug: "%{hiera('debug')}"
 aodh::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 aodh::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-aodh::rabbit_host: {{LOCAL_IP}}
+aodh::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 aodh::api::host: {{LOCAL_IP}}
 aodh::keystone::authtoken::password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
@@ -315,7 +316,7 @@ aodh::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 aodh::api::service_name: 'httpd'
 aodh::wsgi::apache::ssl: false
 aodh::wsgi::apache::bind_host: {{LOCAL_IP}}
-aodh::db::database_connection: mysql+pymysql://aodh:{{UNDERCLOUD_AODH_PASSWORD}}@{{LOCAL_IP}}/aodh
+aodh::db::database_connection: mysql+pymysql://aodh:{{UNDERCLOUD_AODH_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/aodh
 aodh::auth::auth_password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::auth::tenant: 'service'
 aodh::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_AODH_PUBLIC}}
@@ -342,7 +343,7 @@ gnocchi::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_GNOCCHI_ADMIN}}
 gnocchi::keystone::auth::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
 gnocchi::keystone::auth::region: "%{hiera('keystone_region')}"
 gnocchi::db::mysql::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
-gnocchi::db::database_connection: mysql+pymysql://gnocchi:{{UNDERCLOUD_GNOCCHI_PASSWORD}}@{{LOCAL_IP}}/gnocchi
+gnocchi::db::database_connection: mysql+pymysql://gnocchi:{{UNDERCLOUD_GNOCCHI_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/gnocchi
 gnocchi::storage::swift::swift_user: 'service:gnocchi'
 gnocchi::storage::swift::swift_auth_version: 2
 gnocchi::storage::swift::swift_authurl: "%{hiera('keystone_auth_uri')}"
@@ -362,7 +363,7 @@ panko::wsgi::apache::bind_host: {{LOCAL_IP}}
 panko::api::service_name: 'httpd'
 panko::api::host: {{LOCAL_IP}}
 panko::db::mysql::password: {{UNDERCLOUD_PANKO_PASSWORD}}
-panko::db::database_connection: mysql+pymysql://panko:{{UNDERCLOUD_PANKO_PASSWORD}}@{{LOCAL_IP}}/panko
+panko::db::database_connection: mysql+pymysql://panko:{{UNDERCLOUD_PANKO_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/panko
 panko::keystone::authtoken::password: {{UNDERCLOUD_PANKO_PASSWORD}}
 panko::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 panko::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -376,7 +377,7 @@ panko::keystone::authtoken::project_name: 'service'
 
 # Nova
 nova::debug:  "%{hiera('debug')}"
-nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
+nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 nova::notification_driver: messaging
 nova::rpc_response_timeout: '600'
 nova::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
@@ -400,9 +401,9 @@ nova::placement::project_name: 'service'
 nova::placement::os_region_name: "%{hiera('keystone_region')}"
 nova::conductor::enabled: true
 nova::conductor::workers: "%{::os_workers}"
-nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova
-nova::api_database_connection: mysql+pymysql://nova_api:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova_api
-nova::placement_database_connection: mysql+pymysql://nova_placement:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP}}/nova_placement
+nova::database_connection: mysql+pymysql://nova:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/nova
+nova::api_database_connection: mysql+pymysql://nova_api:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/nova_api
+nova::placement_database_connection: mysql+pymysql://nova_placement:{{UNDERCLOUD_NOVA_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/nova_placement
 nova::notify_on_state_change: 'vm_and_task_state'
 nova::scheduler::enabled: true
 nova::network::neutron::dhcp_domain: {{OVERCLOUD_DOMAIN_NAME}}
@@ -470,8 +471,8 @@ ironic::api::service_name: 'httpd'
 ironic::api::workers: "%{::os_workers}"
 ironic::wsgi::apache::ssl: false
 ironic::wsgi::apache::bind_host: {{LOCAL_IP}}
-ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic
-ironic::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
+ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/ironic
+ironic::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 ironic::drivers::inspector::enabled: true
 ironic::drivers::inspector::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::drivers::inspector::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -525,7 +526,7 @@ ironic::inspector::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::inspector::authtoken::username: 'ironic'
 ironic::inspector::authtoken::password: "%{hiera('ironic::api::authtoken::password')}"
 ironic::inspector::authtoken::project_name: 'service'
-ironic::inspector::db::database_connection: mysql+pymysql://ironic-inspector:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP}}/ironic-inspector
+ironic::inspector::db::database_connection: mysql+pymysql://ironic-inspector:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/ironic-inspector
 ironic::inspector::keep_ports: 'added'
 ironic::inspector::ironic_username: 'ironic'
 ironic::inspector::ironic_password: "%{hiera('ironic::api::authtoken::password')}"
@@ -558,7 +559,7 @@ ironic::drivers::pxe::ipxe_timeout: 60
 
 # Ironic deploy utils
 ironic_ipxe_port: 8088
-ironic::conductor::http_url: "http://{{LOCAL_IP}}:%{hiera('ironic_ipxe_port')}"
+ironic::conductor::http_url: "http://{{LOCAL_IP_WRAPPED}}:%{hiera('ironic_ipxe_port')}"
 ironic::conductor::http_boot: '/httpboot'
 ironic::inspector::http_port: "%{hiera('ironic_ipxe_port')}"
 
@@ -604,10 +605,10 @@ mistral::api::bind_host: {{LOCAL_IP}}
 mistral::api::api_workers: "%{::os_workers}"
 mistral::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 mistral::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-mistral::rabbit_host: {{LOCAL_IP}}
+mistral::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 mistral::auth_uri: "%{hiera('keystone_auth_uri')}"
 mistral::identity_uri: "%{hiera('keystone_identity_uri')}"
-mistral::database_connection: mysql+pymysql://mistral:{{UNDERCLOUD_MISTRAL_PASSWORD}}@{{LOCAL_IP}}/mistral
+mistral::database_connection: mysql+pymysql://mistral:{{UNDERCLOUD_MISTRAL_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/mistral
 mistral::rpc_backend: rabbit
 mistral::keystone_password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC}}
@@ -647,7 +648,7 @@ zaqar::wsgi::apache::bind_host: {{LOCAL_IP}}
 zaqar::wsgi::apache::ssl: false
 zaqar::message_store: swift
 zaqar::management_store: sqlalchemy
-zaqar::management::sqlalchemy::uri: mysql+pymysql://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@{{LOCAL_IP}}/zaqar
+zaqar::management::sqlalchemy::uri: mysql+pymysql://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/zaqar
 zaqar::messaging::swift::uri: swift://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@/service
 zaqar::messaging::swift::auth_url: "%{hiera('keystone_auth_uri')}"
 zaqar::message_pipeline: 'zaqar.notification.notifier'
@@ -663,7 +664,7 @@ cinder::api::service_name: 'httpd'
 cinder::api::nova_catalog_info: 'compute:Compute Service:internalURL'
 cinder::backends::enabled_backends: ["%{hiera('cinder_backend_name')}"]
 cinder::cron::db_purge::destination: "/dev/null"
-cinder::database_connection: mysql+pymysql://cinder:{{UNDERCLOUD_CINDER_PASSWORD}}@{{LOCAL_IP}}/cinder
+cinder::database_connection: mysql+pymysql://cinder:{{UNDERCLOUD_CINDER_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/cinder
 cinder::db::database_db_max_retries: -1
 cinder::db::database_max_retries: -1
 cinder::debug: "%{hiera('debug')}"
@@ -686,7 +687,7 @@ cinder::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 cinder::keystone::authtoken::password: {{UNDERCLOUD_CINDER_PASSWORD}}
 cinder::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 cinder::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-cinder::rabbit_host: {{LOCAL_IP}}
+cinder::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 cinder::scheduler::scheduler_driver: cinder.scheduler.filter_scheduler.FilterScheduler
 cinder::setup_test_volume::size: '10280M'
 cinder::wsgi::apache::bind_host: {{LOCAL_IP}}
@@ -814,7 +815,7 @@ nova::metadata::novajoin::api::bind_address: "{{LOCAL_IP}}"
 nova::metadata::novajoin::api::join_listen_port: "%{hiera('novajoin_listen_port')}"
 nova::metadata::novajoin::api::keystone_auth_url: "%{hiera('keystone_auth_uri')}"
 nova::metadata::novajoin::api::service_password: {{UNDERCLOUD_NOVAJOIN_PASSWORD}}
-nova::metadata::novajoin::api::transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP}}//"
+nova::metadata::novajoin::api::transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 nova::metadata::novajoin::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::metadata::novajoin::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 nova::metadata::novajoin::authtoken::password: {{UNDERCLOUD_NOVAJOIN_PASSWORD}}

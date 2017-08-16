@@ -791,11 +791,14 @@ def _get_service_endpoints(name, format_str, public, internal, admin=None,
         public_port_key = 'ssl_port'
 
     endpoints['UNDERCLOUD_ENDPOINT_%s_PUBLIC' % upper_name] = (
-        format_str % (public_proto, public['host'], public[public_port_key]))
+        format_str % (public_proto, _wrap_ipv6(public['host']),
+                      public[public_port_key]))
     endpoints['UNDERCLOUD_ENDPOINT_%s_INTERNAL' % upper_name] = (
-        format_str % (internal_proto, internal['host'], internal['port']))
+        format_str % (internal_proto, _wrap_ipv6(internal['host']),
+                      internal['port']))
     endpoints['UNDERCLOUD_ENDPOINT_%s_ADMIN' % upper_name] = (
-        format_str % (internal_proto, admin['host'], admin['port']))
+        format_str % (internal_proto, _wrap_ipv6(admin['host']),
+                      admin['port']))
     return endpoints
 
 
