@@ -25,6 +25,16 @@ fi
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
+if [ -e /usr/sbin/getenforce ]; then
+    if [ "$(getenforce)" == "Enforcing" ]; then
+        selinux_wrong_permission="$(find /home/.ssh/ -exec ls -lZ {} \; | grep -v 'ssh_home_t')"
+        if [ -n "${selinux_wrong_permission}" ]; then
+            semanage fcontext -a -t ssh_home_t '/root/.ssh(/.*)?'
+            restorecon -R /root/.ssh/
+        fi
+    fi
+fi
+
 UNDERCLOUD_IP=$(os-apply-config --key local-ip --type netaddress)
 export UNDERCLOUD_IP
 
