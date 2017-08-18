@@ -1433,6 +1433,32 @@ def _configure_ssh_keys(nova):
             nova.keypairs.create('default', pubkey.read().rstrip())
 
 
+def _ensure_ssh_selinux_permission():
+    ssh_path = os.path.expanduser('~/.ssh')
+    try:
+        enforcing = _run_command(['getenforce'])
+        if os.path.isdir(ssh_path):
+            if 'Enforcing' in enforcing:
+                file_perms = _run_command(
+                    ['find', ssh_path, '-exec', 'ls', '-lZ', '{}', ';'])
+                wrong_perm = False
+                for line in file_perms.splitlines():
+                    if 'ssh_home_t' not in line:
+                        wrong_perm = True
+                        break
+                if wrong_perm:
+                    cmd = ['semanage',
+                           'fcontext', '-a', '-t', 'ssh_home_t',
+                           "{}(/.*)?".format(ssh_path)]
+                    _run_command(cmd)
+                    _run_command(['restorecon', '-R', ssh_path])
+    except OSError as e:
+        if e.errno == os.errno.ENOENT:
+            LOG.debug("Not a SeLinux platform")
+        else:
+            raise
+
+
 def _delete_default_flavors(nova):
     """Delete the default flavors from Nova
 
@@ -1766,6 +1792,7 @@ def _post_config(instack_env):
                                   os_ironic_api_version='1.21')
 
     _configure_ssh_keys(nova)
+    _ensure_ssh_selinux_permission()
     _delete_default_flavors(nova)
 
     _ensure_node_resource_classes(ironic)
