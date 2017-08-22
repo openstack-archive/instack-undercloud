@@ -70,7 +70,11 @@ if [ -n "$subnet_id" ]; then
 fi
 
 if [ "$net_create" -eq "1" ]; then
-    # Delete the subnet and network to make sure it doesn't already exist
+    # Delete the route, subnet and network to make sure it doesn't already exist
+    if neutron router-show ctlplane-router ; then
+        neutron router-interface-delete ctlplane-router ctlplane-subnet
+        neutron router-delete ctlplane-router
+    fi
     if neutron subnet-list | grep start; then
         neutron subnet-delete $(neutron subnet-list | grep start | awk '{print $2}')
     fi
@@ -87,6 +91,13 @@ if [ "$net_create" -eq "1" ]; then
         --gateway $NETWORK_GATEWAY \
         $SUBNET_VERSION_STRING $SUBNET_ROUTE_STRING \
         ctlplane $NETWORK_CIDR
+
+    # If ctlplane-subnet is IPv6 we need to start a router so the router advertisments are sent out
+    # for statless IP addressing to work.
+    if [[ $DHCP_START =~ : ]] ; then
+        neutron router-create ctlplane-router
+        neutron router-interface-add ctlplane-router ctlplane-subnet
+    fi
 fi
 
 # Disable nova quotas

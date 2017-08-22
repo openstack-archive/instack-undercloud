@@ -237,6 +237,7 @@ mysql::server::restart: true
 neutron::debug: "%{hiera('debug')}"
 neutron::bind_host: {{LOCAL_IP}}
 neutron::core_plugin: ml2
+neutron::service_plugins: ['router']
 neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: {{OVERCLOUD_DOMAIN_NAME}}
 neutron::server::api_workers: "%{::os_workers}"
