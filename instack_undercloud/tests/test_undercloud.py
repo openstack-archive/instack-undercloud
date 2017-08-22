@@ -688,7 +688,9 @@ class TestConfigureSshKeys(base.BaseTestCase):
 
 
 class TestPostConfig(base.BaseTestCase):
+    @mock.patch('instack_undercloud.undercloud._ensure_node_resource_classes')
     @mock.patch('instack_undercloud.undercloud._member_role_exists')
+    @mock.patch('ironicclient.client.get_client', autospec=True)
     @mock.patch('novaclient.client.Client', autospec=True)
     @mock.patch('swiftclient.client.Connection', autospec=True)
     @mock.patch('mistralclient.api.client.client', autospec=True)
@@ -701,8 +703,8 @@ class TestPostConfig(base.BaseTestCase):
     def test_post_config(self, mock_post_config_mistral, mock_ensure_flavor,
                          mock_configure_ssh_keys, mock_get_auth_values,
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
-                         mock_swift_client, mock_nova_client,
-                         mock_member_role_exists):
+                         mock_swift_client, mock_nova_client, mock_ir_client,
+                         mock_member_role_exists, mock_resource_classes):
         instack_env = {
             'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC':
                 'http://192.168.24.1:8989/v2',
@@ -715,22 +717,33 @@ class TestPostConfig(base.BaseTestCase):
         mock_swift_client.return_value = mock_instance_swift
         mock_instance_mistral = mock.Mock()
         mock_mistral_client.return_value = mock_instance_mistral
+        mock_instance_ironic = mock_ir_client.return_value
+        flavors = [mock.Mock(spec=['name']),
+                   mock.Mock(spec=['name'])]
+        # The mock library treats "name" attribute differently, and we cannot
+        # pass it through __init__
+        flavors[0].name = 'baremetal'
+        flavors[1].name = 'ceph-storage'
+        mock_instance_nova.flavors.list.return_value = flavors
+
         undercloud._post_config(instack_env)
         mock_nova_client.assert_called_with(
             2, 'aturing', '3nigma', project_name='hut8',
             auth_url='http://bletchley:5000/')
         self.assertTrue(mock_copy_stackrc.called)
         mock_configure_ssh_keys.assert_called_with(mock_instance_nova)
-        calls = [mock.call(mock_instance_nova, 'baremetal'),
-                 mock.call(mock_instance_nova, 'control', 'control'),
-                 mock.call(mock_instance_nova, 'compute', 'compute'),
-                 mock.call(mock_instance_nova, 'ceph-storage', 'ceph-storage'),
-                 mock.call(mock_instance_nova,
+        calls = [mock.call(mock_instance_nova, flavors[0], 'baremetal', None),
+                 mock.call(mock_instance_nova, None, 'control', 'control'),
+                 mock.call(mock_instance_nova, None, 'compute', 'compute'),
+                 mock.call(mock_instance_nova, flavors[1],
+                           'ceph-storage', 'ceph-storage'),
+                 mock.call(mock_instance_nova, None,
                            'block-storage', 'block-storage'),
-                 mock.call(mock_instance_nova,
+                 mock.call(mock_instance_nova, None,
                            'swift-storage', 'swift-storage'),
                  ]
         mock_ensure_flavor.assert_has_calls(calls)
+        mock_resource_classes.assert_called_once_with(mock_instance_ironic)
         mock_post_config_mistral.assert_called_once_with(
             instack_env, mock_instance_mistral, mock_instance_swift)
 
@@ -962,24 +975,69 @@ class TestPostConfig(base.BaseTestCase):
 
     def test_ensure_flavor_no_profile(self):
         mock_nova, mock_flavor = self._create_flavor_mocks()
-        undercloud._ensure_flavor(mock_nova, 'test')
+        undercloud._ensure_flavor(mock_nova, None, 'test')
         mock_nova.flavors.create.assert_called_with('test', 4096, 1, 40)
-        keys = {'capabilities:boot_option': 'local'}
+        keys = {'capabilities:boot_option': 'local',
+                'resources:CUSTOM_BAREMETAL': '1',
+                'resources:DISK_GB': '0',
+                'resources:MEMORY_MB': '0',
+                'resources:VCPU': '0'}
         mock_flavor.set_keys.assert_called_with(keys)
 
     def test_ensure_flavor_profile(self):
         mock_nova, mock_flavor = self._create_flavor_mocks()
-        undercloud._ensure_flavor(mock_nova, 'test', 'test')
+        undercloud._ensure_flavor(mock_nova, None, 'test', 'test')
         mock_nova.flavors.create.assert_called_with('test', 4096, 1, 40)
         keys = {'capabilities:boot_option': 'local',
-                'capabilities:profile': 'test'}
+                'capabilities:profile': 'test',
+                'resources:CUSTOM_BAREMETAL': '1',
+                'resources:DISK_GB': '0',
+                'resources:MEMORY_MB': '0',
+                'resources:VCPU': '0'}
         mock_flavor.set_keys.assert_called_with(keys)
 
     def test_ensure_flavor_exists(self):
         mock_nova, mock_flavor = self._create_flavor_mocks()
         mock_nova.flavors.create.side_effect = exceptions.Conflict(None)
-        undercloud._ensure_flavor(mock_nova, 'test')
-        mock_flavor.set_keys.assert_not_called()
+        flavor = mock.Mock(spec=['name', 'get_keys', 'set_keys'])
+        flavor.get_keys.return_value = {'foo': 'bar'}
+
+        undercloud._ensure_flavor(mock_nova, flavor, 'test')
+
+        keys = {'foo': 'bar',
+                'resources:CUSTOM_BAREMETAL': '1',
+                'resources:DISK_GB': '0',
+                'resources:MEMORY_MB': '0',
+                'resources:VCPU': '0'}
+        flavor.set_keys.assert_called_with(keys)
+        mock_nova.flavors.create.assert_not_called()
+
+    @mock.patch.object(undercloud.LOG, 'warning', autospec=True)
+    def test_ensure_flavor_exists_conflicting_rc(self, mock_warn):
+        mock_nova, mock_flavor = self._create_flavor_mocks()
+        mock_nova.flavors.create.side_effect = exceptions.Conflict(None)
+        flavor = mock.Mock(spec=['name', 'get_keys', 'set_keys'])
+        flavor.get_keys.return_value = {'foo': 'bar',
+                                        'resources:CUSTOM_FOO': '42'}
+
+        undercloud._ensure_flavor(mock_nova, flavor, 'test')
+
+        flavor.set_keys.assert_not_called()
+        mock_warn.assert_called_once_with(mock.ANY, flavor.name,
+                                          'resources:CUSTOM_FOO')
+        mock_nova.flavors.create.assert_not_called()
+
+    def test_ensure_node_resource_classes(self):
+        nodes = [mock.Mock(uuid='1', resource_class=None),
+                 mock.Mock(uuid='2', resource_class='foobar')]
+        ironic_mock = mock.Mock()
+        ironic_mock.node.list.return_value = nodes
+
+        undercloud._ensure_node_resource_classes(ironic_mock)
+
+        ironic_mock.node.update.assert_called_once_with(
+            '1', [{'path': '/resource_class', 'op': 'add',
+                   'value': 'baremetal'}])
 
     @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
     @mock.patch('instack_undercloud.undercloud._run_command')

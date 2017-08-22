@@ -1,0 +1,18 @@
+---
+upgrade:
+  - |
+    This release replaces node scheduling based on properties (CPU count,
+    memory and disk) with scheduling based on *custom resource classes*.
+    As part of this change during the upgrade:
+
+    * The ``resource_class`` field is set to ``baremetal``, if empty.
+    * The standard flavors are adjusted to request one instance of the
+      ``baremetal`` resource class and to **not** request the standard
+      properties. Flavors that already have a resource class attached are
+      not changed.
+
+    All non-standard custom flavors have to be changed in a similar way.
+
+    See the `ironic flavor documentation
+    <https://docs.openstack.org/ironic/latest/install/configure-nova-flavors.html#scheduling-based-on-resource-classes>`_
+    for details.
