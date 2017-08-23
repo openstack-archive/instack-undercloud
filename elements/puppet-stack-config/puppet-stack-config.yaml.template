@@ -411,6 +411,7 @@ nova::compute::reserved_host_memory: '0'
 nova::compute::vnc_enabled: false
 nova::compute::instance_usage_audit: true
 nova::compute::instance_usage_audit_period: 'hour'
+nova::compute::consecutive_build_service_disable_threshold: 0
 nova::cron::archive_deleted_rows::destination: '/dev/null'
 nova_sync_power_state_interval: -1
 
