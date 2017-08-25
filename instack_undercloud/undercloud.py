@@ -36,6 +36,7 @@ from keystoneauth1 import session
 from keystoneauth1 import exceptions as ks_exceptions
 from keystoneclient import discover
 import keystoneauth1.identity.generic as ks_auth
+from mistralclient.api import base as mistralclient_base
 from mistralclient.api import client as mistralclient
 import novaclient as nc
 from novaclient import client as novaclient
@@ -1482,10 +1483,16 @@ def _migrate_plans(mistral, swift, plans):
             swift.get_object(plan, plan_env_filename)
         except swiftclient.ClientException:
             LOG.info('Migrating environment for plan %s to Swift.' % plan)
-            env = mistral.environments.get(plan).variables
-            yaml_string = yaml.safe_dump(env, default_flow_style=False)
-            swift.put_object(plan, plan_env_filename, yaml_string)
-            mistral.environments.delete(plan)
+            try:
+                env = mistral.environments.get(plan).variables
+            except (mistralclient_base.APIException,
+                    ks_exceptions.http.NotFound):
+                LOG.warning('Could not find plan "%s" environment in Mistral '
+                            '- nothing to migrate.' % plan)
+            else:
+                yaml_string = yaml.safe_dump(env, default_flow_style=False)
+                swift.put_object(plan, plan_env_filename, yaml_string)
+                mistral.environments.delete(plan)
 
 
 def _wait_for_mistral_execution(timeout_at, mistral, execution, message='',
