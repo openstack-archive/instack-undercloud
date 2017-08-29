@@ -1488,72 +1488,6 @@ def _migrate_plans(mistral, swift, plans):
             mistral.environments.delete(plan)
 
 
-def _wait_for_mistral_execution(timeout_at, mistral, execution, message='',
-                                fail_on_error=False):
-    while time.time() < timeout_at:
-        exe = mistral.executions.get(execution.id)
-        if exe.state == "RUNNING":
-            time.sleep(5)
-            continue
-        if exe.state == "SUCCESS":
-            return
-        else:
-            exe_out = ""
-            exe_created_at = time.strptime(exe.created_at,
-                                           "%Y-%m-%d %H:%M:%S")
-            ae_list = mistral.action_executions.list()
-            for ae in ae_list:
-                if ((ae.task_name == "run_validation") and
-                    (ae.state == "ERROR") and
-                    (time.strptime(ae.created_at,  "%Y-%m-%d %H:%M:%S") >
-                     exe_created_at)):
-                    task = mistral.tasks.get(ae.task_execution_id)
-                    task_res = task.to_dict().get('result')
-                    exe_out = "%s %s" % (exe_out, task_res)
-            error_message = "ERROR %s %s Mistral execution ID: %s" % (
-                message, exe_out, execution.id)
-            LOG.error(error_message)
-            if fail_on_error:
-                raise RuntimeError(error_message)
-            return
-    else:
-        exe = mistral.executions.get(execution.id)
-        error_message = ("TIMEOUT waiting for execution %s to finish. "
-                         "State: %s" % (exe.id, exe.state))
-        LOG.error(error_message)
-        if fail_on_error:
-            raise RuntimeError(error_message)
-
-
-def _get_session():
-    user, password, project, auth_url = _get_auth_values()
-    auth_kwargs = {
-        'auth_url': auth_url,
-        'username': user,
-        'password': password,
-        'project_name': project,
-        'project_domain_name': 'Default',
-        'user_domain_name': 'Default',
-    }
-    auth_plugin = ks_auth.Password(**auth_kwargs)
-    return session.Session(auth=auth_plugin)
-
-
-def _run_validation_groups(groups=[], mistral_url='', timeout=360,
-                           fail_on_error=False):
-    sess = _get_session()
-    mistral = mistralclient.client(mistral_url=mistral_url, session=sess)
-    LOG.info('Starting and waiting for validation groups %s ', groups)
-    execution = mistral.executions.create(
-        'tripleo.validations.v1.run_groups',
-        workflow_input={'group_names': groups}
-    )
-    fail_message = ("error running the validation groups %s " % groups)
-    timeout_at = time.time() + timeout
-    _wait_for_mistral_execution(timeout_at, mistral, execution, fail_message,
-                                fail_on_error)
-
-
 def _create_default_plan(mistral, plans, timeout=360):
     plan_name = 'overcloud'
     queue_name = str(uuid.uuid4())
@@ -1567,13 +1501,29 @@ def _create_default_plan(mistral, plans, timeout=360):
         'tripleo.plan_management.v1.create_default_deployment_plan',
         workflow_input={'container': plan_name, 'queue_name': queue_name}
     )
+
     timeout_at = time.time() + timeout
-    fail_message = ("error creating the default Deployment Plan %s "
-                    "Check the create_default_deployment_plan execution "
-                    "in Mistral with openstack workflow execution list " %
-                    plan_name)
-    _wait_for_mistral_execution(timeout_at, mistral, execution, fail_message,
-                                fail_on_error=True)
+
+    while time.time() < timeout_at:
+        exe = mistral.executions.get(execution.id)
+        if exe.state == "RUNNING":
+            time.sleep(5)
+            continue
+        if exe.state == "SUCCESS":
+            return
+        else:
+            raise RuntimeError(
+                "Failed to create the default Deployment Plan. Please check "
+                "the create_default_deployment_plan execution in Mistral with "
+                "`openstack workflow execution list`.")
+    else:
+        exe = mistral.executions.get(execution.id)
+        LOG.error("Timed out waiting for execution %s to finish. State: %s",
+                  exe.id, exe.state)
+        raise RuntimeError(
+            "Timed out creating the default Deployment Plan. Please check "
+            "the create_default_deployment_plan execution in Mistral with "
+            "`openstack workflow execution list`.")
 
 
 def _prepare_ssh_environment(mistral):
@@ -1606,7 +1556,16 @@ def _post_config_mistral(instack_env, mistral, swift):
 def _post_config(instack_env):
     _copy_stackrc()
     user, password, project, auth_url = _get_auth_values()
-    sess = _get_session()
+    auth_kwargs = {
+        'auth_url': auth_url,
+        'username': user,
+        'password': password,
+        'project_name': project,
+        'project_domain_name': 'Default',
+        'user_domain_name': 'Default',
+    }
+    auth_plugin = ks_auth.Password(**auth_kwargs)
+    sess = session.Session(auth=auth_plugin)
     # TODO(andreykurilin): remove this check with support of novaclient 6.0.0
     if nc.__version__[0] == "6":
         nova = novaclient.Client(2, user, password, project, auth_url=auth_url)
@@ -1724,9 +1683,6 @@ def install(instack_root, upgrade=False):
         _run_orc(instack_env)
         _post_config(instack_env)
         _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
-        if upgrade and CONF.enable_validations:  # Run post-upgrade validations
-            mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
-            _run_validation_groups(["post-upgrade"], mistral_url)
     except Exception as e:
         LOG.debug("An exception occurred", exc_info=True)
         LOG.error(FAILURE_MESSAGE,
