@@ -688,6 +688,8 @@ class TestConfigureSshKeys(base.BaseTestCase):
 
 
 class TestPostConfig(base.BaseTestCase):
+    @mock.patch('os_client_config.make_client')
+    @mock.patch('instack_undercloud.undercloud._migrate_to_convergence')
     @mock.patch('instack_undercloud.undercloud._ensure_node_resource_classes')
     @mock.patch('instack_undercloud.undercloud._member_role_exists')
     @mock.patch('ironicclient.client.get_client', autospec=True)
@@ -704,7 +706,8 @@ class TestPostConfig(base.BaseTestCase):
                          mock_configure_ssh_keys, mock_get_auth_values,
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
                          mock_swift_client, mock_nova_client, mock_ir_client,
-                         mock_member_role_exists, mock_resource_classes):
+                         mock_member_role_exists, mock_resource_classes,
+                         mock_migrate_to_convergence, mock_make_client):
         instack_env = {
             'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC':
                 'http://192.168.24.1:8989/v2',
@@ -725,8 +728,10 @@ class TestPostConfig(base.BaseTestCase):
         flavors[0].name = 'baremetal'
         flavors[1].name = 'ceph-storage'
         mock_instance_nova.flavors.list.return_value = flavors
+        mock_heat = mock.Mock()
+        mock_make_client.return_value = mock_heat
 
-        undercloud._post_config(instack_env)
+        undercloud._post_config(instack_env, True)
         mock_nova_client.assert_called_with(
             2, 'aturing', '3nigma', project_name='hut8',
             auth_url='http://bletchley:5000/')
@@ -746,6 +751,7 @@ class TestPostConfig(base.BaseTestCase):
         mock_resource_classes.assert_called_once_with(mock_instance_ironic)
         mock_post_config_mistral.assert_called_once_with(
             instack_env, mock_instance_mistral, mock_instance_swift)
+        mock_migrate_to_convergence.assert_called_once_with(mock_heat)
 
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
     @mock.patch('instack_undercloud.undercloud._get_session')
@@ -1038,6 +1044,28 @@ class TestPostConfig(base.BaseTestCase):
         ironic_mock.node.update.assert_called_once_with(
             '1', [{'path': '/resource_class', 'op': 'add',
                    'value': 'baremetal'}])
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    def test_migrate_to_convergence(self, mock_run_command):
+        stacks = [mock.Mock(id='1'), mock.Mock(id='2')]
+        mock_heat = mock.Mock()
+        mock_heat.stacks.list.return_value = stacks
+        undercloud._migrate_to_convergence(mock_heat)
+        self.assertEqual([mock.call(['sudo', 'heat-manage',
+                                     'migrate_convergence_1', '1'],
+                                    name='heat-manage'),
+                          mock.call(['sudo', 'heat-manage',
+                                     'migrate_convergence_1', '2'],
+                                    name='heat-manage')],
+                         mock_run_command.mock_calls)
+
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    def test_migrate_to_convergence_no_stacks(self, mock_run_command):
+        stacks = []
+        mock_heat = mock.Mock()
+        mock_heat.stacks.list.return_value = stacks
+        undercloud._migrate_to_convergence(mock_heat)
+        mock_run_command.assert_not_called()
 
     @mock.patch('instack_undercloud.undercloud._extract_from_stackrc')
     @mock.patch('instack_undercloud.undercloud._run_command')

@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    In this release the Heat convergence engine has been enabled on the
+    undercloud, which allows multiple stack updates to be run at the same time.
+upgrade:
+  - |
+    On upgrade to this version, any existing overcloud stacks will be converted
+    to use the Heat convergence engine.  The only user-visible impact of this
+    should be the ability to use Heat convergence features.

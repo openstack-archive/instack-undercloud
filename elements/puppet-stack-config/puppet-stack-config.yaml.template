@@ -135,7 +135,7 @@ heat::engine::reauthentication_auth_method: 'trusts'
 heat::engine::trusts_delegated_roles: []
 heat::engine::auth_encryption_key: {{UNDERCLOUD_HEAT_ENCRYPTION_KEY}}
 heat::engine::max_resources_per_stack: -1
-heat::engine::convergence_engine: false
+heat::engine::convergence_engine: true
 # NOTE(trown): We need to give heat engine more workers because we are throwing huge
 # nested stacks at it for the deploy. By not setting this, we get the heat default,
 # which is max(#CPUs,4).

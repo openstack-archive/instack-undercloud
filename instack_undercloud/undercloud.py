@@ -41,6 +41,7 @@ from mistralclient.api import client as mistralclient
 import novaclient as nc
 from novaclient import client as novaclient
 from novaclient import exceptions
+import os_client_config
 from oslo_config import cfg
 from oslo_utils import netutils
 import psutil
@@ -1660,7 +1661,22 @@ def _post_config_mistral(instack_env, mistral, swift):
         _prepare_ssh_environment(mistral)
 
 
-def _post_config(instack_env):
+def _migrate_to_convergence(heat):
+    """Migrate all active stacks to use the convergence engine
+
+    This appears to be a noop if the stack has already been migrated, so it
+    should be safe to run unconditionally.
+
+    :param heat: A heat client instance
+    """
+    for stack in heat.stacks.list():
+        LOG.info('Migrating stack "%s" to convergence engine', stack.id)
+        args = ['sudo', 'heat-manage', 'migrate_convergence_1', stack.id]
+        _run_command(args, name='heat-manage')
+        LOG.info('Finished migrating stack "%s"', stack.id)
+
+
+def _post_config(instack_env, upgrade):
     _copy_stackrc()
     user, password, project, auth_url = _get_auth_values()
     sess = _get_session()
@@ -1698,6 +1714,19 @@ def _post_config(instack_env):
     )
     _post_config_mistral(instack_env, mistral, swift)
     _member_role_exists()
+
+    # NOTE(bnemec): We are turning on the convergence engine in Queens, so we
+    # need to migrate all existing stacks on upgrade.  This functionality can
+    # be removed in Rocky as all stacks should have been migrated by then.
+    if upgrade:
+        heat = os_client_config.make_client('orchestration',
+                                            auth_url=auth_url,
+                                            username=user,
+                                            password=password,
+                                            project_name=project,
+                                            project_domain_name='Default',
+                                            user_domain_name='Default')
+        _migrate_to_convergence(heat)
 
 
 def _handle_upgrade_fact(upgrade=False):
@@ -1779,7 +1808,7 @@ def install(instack_root, upgrade=False):
         _handle_upgrade_fact(upgrade)
         _run_instack(instack_env)
         _run_orc(instack_env)
-        _post_config(instack_env)
+        _post_config(instack_env, upgrade)
         _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         if upgrade and CONF.enable_validations:  # Run post-upgrade validations
             mistral_url = instack_env['UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC']
