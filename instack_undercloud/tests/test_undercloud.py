@@ -18,6 +18,7 @@ import json
 import os
 import subprocess
 import tempfile
+import time
 
 import fixtures
 from keystoneauth1 import exceptions as ks_exceptions
@@ -54,7 +55,9 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
     @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
-    def test_install(self, mock_die_tuskar_die, mock_load_config,
+    @mock.patch('instack_undercloud.undercloud._run_validation_groups')
+    def test_install(self, mock_run_validation_groups,
+                     mock_die_tuskar_die, mock_load_config,
                      mock_generate_environment, mock_run_instack,
                      mock_run_clean_all, mock_run_yum_update, mock_run_orc,
                      mock_post_config, mock_run_command,
@@ -71,6 +74,7 @@ class TestUndercloud(BaseTestCase):
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         mock_upgrade_fact.assert_called_with(False)
         mock_die_tuskar_die.assert_not_called()
+        mock_run_validation_groups.assert_not_called()
 
     @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
@@ -84,7 +88,9 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
     @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
-    def test_install_upgrade(self, mock_die_tuskar_die, mock_load_config,
+    @mock.patch('instack_undercloud.undercloud._run_validation_groups')
+    def test_install_upgrade(self, mock_run_validation_groups,
+                             mock_die_tuskar_die, mock_load_config,
                              mock_generate_environment, mock_run_instack,
                              mock_run_yum_clean_all, mock_run_yum_update,
                              mock_run_orc, mock_post_config, mock_run_command,
@@ -101,6 +107,7 @@ class TestUndercloud(BaseTestCase):
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         mock_upgrade_fact.assert_called_with(True)
         mock_die_tuskar_die.assert_called_once()
+        mock_run_validation_groups.assert_called_once()
 
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     def test_install_exception(self, mock_configure_logging):
@@ -740,6 +747,67 @@ class TestPostConfig(base.BaseTestCase):
         mock_post_config_mistral.assert_called_once_with(
             instack_env, mock_instance_mistral, mock_instance_swift)
 
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._get_session')
+    @mock.patch('mistralclient.api.client.client', autospec=True)
+    def test_run_validation_groups_success(self, mock_mistral_client,
+                                           mock_get_session,
+                                           mock_auth_values):
+        mock_mistral = mock.Mock()
+        mock_mistral_client.return_value = mock_mistral
+        mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.return_value = mock.Mock(state="SUCCESS")
+        mock_get_session.return_value = mock.MagicMock()
+        undercloud._run_validation_groups(["post-upgrade"])
+        mock_mistral.executions.create.assert_called_once_with(
+            'tripleo.validations.v1.run_groups',
+            workflow_input={
+                'group_names': ['post-upgrade'],
+            }
+        )
+
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._get_session')
+    @mock.patch('mistralclient.api.client.client', autospec=True)
+    @mock.patch('time.strptime')
+    def test_run_validation_groups_fail(self, mock_strptime,
+                                        mock_mistral_client, mock_get_session,
+                                        mock_auth_values):
+        mock_mistral = mock.Mock()
+        mock_mistral_client.return_value = mock_mistral
+        mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.return_value = mock.Mock(state="FAIL")
+        mock_mistral.executions.get_output.return_value = "ERROR!"
+        mock_mistral.executions.get.id = "1234"
+        mock_mistral.action_executions.list.return_value = []
+        mock_strptime.return_value = time.mktime(time.localtime())
+        mock_get_session.return_value = mock.MagicMock()
+        self.assertRaises(
+            RuntimeError, undercloud._run_validation_groups, ["post-upgrade"],
+            "", 360, True)
+
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._get_session')
+    @mock.patch('mistralclient.api.client.client', autospec=True)
+    @mock.patch('time.strptime')
+    def test_run_validation_groups_timeout(self, mock_strptime,
+                                           mock_mistral_client,
+                                           mock_get_session, mock_auth_values):
+        mock_mistral = mock.Mock()
+        mock_mistral_client.return_value = mock_mistral
+        mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.id = "1234"
+        mock_mistral.action_executions.list.return_value = []
+        mock_get_session.return_value = mock.MagicMock()
+        mock_time = mock.MagicMock()
+        mock_time.return_value = time.mktime(time.localtime())
+        mock_strptime.return_value = time.mktime(time.localtime())
+        with mock.patch('time.time', mock_time):
+            self.assertRaisesRegexp(RuntimeError, ("TIMEOUT waiting for "
+                                    "execution"),
+                                    undercloud._run_validation_groups,
+                                    ["post-upgrade"], "", -1, True)
+
     def test_create_default_plan(self):
         mock_mistral = mock.Mock()
         mock_mistral.environments.list.return_value = []
@@ -802,10 +870,12 @@ class TestPostConfig(base.BaseTestCase):
             RuntimeError,
             undercloud._create_default_plan, mock_mistral, [], timeout=0)
 
-    def test_create_default_plan_failed(self):
+    @mock.patch('time.strptime')
+    def test_create_default_plan_failed(self, mock_strptime):
         mock_mistral = mock.Mock()
         mock_mistral.executions.get.return_value = mock.Mock(state="ERROR")
-
+        mock_mistral.action_executions.list.return_value = []
+        mock_strptime.return_value = time.mktime(time.localtime())
         self.assertRaises(
             RuntimeError,
             undercloud._create_default_plan, mock_mistral, [])
