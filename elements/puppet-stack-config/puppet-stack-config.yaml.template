@@ -728,6 +728,7 @@ tripleo::profile::base::docker::docker_options: '--log-driver=journald --signatu
 {{#DOCKER_REGISTRY_MIRROR}}
 tripleo::profile::base::docker::registry_mirror: {{DOCKER_REGISTRY_MIRROR}}
 {{/DOCKER_REGISTRY_MIRROR}}
+tripleo::profile::base::docker::debug: "%{hiera('debug')}"
 
 # Keepalived
 tripleo::keepalived::controller_virtual_ip: "%{hiera('controller_admin_host')}"
