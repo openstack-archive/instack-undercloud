@@ -24,4 +24,6 @@ getcert resubmit -i "$REQUEST_NICKNAME" -w -v -U id-kp-clientAuth \
     -U id-kp-serverAuth
 
 cat $CERT_FILE $KEY_FILE > $OUTPUT_FILE
-systemctl reload haproxy
+if systemctl -q is-active haproxy; then
+    systemctl reload haproxy
+fi
