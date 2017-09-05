@@ -581,8 +581,9 @@ ironic::drivers::ilo::default_boot_mode: 'bios'
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
 rabbitmq::delete_guest_user: false
 rabbitmq::node_ip_address: {{LOCAL_IP}}
+rabbitmq::management_ip_address: {{LOCAL_IP}}
 rabbitmq::package_source: undef
-rabbitmq::port: '5672'
+rabbitmq::port: 5672
 rabbitmq::repos_ensure: false
 rabbitmq::wipe_db_on_cookie_change: true
 rabbitmq::default_user: {{UNDERCLOUD_RABBIT_USERNAME}}
