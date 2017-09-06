@@ -61,6 +61,10 @@ def _validate_value_formats(params, error_callback):
         local_ip = netaddr.IPNetwork(params['local_ip'])
         if local_ip.prefixlen == 32:
             raise netaddr.AddrFormatError('Invalid netmask')
+        # If IPv6 the ctlplane network uses the EUI-64 address format,
+        # which requires the prefix to be /64
+        if local_ip.version == 6 and local_ip.prefixlen != 64:
+            raise netaddr.AddrFormatError('Prefix must be 64 for IPv6')
     except netaddr.core.AddrFormatError as e:
         message = ('local_ip "%s" not valid: "%s" '
                    'Value must be in CIDR format.' %
