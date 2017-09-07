@@ -1550,12 +1550,31 @@ def _prepare_ssh_environment(mistral):
 
 def _post_config_mistral(instack_env, mistral, swift):
     LOG.info('Configuring Mistral workbooks')
+
     for workbook in [w for w in mistral.workbooks.list()
                      if 'tripleo' in w.name]:
         mistral.workbooks.delete(workbook.name)
-    for workflow in [w for w in mistral.workflows.list()
-                     if 'tripleo' in w.name]:
+
+    managed_tag = 'tripleo-common-managed'
+
+    all_workflows = mistral.workflows.list()
+    workflow_tags = set()
+    for workflow in all_workflows:
+        workflow_tags.update(workflow.tags)
+
+    # If at least one workflow is tagged, then we should only delete those.
+    # Otherwise we should revert to the previous behaviour - this is required
+    # for the initial upgrade.
+    # TODO(d0ugal): From Q onwards we should only ever delete workflows with
+    # the tripleo-common tag.
+    if 'tripleo-common-managed' in workflow_tags:
+        workflows_delete = [w for w in all_workflows if managed_tag in w.tags]
+    else:
+        workflows_delete = [w for w in all_workflows if 'tripleo' in w.name]
+
+    for workflow in workflows_delete:
         mistral.workflows.delete(workflow.name)
+
     for workbook in [f for f in os.listdir(PATHS.WORKBOOK_PATH)
                      if os.path.isfile(os.path.join(PATHS.WORKBOOK_PATH, f))]:
         mistral.workbooks.create(os.path.join(PATHS.WORKBOOK_PATH, workbook))
