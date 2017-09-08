@@ -35,6 +35,14 @@ NETWORK_GATEWAY=$(os-apply-config --key neutron.network_gateway --type netaddres
 METADATA_SERVER=$UNDERCLOUD_IP
 PHYSICAL_NETWORK=ctlplane
 
+# DHCP_START contains a ":" then assume a IPv6 subnet
+SUBNET_VERSION_STRING="--ip-version 4"
+SUBNET_ROUTE_STRING="--host-route destination=169.254.169.254/32,nexthop=$METADATA_SERVER"
+if [[ $DHCP_START =~ : ]] ; then
+    SUBNET_VERSION_STRING="--ip-version 6 --ipv6-address-mode dhcpv6-stateless --ipv6-ra-mode dhcpv6-stateless"
+    SUBNET_ROUTE_STRING=""
+fi
+
 net_create=1
 ctlplane_id=$(neutron net-list -f csv -c id -c name --quote none | tail -n +2 | grep ctlplane | cut -d, -f 1)
 subnet_ids=$(neutron subnet-list -f csv -c id --quote none | tail -n +2)
@@ -47,8 +55,6 @@ for subnet_id in $subnet_ids; do
     fi
 done
 
-
-
 if [ -n "$subnet_id" ]; then
     cidr=$(neutron subnet-show $subnet_id -f value -c cidr)
     # If the cidr's are equal, we can get by with just a network update
@@ -56,8 +62,7 @@ if [ -n "$subnet_id" ]; then
         net_create=0
         neutron subnet-update $subnet_id \
             --allocation-pool start=$DHCP_START,end=$DHCP_END \
-            --gateway $NETWORK_GATEWAY \
-            --host-route destination=169.254.169.254/32,nexthop=$METADATA_SERVER
+            --gateway $NETWORK_GATEWAY $SUBNET_ROUTE_STRING
     else
         echo "New cidr $NETWORK_CIDR does not equal old cidr $cidr"
         echo "Will attempt to delete and recreate subnet $subnet_id"
@@ -80,7 +85,7 @@ if [ "$net_create" -eq "1" ]; then
     neutron subnet-create --name ctlplane-subnet \
         --allocation-pool start=$DHCP_START,end=$DHCP_END \
         --gateway $NETWORK_GATEWAY \
-        --host-route destination=169.254.169.254/32,nexthop=$METADATA_SERVER \
+        $SUBNET_VERSION_STRING $SUBNET_ROUTE_STRING \
         ctlplane $NETWORK_CIDR
 fi
 
