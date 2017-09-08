@@ -451,7 +451,7 @@ $swift_components = ['account', 'container', 'object']
 swift::storage::filter::recon { $swift_components : }
 swift::storage::filter::healthcheck { $swift_components : }
 
-$controller_host = hiera('controller_host')
+$controller_host = hiera('controller_host_wrapped')
 ring_object_device { "${controller_host}:6000/1":
   zone   => 1,
   weight => 1,
