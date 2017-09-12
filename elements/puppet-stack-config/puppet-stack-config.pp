@@ -410,6 +410,9 @@ class { '::neutron::agents::dhcp':
   dnsmasq_config_file => '/etc/dnsmasq-ironic.conf',
 }
 
+class { '::neutron::agents::l3':
+}
+
 class { '::neutron::agents::ml2::ovs':
   bridge_mappings => split(hiera('neutron_bridge_mappings'), ','),
 }
