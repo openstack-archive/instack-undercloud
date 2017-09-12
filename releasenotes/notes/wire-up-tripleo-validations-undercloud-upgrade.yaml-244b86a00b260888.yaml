@@ -1,0 +1,9 @@
+---
+upgrade:
+  - Wires up execution of the "post-upgrade" group of tripleo-validations to
+    sanity check the undercloud. The validations are executed at the
+    very end of the process, after the undercloud has been fully upgraded
+    and all services started in the upgraded versions. If there is an error it
+    is logged but not raised so these validations will not fail the upgrade.
+    The operator can set the existing 'enable_validations' to false to skip
+    these validations.
