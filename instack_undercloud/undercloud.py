@@ -1585,8 +1585,12 @@ def _create_default_plan(mistral, plans, timeout=360):
         return
 
     execution = mistral.executions.create(
-        'tripleo.plan_management.v1.create_default_deployment_plan',
-        workflow_input={'container': plan_name, 'queue_name': queue_name}
+        'tripleo.plan_management.v1.create_deployment_plan',
+        workflow_input={
+            'container': plan_name,
+            'queue_name': queue_name,
+            'use_default_templates': True,
+        }
     )
     timeout_at = time.time() + timeout
     fail_message = ("error creating the default Deployment Plan %s "
