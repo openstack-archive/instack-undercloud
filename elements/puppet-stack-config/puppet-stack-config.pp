@@ -450,6 +450,13 @@ if(!defined(File['/srv/node'])) {
     require => Package['swift'],
   }
 }
+# This is no longer automatically created by Swift itself
+file { '/srv/node/1':
+    ensure  => directory,
+    owner   => 'swift',
+    group   => 'swift',
+    require => File['/srv/node'],
+}
 $swift_components = ['account', 'container', 'object']
 swift::storage::filter::recon { $swift_components : }
 swift::storage::filter::healthcheck { $swift_components : }
