@@ -18,11 +18,6 @@ if [ -z "$REQUEST_NICKNAME" ]; then
     exit 1
 fi
 
-# add additional EKUs so clients that rely strictly on RFC5280 understand that
-# they are allowed to accept the certificate as having valid extensions
-getcert resubmit -i "$REQUEST_NICKNAME" -w -v -U id-kp-clientAuth \
-    -U id-kp-serverAuth
-
 cat $CERT_FILE $KEY_FILE > $OUTPUT_FILE
 if systemctl -q is-active haproxy; then
     systemctl reload haproxy
