@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Explicitly set event pipeline publishers to panko and gnocchi to sent the
+    events to both endpoints.

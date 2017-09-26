@@ -302,6 +302,8 @@ ceilometer::dispatcher::gnocchi::resources_definition_file: 'gnocchi_resources.y
 
 # events dispatcher config
 ceilometer::collector::event_dispatcher: ['panko', 'gnocchi']
+ceilometer::agent::notification::event_pipeline_publishers: ['gnocchi://', 'panko://']
+ceilometer::agent::notification::manage_event_pipeline: true
 
 # Aodh
 aodh::debug: "%{hiera('debug')}"
