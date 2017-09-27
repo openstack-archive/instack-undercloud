@@ -336,13 +336,6 @@ _opts = [
                       'removed in future release. Please consider moving to '
                       'gnocchi/Aodh/Panko API instead.')
                 ),
-    cfg.BoolOpt('enable_legacy_ceilometer_collector',
-                default=False,
-                help=('Whether to enable legacy ceilometer collector '
-                      'in the Undercloud. '
-                      'Note: Ceilometer collector has been deprecated and '
-                      'will be removed in future release.')
-                ),
     cfg.BoolOpt('enable_novajoin',
                 default=False,
                 help=('Whether to install novajoin metadata service in '

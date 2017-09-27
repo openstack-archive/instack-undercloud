@@ -303,15 +303,12 @@ ceilometer::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_INTER
 ceilometer::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_CEILOMETER_ADMIN}}
 ceilometer::keystone::auth::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::auth::region: "%{hiera('keystone_region')}"
-# gnocchi dispatcher config
-ceilometer::collector::meter_dispatcher: 'gnocchi'
 ceilometer::dispatcher::gnocchi::url: {{UNDERCLOUD_ENDPOINT_GNOCCHI_INTERNAL}}
 ceilometer::dispatcher::gnocchi::filter_project: 'service'
 ceilometer::dispatcher::gnocchi::archive_policy: 'low'
 ceilometer::dispatcher::gnocchi::resources_definition_file: 'gnocchi_resources.yaml'
 
 # events dispatcher config
-ceilometer::collector::event_dispatcher: ['panko', 'gnocchi']
 ceilometer::agent::notification::event_pipeline_publishers: ['gnocchi://', 'panko://']
 ceilometer::agent::notification::manage_event_pipeline: true
 
@@ -833,7 +830,6 @@ enable_tempest: {{ENABLE_TEMPEST}}
 enable_validations: {{ENABLE_VALIDATIONS}}
 enable_telemetry: {{ENABLE_TELEMETRY}}
 enable_legacy_ceilometer_api: {{ENABLE_LEGACY_CEILOMETER_API}}
-enable_legacy_ceilometer_collector: {{ENABLE_LEGACY_CEILOMETER_COLLECTOR}}
 enable_ui: {{ENABLE_UI}}
 enable_cinder: {{ENABLE_CINDER}}
 enable_container_images_build: {{ENABLE_CONTAINER_IMAGES_BUILD}}

@@ -165,22 +165,6 @@ if str2bool(hiera('enable_telemetry', false)) {
 
   # Ceilometer
 
-  if str2bool(hiera('enable_legacy_ceilometer_collector', false)) {
-    $ceilometer_dsn = match(hiera('ceilometer::db::database_connection'), $re_dsn)
-    class { '::ceilometer::db::mysql':
-      user          => $ceilometer_dsn[1],
-      password      => $ceilometer_dsn[2],
-      host          => $ceilometer_dsn[3],
-      dbname        => $ceilometer_dsn[4],
-      allowed_hosts => $allowed_hosts,
-    }
-    include ::ceilometer::db
-    include ::ceilometer::collector
-
-    # ensure we restart ceilometer collector as well
-    Keystone::Resource::Service_identity<||> -> Service['ceilometer-collector']
-  }
-
   include ::ceilometer::keystone::auth
   include ::aodh::keystone::auth
   include ::ceilometer

@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Drop ceilometer collector from undercloud. This was moved into legacy mode
+    in Pike and deprecated.
