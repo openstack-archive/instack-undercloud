@@ -328,14 +328,6 @@ _opts = [
                 default=False,
                 help=('Whether to install the Volume service. It is not '
                       'currently used in the undercloud.')),
-    cfg.BoolOpt('enable_legacy_ceilometer_api',
-                default=False,
-                help=('Whether to enable legacy ceilometer api '
-                      'in the Undercloud. '
-                      'Note: Ceilometer API has been deprecated and will be '
-                      'removed in future release. Please consider moving to '
-                      'gnocchi/Aodh/Panko API instead.')
-                ),
     cfg.BoolOpt('enable_novajoin',
                 default=False,
                 help=('Whether to install novajoin metadata service in '
@@ -848,10 +840,6 @@ def _generate_endpoints(instack_env):
             '%s://%s:%d/placement',
             {'host': public_host, 'port': 8778, 'ssl_port': 13778},
             {'host': internal_host, 'port': 8778}),
-        ('ceilometer',
-            '%s://%s:%d',
-            {'host': public_host, 'port': 8777, 'ssl_port': 13777},
-            {'host': internal_host, 'port': 8777}),
         ('keystone',
             '%s://%s:%d',
             {'host': public_host, 'port': 5000, 'ssl_port': 13000},

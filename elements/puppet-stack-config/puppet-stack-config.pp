@@ -168,10 +168,6 @@ if str2bool(hiera('enable_telemetry', false)) {
   include ::ceilometer::keystone::auth
   include ::aodh::keystone::auth
   include ::ceilometer
-  if str2bool(hiera('enable_legacy_ceilometer_api', false)) {
-    include ::ceilometer::api
-    include ::ceilometer::wsgi::apache
-  }
   include ::ceilometer::agent::notification
   include ::ceilometer::agent::central
   include ::ceilometer::expirer
