@@ -1,0 +1,6 @@
+---
+issues:
+  - |
+    Keystone v2.0 APIs were removed so we now need to configure
+    `project_domain_name` and `user_domain_name` to enable v3 API.
+    We're using the Default domain since it was already in-use.

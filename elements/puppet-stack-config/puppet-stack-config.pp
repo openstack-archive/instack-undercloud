@@ -39,6 +39,11 @@ Keystone::Resource::Service_identity {
   default_domain => hiera('keystone_default_domain'),
 }
 
+Keystone::Resource::Authtoken {
+  project_domain_name => hiera('keystone_default_domain'),
+  user_domain_name    => hiera('keystone_default_domain')
+}
+
 if count(hiera('ntp::servers')) > 0 {
   include ::tripleo::profile::base::time::ntp
 }
