@@ -637,9 +637,10 @@ def _check_hostname():
             if short_hostname == detected_static_hostname:
                 raise RuntimeError('Configured hostname is not fully '
                                    'qualified.')
-            echo_cmd = ('echo 127.0.0.1 %s %s >> /etc/hosts' %
-                        (detected_static_hostname, short_hostname))
-            args = ['sudo', '/bin/bash', '-c', echo_cmd]
+            sed_cmd = ('sed -i "s/127.0.0.1\(\s*\)/127.0.0.1\\1%s %s /" '
+                       '/etc/hosts' %
+                       (detected_static_hostname, short_hostname))
+            args = ['sudo', '/bin/bash', '-c', sed_cmd]
             _run_command(args, name='hostname-to-etc-hosts')
             LOG.info('Added hostname %s to /etc/hosts',
                      detected_static_hostname)

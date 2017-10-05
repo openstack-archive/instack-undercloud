@@ -1,0 +1,7 @@
+---
+fixes:
+  - When the hostname was written to /etc/hosts, it resulted in an invalid
+    /etc/hosts file due to 127.0.0.1 being specified twice on different lines.
+    That issue is now corrected such that the hostnames will be added to the
+    existing line for 127.0.0.1, which results in valid syntax for /etc/hosts.
+    See https://bugs.launchpad.net/tripleo/+bug/1709460
