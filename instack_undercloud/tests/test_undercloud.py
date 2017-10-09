@@ -696,6 +696,7 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._migrate_to_convergence')
     @mock.patch('instack_undercloud.undercloud._ensure_node_resource_classes')
     @mock.patch('instack_undercloud.undercloud._member_role_exists')
+    @mock.patch('instack_undercloud.undercloud._get_session')
     @mock.patch('ironicclient.client.get_client', autospec=True)
     @mock.patch('novaclient.client.Client', autospec=True)
     @mock.patch('swiftclient.client.Connection', autospec=True)
@@ -710,8 +711,9 @@ class TestPostConfig(base.BaseTestCase):
                          mock_configure_ssh_keys, mock_get_auth_values,
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
                          mock_swift_client, mock_nova_client, mock_ir_client,
-                         mock_member_role_exists, mock_resource_classes,
-                         mock_migrate_to_convergence, mock_make_client):
+                         mock_get_session, mock_member_role_exists,
+                         mock_resource_classes, mock_migrate_to_convergence,
+                         mock_make_client):
         instack_env = {
             'UNDERCLOUD_ENDPOINT_MISTRAL_PUBLIC':
                 'http://192.168.24.1:8989/v2',
@@ -720,6 +722,7 @@ class TestPostConfig(base.BaseTestCase):
                                              'http://bletchley:5000/')
         mock_instance_nova = mock.Mock()
         mock_nova_client.return_value = mock_instance_nova
+        mock_get_session.return_value = mock.MagicMock()
         mock_instance_swift = mock.Mock()
         mock_swift_client.return_value = mock_instance_swift
         mock_instance_mistral = mock.Mock()
@@ -737,8 +740,7 @@ class TestPostConfig(base.BaseTestCase):
 
         undercloud._post_config(instack_env, True)
         mock_nova_client.assert_called_with(
-            2, 'aturing', '3nigma', project_name='hut8',
-            auth_url='http://bletchley:5000/')
+            2, session=mock_get_session.return_value)
         self.assertTrue(mock_copy_stackrc.called)
         mock_configure_ssh_keys.assert_called_with(mock_instance_nova)
         calls = [mock.call(mock_instance_nova, flavors[0], 'baremetal', None),

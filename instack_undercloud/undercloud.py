@@ -38,7 +38,6 @@ from keystoneclient import discover
 import keystoneauth1.identity.generic as ks_auth
 from mistralclient.api import base as mistralclient_base
 from mistralclient.api import client as mistralclient
-import novaclient as nc
 from novaclient import client as novaclient
 from novaclient import exceptions
 import os_client_config
@@ -1681,12 +1680,7 @@ def _post_config(instack_env, upgrade):
     _copy_stackrc()
     user, password, project, auth_url = _get_auth_values()
     sess = _get_session()
-    # TODO(andreykurilin): remove this check with support of novaclient 6.0.0
-    if nc.__version__[0] == "6":
-        nova = novaclient.Client(2, user, password, project, auth_url=auth_url)
-    else:
-        nova = novaclient.Client(2, user, password, auth_url=auth_url,
-                                 project_name=project)
+    nova = novaclient.Client(2, session=sess)
 
     ironic = ir_client.get_client(1, session=sess,
                                   os_ironic_api_version='1.21')
