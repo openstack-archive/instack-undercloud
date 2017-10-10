@@ -1209,9 +1209,6 @@ def _generate_environment(instack_root):
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
     instack_env['LOCAL_IP_WRAPPED'] = _wrap_ipv6(instack_env['LOCAL_IP'])
-    if instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
-        instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = os.path.abspath(
-            instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'])
     # We're not in a chroot so this doesn't make sense, and it causes weird
     # errors if it's set.
     if instack_env.get('DIB_YUM_REPO_CONF'):
@@ -1234,6 +1231,19 @@ def _generate_environment(instack_root):
         public_host = CONF.undercloud_public_host
         instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = (
             '/etc/pki/tls/certs/undercloud-%s.pem' % public_host)
+    elif instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
+        raw_value = instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']
+        abs_cert = os.path.abspath(raw_value)
+        if abs_cert != raw_value:
+            home_dir = os.path.expanduser('~')
+            if os.getcwd() != home_dir and os.path.exists(abs_cert):
+                LOG.warning('Using undercloud_service_certificate from '
+                            'current directory, please use an absolute path '
+                            'to remove ambiguity')
+                instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = abs_cert
+            else:
+                instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = os.path.join(
+                    home_dir, raw_value)
 
     return instack_env
 
@@ -1257,12 +1267,20 @@ def _generate_init_data(instack_env):
     context = instack_env.copy()
 
     if CONF.hieradata_override:
-        hiera_entry = os.path.splitext(
-            os.path.basename(CONF.hieradata_override))[0]
+        data_file = CONF.hieradata_override
+        hiera_entry = os.path.splitext(os.path.basename(data_file))[0]
         dst = os.path.join('/etc/puppet/hieradata',
-                           os.path.basename(CONF.hieradata_override))
+                           os.path.basename(data_file))
+        if os.path.abspath(CONF.hieradata_override) != data_file:
+            # If we don't have an absolute path, compute it
+            data_file = os.path.join(os.path.expanduser('~'), data_file)
+
+        if not os.path.exists(data_file):
+            raise RuntimeError(
+                "Could not find hieradata_override file '%s'" % data_file)
+
         _run_command(['sudo', 'mkdir', '-p', '/etc/puppet/hieradata'])
-        _run_command(['sudo', 'cp', CONF.hieradata_override, dst])
+        _run_command(['sudo', 'cp', data_file, dst])
         _run_command(['sudo', 'chmod', '0644', dst])
     else:
         hiera_entry = ''

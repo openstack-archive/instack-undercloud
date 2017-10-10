@@ -109,6 +109,52 @@ class TestUndercloud(BaseTestCase):
         mock_die_tuskar_die.assert_called_once()
         mock_run_validation_groups.assert_called_once()
 
+    @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
+    @mock.patch('instack_undercloud.undercloud._configure_logging')
+    @mock.patch('instack_undercloud.undercloud._validate_configuration')
+    @mock.patch('instack_undercloud.undercloud._run_command')
+    @mock.patch('instack_undercloud.undercloud._post_config')
+    @mock.patch('instack_undercloud.undercloud._run_orc')
+    @mock.patch('instack_undercloud.undercloud._run_yum_update')
+    @mock.patch('instack_undercloud.undercloud._run_yum_clean_all')
+    @mock.patch('instack_undercloud.undercloud._run_instack')
+    @mock.patch('instack_undercloud.undercloud._generate_environment')
+    @mock.patch('instack_undercloud.undercloud._load_config')
+    @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
+    @mock.patch('instack_undercloud.undercloud._run_validation_groups')
+    def test_install_upgrade_hieradata(self, mock_run_validation_groups,
+                                       mock_die_tuskar_die, mock_load_config,
+                                       mock_generate_environment,
+                                       mock_run_instack,
+                                       mock_run_yum_clean_all,
+                                       mock_run_yum_update, mock_run_orc,
+                                       mock_post_config, mock_run_command,
+                                       mock_validate_configuration,
+                                       mock_configure_logging,
+                                       mock_upgrade_fact):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(hieradata_override='override.yaml')
+        with open(os.path.expanduser('~/override.yaml'), 'w') as f:
+            f.write('Something\n')
+        fake_env = mock.MagicMock()
+        mock_generate_environment.return_value = fake_env
+        undercloud.install('.', upgrade=True)
+        self.assertTrue(mock_validate_configuration.called)
+        mock_generate_environment.assert_called_with('.')
+        mock_run_instack.assert_called_with(fake_env)
+        mock_run_orc.assert_called_with(fake_env)
+        mock_run_command.assert_called_with(
+            ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
+        self.assertNotIn(
+            mock.call(
+                ['sudo', 'cp', 'override.yaml',
+                 '/etc/puppet/hieradata/override.yaml']),
+            mock_run_command.mock_calls)
+        mock_upgrade_fact.assert_called_with(True)
+        mock_die_tuskar_die.assert_called_once()
+        mock_run_validation_groups.assert_called_once()
+
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     def test_install_exception(self, mock_configure_logging):
         mock_configure_logging.side_effect = RuntimeError('foo')
@@ -539,10 +585,18 @@ class TestGenerateEnvironment(BaseTestCase):
     def test_relative_cert_path(self):
         conf = config_fixture.Config()
         self.useFixture(conf)
-        conf.config(undercloud_service_certificate='test.pem')
-        env = undercloud._generate_environment('.')
-        self.assertEqual(os.path.join(os.getcwd(), 'test.pem'),
-                         env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+        [cert] = self.create_tempfiles([('test', 'foo')], '.pem')
+        rel_cert = os.path.basename(cert)
+        cert_path = os.path.dirname(cert)
+        cur_dir = os.getcwd()
+        try:
+            os.chdir(cert_path)
+            conf.config(undercloud_service_certificate=rel_cert)
+            env = undercloud._generate_environment('.')
+            self.assertEqual(os.path.join(os.getcwd(), rel_cert),
+                             env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+        finally:
+            os.chdir(cur_dir)
 
     def test_no_cert_path(self):
         env = undercloud._generate_environment('.')
