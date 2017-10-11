@@ -1057,10 +1057,10 @@ class TestPostConfig(base.BaseTestCase):
         mock_heat = mock.Mock()
         mock_heat.stacks.list.return_value = stacks
         undercloud._migrate_to_convergence(mock_heat)
-        self.assertEqual([mock.call(['sudo', 'heat-manage',
+        self.assertEqual([mock.call(['sudo', '-E', 'heat-manage',
                                      'migrate_convergence_1', '1'],
                                     name='heat-manage'),
-                          mock.call(['sudo', 'heat-manage',
+                          mock.call(['sudo', '-E', 'heat-manage',
                                      'migrate_convergence_1', '2'],
                                     name='heat-manage')],
                          mock_run_command.mock_calls)
