@@ -401,16 +401,18 @@ nova::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 nova::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 nova::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
+nova::api::service_name: 'httpd'
 nova::api::api_bind_address: {{LOCAL_IP}}
 nova::api::enabled: true
 nova::api::metadata_listen: {{LOCAL_IP}}
 nova::keystone::authtoken::password: {{UNDERCLOUD_NOVA_PASSWORD}}
 nova::api::enabled_apis:
-  - osapi_compute
   - metadata
 nova::api::sync_db_api: true
 nova::api::osapi_compute_workers: "%{::os_workers}"
 nova::api::metadata_workers: "%{::os_workers}"
+nova::wsgi::apache_api::ssl: false
+nova::wsgi::apache_api::bind_host: {{LOCAL_IP}}
 nova::wsgi::apache_placement::ssl: false
 nova::wsgi::apache_placement::bind_host: {{LOCAL_IP}}
 nova::wsgi::apache_placement::api_port: '8778'

@@ -374,6 +374,7 @@ class { '::nova':
 class { '::nova::api':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
 }
+include ::nova::wsgi::apache_api
 include ::nova::cell_v2::simple_setup
 include ::nova::placement
 include ::nova::wsgi::apache_placement
