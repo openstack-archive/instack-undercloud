@@ -827,10 +827,11 @@ class TestPostConfig(base.BaseTestCase):
 
         undercloud._create_default_plan(mock_mistral, [])
         mock_mistral.executions.create.assert_called_once_with(
-            'tripleo.plan_management.v1.create_default_deployment_plan',
+            'tripleo.plan_management.v1.create_deployment_plan',
             workflow_input={
                 'container': 'overcloud',
-                'queue_name': mock.ANY
+                'queue_name': mock.ANY,
+                'use_default_templates': True,
             }
         )
 
