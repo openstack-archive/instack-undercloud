@@ -1099,10 +1099,9 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('os.listdir')
     @mock.patch('instack_undercloud.undercloud._create_mistral_config_'
                 'environment')
-    @mock.patch('instack_undercloud.undercloud._migrate_plans')
     @mock.patch('instack_undercloud.undercloud._create_default_plan')
-    def test_post_config_mistral(self, mock_create, mock_migrate, mock_cmce,
-                                 mock_listdir, mock_isfile):
+    def test_post_config_mistral(self, mock_create, mock_cmce, mock_listdir,
+                                 mock_isfile):
         instack_env = {}
         mock_mistral = mock.Mock()
         mock_swift = mock.Mock()
@@ -1140,19 +1139,15 @@ class TestPostConfig(base.BaseTestCase):
                                    '/bar.yaml')],
                          mock_mistral.workbooks.create.mock_calls)
         mock_cmce.assert_called_once_with(instack_env, mock_mistral)
-        mock_migrate.assert_called_once_with(mock_mistral, mock_swift,
-                                             ['hut8'])
         mock_create.assert_called_once_with(mock_mistral, ['hut8'])
 
     @mock.patch('os.path.isfile', return_value=True)
     @mock.patch('os.listdir')
     @mock.patch('instack_undercloud.undercloud._create_mistral_config_'
                 'environment')
-    @mock.patch('instack_undercloud.undercloud._migrate_plans')
     @mock.patch('instack_undercloud.undercloud._create_default_plan')
-    def test_post_config_mistral_with_tags(self, mock_create, mock_migrate,
-                                           mock_cmce, mock_listdir,
-                                           mock_isfile):
+    def test_post_config_mistral_with_tags(self, mock_create, mock_cmce,
+                                           mock_listdir, mock_isfile):
         instack_env = {}
         mock_mistral = mock.Mock()
         mock_swift = mock.Mock()
@@ -1189,8 +1184,6 @@ class TestPostConfig(base.BaseTestCase):
                                    '/bar.yaml')],
                          mock_mistral.workbooks.create.mock_calls)
         mock_cmce.assert_called_once_with(instack_env, mock_mistral)
-        mock_migrate.assert_called_once_with(mock_mistral, mock_swift,
-                                             ['hut8'])
         mock_create.assert_called_once_with(mock_mistral, ['hut8'])
 
 
