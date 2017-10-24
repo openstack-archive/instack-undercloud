@@ -26,7 +26,11 @@ Exec<| title == 'glance-manage db_sync' |> { refreshonly => false }
 Exec<| title == 'nova-db-sync-api' |> { refreshonly => false }
 Exec<| title == 'nova-db-sync' |> { refreshonly => false }
 Exec<| title == 'nova-db-online-data-migrations' |> { refreshonly => false }
-Exec<| title == 'heat-dbsync' |> { refreshonly => false }
+Exec<| title == 'heat-dbsync' |> {
+  refreshonly => false,
+  # Heat database on the undercloud can be really big, db-sync take usually at least 10 min.
+  timeout     => 900,
+}
 Exec<| title == 'ceilometer-dbsync' |> { refreshonly => false }
 Exec<| title == 'aodh-db-sync' |> { refreshonly => false }
 Exec<| title == 'ironic-dbsync' |> { refreshonly => false }

@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    Increasing the heat db-sync from 5 to 15 minutes.
+    During an undercloud upgrade, the database can be very big and the
+    dbsync needs at least 10 minutes to run. So we override the Puppet
+    default value of 5 minutes to have a timeout of 15 minutes for
+    production deployments.
