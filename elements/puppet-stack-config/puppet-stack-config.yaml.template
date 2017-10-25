@@ -674,6 +674,7 @@ zaqar::keystone::auth_websocket::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::server::service_name: 'httpd'
 zaqar::unreliable: true
 zaqar::transport::websocket::bind: {{LOCAL_IP}}
+zaqar::transport::websocket::notification_bind: {{LOCAL_IP}}
 zaqar::wsgi::apache::bind_host: {{LOCAL_IP}}
 zaqar::wsgi::apache::ssl: false
 zaqar::message_store: swift
