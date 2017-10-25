@@ -29,14 +29,12 @@ import sys
 import tempfile
 import time
 import uuid
-import yaml
 
 from ironicclient import client as ir_client
 from keystoneauth1 import session
 from keystoneauth1 import exceptions as ks_exceptions
 from keystoneclient import discover
 import keystoneauth1.identity.generic as ks_auth
-from mistralclient.api import base as mistralclient_base
 from mistralclient.api import client as mistralclient
 from novaclient import client as novaclient
 from novaclient import exceptions
@@ -1495,32 +1493,6 @@ def _create_mistral_config_environment(instack_env, mistral):
             }))
 
 
-def _migrate_plans(mistral, swift, plans):
-    """Migrate plan environments from Mistral to Swift."""
-    plan_env_filename = 'plan-environment.yaml'
-
-    for plan in plans:
-        headers, objects = swift.get_container(plan)
-
-        if headers.get('x-container-meta-usage-tripleo') != 'plan':
-            continue
-
-        try:
-            swift.get_object(plan, plan_env_filename)
-        except swiftclient.ClientException:
-            LOG.info('Migrating environment for plan %s to Swift.' % plan)
-            try:
-                env = mistral.environments.get(plan).variables
-            except (mistralclient_base.APIException,
-                    ks_exceptions.http.NotFound):
-                LOG.warning('Could not find plan "%s" environment in Mistral '
-                            '- nothing to migrate.' % plan)
-            else:
-                yaml_string = yaml.safe_dump(env, default_flow_style=False)
-                swift.put_object(plan, plan_env_filename, yaml_string)
-                mistral.environments.delete(plan)
-
-
 def _wait_for_mistral_execution(timeout_at, mistral, execution, message='',
                                 fail_on_error=False):
     while time.time() < timeout_at:
@@ -1668,7 +1640,6 @@ def _post_config_mistral(instack_env, mistral, swift):
     plans = [container["name"] for container in swift.get_account()[1]]
 
     _create_mistral_config_environment(instack_env, mistral)
-    _migrate_plans(mistral, swift, plans)
     _create_default_plan(mistral, plans)
     _create_logging_cron(mistral)
 
