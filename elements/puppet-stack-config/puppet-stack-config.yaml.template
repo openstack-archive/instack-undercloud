@@ -32,6 +32,7 @@ ssh::server::storeconfigs_enabled: false
 
 # memcached
 memcached::max_memory: '50%'
+memcached::verbosity: 'v'
 
 # Apache
 apache::server_signature: 'Off'
