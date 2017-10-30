@@ -145,9 +145,7 @@ heat::engine::convergence_engine: true
 #heat::engine::num_engine_workers:
 heat::engine::max_nested_stack_depth: 7
 heat::instance_user: heat-admin
-heat::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-heat::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-heat::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+heat::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 heat::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 heat::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 heat::keystone::authtoken::password: {{UNDERCLOUD_HEAT_PASSWORD}}
