@@ -172,12 +172,6 @@
 # the undercloud. (boolean value)
 #enable_cinder = false
 
-# Whether to enable legacy ceilometer api in the Undercloud. Note:
-# Ceilometer API has been deprecated and will be removed in future
-# release. Please consider moving to gnocchi/Aodh/Panko API instead.
-# (boolean value)
-#enable_legacy_ceilometer_api = false
-
 # Whether to install novajoin metadata service in the Undercloud.
 # (boolean value)
 #enable_novajoin = false

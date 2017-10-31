@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Remove legacy ceilometer api from undercloud. This was moved to legacy
+    mode in Pike.
