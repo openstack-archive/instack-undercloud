@@ -339,8 +339,15 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
   $enable_proxy_headers_parsing = false
 }
 
+if str2bool(hiera('enable_telemetry', false)) {
+  $notification_topics = ['notifications']
+} else {
+  $notification_topics = []
+}
+
 class { '::keystone':
   enable_proxy_headers_parsing => $enable_proxy_headers_parsing,
+  notification_topics          => $notification_topics,
 }
 include ::keystone::wsgi::apache
 include ::keystone::cron::token_flush
