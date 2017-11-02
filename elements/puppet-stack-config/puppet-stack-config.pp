@@ -168,7 +168,7 @@ if str2bool(hiera('enable_telemetry', true)) {
   include ::ceilometer::agent::auth
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
-    "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
+    "sleep $((\$(od -A n -t d -N 3 /dev/urandom) \\% 86400)) && ${::ceilometer::params::expirer_command}" }
 
   # TODO: add support for setting these to puppet-ceilometer
   ceilometer_config {
