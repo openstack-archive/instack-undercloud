@@ -289,10 +289,11 @@ _opts = [
                       'information for newly enrolled nodes.')
                 ),
     cfg.StrOpt('discovery_default_driver',
-               default='pxe_ipmitool',
-               help=('The default driver to use for newly discovered nodes '
-                     '(requires enable_node_discovery set to True). This '
-                     'driver is automatically added to enabled_drivers.')
+               default='ipmi',
+               help=('The default driver or hardware type to use for newly '
+                     'discovered nodes (requires enable_node_discovery set to '
+                     'True). It is automatically added to enabled_drivers '
+                     'or enabled_hardware_types accordingly.')
                ),
     cfg.BoolOpt('undercloud_debug',
                 default=True,
@@ -360,9 +361,12 @@ _opts = [
                       'between deployments and after the introspection.')),
     cfg.ListOpt('enabled_drivers',
                 default=['pxe_ipmitool', 'pxe_drac', 'pxe_ilo'],
-                help=('List of enabled bare metal drivers.')),
+                help=('List of enabled bare metal drivers.'),
+                deprecated_for_removal=True,
+                deprecated_reason=('Please switch to hardware types and '
+                                   'the enabled_hardware_types option.')),
     cfg.ListOpt('enabled_hardware_types',
-                default=['ipmi', 'redfish'],
+                default=['ipmi', 'redfish', 'ilo', 'idrac'],
                 help=('List of enabled bare metal hardware types (next '
                       'generation drivers).')),
     cfg.StrOpt('docker_registry_mirror',
@@ -1056,7 +1060,8 @@ class InstackEnvironment(dict):
                     'INSPECTION_NODE_NOT_FOUND_HOOK',
                     'TRIPLEO_INSTALL_USER', 'TRIPLEO_UNDERCLOUD_CONF_FILE',
                     'TRIPLEO_UNDERCLOUD_PASSWORD_FILE',
-                    'ENABLED_POWER_INTERFACES',
+                    'ENABLED_BOOT_INTERFACES', 'ENABLED_POWER_INTERFACES',
+                    'ENABLED_RAID_INTERFACES', 'ENABLED_VENDOR_INTERFACES',
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED'}
     """The variables we calculate in _generate_environment call."""
@@ -1089,6 +1094,76 @@ def _generate_sysctl_settings():
     if _check_ipv6_enabled():
         sysctl_settings.update({"net.ipv6.ip_nonlocal_bind": {"value": 1}})
     return json.dumps(sysctl_settings)
+
+
+def _is_classic_driver(name):
+    """Poor man's way to detect if something is a driver or a hardware type.
+
+    To be removed when we remove support for classic drivers.
+    """
+    return (name == 'fake' or
+            name.startswith('fake_') or
+            name.startswith('pxe_') or
+            name.startswith('agent_') or
+            name.startswith('iscsi_'))
+
+
+def _process_drivers_and_hardware_types(instack_env):
+    """Populate the environment with ironic driver information."""
+    # Ensure correct rendering of the list and uniqueness of the items
+    enabled_drivers = set(CONF.enabled_drivers)
+    enabled_hardware_types = set(CONF.enabled_hardware_types)
+    if CONF.enable_node_discovery:
+        if _is_classic_driver(CONF.discovery_default_driver):
+            if CONF.discovery_default_driver not in enabled_drivers:
+                enabled_drivers.add(CONF.discovery_default_driver)
+        else:
+            if CONF.discovery_default_driver not in enabled_hardware_types:
+                enabled_hardware_types.add(CONF.discovery_default_driver)
+        instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = 'enroll'
+    else:
+        instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = ''
+
+    # In most cases power and management interfaces are called the same, so we
+    # use one variable for them.
+    mgmt_interfaces = {'fake', 'ipmitool'}
+    # TODO(dtantsur): can we somehow avoid hardcoding hardware types here?
+    for hw_type in ('redfish', 'idrac', 'ilo', 'irmc'):
+        if hw_type in enabled_hardware_types:
+            mgmt_interfaces.add(hw_type)
+    for (hw_type, iface) in [('cisco-ucs-managed', 'ucsm'),
+                             ('cisco-ucs-standalone', 'cimc')]:
+        if hw_type in enabled_hardware_types:
+            mgmt_interfaces.add(iface)
+
+    # Two hardware types use non-default boot interfaces.
+    boot_interfaces = {'pxe'}
+    for hw_type in ('ilo', 'irmc'):
+        if hw_type in enabled_hardware_types:
+            boot_interfaces.add('%s-pxe' % hw_type)
+
+    raid_interfaces = {'no-raid'}
+    if 'idrac' in enabled_hardware_types:
+        raid_interfaces.add('idrac')
+
+    vendor_interfaces = {'no-vendor'}
+    for (hw_type, iface) in [('ipmi', 'ipmitool'),
+                             ('idrac', 'idrac')]:
+        if hw_type in enabled_hardware_types:
+            vendor_interfaces.add(iface)
+
+    instack_env['ENABLED_DRIVERS'] = _make_list(enabled_drivers)
+    instack_env['ENABLED_HARDWARE_TYPES'] = _make_list(enabled_hardware_types)
+
+    instack_env['ENABLED_BOOT_INTERFACES'] = _make_list(boot_interfaces)
+    instack_env['ENABLED_MANAGEMENT_INTERFACES'] = _make_list(mgmt_interfaces)
+    instack_env['ENABLED_RAID_INTERFACES'] = _make_list(raid_interfaces)
+    instack_env['ENABLED_VENDOR_INTERFACES'] = _make_list(vendor_interfaces)
+
+    # The snmp hardware type uses fake management and snmp power
+    if 'snmp' in enabled_hardware_types:
+        mgmt_interfaces.add('snmp')
+    instack_env['ENABLED_POWER_INTERFACES'] = _make_list(mgmt_interfaces)
 
 
 def _generate_environment(instack_root):
@@ -1172,31 +1247,7 @@ def _generate_environment(instack_root):
 
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
 
-    # Ensure correct rendering of the list and uniqueness of the items
-    enabled_drivers = set(CONF.enabled_drivers)
-    enabled_hardware_types = set(CONF.enabled_hardware_types)
-    if CONF.enable_node_discovery:
-        if (CONF.discovery_default_driver not in (enabled_drivers |
-                                                  enabled_hardware_types)):
-            enabled_drivers.add(CONF.discovery_default_driver)
-        instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = 'enroll'
-    else:
-        instack_env['INSPECTION_NODE_NOT_FOUND_HOOK'] = ''
-
-    # In most cases power and management interfaces are called the same, so we
-    # use one variable for them.
-    enabled_interfaces = set()
-    if 'ipmi' in enabled_hardware_types:
-        enabled_interfaces.add('ipmitool')
-    if 'redfish' in enabled_hardware_types:
-        enabled_interfaces.add('redfish')
-
-    instack_env['ENABLED_DRIVERS'] = _make_list(enabled_drivers)
-    instack_env['ENABLED_HARDWARE_TYPES'] = _make_list(enabled_hardware_types)
-
-    enabled_interfaces = _make_list(enabled_interfaces)
-    instack_env['ENABLED_POWER_INTERFACES'] = enabled_interfaces
-    instack_env['ENABLED_MANAGEMENT_INTERFACES'] = enabled_interfaces
+    _process_drivers_and_hardware_types(instack_env)
 
     instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()
 
