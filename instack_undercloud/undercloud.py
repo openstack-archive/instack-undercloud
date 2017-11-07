@@ -1527,19 +1527,51 @@ def _clean_os_collect_config():
 
 
 def _create_mistral_config_environment(instack_env, mistral):
-    # Store the snmpd password in a Mistral environment so it can be accessed
+    # Store all the required passwords from the Undercloud
+    # in a Mistral environment so they can be accessed
     # by the Mistral actions.
-    snmpd_password = instack_env["UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD"]
 
-    env_name = "tripleo.undercloud-config"
+    config_data = {
+        'undercloud_ceilometer_snmpd_password':
+            instack_env['UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD'],
+        'undercloud_db_password':
+            instack_env['UNDERCLOUD_DB_PASSWORD']
+    }
+    env_name = 'tripleo.undercloud-config'
     try:
-        mistral.environments.get(env_name)
+        env_data = mistral.environments.get(env_name).variables
     except ks_exceptions.NotFound:
+        # If the environment is not created, we need to
+        # create it with the information in config_data
         mistral.environments.create(
             name=env_name,
-            variables=json.dumps({
-                "undercloud_ceilometer_snmpd_password": snmpd_password
-            }))
+            description='Undercloud configuration parameters',
+            variables=json.dumps(config_data, sort_keys=True)
+        )
+        return
+
+    # If we are upgrading from an environment without
+    # variables defined in config_data, we need to update
+    # the environment variables.
+
+    for var, value in iter(config_data.items()):
+        if var in env_data:
+            if env_data[var] != config_data[var]:
+                # Value in config_data is different
+                # need to update
+                env_data[var] = value
+        else:
+            # The value in config_data
+            # is new, we need to add it
+            env_data[var] = value
+
+    # Here we update the current environment
+    # with the variables updated
+    mistral.environments.update(
+        name=env_name,
+        description='Undercloud configuration parameters',
+        variables=json.dumps(env_data, sort_keys=True)
+    )
 
 
 def _migrate_plans(mistral, swift, plans):
