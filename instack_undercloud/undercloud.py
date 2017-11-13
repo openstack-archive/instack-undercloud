@@ -1426,7 +1426,7 @@ def _ensure_flavor(nova, existing, name, profile=None):
 
 
 def _ensure_node_resource_classes(ironic):
-    for node in ironic.node.list(limit=-1, fields=['uuid', 'resource_class']):
+    for node in ironic.node.list(limit=0, fields=['uuid', 'resource_class']):
         if node.resource_class:
             if node.resource_class != DEFAULT_NODE_RESOURCE_CLASS:
                 LOG.warning('Node %s is using a resource class %s instead '
