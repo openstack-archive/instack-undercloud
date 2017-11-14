@@ -223,7 +223,7 @@ if str2bool(hiera('enable_telemetry', false)) {
   -> Exec['ceilo-gnocchi-upgrade']
 
   Cron <| title == 'ceilometer-expirer' |> { command =>
-    "sleep $((\$(od -A n -t d -N 3 /dev/urandom) % 86400)) && ${::ceilometer::params::expirer_command}" }
+    "sleep $((\$(od -A n -t d -N 3 /dev/urandom) \\% 86400)) && ${::ceilometer::params::expirer_command}" }
 
   # Aodh
   $aodh_dsn = split(hiera('aodh::db::database_connection'), '[@:/?]')
