@@ -1824,6 +1824,11 @@ def pre_upgrade():
     _run_live_command(args, name='systemctl stop')
     LOG.info('Services stopped successfully')
 
+    args = ['sudo', 'yum', 'install', '-y', 'ansible-pacemaker']
+    LOG.info('Installing Ansible Pacemaker module')
+    _run_live_command(args, name='install ansible')
+    LOG.info('Ansible pacemaker install completed successfully')
+
     args = ['sudo', 'yum', 'update', '-y']
     LOG.info('Updating full system')
     _run_live_command(args, name='yum update')
