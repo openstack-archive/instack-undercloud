@@ -13,7 +13,7 @@ export OS_AUTH_URL
 export PYTHONWARNINGS
 {{/service_certificate}}
 {{^service_certificate}}
-OS_AUTH_URL=http://{{local-ip}}:5000/
+OS_AUTH_URL=http://{{local-ip-wrapped}}:5000/
 export OS_AUTH_URL
 {{/service_certificate}}
 OS_USERNAME=admin
