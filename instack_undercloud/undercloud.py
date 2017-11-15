@@ -904,7 +904,7 @@ def _generate_endpoints(instack_env):
             {'host': internal_host, 'port': 8041}),
         ('panko',
             '%s://%s:%d',
-            {'host': public_host, 'port': 8977, 'ssl_port': 13779},
+            {'host': public_host, 'port': 8977, 'ssl_port': 13977},
             {'host': internal_host, 'port': 8977}),
         ('mistral',
             '%s://%s:%d/v2',
