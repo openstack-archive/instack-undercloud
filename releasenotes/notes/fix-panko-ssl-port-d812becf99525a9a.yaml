@@ -1,0 +1,4 @@
+---
+fixes:
+  - |
+    Fix panko ssl port to match puppet-tripleo haproxy resource.
