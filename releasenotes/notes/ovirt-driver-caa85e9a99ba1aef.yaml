@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Adds support for using oVirt with Ironic via the new ``staging-ovirt``
+    hardware type. The hardware type is not enabled by default and requires
+    installing the ``ovirt-engine-sdk-python`` package.

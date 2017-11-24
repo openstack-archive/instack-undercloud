@@ -511,6 +511,7 @@ include ::ironic::drivers::interfaces
 include ::ironic::drivers::ipmi
 include ::ironic::drivers::pxe
 include ::ironic::drivers::redfish
+include ::ironic::drivers::staging
 include ::ironic::glance
 include ::ironic::inspector
 include ::ironic::inspector::cors
