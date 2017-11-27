@@ -1,7 +1,7 @@
 # The order of packages is significant, because pip processes them in the order
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
-six>=1.9.0 # MIT
+six>=1.10.0 # MIT
 python-ironicclient>=1.14.0 # Apache-2.0
 python-keystoneclient>=3.8.0 # Apache-2.0
 python-novaclient>=9.1.0 # Apache-2.0
@@ -13,6 +13,6 @@ psutil>=3.2.2 # BSD
 netaddr>=0.7.18 # BSD
 netifaces>=0.10.4 # MIT
 pystache>=0.5.4 # MIT
-os-refresh-config>=0.1.10 # Apache-2.0
-os-apply-config>=0.1.31 # Apache-2.0
+os-refresh-config>=6.0.0 # Apache-2.0
+os-apply-config>=5.0.0 # Apache-2.0
 os-client-config>=1.28.0 # Apache-2.0
