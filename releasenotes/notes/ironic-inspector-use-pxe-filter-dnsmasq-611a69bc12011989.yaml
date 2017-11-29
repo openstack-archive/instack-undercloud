@@ -1,0 +1,3 @@
+---
+fixes:
+  - Using the ``dnsmasq`` PXE filter for inspection fixes bug #1756075.
