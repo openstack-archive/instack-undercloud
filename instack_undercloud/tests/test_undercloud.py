@@ -482,19 +482,70 @@ class TestGenerateEnvironment(BaseTestCase):
         drivers = json.loads(env['ENABLED_DRIVERS'])
         self.assertEqual(sorted(drivers), ['pxe_drac', 'pxe_ilo',
                                            'pxe_ipmitool'])
+        hw_types = json.loads(env['ENABLED_HARDWARE_TYPES'])
+        self.assertEqual(sorted(hw_types), ['idrac', 'ilo', 'ipmi', 'redfish'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_BOOT_INTERFACES'])),
+            ['ilo-pxe', 'pxe'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_POWER_INTERFACES'])),
+            ['fake', 'idrac', 'ilo', 'ipmitool', 'redfish'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_MANAGEMENT_INTERFACES'])),
+            ['fake', 'idrac', 'ilo', 'ipmitool', 'redfish'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_RAID_INTERFACES'])),
+            ['idrac', 'no-raid'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_VENDOR_INTERFACES'])),
+            ['idrac', 'ipmitool', 'no-vendor'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], '')
+
+    def test_all_hardware_types(self):
+        conf = config_fixture.Config()
+        self.useFixture(conf)
+        conf.config(enabled_hardware_types=['ipmi', 'redfish', 'ilo',
+                                            'idrac', 'irmc', 'snmp',
+                                            'cisco-ucs-managed',
+                                            'cisco-ucs-standalone'])
+        env = undercloud._generate_environment('.')
+        # The list is generated from a set, so we can't rely on ordering.
+        # Instead make sure that it looks like a valid list by parsing it.
+        hw_types = json.loads(env['ENABLED_HARDWARE_TYPES'])
+        self.assertEqual(sorted(hw_types), ['cisco-ucs-managed',
+                                            'cisco-ucs-standalone',
+                                            'idrac', 'ilo', 'ipmi', 'irmc',
+                                            'redfish', 'snmp'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_BOOT_INTERFACES'])),
+            ['ilo-pxe', 'irmc-pxe', 'pxe'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_POWER_INTERFACES'])),
+            ['cimc', 'fake', 'idrac', 'ilo', 'ipmitool', 'irmc',
+             'redfish', 'snmp', 'ucsm'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_MANAGEMENT_INTERFACES'])),
+            ['cimc', 'fake', 'idrac', 'ilo', 'ipmitool', 'irmc',
+             'redfish', 'ucsm'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_RAID_INTERFACES'])),
+            ['idrac', 'no-raid'])
+        self.assertEqual(
+            sorted(json.loads(env['ENABLED_VENDOR_INTERFACES'])),
+            ['idrac', 'ipmitool', 'no-vendor'])
 
     def test_enabled_discovery(self):
         conf = config_fixture.Config()
         self.useFixture(conf)
         conf.config(enable_node_discovery=True,
-                    discovery_default_driver='foobar')
+                    discovery_default_driver='pxe_foobar')
         env = undercloud._generate_environment('.')
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
         drivers = json.loads(env['ENABLED_DRIVERS'])
-        # Discovery requires enabling the default driver
-        self.assertEqual(sorted(drivers), ['foobar', 'pxe_drac', 'pxe_ilo',
+        # Discovery requires enabling the default driver. The pxe_ prefix
+        # designates a classic driver.
+        self.assertEqual(sorted(drivers), ['pxe_drac', 'pxe_foobar', 'pxe_ilo',
                                            'pxe_ipmitool'])
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], 'enroll')
 
@@ -503,17 +554,15 @@ class TestGenerateEnvironment(BaseTestCase):
         self.useFixture(conf)
         conf.config(enable_node_discovery=True,
                     discovery_default_driver='foobar',
-                    enabled_hardware_types=['ipmi', 'foobar'])
+                    enabled_hardware_types=['ipmi', 'something'])
         env = undercloud._generate_environment('.')
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
         drivers = json.loads(env['ENABLED_DRIVERS'])
         hw_types = json.loads(env['ENABLED_HARDWARE_TYPES'])
-        # The driver is already in hardware types, so we don't try adding it to
-        # the driver list.
         self.assertEqual(sorted(drivers), ['pxe_drac', 'pxe_ilo',
                                            'pxe_ipmitool'])
-        self.assertEqual(sorted(hw_types), ['foobar', 'ipmi'])
+        self.assertEqual(sorted(hw_types), ['foobar', 'ipmi', 'something'])
 
     def test_docker_registry_mirror(self):
         conf = config_fixture.Config()

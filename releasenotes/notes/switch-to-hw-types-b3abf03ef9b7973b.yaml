@@ -1,0 +1,23 @@
+---
+features:
+  - |
+    The hardware types ``ilo`` and ``idrac`` are now enabled by default.
+  - |
+    Added support for the following hardware types: ``cisco-ucs-managed``,
+    ``cisco-ucs-standalone``, ``idrac``, ``ilo``, ``irmc``, ``snmp``.
+deprecations:
+  - |
+    The ``enabled_drivers`` option is deprecated, please use
+    ``enabled_hardware_types``. Make sure to switch your nodes to hardware
+    types before disabling drivers.
+upgrade:
+  - |
+    Classic drivers are going to be deprecated soon, it is recommended to
+    switch all overcloud nodes to matching hardware types. See the `hardware
+    types migration documentation
+    <https://docs.openstack.org/ironic/latest/admin/upgrade-to-hardware-types.html>`_
+    for the detailed procedure.
+  - |
+    As part of migration to hardware types, the default value of the
+    ``discovery_default_driver`` option was changed from ``pxe_ipmitool``
+    to ``ipmi``.

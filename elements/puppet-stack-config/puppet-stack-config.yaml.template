@@ -512,10 +512,13 @@ ironic::conductor::default_boot_option: 'local'
 ironic::conductor::enabled_drivers: {{ENABLED_DRIVERS}}
 ironic::conductor::enabled_hardware_types: {{ENABLED_HARDWARE_TYPES}}
 ironic::drivers::interfaces::default_inspect_interface: inspector
+ironic::drivers::interfaces::enabled_boot_interfaces: {{ENABLED_BOOT_INTERFACES}}
 ironic::drivers::interfaces::enabled_console_interfaces: ['no-console', 'ipmitool-socat']
 ironic::drivers::interfaces::enabled_inspect_interfaces: ['no-inspect', 'inspector']
 ironic::drivers::interfaces::enabled_management_interfaces: {{ENABLED_MANAGEMENT_INTERFACES}}
 ironic::drivers::interfaces::enabled_power_interfaces: {{ENABLED_POWER_INTERFACES}}
+ironic::drivers::interfaces::enabled_raid_interfaces: {{ENABLED_RAID_INTERFACES}}
+ironic::drivers::interfaces::enabled_vendor_interfaces: {{ENABLED_VENDOR_INTERFACES}}
 ironic::keystone::auth::tenant: 'service'
 ironic::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}
 ironic::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
