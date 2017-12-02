@@ -5,6 +5,8 @@ keystone_default_domain: 'Default'
 
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
+#local-ipv4 similar to the same hiera key in the overcloud
+ctlplane: {{LOCAL_IP}}
 controller_host_wrapped: "{{LOCAL_IP_WRAPPED}}"
 controller_admin_host: {{UNDERCLOUD_ADMIN_HOST}}
 controller_public_host: {{UNDERCLOUD_PUBLIC_HOST}}
