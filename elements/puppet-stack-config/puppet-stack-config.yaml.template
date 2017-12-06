@@ -521,6 +521,10 @@ ironic::drivers::interfaces::enabled_management_interfaces: {{ENABLED_MANAGEMENT
 ironic::drivers::interfaces::enabled_power_interfaces: {{ENABLED_POWER_INTERFACES}}
 ironic::drivers::interfaces::enabled_raid_interfaces: {{ENABLED_RAID_INTERFACES}}
 ironic::drivers::interfaces::enabled_vendor_interfaces: {{ENABLED_VENDOR_INTERFACES}}
+
+# Make sure new nodes default to 'baremetal' resource class
+ironic::default_resource_class: 'baremetal'
+
 ironic::keystone::auth::tenant: 'service'
 ironic::keystone::auth::public_url: {{UNDERCLOUD_ENDPOINT_IRONIC_PUBLIC}}
 ironic::keystone::auth::internal_url: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
