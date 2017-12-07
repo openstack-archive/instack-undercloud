@@ -504,6 +504,7 @@ include ::ironic
 include ::ironic::api
 include ::ironic::wsgi::apache
 include ::ironic::conductor
+include ::ironic::drivers::ansible
 include ::ironic::drivers::drac
 include ::ironic::drivers::ilo
 include ::ironic::drivers::inspector
