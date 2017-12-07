@@ -1,0 +1,9 @@
+---
+features:
+  - |
+    The ``ansible`` deploy interface is enabled by default. It can be used by
+    updating a node with the following command::
+
+        openstack baremetal node set <NODE> --deploy-interface ansible \
+            --driver-info ansible_deploy_username=<SSH_USER> \
+            --driver-info ansible_deploy_key_file=<SSH_KEY_FILE>
