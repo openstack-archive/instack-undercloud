@@ -1777,12 +1777,6 @@ def install(instack_root, upgrade=False):
         instack_env = _generate_environment(instack_root)
         _generate_init_data(instack_env)
         if upgrade:
-            # We didn't complete the M->N upgrades correctly with a
-            # `nova-manage db online_data_migrations` command before. This
-            # could cause the post-upgrade db sync to fail. Better be safe
-            # than sorry and run it before package upgrade.
-            _run_command(['sudo', '/usr/bin/nova-manage', 'db',
-                          'online_data_migrations'])
             # Even if we backport https://review.openstack.org/#/c/457478/
             # into stable branches of puppet-ironic, we still need a way
             # to handle existing deployments.
@@ -1826,6 +1820,12 @@ def pre_upgrade():
     LOG.info('Stopping OpenStack and related services')
     _run_live_command(args, name='systemctl stop')
     LOG.info('Services stopped successfully')
+
+    # Ensure nova data migrations are complete before upgrading packages
+    LOG.info('Running Nova online data migration')
+    _run_command(['sudo', '-E', '/usr/bin/nova-manage', 'db',
+                  'online_data_migrations'])
+    LOG.info('Nova online data migration completed')
 
     args = ['sudo', 'yum', 'install', '-y', 'ansible-pacemaker']
     LOG.info('Installing Ansible Pacemaker module')
