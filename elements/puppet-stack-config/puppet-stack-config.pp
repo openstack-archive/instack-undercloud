@@ -428,6 +428,7 @@ include ::swift::proxy::ratelimit
 include ::swift::proxy::catch_errors
 include ::swift::proxy::tempurl
 include ::swift::proxy::formpost
+include ::swift::objectexpirer
 
 # swift storage
 class { '::swift::storage::all':
