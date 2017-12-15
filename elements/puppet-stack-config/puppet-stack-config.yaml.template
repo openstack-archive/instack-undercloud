@@ -488,6 +488,7 @@ ironic::api::service_name: 'httpd'
 ironic::api::workers: "%{::os_workers}"
 ironic::wsgi::apache::ssl: false
 ironic::wsgi::apache::bind_host: {{LOCAL_IP}}
+ironic::pxe::tftp_bind_host: {{LOCAL_IP}}
 ironic::database_connection: mysql+pymysql://ironic:{{UNDERCLOUD_IRONIC_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/ironic
 ironic::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 ironic::drivers::inspector::enabled: true
