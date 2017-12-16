@@ -1649,7 +1649,7 @@ def _get_session():
     return session.Session(auth=auth_plugin)
 
 
-def _run_validation_groups(groups=[], mistral_url='', timeout=360,
+def _run_validation_groups(groups=[], mistral_url='', timeout=540,
                            fail_on_error=False):
     sess = _get_session()
     mistral = mistralclient.client(mistral_url=mistral_url, session=sess)
