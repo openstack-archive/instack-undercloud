@@ -949,26 +949,45 @@ class TestPostConfig(base.BaseTestCase):
             ks_exceptions.NotFound)
 
         env = {
+            "UNDERCLOUD_DB_PASSWORD": "root-db-pass",
             "UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD": "snmpd-pass"
         }
-        json_string = '{"undercloud_ceilometer_snmpd_password": "snmpd-pass"}'
 
-        undercloud._create_mistral_config_environment(env, mock_mistral)
+        json_string = {
+            "undercloud_db_password": "root-db-pass",
+            "undercloud_ceilometer_snmpd_password": "snmpd-pass"
+        }
+
+        undercloud._create_mistral_config_environment(json.loads(
+            json.dumps(env, sort_keys=True)), mock_mistral)
 
         mock_mistral.environments.create.assert_called_once_with(
-            name="tripleo.undercloud-config",
-            variables=json_string)
+            name='tripleo.undercloud-config',
+            description='Undercloud configuration parameters',
+            variables=json.dumps(json_string, sort_keys=True))
 
     def test_create_config_environment_existing(self):
         mock_mistral = mock.Mock()
-        environment = collections.namedtuple('environment', ['name'])
-        mock_mistral.environments.get.return_value = environment(
-            name='overcloud')
-        env = {
-            "UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD": "snmpd-pass"
+        environment = collections.namedtuple('environment',
+                                             ['name', 'variables'])
+
+        json_string = {
+            "undercloud_db_password": "root-db-pass",
+            "undercloud_ceilometer_snmpd_password": "snmpd-pass"
         }
 
-        undercloud._create_mistral_config_environment(env, mock_mistral)
+        mock_mistral.environments.get.return_value = environment(
+            name='tripleo.undercloud-config',
+            variables=json.loads(json.dumps(json_string, sort_keys=True))
+           )
+
+        env = {
+            "UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD": "snmpd-pass",
+            "UNDERCLOUD_DB_PASSWORD": "root-db-pass"
+        }
+
+        undercloud._create_mistral_config_environment(json.loads(
+            json.dumps(env, sort_keys=True)), mock_mistral)
         mock_mistral.executions.create.assert_not_called()
 
     def test_prepare_ssh_environment(self):
