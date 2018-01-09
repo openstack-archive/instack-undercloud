@@ -222,7 +222,7 @@
 # From instack-undercloud
 #
 
-# Password used for MySQL databases. If left unset, one will be
+# Password used for MySQL root user. If left unset, one will be
 # automatically generated. (string value)
 #undercloud_db_password = <None>
 
