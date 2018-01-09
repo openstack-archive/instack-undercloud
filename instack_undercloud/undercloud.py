@@ -336,7 +336,7 @@ _opts = [
 # Passwords, tokens, hashes
 _auth_opts = [
     cfg.StrOpt('undercloud_db_password',
-               help=('Password used for MySQL databases. '
+               help=('Password used for MySQL root user. '
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_admin_token',
