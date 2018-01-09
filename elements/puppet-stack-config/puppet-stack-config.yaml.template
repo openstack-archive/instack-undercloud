@@ -227,6 +227,7 @@ tripleo::profile::base::database::mysql::mysql_server_options:
     bind-address: "%{hiera('controller_host')}"
     innodb_file_per_table: 'ON'
 mysql::server::restart: true
+mysql::server::root_password: {{UNDERCLOUD_DB_PASSWORD}}
 
 # Neutron
 neutron::bind_host: {{LOCAL_IP}}
