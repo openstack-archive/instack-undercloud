@@ -40,6 +40,7 @@ class BaseTestCase(base.BaseTestCase):
     def setUp(self):
         super(BaseTestCase, self).setUp()
         self.logger = self.useFixture(log.ConfigureLogging()).logger
+        self.conf = self.useFixture(config_fixture.Config())
 
 
 class TestUndercloud(BaseTestCase):
@@ -132,9 +133,7 @@ class TestUndercloud(BaseTestCase):
                                        mock_validate_configuration,
                                        mock_configure_logging,
                                        mock_upgrade_fact):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(hieradata_override='override.yaml')
+        self.conf.config(hieradata_override='override.yaml')
         with open(os.path.expanduser('~/override.yaml'), 'w') as f:
             f.write('Something\n')
         fake_env = mock.MagicMock()
@@ -171,9 +170,7 @@ class TestUndercloud(BaseTestCase):
     def test_install_exception_no_debug(self, mock_configure_logging,
                                         mock_exit):
         mock_configure_logging.side_effect = RuntimeError('foo')
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(undercloud_debug=False)
+        self.conf.config(undercloud_debug=False)
         undercloud.install('.')
         log_dict = {'undercloud_operation': "install",
                     'exception': 'foo',
@@ -276,9 +273,7 @@ class TestCheckHostname(BaseTestCase):
                                         'test-hostname.domain',
                                         'test-hostname.domain',
                                         None]
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(undercloud_hostname='test-hostname.domain')
+        self.conf.config(undercloud_hostname='test-hostname.domain')
         fake_hosts = io.StringIO(u'127.0.0.1 other-hostname\n')
         with mock.patch('instack_undercloud.undercloud.open',
                         return_value=fake_hosts, create=True):
@@ -296,9 +291,7 @@ class TestCheckHostname(BaseTestCase):
                                         'test-hostname',
                                         'test-hostname',
                                         None]
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(undercloud_hostname='test-hostname')
+        self.conf.config(undercloud_hostname='test-hostname')
         self.assertRaises(RuntimeError, undercloud._check_hostname)
 
 
@@ -502,12 +495,10 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], '')
 
     def test_all_hardware_types(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(enabled_hardware_types=['ipmi', 'redfish', 'ilo',
-                                            'idrac', 'irmc', 'snmp',
-                                            'cisco-ucs-managed',
-                                            'cisco-ucs-standalone'])
+        self.conf.config(enabled_hardware_types=['ipmi', 'redfish', 'ilo',
+                                                 'idrac', 'irmc', 'snmp',
+                                                 'cisco-ucs-managed',
+                                                 'cisco-ucs-standalone'])
         env = undercloud._generate_environment('.')
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
@@ -535,10 +526,8 @@ class TestGenerateEnvironment(BaseTestCase):
             ['idrac', 'ipmitool', 'no-vendor'])
 
     def test_enabled_discovery(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(enable_node_discovery=True,
-                    discovery_default_driver='pxe_foobar')
+        self.conf.config(enable_node_discovery=True,
+                         discovery_default_driver='pxe_foobar')
         env = undercloud._generate_environment('.')
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
@@ -550,11 +539,9 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual(env['INSPECTION_NODE_NOT_FOUND_HOOK'], 'enroll')
 
     def test_enabled_hardware_types(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(enable_node_discovery=True,
-                    discovery_default_driver='foobar',
-                    enabled_hardware_types=['ipmi', 'something'])
+        self.conf.config(enable_node_discovery=True,
+                         discovery_default_driver='foobar',
+                         enabled_hardware_types=['ipmi', 'something'])
         env = undercloud._generate_environment('.')
         # The list is generated from a set, so we can't rely on ordering.
         # Instead make sure that it looks like a valid list by parsing it.
@@ -565,9 +552,7 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual(sorted(hw_types), ['foobar', 'ipmi', 'something'])
 
     def test_docker_registry_mirror(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(docker_registry_mirror='http://foo/bar')
+        self.conf.config(docker_registry_mirror='http://foo/bar')
         env = undercloud._generate_environment('.')
         # Spot check one service
         self.assertEqual('http://foo/bar',
@@ -590,9 +575,7 @@ class TestGenerateEnvironment(BaseTestCase):
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_generate_endpoints_ssl_manual(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(undercloud_service_certificate='test.pem')
+        self.conf.config(undercloud_service_certificate='test.pem')
         env = undercloud._generate_environment('.')
         # Spot check one service
         self.assertEqual('https://192.168.24.2:13000',
@@ -608,9 +591,7 @@ class TestGenerateEnvironment(BaseTestCase):
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_generate_endpoints_ssl_auto(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(generate_service_certificate=True)
+        self.conf.config(generate_service_certificate=True)
         env = undercloud._generate_environment('.')
         # Spot check one service
         self.assertEqual('https://192.168.24.2:13000',
@@ -624,23 +605,19 @@ class TestGenerateEnvironment(BaseTestCase):
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_absolute_cert_path(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(undercloud_service_certificate='/home/stack/test.pem')
+        self.conf.config(undercloud_service_certificate='/home/stack/test.pem')
         env = undercloud._generate_environment('.')
         self.assertEqual('/home/stack/test.pem',
                          env['UNDERCLOUD_SERVICE_CERTIFICATE'])
 
     def test_relative_cert_path(self):
-        conf = config_fixture.Config()
-        self.useFixture(conf)
         [cert] = self.create_tempfiles([('test', 'foo')], '.pem')
         rel_cert = os.path.basename(cert)
         cert_path = os.path.dirname(cert)
         cur_dir = os.getcwd()
         try:
             os.chdir(cert_path)
-            conf.config(undercloud_service_certificate=rel_cert)
+            self.conf.config(undercloud_service_certificate=rel_cert)
             env = undercloud._generate_environment('.')
             self.assertEqual(os.path.join(os.getcwd(), rel_cert),
                              env['UNDERCLOUD_SERVICE_CERTIFICATE'])
@@ -672,9 +649,7 @@ class TestWritePasswordFile(BaseTestCase):
 
     def test_value_set(self):
         instack_env = {}
-        conf = config_fixture.Config()
-        self.useFixture(conf)
-        conf.config(undercloud_db_password='test', group='auth')
+        self.conf.config(undercloud_db_password='test', group='auth')
         undercloud._write_password_file(instack_env)
         test_parser = configparser.ConfigParser()
         test_parser.read(undercloud.PATHS.PASSWORD_PATH)

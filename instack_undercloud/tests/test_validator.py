@@ -24,8 +24,7 @@ from instack_undercloud import validator
 class TestValidator(base.BaseTestCase):
     def setUp(self):
         super(TestValidator, self).setUp()
-        self.conf = config_fixture.Config()
-        self.useFixture(self.conf)
+        self.conf = self.useFixture(config_fixture.Config())
 
     @mock.patch('netifaces.interfaces')
     def test_validation_passes(self, ifaces_mock):
