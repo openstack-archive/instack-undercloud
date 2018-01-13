@@ -14,6 +14,7 @@
 
 import netaddr
 import netifaces
+import six
 
 
 SUPPORTED_ARCHITECTURES = ['ppc64le']
@@ -75,23 +76,35 @@ def _validate_value_formats(params, error_callback):
     work properly.  For example, local_ip must be in CIDR form, and the
     hostname must be a FQDN.
     """
-    try:
-        local_ip = netaddr.IPNetwork(params['local_ip'])
-        if local_ip.prefixlen == 32:
-            raise netaddr.AddrFormatError('Invalid netmask')
-        # If IPv6 the ctlplane network uses the EUI-64 address format,
-        # which requires the prefix to be /64
-        if local_ip.version == 6 and local_ip.prefixlen != 64:
-            raise netaddr.AddrFormatError('Prefix must be 64 for IPv6')
-    except netaddr.core.AddrFormatError as e:
-        message = ('local_ip "%s" not valid: "%s" '
-                   'Value must be in CIDR format.' %
-                   (params['local_ip'], str(e)))
-        error_callback(message)
-    hostname = params['undercloud_hostname']
-    if hostname is not None and '.' not in hostname:
-        message = 'Hostname "%s" is not fully qualified.' % hostname
-        error_callback(message)
+    for param in ('local_ip', 'cidr'):
+        if param in params:
+            try:
+                ip_net = netaddr.IPNetwork(params[param])
+                if (ip_net.prefixlen == 32) or (ip_net.prefixlen == 0):
+                    message = ('"%s" "%s" not valid: Invalid netmask.' %
+                               (param, params[param]))
+                    error_callback(message)
+                # If IPv6 the ctlplane network uses the EUI-64 address format,
+                # which requires the prefix to be /64
+                if ip_net.version == 6 and ip_net.prefixlen != 64:
+                    message = ('"%s" "%s" not valid: '
+                               'Prefix must be 64 for IPv6.' %
+                               (param, params[param]))
+                    error_callback(message)
+            except netaddr.core.AddrFormatError as e:
+                message = ('"%s" "%s" not valid: "%s" '
+                           'Value must be in CIDR format.' %
+                           (param, params[param], str(e)))
+                error_callback(message)
+            except TypeError as e:
+                message = ('"%s" "%s" invalid type: "%s" ' %
+                           (param, params[param], str(e)))
+                error_callback(message)
+    if 'undercloud_hostname' in params:
+        hostname = params['undercloud_hostname']
+        if hostname is not None and '.' not in hostname:
+            message = 'Hostname "%s" is not fully qualified.' % hostname
+            error_callback(message)
 
 
 def _validate_in_cidr(params, error_callback):
@@ -108,26 +121,28 @@ def _validate_in_cidr(params, error_callback):
                 message = 'Invalid IP address: %s' % params[name]
                 error_callback(message)
 
-    params['just_local_ip'] = params['local_ip'].split('/')[0]
+    # NOTE(hjensas): Only check certs etc if not validating routed subnets
+    if 'local_ip' in params:
+        params['just_local_ip'] = params['local_ip'].split('/')[0]
+        validate_addr_in_cidr(params, 'just_local_ip', 'local_ip')
+        # NOTE(bnemec): The ui needs to be externally accessible, which means
+        # in many cases we can't have the public vip on the provisioning
+        # network. In that case users are on their own to ensure they've picked
+        # valid values for the VIP hosts.
+        if ((params['undercloud_service_certificate'] or
+             params['generate_service_certificate']) and
+                not params['enable_ui']):
+            validate_addr_in_cidr(params, 'undercloud_public_host',
+                                  require_ip=False)
+            validate_addr_in_cidr(params, 'undercloud_admin_host',
+                                  require_ip=False)
     # undercloud.conf uses inspection_iprange, the configuration wizard
     # tool passes the values separately.
     if 'inspection_iprange' in params:
         inspection_iprange = params['inspection_iprange'].split(',')
         params['inspection_start'] = inspection_iprange[0]
         params['inspection_end'] = inspection_iprange[1]
-    validate_addr_in_cidr(params, 'just_local_ip', 'local_ip')
     validate_addr_in_cidr(params, 'gateway')
-    # NOTE(bnemec): The ui needs to be externally accessible, which means in
-    # many cases we can't have the public vip on the provisioning network.
-    # In that case users are on their own to ensure they've picked valid
-    # values for the VIP hosts.
-    if ((params['undercloud_service_certificate'] or
-            params['generate_service_certificate']) and
-            not params['enable_ui']):
-        validate_addr_in_cidr(params, 'undercloud_public_host',
-                              require_ip=False)
-        validate_addr_in_cidr(params, 'undercloud_admin_host',
-                              require_ip=False)
     validate_addr_in_cidr(params, 'dhcp_start')
     validate_addr_in_cidr(params, 'dhcp_end')
     validate_addr_in_cidr(params, 'inspection_start', 'Inspection range start')
@@ -177,3 +192,20 @@ def _validate_interface_exists(params, error_callback):
         message = ('Invalid local_interface specified. %s is not available.' %
                    local_interface)
         error_callback(message)
+
+
+def _validate_no_missing_subnet_param(name, params, error_callback):
+    if None in six.viewvalues(params):
+        missing = list((k) for k, v in params.iteritems() if not v)
+        message = 'subnet %s. Missing option(s): %s' % (name, missing)
+        error_callback(message)
+
+
+def validate_subnet(name, params, error_callback):
+    local_params = dict(params)
+    _validate_no_missing_subnet_param(name, params, error_callback)
+    _validate_value_formats(local_params, error_callback)
+    _validate_in_cidr(local_params, error_callback)
+    _validate_dhcp_range(local_params, error_callback)
+    _validate_inspection_range(local_params, error_callback)
+    _validate_no_overlap(local_params, error_callback)

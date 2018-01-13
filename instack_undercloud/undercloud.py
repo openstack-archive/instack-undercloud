@@ -764,6 +764,10 @@ def _check_sysctl():
         raise RuntimeError('Missing sysctl options')
 
 
+def _cidr_overlaps(a, b):
+    return a.first <= b.last and b.first <= a.last
+
+
 def _validate_network():
     def error_handler(message):
         LOG.error('Undercloud configuration validation failed: %s', message)
@@ -777,6 +781,21 @@ def _validate_network():
     params.update({opt.name: local_subnet_opts[opt.name]
                    for opt in _subnets_opts})
     validator.validate_config(params, error_handler)
+
+    # Validate subnet parameters
+    subnet_cidrs = []
+    for subnet in CONF.subnets:
+        subnet_opts = CONF.get(subnet)
+        params = {opt.name: subnet_opts[opt.name] for opt in _subnets_opts}
+
+        if any(_cidr_overlaps(x, netaddr.IPNetwork(subnet_opts.cidr))
+               for x in subnet_cidrs):
+            message = ('CIDR of %s, %s, overlaps with another subnet.' %
+                       (subnet, subnet_opts.cidr))
+            error_handler(message)
+        subnet_cidrs.append(netaddr.IPNetwork(subnet_opts.cidr))
+
+        validator.validate_subnet(subnet, params, error_handler)
 
 
 def _validate_no_ip_change():
