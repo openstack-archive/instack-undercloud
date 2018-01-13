@@ -18,11 +18,6 @@
 # portion of the value. (string value)
 #local_ip = 192.168.24.1/24
 
-# Network gateway for the Neutron-managed network for Overcloud
-# instances. This should match the local_ip above when using
-# masquerading. (string value)
-#network_gateway = 192.168.24.1
-
 # Virtual IP or DNS address to use for the public endpoints of
 # Undercloud services. Only used with SSL. (string value)
 # Deprecated group/name - [DEFAULT]/undercloud_public_vip
@@ -43,6 +38,35 @@
 # parameter "CloudDomain" must be set to a matching value. (string
 # value)
 #overcloud_domain_name = localdomain
+
+# List of routed network subnets for provisioning and introspection.
+# Comma separated list of names/tags. For each network a section/group
+# needs to be added to the configuration file with these parameters
+# set: cidr, dhcp_start, dhcp_end, inspection_iprange and gateway.
+#
+# Example:
+#
+# subnets = subnet1,subnet2
+#
+# An example section/group in config file:
+#
+# [subnet1]
+# cidr = 192.168.10.0/24
+# dhcp_start = 192.168.10.100
+# dhcp_end = 192.168.10.200
+# inspection_iprange = 192.168.10.20,192.168.10.90
+# gateway = 192.168.10.254
+#
+# [subnet2]
+# . . .
+#  (list value)
+#subnets = ctlplane-subnet
+
+# Name of the local subnet, where the PXE boot and DHCP interfaces for
+# overcloud instances is located. The IP address of the
+# local_ip/local_interface should reside in this subnet. (string
+# value)
+#local_subnet = ctlplane-subnet
 
 # Certificate file to use for OpenStack service SSL connections.
 # Setting this enables SSL for the OpenStack API endpoints, leaving it
@@ -78,22 +102,9 @@
 # MTU to use for the local_interface. (integer value)
 #local_mtu = 1500
 
-# Network CIDR for the Neutron-managed network for Overcloud
-# instances. This should be the subnet used for PXE booting. (string
-# value)
-#network_cidr = 192.168.24.0/24
-
 # Network that will be masqueraded for external access, if required.
 # This should be the subnet used for PXE booting. (string value)
 #masquerade_network = 192.168.24.0/24
-
-# Start of DHCP allocation range for PXE and DHCP of Overcloud
-# instances. (string value)
-#dhcp_start = 192.168.24.5
-
-# End of DHCP allocation range for PXE and DHCP of Overcloud
-# instances. (string value)
-#dhcp_end = 192.168.24.24
 
 # Path to hieradata override file. If set, the file will be copied
 # under /etc/puppet/hieradata and set as the first file in the hiera
@@ -112,12 +123,6 @@
 # doubt, use the default value. (string value)
 # Deprecated group/name - [DEFAULT]/discovery_interface
 #inspection_interface = br-ctlplane
-
-# Temporary IP range that will be given to nodes during the inspection
-# process.  Should not overlap with the range defined by dhcp_start
-# and dhcp_end, but should be in the same network. (string value)
-# Deprecated group/name - [DEFAULT]/discovery_iprange
-#inspection_iprange = 192.168.24.100,192.168.24.120
 
 # Whether to enable extra hardware collection during the inspection
 # process. Requires python-hardware or python-hardware-detect package
@@ -343,3 +348,37 @@
 # Novajoin vendordata plugin service password. If left unset, one will
 # be automatically generated. (string value)
 #undercloud_novajoin_password = <None>
+
+
+[ctlplane-subnet]
+
+#
+# From instack-undercloud
+#
+
+# Network CIDR for the Neutron-managed subnet for Overcloud instances.
+# (string value)
+# Deprecated group/name - [DEFAULT]/network_cidr
+#cidr = 192.168.24.0/24
+
+# Start of DHCP allocation range for PXE and DHCP of Overcloud
+# instances on this network. (string value)
+# Deprecated group/name - [DEFAULT]/dhcp_start
+#dhcp_start = 192.168.24.5
+
+# End of DHCP allocation range for PXE and DHCP of Overcloud instances
+# on this network. (string value)
+# Deprecated group/name - [DEFAULT]/dhcp_end
+#dhcp_end = 192.168.24.24
+
+# Temporary IP range that will be given to nodes on this network
+# during the inspection process. Should not overlap with the range
+# defined by dhcp_start and dhcp_end, but should be in the same ip
+# subnet. (string value)
+# Deprecated group/name - [DEFAULT]/inspection_iprange
+#inspection_iprange = 192.168.24.100,192.168.24.120
+
+# Network gateway for the Neutron-managed network for Overcloud
+# instances on this network. (string value)
+# Deprecated group/name - [DEFAULT]/network_gateway
+#gateway = 192.168.24.1

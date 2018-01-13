@@ -24,6 +24,7 @@ import fixtures
 from keystoneauth1 import exceptions as ks_exceptions
 import mock
 from novaclient import exceptions
+from oslo_config import cfg
 from oslo_config import fixture as config_fixture
 from oslotest import base
 from oslotest import log
@@ -41,9 +42,24 @@ class BaseTestCase(base.BaseTestCase):
         super(BaseTestCase, self).setUp()
         self.logger = self.useFixture(log.ConfigureLogging()).logger
         self.conf = self.useFixture(config_fixture.Config())
+        # ctlplane-subnet - config group options
+        self.grp0 = cfg.OptGroup(name='ctlplane-subnet',
+                                 title='ctlplane-subnet')
+        self.opts = [cfg.StrOpt('cidr'),
+                     cfg.StrOpt('dhcp_start'),
+                     cfg.StrOpt('dhcp_end'),
+                     cfg.StrOpt('inspection_iprange'),
+                     cfg.StrOpt('gateway')]
+        self.conf.register_opts(self.opts, group=self.grp0)
+        self.conf.config(cidr='192.168.24.0/24',
+                         dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
+                         inspection_iprange='192.168.24.100,192.168.24.120',
+                         gateway='192.168.24.1', group='ctlplane-subnet')
 
 
 class TestUndercloud(BaseTestCase):
+    @mock.patch(
+        'instack_undercloud.undercloud._load_subnets_config_groups')
     @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._validate_configuration')
@@ -63,7 +79,7 @@ class TestUndercloud(BaseTestCase):
                      mock_run_clean_all, mock_run_yum_update, mock_run_orc,
                      mock_post_config, mock_run_command,
                      mock_validate_configuration, mock_configure_logging,
-                     mock_upgrade_fact):
+                     mock_upgrade_fact, mock_load_subnets_config_groups):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.')
@@ -77,6 +93,8 @@ class TestUndercloud(BaseTestCase):
         mock_die_tuskar_die.assert_not_called()
         mock_run_validation_groups.assert_not_called()
 
+    @mock.patch(
+        'instack_undercloud.undercloud._load_subnets_config_groups')
     @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._validate_configuration')
@@ -96,7 +114,8 @@ class TestUndercloud(BaseTestCase):
                              mock_run_yum_clean_all, mock_run_yum_update,
                              mock_run_orc, mock_post_config, mock_run_command,
                              mock_validate_configuration,
-                             mock_configure_logging, mock_upgrade_fact):
+                             mock_configure_logging, mock_upgrade_fact,
+                             mock_load_subnets_config_groups):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
         undercloud.install('.', upgrade=True)
@@ -110,6 +129,8 @@ class TestUndercloud(BaseTestCase):
         mock_die_tuskar_die.assert_called_once()
         mock_run_validation_groups.assert_called_once()
 
+    @mock.patch(
+        'instack_undercloud.undercloud._load_subnets_config_groups')
     @mock.patch('instack_undercloud.undercloud._handle_upgrade_fact')
     @mock.patch('instack_undercloud.undercloud._configure_logging')
     @mock.patch('instack_undercloud.undercloud._validate_configuration')
@@ -132,7 +153,8 @@ class TestUndercloud(BaseTestCase):
                                        mock_post_config, mock_run_command,
                                        mock_validate_configuration,
                                        mock_configure_logging,
-                                       mock_upgrade_fact):
+                                       mock_upgrade_fact,
+                                       mock_load_subnets_config_groups):
         self.conf.config(hieradata_override='override.yaml')
         with open(os.path.expanduser('~/override.yaml'), 'w') as f:
             f.write('Something\n')

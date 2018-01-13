@@ -15,6 +15,7 @@
 import mock
 
 from oslo_config import fixture as config_fixture
+from oslo_config import cfg
 from oslotest import base
 
 from instack_undercloud import undercloud
@@ -25,6 +26,19 @@ class TestValidator(base.BaseTestCase):
     def setUp(self):
         super(TestValidator, self).setUp()
         self.conf = self.useFixture(config_fixture.Config())
+        # ctlplane-subnet - config group options
+        self.grp0 = cfg.OptGroup(name='ctlplane-subnet',
+                                 title='ctlplane-subnet')
+        self.opts = [cfg.StrOpt('cidr'),
+                     cfg.StrOpt('dhcp_start'),
+                     cfg.StrOpt('dhcp_end'),
+                     cfg.StrOpt('inspection_iprange'),
+                     cfg.StrOpt('gateway')]
+        self.conf.register_opts(self.opts, group=self.grp0)
+        self.conf.config(cidr='192.168.24.0/24',
+                         dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
+                         inspection_iprange='192.168.24.100,192.168.24.120',
+                         gateway='192.168.24.1', group='ctlplane-subnet')
 
     @mock.patch('netifaces.interfaces')
     def test_validation_passes(self, ifaces_mock):
@@ -37,73 +51,82 @@ class TestValidator(base.BaseTestCase):
                           undercloud._validate_network)
 
     def test_fail_on_network_gateway(self):
-        self.conf.config(network_gateway='193.0.2.1')
+        self.conf.config(gateway='193.0.2.1', group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_dhcp_start(self):
-        self.conf.config(dhcp_start='193.0.2.10')
+        self.conf.config(dhcp_start='193.0.2.10', group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_dhcp_end(self):
-        self.conf.config(dhcp_end='193.0.2.10')
+        self.conf.config(dhcp_end='193.0.2.10', group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_start(self):
-        self.conf.config(inspection_iprange='193.0.2.100,192.168.24.120')
+        self.conf.config(inspection_iprange='193.0.2.100,192.168.24.120',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_end(self):
-        self.conf.config(inspection_iprange='192.168.24.100,193.0.2.120')
+        self.conf.config(inspection_iprange='192.168.24.100,193.0.2.120',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_dhcp_order(self):
-        self.conf.config(dhcp_start='192.168.24.100', dhcp_end='192.168.24.10')
+        self.conf.config(dhcp_start='192.168.24.100', dhcp_end='192.168.24.10',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_dhcp_equal(self):
         self.conf.config(dhcp_start='192.168.24.100',
-                         dhcp_end='192.168.24.100')
+                         dhcp_end='192.168.24.100', group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_order(self):
-        self.conf.config(inspection_iprange='192.168.24.120,192.168.24.100')
+        self.conf.config(inspection_iprange='192.168.24.120,192.168.24.100',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_inspection_equal(self):
-        self.conf.config(inspection_iprange='192.168.24.120,192.168.24.120')
+        self.conf.config(inspection_iprange='192.168.24.120,192.168.24.120',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_1(self):
         self.conf.config(dhcp_start='192.168.24.10', dhcp_end='192.168.24.100',
-                         inspection_iprange='192.168.24.90,192.168.24.110')
+                         inspection_iprange='192.168.24.90,192.168.24.110',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_2(self):
         self.conf.config(dhcp_start='192.168.24.100',
                          dhcp_end='192.168.24.120',
-                         inspection_iprange='192.168.24.90,192.168.24.110')
+                         inspection_iprange='192.168.24.90,192.168.24.110',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_3(self):
         self.conf.config(dhcp_start='192.168.24.20', dhcp_end='192.168.24.90',
-                         inspection_iprange='192.168.24.10,192.168.24.100')
+                         inspection_iprange='192.168.24.10,192.168.24.100',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
     def test_fail_on_range_overlap_4(self):
         self.conf.config(dhcp_start='192.168.24.10', dhcp_end='192.168.24.100',
-                         inspection_iprange='192.168.24.20,192.168.24.90')
+                         inspection_iprange='192.168.24.20,192.168.24.90',
+                         group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 
@@ -118,9 +141,12 @@ class TestValidator(base.BaseTestCase):
                           undercloud._validate_network)
 
     def test_no_alter_params(self):
-        self.conf.config(network_cidr='192.168.24.0/24')
+        self.conf.config(cidr='192.168.24.0/24', group='ctlplane-subnet')
         params = {opt.name: self.conf.conf[opt.name]
                   for opt in undercloud._opts}
+        params.update(
+            {opt.name: self.conf.conf.get('ctlplane-subnet')[opt.name]
+             for opt in undercloud._subnets_opts})
         save_params = dict(params)
         validator.validate_config(params, lambda x: None)
         self.assertEqual(save_params, params)
@@ -171,7 +197,7 @@ class TestValidator(base.BaseTestCase):
     @mock.patch('netifaces.interfaces')
     def test_fail_on_invalid_ip(self, ifaces_mock):
         ifaces_mock.return_value = ['eth1']
-        self.conf.config(dhcp_start='foo.bar')
+        self.conf.config(dhcp_start='foo.bar', group='ctlplane-subnet')
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_network)
 

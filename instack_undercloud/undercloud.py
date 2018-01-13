@@ -114,7 +114,18 @@ log can be found at %(log_file)s.
 REQUIRED_MB = 7680
 # Control plane network name
 PHYSICAL_NETWORK = 'ctlplane'
-CTLPLANE_SUBNET_NAME = 'ctlplane-subnet'
+SUBNETS_DEFAULT = ['ctlplane-subnet']
+
+# Deprecated options
+_deprecated_opt_network_gateway = [cfg.DeprecatedOpt(
+  'network_gateway', group='DEFAULT')]
+_deprecated_opt_network_cidr = [cfg.DeprecatedOpt(
+  'network_cidr', group='DEFAULT')]
+_deprecated_opt_dhcp_start = [cfg.DeprecatedOpt(
+  'dhcp_start', group='DEFAULT')]
+_deprecated_opt_dhcp_end = [cfg.DeprecatedOpt('dhcp_end', group='DEFAULT')]
+_deprecated_opt_inspection_iprange = [cfg.DeprecatedOpt(
+  'inspection_iprange', group='DEFAULT')]
 
 # When adding new options to the lists below, make sure to regenerate the
 # sample config by running "tox -e genconfig" in the project root.
@@ -135,12 +146,6 @@ _opts = [
                      'be assigned to the network interface defined by '
                      'local_interface, with the netmask defined by the '
                      'prefix portion of the value.')
-               ),
-    cfg.StrOpt('network_gateway',
-               default='192.168.24.1',
-               help=('Network gateway for the Neutron-managed network for '
-                     'Overcloud instances. This should match the local_ip '
-                     'above when using masquerading.')
                ),
     cfg.StrOpt('undercloud_public_host',
                deprecated_name='undercloud_public_vip',
@@ -167,6 +172,35 @@ _opts = [
                      'The overcloud parameter "CloudDomain" must be set to a '
                      'matching value.')
                ),
+    cfg.ListOpt('subnets',
+                default=SUBNETS_DEFAULT,
+                help=('List of routed network subnets for provisioning '
+                      'and introspection. Comma separated list of names/tags. '
+                      'For each network a section/group needs to be added to '
+                      'the configuration file with these parameters set: '
+                      'cidr, dhcp_start, dhcp_end, inspection_iprange and '
+                      'gateway.'
+                      '\n\n'
+                      'Example:\n\n'
+                      'subnets = subnet1,subnet2\n'
+                      '\n'
+                      'An example section/group in config file:\n'
+                      '\n'
+                      '[subnet1]\n'
+                      'cidr = 192.168.10.0/24\n'
+                      'dhcp_start = 192.168.10.100\n'
+                      'dhcp_end = 192.168.10.200\n'
+                      'inspection_iprange = 192.168.10.20,192.168.10.90\n'
+                      'gateway = 192.168.10.254\n'
+                      '\n'
+                      '[subnet2]\n'
+                      '. . .\n')),
+    cfg.StrOpt('local_subnet',
+               default=SUBNETS_DEFAULT[0],
+               help=('Name of the local subnet, where the PXE boot and DHCP '
+                     'interfaces for overcloud instances is located. The IP '
+                     'address of the local_ip/local_interface should reside '
+                     'in this subnet.')),
     cfg.StrOpt('undercloud_service_certificate',
                default='',
                help=('Certificate file to use for OpenStack service SSL '
@@ -211,27 +245,11 @@ _opts = [
                default=1500,
                help=('MTU to use for the local_interface.')
                ),
-    cfg.StrOpt('network_cidr',
-               default='192.168.24.0/24',
-               help=('Network CIDR for the Neutron-managed network for '
-                     'Overcloud instances. This should be the subnet used '
-                     'for PXE booting.')
-               ),
     cfg.StrOpt('masquerade_network',
                default='192.168.24.0/24',
                help=('Network that will be masqueraded for external access, '
                      'if required. This should be the subnet used for PXE '
                      'booting.')
-               ),
-    cfg.StrOpt('dhcp_start',
-               default='192.168.24.5',
-               help=('Start of DHCP allocation range for PXE and DHCP of '
-                     'Overcloud instances.')
-               ),
-    cfg.StrOpt('dhcp_end',
-               default='192.168.24.24',
-               help=('End of DHCP allocation range for PXE and DHCP of '
-                     'Overcloud instances.')
                ),
     cfg.StrOpt('hieradata_override',
                default='',
@@ -256,14 +274,6 @@ _opts = [
                deprecated_name='discovery_interface',
                help=('Network interface on which inspection dnsmasq will '
                      'listen.  If in doubt, use the default value.')
-               ),
-    cfg.StrOpt('inspection_iprange',
-               default='192.168.24.100,192.168.24.120',
-               deprecated_name='discovery_iprange',
-               help=('Temporary IP range that will be given to nodes during '
-                     'the inspection process.  Should not overlap with the '
-                     'range defined by dhcp_start and dhcp_end, but should '
-                     'be in the same network.')
                ),
     cfg.BoolOpt('inspection_extras',
                 default=True,
@@ -383,6 +393,37 @@ _opts = [
                 help=('List of additional architectures enabled in your cloud '
                       'environment. The list of supported values is: %s'
                       % ' '.join(validator.SUPPORTED_ARCHITECTURES))),
+]
+
+# Routed subnets
+_subnets_opts = [
+    cfg.StrOpt('cidr',
+               default='192.168.24.0/24',
+               deprecated_opts=_deprecated_opt_network_cidr,
+               help=('Network CIDR for the Neutron-managed subnet for '
+                     'Overcloud instances.')),
+    cfg.StrOpt('dhcp_start',
+               default='192.168.24.5',
+               deprecated_opts=_deprecated_opt_dhcp_start,
+               help=('Start of DHCP allocation range for PXE and DHCP of '
+                     'Overcloud instances on this network.')),
+    cfg.StrOpt('dhcp_end',
+               default='192.168.24.24',
+               deprecated_opts=_deprecated_opt_dhcp_end,
+               help=('End of DHCP allocation range for PXE and DHCP of '
+                     'Overcloud instances on this network.')),
+    cfg.StrOpt('inspection_iprange',
+               default='192.168.24.100,192.168.24.120',
+               deprecated_opts=_deprecated_opt_inspection_iprange,
+               help=('Temporary IP range that will be given to nodes on this '
+                     'network during the inspection process. Should not '
+                     'overlap with the range defined by dhcp_start and '
+                     'dhcp_end, but should be in the same ip subnet.')),
+    cfg.StrOpt('gateway',
+               default='192.168.24.1',
+               deprecated_opts=_deprecated_opt_network_gateway,
+               help=('Network gateway for the Neutron-managed network for '
+                     'Overcloud instances on this network.')),
 ]
 
 # Passwords, tokens, hashes
@@ -512,8 +553,15 @@ CONF.register_opts(_opts)
 CONF.register_opts(_auth_opts, group='auth')
 
 
+def _load_subnets_config_groups():
+    for group in CONF.subnets:
+        g = cfg.OptGroup(name=group, title=group)
+        CONF.register_opts(_subnets_opts, group=g)
+
+
 def list_opts():
     return [(None, copy.deepcopy(_opts)),
+            (SUBNETS_DEFAULT[0], copy.deepcopy(_subnets_opts)),
             ('auth', copy.deepcopy(_auth_opts)),
             ]
 
@@ -722,6 +770,12 @@ def _validate_network():
         raise validator.FailedValidation(message)
 
     params = {opt.name: CONF[opt.name] for opt in _opts}
+    # Get parameters of "local_subnet", pass to validator to ensure parameters
+    # such as "local_ip", "undercloud_public_host" and "undercloud_admin_host"
+    # are valid
+    local_subnet_opts = CONF.get(CONF.local_subnet)
+    params.update({opt.name: local_subnet_opts[opt.name]
+                   for opt in _subnets_opts})
     validator.validate_config(params, error_handler)
 
 
@@ -749,7 +803,7 @@ def _validate_no_ip_change():
     if existing_ip != CONF.local_ip:
         message = ('Changing the local_ip is not allowed.  Existing IP: '
                    '%s, Configured IP: %s') % (existing_ip,
-                                               CONF.network_cidr)
+                                               CONF.local_ip)
         LOG.error(message)
         raise validator.FailedValidation(message)
 
@@ -1084,6 +1138,7 @@ class InstackEnvironment(dict):
                     'ENABLED_RAID_INTERFACES', 'ENABLED_VENDOR_INTERFACES',
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
+                    'INSPECTION_IPRANGE',
                     }
     """The variables we calculate in _generate_environment call."""
 
@@ -1273,6 +1328,9 @@ def _generate_environment(instack_root):
         inspection_kernel_args.append('ipa-collect-lldp=1')
 
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
+    # TODO(hjensas): Remove this when switching to INSPECTION_SUBNETS
+    instack_env['INSPECTION_IPRANGE'] = CONF.get(
+        CONF.local_subnet).inspection_iprange
 
     _process_drivers_and_hardware_types(instack_env)
 
@@ -1975,24 +2033,24 @@ def _get_subnet(sdk, cidr, network_id):
 
 
 def _config_neutron_segments_and_subnets(sdk, ctlplane_id):
+    s = CONF.get(CONF.local_subnet)
     host_routes = [{'destination': '169.254.169.254/32',
                     'nexthop': str(netaddr.IPNetwork(CONF.local_ip).ip)}]
-    allocation_pool = [{'start': CONF.dhcp_start, 'end': CONF.dhcp_end}]
+    allocation_pool = [{'start': s.dhcp_start, 'end': s.dhcp_end}]
 
     subnet = _get_subnet(sdk, CONF.network_cidr, ctlplane_id)
     if subnet:
-        _neutron_subnet_update(sdk, subnet.id, CONF.network_gateway,
-                               host_routes, allocation_pool,
-                               CTLPLANE_SUBNET_NAME)
+        _neutron_subnet_update(sdk, subnet.id, s.gateway, host_routes,
+                               allocation_pool, CONF.local_subnet)
     else:
-        subnet = _neutron_subnet_create(sdk, ctlplane_id, CONF.network_cidr,
-                                        CONF.network_gateway, host_routes,
-                                        allocation_pool, CTLPLANE_SUBNET_NAME)
+        subnet = _neutron_subnet_create(sdk, ctlplane_id, s.cidr, s.gateway,
+                                        host_routes, allocation_pool,
+                                        CONF.local_subnet)
 
     # If the subnet is IPv6 we need to start a router so that router
     # advertisments are sent out for stateless IP addressing to work.
     if ':' in CONF.dhcp_start:
-        _ensure_neutron_router(sdk, CTLPLANE_SUBNET_NAME, subnet.id)
+        _ensure_neutron_router(sdk, CONF.local_subnet, subnet.id)
 
 
 def _handle_upgrade_fact(upgrade=False):
@@ -2046,6 +2104,10 @@ def install(instack_root, upgrade=False):
     try:
         _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
         LOG.info('Logging to %s', PATHS.LOG_FILE)
+        _load_config()
+        _load_subnets_config_groups()
+        # Since 'subnets' parameter in opts is used to dynamically
+        # add per network groups, re-load config.
         _load_config()
         _clean_os_refresh_config()
         _clean_os_collect_config()

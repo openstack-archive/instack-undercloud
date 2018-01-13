@@ -95,7 +95,7 @@ def _validate_value_formats(params, error_callback):
 
 
 def _validate_in_cidr(params, error_callback):
-    cidr = netaddr.IPNetwork(params['network_cidr'])
+    cidr = netaddr.IPNetwork(params['cidr'])
 
     def validate_addr_in_cidr(params, name, pretty_name=None, require_ip=True):
         try:
@@ -116,7 +116,7 @@ def _validate_in_cidr(params, error_callback):
         params['inspection_start'] = inspection_iprange[0]
         params['inspection_end'] = inspection_iprange[1]
     validate_addr_in_cidr(params, 'just_local_ip', 'local_ip')
-    validate_addr_in_cidr(params, 'network_gateway')
+    validate_addr_in_cidr(params, 'gateway')
     # NOTE(bnemec): The ui needs to be externally accessible, which means in
     # many cases we can't have the public vip on the provisioning network.
     # In that case users are on their own to ensure they've picked valid
