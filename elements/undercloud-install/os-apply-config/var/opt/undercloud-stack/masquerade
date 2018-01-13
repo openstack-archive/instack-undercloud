@@ -11,7 +11,11 @@ $IPTCOMMAND -w -t nat -N BOOTSTACK_MASQ_NEW
 # Build the chain we want.
 {{#masquerade_networks}}
 NETWORK={{.}}
-$IPTCOMMAND -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK ! -d $NETWORK -j MASQUERADE
+NETWORKS={{#masquerade_networks}}{{.}},{{/masquerade_networks}}
+# Shell substitution to remove the traling comma
+NETWORKS=${NETWORKS%?}
+$IPTCOMMAND -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK -d $NETWORKS -j RETURN
+$IPTCOMMAND -w -t nat -A BOOTSTACK_MASQ_NEW -s $NETWORK -j MASQUERADE
 {{/masquerade_networks}}
 # Link it in.
 $IPTCOMMAND -w -t nat -I POSTROUTING -j BOOTSTACK_MASQ_NEW

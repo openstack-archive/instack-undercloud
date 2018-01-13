@@ -42,7 +42,8 @@
 # List of routed network subnets for provisioning and introspection.
 # Comma separated list of names/tags. For each network a section/group
 # needs to be added to the configuration file with these parameters
-# set: cidr, dhcp_start, dhcp_end, inspection_iprange and gateway.
+# set: cidr, dhcp_start, dhcp_end, inspection_iprange, gateway and
+# masquerade_network.
 #
 # Example:
 #
@@ -56,7 +57,7 @@
 # dhcp_end = 192.168.10.200
 # inspection_iprange = 192.168.10.20,192.168.10.90
 # gateway = 192.168.10.254
-#
+# masquerade_network = True
 # [subnet2]
 # . . .
 #  (list value)
@@ -102,8 +103,13 @@
 # MTU to use for the local_interface. (integer value)
 #local_mtu = 1500
 
-# Network that will be masqueraded for external access, if required.
-# This should be the subnet used for PXE booting. (string value)
+# DEPRECATED: Network that will be masqueraded for external access, if
+# required. This should be the subnet used for PXE booting. (string
+# value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+# Reason: With support for routed networks, masquerading of the
+# provisioning networks is moved to a boolean option for each subnet.
 #masquerade_network = 192.168.24.0/24
 
 # Path to hieradata override file. If set, the file will be copied
@@ -382,3 +388,6 @@
 # instances on this network. (string value)
 # Deprecated group/name - [DEFAULT]/network_gateway
 #gateway = 192.168.24.1
+
+# The network will be masqueraded for external access. (boolean value)
+#masquerade = false

@@ -178,8 +178,8 @@ _opts = [
                       'and introspection. Comma separated list of names/tags. '
                       'For each network a section/group needs to be added to '
                       'the configuration file with these parameters set: '
-                      'cidr, dhcp_start, dhcp_end, inspection_iprange and '
-                      'gateway.'
+                      'cidr, dhcp_start, dhcp_end, inspection_iprange, '
+                      'gateway and masquerade_network.'
                       '\n\n'
                       'Example:\n\n'
                       'subnets = subnet1,subnet2\n'
@@ -192,6 +192,7 @@ _opts = [
                       'dhcp_end = 192.168.10.200\n'
                       'inspection_iprange = 192.168.10.20,192.168.10.90\n'
                       'gateway = 192.168.10.254\n'
+                      'masquerade_network = True'
                       '\n'
                       '[subnet2]\n'
                       '. . .\n')),
@@ -247,6 +248,11 @@ _opts = [
                ),
     cfg.StrOpt('masquerade_network',
                default='192.168.24.0/24',
+               deprecated_for_removal=True,
+               deprecated_reason=('With support for routed networks, '
+                                  'masquerading of the provisioning networks '
+                                  'is moved to a boolean option for each '
+                                  'subnet.'),
                help=('Network that will be masqueraded for external access, '
                      'if required. This should be the subnet used for PXE '
                      'booting.')
@@ -424,6 +430,9 @@ _subnets_opts = [
                deprecated_opts=_deprecated_opt_network_gateway,
                help=('Network gateway for the Neutron-managed network for '
                      'Overcloud instances on this network.')),
+    cfg.BoolOpt('masquerade',
+                default=False,
+                help=('The network will be masqueraded for external access.')),
 ]
 
 # Passwords, tokens, hashes
@@ -1158,7 +1167,7 @@ class InstackEnvironment(dict):
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
                     'INSPECTION_SUBNETS', 'SUBNETS_CIDR_NAT_RULES',
-                    'SUBNETS_STATIC_ROUTES'}
+                    'SUBNETS_STATIC_ROUTES', 'MASQUERADE_NETWORKS'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1259,6 +1268,20 @@ def _process_drivers_and_hardware_types(instack_env):
     if 'snmp' in enabled_hardware_types:
         mgmt_interfaces.add('snmp')
     instack_env['ENABLED_POWER_INTERFACES'] = _make_list(mgmt_interfaces)
+
+
+def _generate_masquerade_networks():
+    env_list = []
+    for subnet in CONF.subnets:
+        s = CONF.get(subnet)
+        if s.masquerade:
+            env_list.append(s.cidr)
+
+    # NOTE(hjensas): Remove once deprecated masquerade_network option is gone
+    if CONF.masquerade_network and (CONF.masquerade_network not in env_list):
+        env_list.append(CONF.masquerade_network)
+
+    return json.dumps(env_list)
 
 
 def _generate_inspection_subnets():
@@ -1391,6 +1414,7 @@ def _generate_environment(instack_root):
     _process_drivers_and_hardware_types(instack_env)
     instack_env['INSPECTION_SUBNETS'] = _generate_inspection_subnets()
     instack_env['SUBNETS_CIDR_NAT_RULES'] = _generate_subnets_cidr_nat_rules()
+    instack_env['MASQUERADE_NETWORKS'] = _generate_masquerade_networks()
     instack_env['SUBNETS_STATIC_ROUTES'] = _generate_subnets_static_routes()
 
     instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()

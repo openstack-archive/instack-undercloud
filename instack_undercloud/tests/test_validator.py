@@ -33,12 +33,14 @@ class TestValidator(base.BaseTestCase):
                      cfg.StrOpt('dhcp_start'),
                      cfg.StrOpt('dhcp_end'),
                      cfg.StrOpt('inspection_iprange'),
-                     cfg.StrOpt('gateway')]
+                     cfg.StrOpt('gateway'),
+                     cfg.BoolOpt('masquerade')]
         self.conf.register_opts(self.opts, group=self.grp0)
         self.conf.config(cidr='192.168.24.0/24',
                          dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
                          inspection_iprange='192.168.24.100,192.168.24.120',
-                         gateway='192.168.24.1', group='ctlplane-subnet')
+                         gateway='192.168.24.1', masquerade=True,
+                         group='ctlplane-subnet')
 
     @mock.patch('netifaces.interfaces')
     def test_validation_passes(self, ifaces_mock):
