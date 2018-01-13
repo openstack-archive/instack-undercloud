@@ -21,6 +21,7 @@ import glob
 import hashlib
 import json
 import logging
+import netaddr
 import os
 import platform
 import re
@@ -111,7 +112,9 @@ log can be found at %(log_file)s.
 # We need 8 GB, leave a little room for variation in what 8 GB means on
 # different platforms.
 REQUIRED_MB = 7680
-
+# Control plane network name
+PHYSICAL_NETWORK = 'ctlplane'
+CTLPLANE_SUBNET_NAME = 'ctlplane-subnet'
 
 # When adding new options to the lists below, make sure to regenerate the
 # sample config by running "tox -e genconfig" in the project root.
@@ -1808,6 +1811,16 @@ def _post_config(instack_env, upgrade):
     ironic = ir_client.get_client(1, session=sess,
                                   os_ironic_api_version='1.21')
 
+    sdk = os_client_config.make_sdk(auth_url=auth_url,
+                                    project_name=project,
+                                    username=user,
+                                    password=password,
+                                    project_domain_name='Default',
+                                    user_domain_name='Default')
+
+    network = _ensure_neutron_network(sdk)
+    _config_neutron_segments_and_subnets(sdk, network.id)
+
     _configure_ssh_keys(nova)
     _ensure_ssh_selinux_permission()
     _delete_default_flavors(nova)
@@ -1846,6 +1859,117 @@ def _post_config(instack_env, upgrade):
                                             project_domain_name='Default',
                                             user_domain_name='Default')
         _migrate_to_convergence(heat)
+
+
+def _ensure_neutron_network(sdk):
+    try:
+        network = list(sdk.network.networks(name=PHYSICAL_NETWORK))
+        if not network:
+            network = sdk.network.create_network(
+                name=PHYSICAL_NETWORK, provider_network_type='flat',
+                provider_physical_network=PHYSICAL_NETWORK)
+            LOG.info("Network created %s", network)
+        else:
+            LOG.info("Not creating %s network, because it already exists.",
+                     PHYSICAL_NETWORK)
+            network = network[0]
+    except Exception as e:
+        LOG.info("Network create/update failed %s", e)
+        raise
+
+    return network
+
+
+def _neutron_subnet_create(sdk, network_id, cidr, gateway, host_routes,
+                           allocation_pool, name):
+    try:
+        # DHCP_START contains a ":" then assume a IPv6 subnet
+        if ':' in allocation_pool[0]['start']:
+            host_routes = ''
+            subnet = sdk.network.create_subnet(
+                name=name,
+                cidr=cidr,
+                gateway_ip=gateway,
+                host_routes=host_routes,
+                enable_dhcp=True,
+                ip_version='6',
+                ipv6_address_mode='dhcpv6-stateless',
+                ipv6_ra_mode='dhcpv6-stateless',
+                allocation_pools=allocation_pool,
+                network_id=network_id)
+        else:
+            subnet = sdk.network.create_subnet(
+                name=name,
+                cidr=cidr,
+                gateway_ip=gateway,
+                host_routes=host_routes,
+                enable_dhcp=True,
+                ip_version='4',
+                allocation_pools=allocation_pool,
+                network_id=network_id)
+        LOG.info("Subnet created %s", subnet)
+    except Exception as e:
+        LOG.error("Create subnet %s failed: %s", name, e)
+        raise
+
+    return subnet
+
+
+def _neutron_subnet_update(sdk, subnet_id, gateway, host_routes,
+                           allocation_pool, name):
+    try:
+        # DHCP_START contains a ":" then assume a IPv6 subnet
+        if ':' in allocation_pool[0]['start']:
+            host_routes = ''
+        subnet = sdk.network.update_subnet(
+                   subnet_id,
+                   name=name,
+                   gateway_ip=gateway,
+                   host_routes=host_routes,
+                   allocation_pools=allocation_pool)
+        LOG.info("Subnet updated %s", subnet)
+    except Exception as e:
+        LOG.error("Update subnet %s failed: %s", name, e)
+        raise
+
+
+def _ensure_neutron_router(sdk, name, subnet_id):
+    try:
+        router = sdk.network.create_router(name=name, admin_state_up='true')
+        sdk.network.add_interface_to_router(router.id, subnet_id=subnet_id)
+    except Exception as e:
+        LOG.error("Create router for subnet %s failed: %s", name, e)
+        raise
+
+
+def _get_subnet(sdk, cidr, network_id):
+    try:
+        subnet = list(sdk.network.subnets(cidr=cidr, network_id=network_id))
+    except Exception:
+        raise
+
+    return False if not subnet else subnet[0]
+
+
+def _config_neutron_segments_and_subnets(sdk, ctlplane_id):
+    host_routes = [{'destination': '169.254.169.254/32',
+                    'nexthop': str(netaddr.IPNetwork(CONF.local_ip).ip)}]
+    allocation_pool = [{'start': CONF.dhcp_start, 'end': CONF.dhcp_end}]
+
+    subnet = _get_subnet(sdk, CONF.network_cidr, ctlplane_id)
+    if subnet:
+        _neutron_subnet_update(sdk, subnet.id, CONF.network_gateway,
+                               host_routes, allocation_pool,
+                               CTLPLANE_SUBNET_NAME)
+    else:
+        subnet = _neutron_subnet_create(sdk, ctlplane_id, CONF.network_cidr,
+                                        CONF.network_gateway, host_routes,
+                                        allocation_pool, CTLPLANE_SUBNET_NAME)
+
+    # If the subnet is IPv6 we need to start a router so that router
+    # advertisments are sent out for stateless IP addressing to work.
+    if ':' in CONF.dhcp_start:
+        _ensure_neutron_router(sdk, CTLPLANE_SUBNET_NAME, subnet.id)
 
 
 def _handle_upgrade_fact(upgrade=False):

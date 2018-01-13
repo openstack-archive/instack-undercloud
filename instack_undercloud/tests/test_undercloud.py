@@ -773,6 +773,9 @@ class TestPostConfig(base.BaseTestCase):
     @mock.patch('os_client_config.make_client')
     @mock.patch('instack_undercloud.undercloud._migrate_to_convergence')
     @mock.patch('instack_undercloud.undercloud._ensure_node_resource_classes')
+    @mock.patch(
+      'instack_undercloud.undercloud._config_neutron_segments_and_subnets')
+    @mock.patch('instack_undercloud.undercloud._ensure_neutron_network')
     @mock.patch('instack_undercloud.undercloud._member_role_exists')
     @mock.patch('instack_undercloud.undercloud._get_session')
     @mock.patch('ironicclient.client.get_client', autospec=True)
@@ -790,6 +793,8 @@ class TestPostConfig(base.BaseTestCase):
                          mock_copy_stackrc, mock_delete, mock_mistral_client,
                          mock_swift_client, mock_nova_client, mock_ir_client,
                          mock_get_session, mock_member_role_exists,
+                         mock_ensure_neutron_network,
+                         mock_config_neutron_segments_and_subnets,
                          mock_resource_classes, mock_migrate_to_convergence,
                          mock_make_client):
         instack_env = {
@@ -1283,6 +1288,57 @@ class TestPostConfig(base.BaseTestCase):
                          mock_mistral.workbooks.create.mock_calls)
         mock_cmce.assert_called_once_with(instack_env, mock_mistral)
         mock_create.assert_called_once_with(mock_mistral, ['hut8'])
+
+    def _neutron_mocks(self):
+        mock_sdk = mock.MagicMock()
+        mock_sdk.network.create_network = mock.Mock()
+        mock_sdk.network.delete_segment = mock.Mock()
+        mock_sdk.network.create_subnet = mock.Mock()
+        mock_sdk.network.update_subnet = mock.Mock()
+        return mock_sdk
+
+    def test_network_create(self):
+        mock_sdk = self._neutron_mocks()
+        mock_sdk.network.networks.return_value = iter([])
+        segment_mock = mock.Mock()
+        mock_sdk.network.segments.return_value = iter([segment_mock])
+        undercloud._ensure_neutron_network(mock_sdk)
+        mock_sdk.network.create_network.assert_called_with(
+          name='ctlplane', provider_network_type='flat',
+          provider_physical_network='ctlplane')
+
+    def test_network_exists(self):
+        mock_sdk = self._neutron_mocks()
+        mock_sdk.network.networks.return_value = iter(['ctlplane'])
+        undercloud._ensure_neutron_network(mock_sdk)
+        mock_sdk.network.create_network.assert_not_called()
+
+    def test_subnet_create(self):
+        mock_sdk = self._neutron_mocks()
+        host_routes = [{'destination': '169.254.169.254/32',
+                        'nexthop': '192.168.24.1'}]
+        allocation_pool = [{'start': '192.168.24.5', 'end': '192.168.24.24'}]
+        undercloud._neutron_subnet_create(mock_sdk, 'network_id',
+                                          '192.168.24.0/24', '192.168.24.1',
+                                          host_routes, allocation_pool,
+                                          'ctlplane-subnet')
+        mock_sdk.network.create_subnet.assert_called_with(
+          name='ctlplane-subnet', cidr='192.168.24.0/24',
+          gateway_ip='192.168.24.1', host_routes=host_routes, enable_dhcp=True,
+          ip_version='4', allocation_pools=allocation_pool,
+          network_id='network_id')
+
+    def test_subnet_update(self):
+        mock_sdk = self._neutron_mocks()
+        host_routes = [{'destination': '169.254.169.254/32',
+                        'nexthop': '192.168.24.1'}]
+        allocation_pool = [{'start': '192.168.24.5', 'end': '192.168.24.24'}]
+        undercloud._neutron_subnet_update(mock_sdk, 'subnet_id',
+                                          '192.168.24.1', host_routes,
+                                          allocation_pool, 'ctlplane-subnet')
+        mock_sdk.network.update_subnet.assert_called_with(
+          'subnet_id', name='ctlplane-subnet', gateway_ip='192.168.24.1',
+          host_routes=host_routes, allocation_pools=allocation_pool)
 
 
 class TestUpgradeFact(base.BaseTestCase):
