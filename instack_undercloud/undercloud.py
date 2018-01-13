@@ -1157,7 +1157,7 @@ class InstackEnvironment(dict):
                     'ENABLED_RAID_INTERFACES', 'ENABLED_VENDOR_INTERFACES',
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
-                    'INSPECTION_IPRANGE',
+                    'INSPECTION_SUBNETS',
                     }
     """The variables we calculate in _generate_environment call."""
 
@@ -1261,6 +1261,19 @@ def _process_drivers_and_hardware_types(instack_env):
     instack_env['ENABLED_POWER_INTERFACES'] = _make_list(mgmt_interfaces)
 
 
+def _generate_inspection_subnets():
+    env_list = []
+    for subnet in CONF.subnets:
+        env_dict = {}
+        s = CONF.get(subnet)
+        env_dict['tag'] = subnet
+        env_dict['ip_range'] = s.inspection_iprange
+        env_dict['netmask'] = str(netaddr.IPNetwork(s.cidr).netmask)
+        env_dict['gateway'] = s.gateway
+        env_list.append(env_dict)
+    return json.dumps(env_list)
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -1347,11 +1360,9 @@ def _generate_environment(instack_root):
         inspection_kernel_args.append('ipa-collect-lldp=1')
 
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
-    # TODO(hjensas): Remove this when switching to INSPECTION_SUBNETS
-    instack_env['INSPECTION_IPRANGE'] = CONF.get(
-        CONF.local_subnet).inspection_iprange
 
     _process_drivers_and_hardware_types(instack_env)
+    instack_env['INSPECTION_SUBNETS'] = _generate_inspection_subnets()
 
     instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()
 

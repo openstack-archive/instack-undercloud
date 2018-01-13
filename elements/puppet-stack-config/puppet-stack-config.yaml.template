@@ -573,8 +573,8 @@ ironic::inspector::swift_project_domain_name: 'Default'
 ironic::inspector::swift_user_domain_name: 'Default'
 ironic::inspector::swift_auth_url: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
-ironic::inspector::dnsmasq_ip_range: {{INSPECTION_IPRANGE}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
+ironic::inspector::dnsmasq_ip_subnets: {{{INSPECTION_SUBNETS}}}
 ironic::inspector::ramdisk_collectors: {{INSPECTION_COLLECTORS}}
 ironic::inspector::additional_processing_hooks: 'extra_hardware,lldp_basic,local_link_connection'
 ironic::inspector::ramdisk_kernel_args: {{INSPECTION_KERNEL_ARGS}}

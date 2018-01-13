@@ -51,6 +51,8 @@ class BaseTestCase(base.BaseTestCase):
                      cfg.StrOpt('inspection_iprange'),
                      cfg.StrOpt('gateway')]
         self.conf.register_opts(self.opts, group=self.grp0)
+        self.grp1 = cfg.OptGroup(name='subnet1', title='subnet1')
+        self.gtp2 = cfg.OptGroup(name='subnet2', title='subnet2')
         self.conf.config(cidr='192.168.24.0/24',
                          dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
                          inspection_iprange='192.168.24.100,192.168.24.120',
@@ -655,6 +657,37 @@ class TestGenerateEnvironment(BaseTestCase):
                                                      'rum_yepo.conf'))
         env = undercloud._generate_environment('.')
         self.assertNotIn(env, 'DIB_YUM_REPO_CONF')
+
+    def test_inspection_ip_single_subnet(self):
+        env = undercloud._generate_environment('.')
+        reference = [{"tag": "ctlplane-subnet", "gateway": "192.168.24.1",
+                      "ip_range": "192.168.24.100,192.168.24.120",
+                      "netmask": "255.255.255.0"}]
+        actual = json.loads(env['INSPECTION_SUBNETS'])
+        self.assertEqual(reference, actual)
+
+    def test_inspection_ip_multiple_subnets(self):
+        self.conf.config(subnets=['subnet1', 'subnet2'])
+        self.conf.config(local_subnet='subnet1')
+        self.conf.register_opts(self.opts, group=self.grp1)
+        self.conf.register_opts(self.opts, group=self.gtp2)
+        self.conf.config(cidr='192.168.10.0/24', dhcp_start='192.168.10.10',
+                         dhcp_end='192.168.10.99',
+                         inspection_iprange='192.168.10.100,192.168.10.189',
+                         gateway='192.168.10.254', group='subnet1')
+        self.conf.config(cidr='192.168.20.0/24', dhcp_start='192.168.20.10',
+                         dhcp_end='192.168.20.99',
+                         inspection_iprange='192.168.20.100,192.168.20.189',
+                         gateway='192.168.20.254', group='subnet2')
+        env = undercloud._generate_environment('.')
+        reference = [{"tag": "subnet1", "gateway": "192.168.10.254",
+                      "ip_range": "192.168.10.100,192.168.10.189",
+                      "netmask": "255.255.255.0"},
+                     {"tag": "subnet2", "gateway": "192.168.20.254",
+                      "ip_range": "192.168.20.100,192.168.20.189",
+                      "netmask": "255.255.255.0"}]
+        actual = json.loads(env['INSPECTION_SUBNETS'])
+        self.assertEqual(reference, actual)
 
 
 class TestWritePasswordFile(BaseTestCase):
