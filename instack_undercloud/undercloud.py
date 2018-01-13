@@ -1157,7 +1157,7 @@ class InstackEnvironment(dict):
                     'ENABLED_RAID_INTERFACES', 'ENABLED_VENDOR_INTERFACES',
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
-                    'INSPECTION_SUBNETS',
+                    'INSPECTION_SUBNETS', 'SUBNETS_STATIC_ROUTES',
                     }
     """The variables we calculate in _generate_environment call."""
 
@@ -1274,6 +1274,18 @@ def _generate_inspection_subnets():
     return json.dumps(env_list)
 
 
+def _generate_subnets_static_routes():
+    env_list = []
+    local_router = CONF.get(CONF.local_subnet).gateway
+    for subnet in CONF.subnets:
+        if subnet == str(CONF.local_subnet):
+            continue
+        s = CONF.get(subnet)
+        env_list.append({'ip_netmask': s.cidr,
+                         'next_hop': local_router})
+    return json.dumps(env_list)
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -1363,6 +1375,7 @@ def _generate_environment(instack_root):
 
     _process_drivers_and_hardware_types(instack_env)
     instack_env['INSPECTION_SUBNETS'] = _generate_inspection_subnets()
+    instack_env['SUBNETS_STATIC_ROUTES'] = _generate_subnets_static_routes()
 
     instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()
 

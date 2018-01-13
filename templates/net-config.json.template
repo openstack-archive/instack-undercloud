@@ -19,6 +19,7 @@
       "ip_netmask": "{{PUBLIC_INTERFACE_IP}}"
     }
   ],
+  "routes": {{SUBNETS_STATIC_ROUTES}},
   "mtu": {{LOCAL_MTU}}
 }
 ]
