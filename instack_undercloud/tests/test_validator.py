@@ -135,6 +135,8 @@ class TestValidator(base.BaseTestCase):
 
     def test_invalid_undercloud_nameserver_fails(self):
         self.conf.config(undercloud_nameservers=['Iamthewalrus'])
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
 
     def test_fail_on_invalid_public_host(self):
         self.conf.config(undercloud_public_host='192.0.3.2',
@@ -165,6 +167,7 @@ class TestValidator(base.BaseTestCase):
         self.conf.config(undercloud_admin_host='10.0.0.10',
                          generate_service_certificate=True,
                          enable_ui=True)
+        undercloud._validate_network()
 
     @mock.patch('netifaces.interfaces')
     def test_fail_on_invalid_ip(self, ifaces_mock):
