@@ -1017,9 +1017,8 @@ tripleo::firewall::firewall_rules:
       - 13787
   '139 apache vhost':
     dport: "%{hiera('ironic_ipxe_port')}"
-  '140 network cidr nat':
-    chain: FORWARD
-    destination: {{NETWORK_CIDR}}
+  # 140 network cidr nat rules
+  {{SUBNETS_CIDR_NAT_RULES}}
   '142 tripleo-ui':
     dport:
       - 3000

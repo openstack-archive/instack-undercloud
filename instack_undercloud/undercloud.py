@@ -1157,8 +1157,8 @@ class InstackEnvironment(dict):
                     'ENABLED_RAID_INTERFACES', 'ENABLED_VENDOR_INTERFACES',
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
-                    'INSPECTION_SUBNETS', 'SUBNETS_STATIC_ROUTES',
-                    }
+                    'INSPECTION_SUBNETS', 'SUBNETS_CIDR_NAT_RULES',
+                    'SUBNETS_STATIC_ROUTES'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1286,6 +1286,21 @@ def _generate_subnets_static_routes():
     return json.dumps(env_list)
 
 
+def _generate_subnets_cidr_nat_rules():
+    env_list = []
+    for subnet in CONF.subnets:
+        env_dict = {}
+        s = CONF.get(subnet)
+        env_dict['140 ' + subnet + ' cidr nat'] = {
+            'chain': 'FORWARD',
+            'destination': s.cidr
+        }
+        # NOTE(hjensas): sort_keys=True because unit test reference is static
+        env_list.append(json.dumps(env_dict, sort_keys=True)[1:-1])
+    # Whitespace after newline required for indentation in templated yaml
+    return '\n  '.join(env_list)
+
+
 def _generate_environment(instack_root):
     """Generate an environment dict for instack
 
@@ -1375,6 +1390,7 @@ def _generate_environment(instack_root):
 
     _process_drivers_and_hardware_types(instack_env)
     instack_env['INSPECTION_SUBNETS'] = _generate_inspection_subnets()
+    instack_env['SUBNETS_CIDR_NAT_RULES'] = _generate_subnets_cidr_nat_rules()
     instack_env['SUBNETS_STATIC_ROUTES'] = _generate_subnets_static_routes()
 
     instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()

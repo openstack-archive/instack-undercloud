@@ -714,6 +714,33 @@ class TestGenerateEnvironment(BaseTestCase):
         actual = json.loads(env['SUBNETS_STATIC_ROUTES'])
         self.assertEqual(reference, actual)
 
+    def test_subnets_subnets_cidr_nat_rules(self):
+        self.conf.config(subnets=['ctlplane-subnet', 'subnet1', 'subnet2'])
+        self.conf.register_opts(self.opts, group=self.grp1)
+        self.conf.register_opts(self.opts, group=self.gtp2)
+        self.conf.config(cidr='192.168.24.0/24',
+                         dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
+                         inspection_iprange='192.168.24.100,192.168.24.120',
+                         gateway='192.168.24.1', group='ctlplane-subnet')
+        self.conf.config(cidr='192.168.10.0/24', dhcp_start='192.168.10.10',
+                         dhcp_end='192.168.10.99',
+                         inspection_iprange='192.168.10.100,192.168.10.189',
+                         gateway='192.168.10.254', group='subnet1')
+        self.conf.config(cidr='192.168.20.0/24', dhcp_start='192.168.20.10',
+                         dhcp_end='192.168.20.99',
+                         inspection_iprange='192.168.20.100,192.168.20.189',
+                         gateway='192.168.20.254', group='subnet2')
+
+        env = undercloud._generate_environment('.')
+        reference = ('"140 ctlplane-subnet cidr nat": '
+                     '{"chain": "FORWARD", "destination": "192.168.24.0/24"}'
+                     '\n  "140 subnet1 cidr nat": '
+                     '{"chain": "FORWARD", "destination": "192.168.10.0/24"}'
+                     '\n  "140 subnet2 cidr nat": '
+                     '{"chain": "FORWARD", "destination": "192.168.20.0/24"}')
+        actual = env['SUBNETS_CIDR_NAT_RULES']
+        self.assertEqual(reference, actual)
+
 
 class TestWritePasswordFile(BaseTestCase):
     def test_normal(self):
