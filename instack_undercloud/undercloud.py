@@ -570,6 +570,15 @@ def _run_command(args, env=None, name=None):
     """
     if name is None:
         name = args[0]
+
+    if env is None:
+        env = os.environ
+    env = env.copy()
+
+    # When running a localized python script, we need to tell it that we're
+    # using utf-8 for stdout, otherwise it can't tell because of the pipe.
+    env['PYTHONIOENCODING'] = 'utf8'
+
     try:
         return subprocess.check_output(args,
                                        stderr=subprocess.STDOUT,
@@ -588,6 +597,15 @@ def _run_live_command(args, env=None, name=None):
     """
     if name is None:
         name = args[0]
+
+    if env is None:
+        env = os.environ
+    env = env.copy()
+
+    # When running a localized python script, we need to tell it that we're
+    # using utf-8 for stdout, otherwise it can't tell because of the pipe.
+    env['PYTHONIOENCODING'] = 'utf8'
+
     process = subprocess.Popen(args, env=env,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
