@@ -1,0 +1,9 @@
+upgrade:
+  - |
+    During an upgrade to this release, a migration of all nodes from classic
+    drivers to hardware types will be attempted. For some nodes it may result
+    in non-supported optional interfaces (like "agent" RAID or shellinabox
+    console) to be reset to their no-op implementations (like "no-raid" RAID or
+    "no-console" console). Nodes that cannot be upgraded will be skipped.
+    Manual upgrade will be required, since the classic drivers may be removed
+    in the Rocky release.

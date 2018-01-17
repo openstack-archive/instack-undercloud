@@ -477,6 +477,8 @@ nova::db::sync_api::db_sync_timeout: 900
 ironic::debug: "%{hiera('debug')}"
 ironic::my_ip: {{LOCAL_IP}}
 ironic::db_online_data_migrations: true
+# TODO(dtantsur): remove when support for classic drivers is removed
+ironic::db::online_data_migrations::migration_params: "--option migrate_to_hardware_types.reset_unsupported_interfaces=true"
 ironic::rpc_response_timeout: 600
 ironic::api::authtoken::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 ironic::api::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
