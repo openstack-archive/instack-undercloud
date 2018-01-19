@@ -23,6 +23,7 @@ import json
 import logging
 import os
 import platform
+import re
 import socket
 import subprocess
 import sys
@@ -1355,6 +1356,27 @@ def _run_yum_update(instack_env):
     LOG.info('yum-update completed successfully')
 
 
+def _get_ovs_interfaces():
+    interfaces = glob.glob('/etc/sysconfig/network-scripts/ifcfg-*')
+    pattern = "OVSIntPort"
+    ovs_interfaces = []
+    for interface in interfaces:
+        with open(interface, "r") as text:
+            for line in text:
+                if re.findall(pattern, line):
+                    # FIXME (holser). It might be better to get interface from
+                    # DEVICE rather than name of file.
+                    ovs_interfaces.append(interface.split('-')[-1])
+    return ovs_interfaces
+
+
+def _run_restore_ovs_interfaces(interfaces):
+    for interface in interfaces:
+        LOG.info('Running restart OVS interface %s', interface)
+        _run_command(['sudo', 'ifup', interface])
+        LOG.info('Restart OVS interface %s completed successfully', interface)
+
+
 def _run_orc(instack_env):
     args = ['sudo', 'os-refresh-config']
     LOG.info('Running os-refresh-config')
@@ -1794,6 +1816,7 @@ def install(instack_root, upgrade=False):
         _validate_configuration()
         instack_env = _generate_environment(instack_root)
         _generate_init_data(instack_env)
+        ovs_interfaces = _get_ovs_interfaces()
         if upgrade:
             # Even if we backport https://review.openstack.org/#/c/457478/
             # into stable branches of puppet-ironic, we still need a way
@@ -1806,10 +1829,17 @@ def install(instack_root, upgrade=False):
             _die_tuskar_die()
         if CONF.undercloud_update_packages:
             _run_yum_clean_all(instack_env)
+            if ovs_interfaces:
+                _run_restore_ovs_interfaces(ovs_interfaces)
             _run_yum_update(instack_env)
         _handle_upgrade_fact(upgrade)
         _run_instack(instack_env)
         _run_orc(instack_env)
+        # FIXME (holser). The RC of issue is in OVS flow restore. Once
+        # 'systemctl reload openvswitch' is fixed ovs port restoration can be
+        # removed.
+        if ovs_interfaces:
+            _run_restore_ovs_interfaces(ovs_interfaces)
         _post_config(instack_env)
         _run_command(['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         if upgrade and CONF.enable_validations:  # Run post-upgrade validations
