@@ -7,5 +7,3 @@
       - tripleo-undercloud-jobs
       - tripleo-multinode-baremetal-minimal
       - tripleo-multinode-container-minimal
-      - tripleo-ovb-check
-      - tripleo-ovb-experimental
