@@ -605,6 +605,15 @@ ironic::drivers::agent::deploy_logs_local_path: '/var/log/ironic/deploy/'
 # Ironic power and management drivers tuning
 ironic::drivers::ilo::default_boot_mode: 'bios'
 
+# Customisations for ppc64le
+{{#ENABLE_ARCHITECTURE_PPC64LE}}
+ironic::pxe::enable_ppc64le: true
+ironic::inspector::enable_ppc64le: true
+ironic::conductor::power_state_change_timeout: 60
+ironic::drivers::ipmi::command_retry_timeout: 120
+ironic::drivers::ipmi::min_command_interval: 15
+{{/ENABLE_ARCHITECTURE_PPC64LE}}
+
 # Rabbit
 rabbit_cookie: {{UNDERCLOUD_RABBIT_COOKIE}}
 rabbitmq::delete_guest_user: false

@@ -215,6 +215,10 @@
 # /etc/docker/daemon.json. (string value)
 #docker_registry_mirror =
 
+# List of additional architectures enabled in your cloud environment.
+# The list of supported values is: ppc64le (list value)
+#additional_architectures =
+
 
 [auth]
 
