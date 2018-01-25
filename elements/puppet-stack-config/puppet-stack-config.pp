@@ -397,6 +397,11 @@ include ::neutron::quota
 include ::neutron::plugins::ml2
 include ::neutron::agents::dhcp
 include ::neutron::agents::l3
+include ::neutron::plugins::ml2::networking_baremetal
+include ::neutron::agents::ml2::networking_baremetal
+
+# Make sure ironic endpoint exists before starting the service
+Keystone_endpoint <||> -> Service['ironic-neutron-agent']
 
 class { '::neutron::agents::ml2::ovs':
   bridge_mappings => split(hiera('neutron_bridge_mappings'), ','),
