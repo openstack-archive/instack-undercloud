@@ -395,6 +395,11 @@ include ::neutron::server
 include ::neutron::server::notifications
 include ::neutron::quota
 include ::neutron::plugins::ml2
+include ::neutron::plugins::ml2::networking_baremetal
+include ::neutron::agents::ml2::networking_baremetal
+
+# Make sure ironic endpoint exists before starting the service
+Keystone_endpoint <||> -> Service['ironic-neutron-agent']
 
 # NOTE(lucasagomes): This bit might be superseded by
 # https://review.openstack.org/#/c/172040/
