@@ -647,6 +647,7 @@ mistral::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 mistral::database_connection: mysql+pymysql://mistral:{{UNDERCLOUD_MISTRAL_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/mistral
 mistral::rpc_backend: rabbit
 mistral::rpc_response_timeout: 120
+mistral::cron_trigger::execution_interval: 600
 mistral::keystone::authtoken::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
 mistral::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 mistral::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"

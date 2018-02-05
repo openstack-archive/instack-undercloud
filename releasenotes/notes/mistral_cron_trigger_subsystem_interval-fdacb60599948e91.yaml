@@ -1,0 +1,6 @@
+---
+upgrade:
+  - |
+    If you had cron triggers for Mistral in the undercloud, they will now only
+    execute at most every 10 minutes. Previously they could run as frequently
+    as every second.

@@ -572,6 +572,7 @@ include ::mistral::api
 include ::mistral::engine
 include ::mistral::executor
 include ::mistral::cors
+include ::mistral::cron_trigger
 
 # ensure TripleO common entrypoints for custom Mistral actions
 # are installed before performing the Mistral action population
