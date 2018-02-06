@@ -36,6 +36,13 @@ for k, v in os.environ.items():
         endpoint_context[k] = v
 context.update(endpoint_context)
 
+# Make sure boolean strings are treated as Bool()
+for k, v in list(context.items()):
+    if v == 'False':
+        context[k] = False
+    elif v == 'True':
+        context[k] = True
+
 with open(template) as f:
     puppet_stack_config_yaml = renderer.render(f.read(), context)
 
