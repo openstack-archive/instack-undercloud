@@ -378,6 +378,11 @@ _opts = [
                help=('An optional docker \'registry-mirror\' that will be'
                      'configured in /etc/docker/daemon.json.')
                ),
+    cfg.ListOpt('additional_architectures',
+                default=[],
+                help=('List of additional architectures enabled in your cloud '
+                      'environment. The list of supported values is: %s'
+                      % ' '.join(validator.SUPPORTED_ARCHITECTURES))),
 ]
 
 # Passwords, tokens, hashes
@@ -765,6 +770,16 @@ def _validate_passwords_file():
         raise validator.FailedValidation(message)
 
 
+def _validate_architecure_options():
+    def error_handler(message):
+        LOG.error('Undercloud configuration validation failed: %s', message)
+        raise validator.FailedValidation(message)
+
+    params = {opt.name: CONF[opt.name] for opt in _opts}
+    validator._validate_additional_architectures(params, error_handler)
+    validator._validate_ppc64le_exclusive_opts(params, error_handler)
+
+
 def _validate_configuration():
     try:
         _check_hostname()
@@ -773,6 +788,7 @@ def _validate_configuration():
         _validate_network()
         _validate_no_ip_change()
         _validate_passwords_file()
+        _validate_architecure_options()
     except RuntimeError as e:
         LOG.error('An error occurred during configuration validation, '
                   'please check your host configuration and try again. '
@@ -1067,7 +1083,8 @@ class InstackEnvironment(dict):
                     'ENABLED_BOOT_INTERFACES', 'ENABLED_POWER_INTERFACES',
                     'ENABLED_RAID_INTERFACES', 'ENABLED_VENDOR_INTERFACES',
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
-                    'LOCAL_IP_WRAPPED'}
+                    'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
+                    }
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1226,10 +1243,16 @@ def _generate_environment(instack_root):
     else:
         raise RuntimeError('%s is not supported' % distro)
 
+    if CONF['additional_architectures']:
+        for arch in CONF['additional_architectures']:
+            env_name = ('enable_architecture_%s' % arch).upper()
+            instack_env[env_name] = six.text_type(True)
+
     # Convert conf opts to env values
     for opt in _opts:
         env_name = opt.name.upper()
         instack_env[env_name] = six.text_type(CONF[opt.name])
+
     # Opts that needs extra processing
     if CONF.inspection_runbench and not CONF.inspection_extras:
         raise RuntimeError('inspection_extras must be enabled for '

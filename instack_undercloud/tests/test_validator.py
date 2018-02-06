@@ -193,3 +193,20 @@ class TestValidator(base.BaseTestCase):
         ifaces_mock.return_value = ['eth0', 'eth1']
         self.conf.config(local_interface='em2', net_config_override='foo')
         undercloud._validate_network()
+
+    def test_validate_additional_architectures_ok(self):
+        self.conf.config(additional_architectures=['ppc64le'],
+                         ipxe_enabled=False)
+        undercloud._validate_architecure_options()
+
+    def test_validate_additional_architectures_bad_arch(self):
+        self.conf.config(additional_architectures=['ppc64le', 'INVALID'],
+                         ipxe_enabled=False)
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_architecure_options)
+
+    def test_validate_additional_architectures_ipxe_fail(self):
+        self.conf.config(additional_architectures=['ppc64le'],
+                         ipxe_enabled=True)
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_architecure_options)

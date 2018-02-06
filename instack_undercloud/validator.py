@@ -16,6 +16,9 @@ import netaddr
 import netifaces
 
 
+SUPPORTED_ARCHITECTURES = ['ppc64le']
+
+
 class FailedValidation(Exception):
     pass
 
@@ -37,6 +40,21 @@ def validate_config(params, error_callback):
     _validate_no_overlap(local_params, error_callback)
     _validate_ips(local_params, error_callback)
     _validate_interface_exists(local_params, error_callback)
+
+
+def _validate_ppc64le_exclusive_opts(params, error_callback):
+    if 'ppc64le' in params['additional_architectures']:
+        if 'ipxe_enabled' in params and params['ipxe_enabled']:
+            error_callback('Currently iPXE boot isn\'t supported with '
+                           'ppc64le systems but is enabled')
+
+
+def _validate_additional_architectures(params, error_callback):
+    for arch in params['additional_architectures']:
+        if arch not in SUPPORTED_ARCHITECTURES:
+            error_callback('%s "%s" must be a supported architecture: %s' %
+                           ('additional_architectures', arch,
+                            ' '.join(SUPPORTED_ARCHITECTURES)))
 
 
 def _validate_ips(params, error_callback):
