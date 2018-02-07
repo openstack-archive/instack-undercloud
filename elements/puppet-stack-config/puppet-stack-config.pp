@@ -498,6 +498,7 @@ nova_config {
 
 include ::nova::compute::ironic
 include ::nova::network::neutron
+include ::nova::cors
 
 # Ironic
 

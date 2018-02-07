@@ -788,6 +788,11 @@ tripleo::keepalived::virtual_router_id_base: 40
 
 # UI
 keystone::cors::allowed_origin: '*'
+nova::cors::allowed_origin: '*'
+nova::cors::max_age: 3600
+nova::cors::allow_methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH'
+nova::cors::allow_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma,X-Auth-Token'
+nova::cors::expose_headers: 'Content-Type,Cache-Control,Content-Language,Expires,Last-Modified,Pragma'
 ironic::cors::allowed_origin: '*'
 ironic::cors::max_age: 3600
 ironic::cors::allow_methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH'
