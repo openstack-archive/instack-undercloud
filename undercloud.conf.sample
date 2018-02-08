@@ -192,7 +192,8 @@
 # undercloud. (boolean value)
 #enable_container_images_build = true
 
-# Whether to install the Octavia client. (boolean value)
+# Whether to install the Octavia client in the Undercloud. (boolean
+# value)
 #enable_octavia = false
 
 # One Time Password to register Undercloud node with an IPA server.
@@ -232,6 +233,9 @@
 # List of additional architectures enabled in your cloud environment.
 # The list of supported values is: ppc64le (list value)
 #additional_architectures =
+
+# Enable support for routed ctlplane networks. (boolean value)
+#enable_routed_networks = false
 
 
 [auth]

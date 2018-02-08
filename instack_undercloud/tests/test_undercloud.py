@@ -42,6 +42,7 @@ class BaseTestCase(base.BaseTestCase):
         super(BaseTestCase, self).setUp()
         self.logger = self.useFixture(log.ConfigureLogging()).logger
         self.conf = self.useFixture(config_fixture.Config())
+        self.conf.config(enable_routed_networks=True)
         # ctlplane-subnet - config group options
         self.grp0 = cfg.OptGroup(name='ctlplane-subnet',
                                  title='ctlplane-subnet')

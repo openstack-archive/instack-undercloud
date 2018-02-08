@@ -405,6 +405,9 @@ _opts = [
                 help=('List of additional architectures enabled in your cloud '
                       'environment. The list of supported values is: %s'
                       % ' '.join(validator.SUPPORTED_ARCHITECTURES))),
+    cfg.BoolOpt('enable_routed_networks',
+                default=False,
+                help=('Enable support for routed ctlplane networks.')),
 ]
 
 # Routed subnets
@@ -2216,10 +2219,21 @@ def _config_neutron_segments_and_subnets(sdk, ctlplane_id):
                 else:
                     segment = _neutron_segment_create(sdk, name,
                                                       ctlplane_id, phynet)
-                subnet = _neutron_subnet_create(sdk, ctlplane_id, s.cidr,
-                                                s.gateway, host_routes,
-                                                allocation_pool, name,
-                                                segment.id)
+                if CONF.enable_routed_networks:
+                    subnet = _neutron_subnet_create(sdk, ctlplane_id, s.cidr,
+                                                    s.gateway, host_routes,
+                                                    allocation_pool, name,
+                                                    segment.id)
+                elif name == CONF.local_subnet:
+                    # Create subnet with segment_id: None if routed networks
+                    # is not enabled.
+                    # TODO(hjensas): Deprecate option and remove this once
+                    # tripleo-ui can support managing baremetal port
+                    # attributes.
+                    subnet = _neutron_subnet_create(sdk, ctlplane_id, s.cidr,
+                                                    s.gateway, host_routes,
+                                                    allocation_pool, name,
+                                                    None)
 
             # If the subnet is IPv6 we need to start a router so that router
             # advertisments are sent out for stateless IP addressing to work.
