@@ -2035,7 +2035,7 @@ def _ensure_neutron_network(sdk):
             LOG.info("Network created %s", network)
             # (hjensas) Delete the default segment, we create a new segment
             # per subnet later.
-            segments = list(sdk.network.segments(network=network.id))
+            segments = list(sdk.network.segments(network_id=network.id))
             sdk.network.delete_segment(segments[0].id)
             LOG.info("Default segment on network %s deleted.", network.name)
         else:
