@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Allow installation of the Octavia client in the Undercloud by setting new
+    option ``enable_octavia=True`` in the ``undercloud.conf``. Default is not
+    to enable.

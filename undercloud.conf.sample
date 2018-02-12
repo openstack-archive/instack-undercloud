@@ -192,6 +192,9 @@
 # undercloud. (boolean value)
 #enable_container_images_build = true
 
+# Whether to install the Octavia client. (boolean value)
+#enable_octavia = false
+
 # One Time Password to register Undercloud node with an IPA server.
 # Required when enable_novajoin = True. (string value)
 #ipa_otp =
