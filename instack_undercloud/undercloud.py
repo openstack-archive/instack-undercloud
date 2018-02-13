@@ -38,6 +38,7 @@ from keystoneauth1 import exceptions as ks_exceptions
 from keystoneclient import discover
 import keystoneauth1.identity.generic as ks_auth
 from mistralclient.api import client as mistralclient
+from mistralclient.api import base as mistralclient_exc
 from novaclient import client as novaclient
 from novaclient import exceptions
 import os_client_config
@@ -1763,7 +1764,7 @@ def _create_mistral_config_environment(instack_env, mistral):
     env_name = 'tripleo.undercloud-config'
     try:
         env_data = mistral.environments.get(env_name).variables
-    except ks_exceptions.NotFound:
+    except (ks_exceptions.NotFound, mistralclient_exc.APIException):
         # If the environment is not created, we need to
         # create it with the information in config_data
         mistral.environments.create(
