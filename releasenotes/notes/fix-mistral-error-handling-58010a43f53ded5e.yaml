@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixed an incompatability with mistralclient 3.2.0, where a different
+    exception type was raised and thus not handled during the undercloud
+    install post config. See #1749186
