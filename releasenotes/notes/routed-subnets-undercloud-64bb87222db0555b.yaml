@@ -5,10 +5,15 @@ prelude: >
     changes. Please refer to the **Deprecation Notes** and **Upgrade notes**
     section for details.
 features:
-  - Routed networks support adds the ability to configure Ironic Inspector
+  - |
+    Routed networks support adds the ability to configure Ironic Inspector
     and Neutron provisioning network in the undercloud to enable provisioning
     of nodes via DHCP-relay to the undercloud from remote routed network
-    segments.
+    segments. Routed networks is by default disabled, to enable set option
+    ``enable_routed_networks`` to ``True`` in ``undercloud.conf``.
+
+    .. Note:: Changing the ``enable_routed_networks`` option after the initial
+              undercloud installation is not possible.
 upgrade:
   - |
     With support for routed network segments, several options are deprecated
