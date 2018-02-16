@@ -791,6 +791,11 @@ def _validate_network():
         LOG.error('Undercloud configuration validation failed: %s', message)
         raise validator.FailedValidation(message)
 
+    if (len(CONF.subnets) > 1 and not CONF.enable_routed_networks):
+        message = ('Multiple subnets specified: %s but routed networks are '
+                   'not enabled.' % CONF.subnets)
+        error_handler(message)
+
     params = {opt.name: CONF[opt.name] for opt in _opts}
     # Get parameters of "local_subnet", pass to validator to ensure parameters
     # such as "local_ip", "undercloud_public_host" and "undercloud_admin_host"
