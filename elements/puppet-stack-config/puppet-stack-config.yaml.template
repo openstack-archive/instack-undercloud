@@ -849,7 +849,6 @@ enable_telemetry: {{ENABLE_TELEMETRY}}
 enable_ui: {{ENABLE_UI}}
 enable_cinder: {{ENABLE_CINDER}}
 enable_container_images_build: {{ENABLE_CONTAINER_IMAGES_BUILD}}
-enable_octavia: {{ENABLE_OCTAVIA}}
 
 # Path to install configuration files
 tripleo_install_user: {{TRIPLEO_INSTALL_USER}}

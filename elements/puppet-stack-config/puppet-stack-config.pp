@@ -651,10 +651,6 @@ if str2bool(hiera('enable_cinder', true)) {
   }
 }
 
-if str2bool(hiera('enable_octavia', false)) {
-  include ::octavia::client
-}
-
 # firewalld is a dependency of some anaconda packages, so we need to use purge
 # to ensure all the things that it might be a dependency for are also
 # removed. See LP#1669915
