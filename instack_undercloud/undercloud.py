@@ -1916,21 +1916,8 @@ def _post_config_mistral(instack_env, mistral, swift):
     managed_tag = 'tripleo-common-managed'
 
     all_workflows = mistral.workflows.list()
-    workflow_tags = set()
-    for workflow in all_workflows:
-        workflow_tags.update(workflow.tags)
-
-    # If at least one workflow is tagged, then we should only delete those.
-    # Otherwise we should revert to the previous behaviour - this is required
-    # for the initial upgrade.
-    # TODO(d0ugal): From Q onwards we should only ever delete workflows with
-    # the tripleo-common tag.
-    if 'tripleo-common-managed' in workflow_tags:
-        workflows_delete = [w.name for w in all_workflows
-                            if managed_tag in w.tags]
-    else:
-        workflows_delete = [w.name for w in all_workflows
-                            if w.name.startswith('tripleo')]
+    workflows_delete = [w.name for w in all_workflows
+                        if managed_tag in w.tags]
 
     # in order to delete workflows they should have no triggers associated
     for trigger in [t for t in mistral.cron_triggers.list()
