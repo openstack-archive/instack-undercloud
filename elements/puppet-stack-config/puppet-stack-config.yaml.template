@@ -548,7 +548,6 @@ ironic::inspector::debug: "%{hiera('debug')}"
 {{#IPXE_ENABLED}}
 ironic::inspector::pxe_transfer_protocol: 'http'
 {{/IPXE_ENABLED}}
-ironic::inspector::enable_uefi: {{INSPECTION_ENABLE_UEFI}}
 ironic::inspector::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
 ironic::inspector::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ironic::inspector::authtoken::username: 'ironic'

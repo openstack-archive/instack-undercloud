@@ -140,10 +140,6 @@
 # Deprecated group/name - [DEFAULT]/discovery_runbench
 #inspection_runbench = false
 
-# Whether to support introspection of nodes that have UEFI-only
-# firmware. (boolean value)
-#inspection_enable_uefi = true
-
 # Makes ironic-inspector enroll any unknown node that PXE-boots
 # introspection ramdisk in Ironic. By default, the "fake" driver is
 # used for new nodes (it is automatically enabled when this option is
