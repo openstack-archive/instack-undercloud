@@ -731,9 +731,16 @@ tripleo::firewall::firewall_rules:
     dport: 8787
   '139 apache vhost':
     dport: "%{hiera('ironic_ipxe_port')}"
-  '140 network cidr nat':
+  '140 destination network cidr nat':
     chain: FORWARD
     destination: {{NETWORK_CIDR}}
+    proto: all
+    action: accept
+  '140 source network cidr nat':
+    chain: FORWARD
+    source: {{NETWORK_CIDR}}
+    proto: all
+    action: accept
   # TODO: Do we still want this?
   '141 libvirt network nat':
     chain: FORWARD
