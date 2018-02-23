@@ -2348,6 +2348,46 @@ def install(instack_root, upgrade=False):
                   'stackrc_path': os.path.expanduser('~/stackrc')})
 
 
+def _is_database_upgrade_needed():
+    """Check whether a yum update will cause an major version update
+       for the database.
+
+    :return whether an update will happen
+    :rtype bool
+    """
+    need_upgrade = False
+    try:
+        args = ['sudo', 'rpm', '--query',
+                '--queryformat', '%{VERSION}', 'mariadb-server']
+        installed = subprocess.check_output(args).strip()
+        LOG.info('Current mariadb version is: %s' % installed)
+        args = ['sudo', 'repoquery', '--pkgnarrow=updates',
+                '--queryformat', '%{VERSION}', 'mariadb-server']
+        available = subprocess.check_output(args).strip()
+        LOG.info('Available mariadb version is: %s' %
+                 (available or "(no new version available)"))
+        if available:
+            # compare major versions majorX.majorY.minor
+            major_installed, major_available = \
+                [re.sub(r'^(\d+\.\d+)\..*', r'\1', ver) for
+                 ver in [installed, available]]
+
+            if not major_installed or not major_available:
+                raise RuntimeError('Could not determine mariadb versions '
+                                   '(installed:"%s", available:"%s"' %
+                                   (major_installed, major_available))
+
+            need_upgrade = (major_available != major_installed)
+            if need_upgrade:
+                LOG.info('Major versions differ (%s vs %s), '
+                         'database needs an upgrade' %
+                         (major_installed, major_available))
+    except subprocess.CalledProcessError:
+        LOG.error('Could not determine if mariadb will be updated')
+        raise
+    return need_upgrade
+
+
 def pre_upgrade():
     _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
     args = ['sudo', 'systemctl', 'stop', 'openstack-*', 'neutron-*',
@@ -2367,7 +2407,32 @@ def pre_upgrade():
     _run_live_command(args, name='install ansible')
     LOG.info('Ansible pacemaker install completed successfully')
 
+    # Check whether a major version upgrade is pending for the database
+    mariadb_upgrade = _is_database_upgrade_needed()
+
+    if mariadb_upgrade:
+        args = ['sudo', 'systemctl', 'stop', 'mariadb']
+        LOG.info('Stopping OpenStack database before upgrade')
+        _run_live_command(args, name='systemctl stop mariadb')
+        LOG.info('Database stopped successfully')
+
     args = ['sudo', 'yum', 'update', '-y']
     LOG.info('Updating full system')
     _run_live_command(args, name='yum update')
     LOG.info('Update completed successfully')
+
+    if mariadb_upgrade:
+        args = ['sudo', 'systemctl', 'start', 'mariadb']
+        LOG.info('Start OpenStack database after upgrade')
+        _run_live_command(args, name='systemctl start mariadb')
+        LOG.info('Database started successfully')
+
+        args = ['sudo', 'mysql_upgrade']
+        LOG.info('Run online upgrade of the database')
+        _run_live_command(args, name='mysql_upgrade')
+        LOG.info('Database upgraded successfully')
+
+        args = ['sudo', 'systemctl', 'restart', 'mariadb']
+        LOG.info('Restart OpenStack database for upgrade to take effect')
+        _run_live_command(args, name='systemctl restart mariadb')
+        LOG.info('Database restarted successfully')
