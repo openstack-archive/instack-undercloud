@@ -899,19 +899,6 @@ nova::notify_on_state_change: 'vm_state'
 
 # Firewall
 tripleo::firewall::manage_firewall: true
-# Docker switches FORWARD to DROP by default which causes issues on the
-# undercloud. We are already included a REJECT rule in so switch these back
-# to ACCEPT.
-# https://bugs.launchpad.net/tripleo/+bug/1750194
-tripleo::firewall::firewall_chains:
-  'FORWARD:filter:IPv4':
-     ensure: present
-     policy: accept
-     purge: false
-  'FORWARD:filter:IPv6':
-     ensure: present
-     policy: accept
-     purge: false
 tripleo::firewall::firewall_rules:
   '105 ntp':
     dport: 123
