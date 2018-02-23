@@ -739,12 +739,24 @@ class TestGenerateEnvironment(BaseTestCase):
                          gateway='192.168.20.254', group='subnet2')
 
         env = undercloud._generate_environment('.')
-        reference = ('"140 ctlplane-subnet cidr nat": '
-                     '{"chain": "FORWARD", "destination": "192.168.24.0/24"}'
-                     '\n  "140 subnet1 cidr nat": '
-                     '{"chain": "FORWARD", "destination": "192.168.10.0/24"}'
-                     '\n  "140 subnet2 cidr nat": '
-                     '{"chain": "FORWARD", "destination": "192.168.20.0/24"}')
+        reference = ('"140 destination ctlplane-subnet cidr nat": '
+                     '{"chain": "FORWARD", "destination": "192.168.24.0/24", '
+                     '"proto": "all", "action": "accept"}'
+                     '\n  "140 source ctlplane-subnet cidr nat": '
+                     '{"chain": "FORWARD", "source": "192.168.24.0/24", '
+                     '"proto": "all", "action": "accept"}'
+                     '\n  "140 destination subnet1 cidr nat": '
+                     '{"chain": "FORWARD", "destination": "192.168.10.0/24", '
+                     '"proto": "all", "action": "accept"}'
+                     '\n  "140 source subnet1 cidr nat": '
+                     '{"chain": "FORWARD", "source": "192.168.10.0/24", '
+                     '"proto": "all", "action": "accept"}'
+                     '\n  "140 destination subnet2 cidr nat": '
+                     '{"chain": "FORWARD", "destination": "192.168.20.0/24", '
+                     '"proto": "all", "action": "accept"}'
+                     '\n  "140 source subnet2 cidr nat": '
+                     '{"chain": "FORWARD", "source": "192.168.20.0/24", '
+                     '"proto": "all", "action": "accept"}')
         actual = env['SUBNETS_CIDR_NAT_RULES']
         self.assertEqual(reference, actual)
 

@@ -19,6 +19,17 @@ class { '::tripleo::network::os_net_config':
   stage => 'setup',
 }
 
+# enable ip forwarding for the overcloud nodes to access the outside internet
+# in cases where they are on an isolated network
+ensure_resource('sysctl::value', 'net.ipv4.ip_forward', { 'value' => 1 })
+# NOTE(aschultz): clear up old file as this used to be managed via DIB
+file { '/etc/sysctl.d/ip-forward.conf':
+  ensure => absent
+}
+# NOTE(aschultz): LP#1750194 - docker will switch FORWARD to DROP if ip_forward
+# is not enabled first.
+Sysctl::Value['net.ipv4.ip_forward'] -> Package<| title == 'docker' |>
+
 # Run  OpenStack db-sync at every puppet run, in any case.
 Exec<| title == 'neutron-db-sync' |> { refreshonly => false }
 Exec<| title == 'keystone-manage db_sync' |> { refreshonly => false }
