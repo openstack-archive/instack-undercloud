@@ -2294,9 +2294,6 @@ def install(instack_root, upgrade=False):
         LOG.info('Logging to %s', PATHS.LOG_FILE)
         _load_config()
         _load_subnets_config_groups()
-        # Since 'subnets' parameter in opts is used to dynamically
-        # add per network groups, re-load config.
-        _load_config()
         _clean_os_refresh_config()
         _clean_os_collect_config()
         _validate_configuration()
