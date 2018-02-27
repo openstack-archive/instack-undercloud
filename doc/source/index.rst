@@ -6,7 +6,7 @@ elements for deploying a TripleO undercloud to an existing system.
 
 See the `TripleO documentation`_ for the full end-to-end workflow.
 
-.. _`TripleO documentation`: https://docs.openstack.org/developer/tripleo-docs/
+.. _`TripleO documentation`: https://docs.openstack.org/tripleo-docs/latest/
 
 API Documentation
 =================
