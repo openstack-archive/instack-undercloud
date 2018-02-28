@@ -1321,14 +1321,14 @@ def _generate_subnets_static_routes():
 def _generate_subnets_cidr_nat_rules():
     env_list = []
     for subnet in CONF.subnets:
-        env_dict = {}
         s = CONF.get(subnet)
-        env_dict['140 ' + subnet + ' cidr nat'] = {
-            'chain': 'FORWARD',
-            'destination': s.cidr
-        }
-        # NOTE(hjensas): sort_keys=True because unit test reference is static
-        env_list.append(json.dumps(env_dict, sort_keys=True)[1:-1])
+        data_format = '"140 {direction} {name} cidr nat": ' \
+                      '{{"chain": "FORWARD", "{direction}": "{cidr}", ' \
+                      '"proto": "all", "action": "accept"}}'
+        env_list.append(data_format.format(
+            name=subnet, direction='destination', cidr=s.cidr))
+        env_list.append(data_format.format(
+            name=subnet, direction='source', cidr=s.cidr))
     # Whitespace after newline required for indentation in templated yaml
     return '\n  '.join(env_list)
 
