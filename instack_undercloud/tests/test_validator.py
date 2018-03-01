@@ -36,6 +36,7 @@ class TestValidator(base.BaseTestCase):
                      cfg.StrOpt('gateway'),
                      cfg.BoolOpt('masquerade')]
         self.conf.register_opts(self.opts, group=self.grp0)
+        self.grp1 = cfg.OptGroup(name='subnet1', title='subnet1')
         self.conf.config(cidr='192.168.24.0/24',
                          dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
                          inspection_iprange='192.168.24.100,192.168.24.120',
@@ -238,3 +239,36 @@ class TestValidator(base.BaseTestCase):
                          ipxe_enabled=True)
         self.assertRaises(validator.FailedValidation,
                           undercloud._validate_architecure_options)
+
+    @mock.patch('netifaces.interfaces')
+    def test_validate_routed_networks_not_enabled_pass(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth0', 'eth1']
+        self.conf.config(enable_routed_networks=False)
+        self.conf.config(subnets=['ctlplane-subnet'])
+        undercloud._validate_network()
+
+    @mock.patch('netifaces.interfaces')
+    def test_validate_routed_networks_not_enabled_fail(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth0', 'eth1']
+        self.conf.config(enable_routed_networks=False)
+        self.conf.config(subnets=['ctlplane-subnet', 'subnet1'])
+        self.assertRaises(validator.FailedValidation,
+                          undercloud._validate_network)
+
+    @mock.patch('netifaces.interfaces')
+    def test_validate_routed_networks_enabled_pass(self, ifaces_mock):
+        ifaces_mock.return_value = ['eth0', 'eth1']
+        self.conf.config(enable_routed_networks=True)
+        self.conf.config(subnets=['ctlplane-subnet', 'subnet1'])
+        self.conf.register_opts(self.opts, group=self.grp1)
+        self.conf.config(cidr='192.168.24.0/24',
+                         dhcp_start='192.168.24.5', dhcp_end='192.168.24.24',
+                         inspection_iprange='192.168.24.100,192.168.24.120',
+                         gateway='192.168.24.1', masquerade=True,
+                         group='ctlplane-subnet')
+        self.conf.config(cidr='192.168.10.0/24', dhcp_start='192.168.10.10',
+                         dhcp_end='192.168.10.99',
+                         inspection_iprange='192.168.10.100,192.168.10.189',
+                         gateway='192.168.10.254', masquerade=True,
+                         group='subnet1')
+        undercloud._validate_network()
