@@ -358,11 +358,6 @@ _opts = [
                 help=('Whether to enable docker container images to be build '
                       'on the undercloud.')
                 ),
-    cfg.BoolOpt('enable_octavia',
-                default=False,
-                help=('Whether to install the Octavia client in the '
-                      'Undercloud.')
-                ),
     cfg.StrOpt('ipa_otp',
                default='',
                help=('One Time Password to register Undercloud node with '
