@@ -395,26 +395,8 @@ include ::neutron::server
 include ::neutron::server::notifications
 include ::neutron::quota
 include ::neutron::plugins::ml2
-
-# NOTE(lucasagomes): This bit might be superseded by
-# https://review.openstack.org/#/c/172040/
-file { 'dnsmasq-ironic.conf':
-  ensure  => present,
-  path    => '/etc/dnsmasq-ironic.conf',
-  owner   => 'ironic',
-  group   => 'ironic',
-  mode    => '0644',
-  replace => false,
-  content => 'dhcp-match=ipxe,175';
-}
-Package['openstack-ironic-common'] -> File['dnsmasq-ironic.conf']
-
-class { '::neutron::agents::dhcp':
-  dnsmasq_config_file => '/etc/dnsmasq-ironic.conf',
-}
-
-class { '::neutron::agents::l3':
-}
+include ::neutron::agents::dhcp
+include ::neutron::agents::l3
 
 class { '::neutron::agents::ml2::ovs':
   bridge_mappings => split(hiera('neutron_bridge_mappings'), ','),
