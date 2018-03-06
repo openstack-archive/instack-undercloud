@@ -279,7 +279,6 @@ neutron::service_plugins: ['segments']
 
 # Ceilometer
 ceilometer::debug: "%{hiera('debug')}"
-ceilometer::expirer::time_to_live: undef
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
 ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
