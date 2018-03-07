@@ -257,7 +257,7 @@ neutron::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_do
 neutron::server::database_connection: mysql+pymysql://neutron:{{UNDERCLOUD_NEUTRON_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/neutron
 neutron::server::sync_db: true
 neutron::agents::ml2::ovs::local_ip: {{LOCAL_IP}}
-neutron::plugins::ml2::mechanism_drivers: ['openvswitch']
+neutron::plugins::ml2::mechanism_drivers: ['openvswitch', 'baremetal']
 neutron_bridge_mappings: ctlplane:br-ctlplane
 neutron_public_interface: {{LOCAL_INTERFACE}}
 neutron_physical_bridge: br-ctlplane
@@ -276,6 +276,13 @@ neutron::keystone::auth::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::keystone::auth::region: "%{hiera('keystone_region')}"
 neutron::plugins::ml2::extension_drivers: 'port_security'
 neutron::service_plugins: ['segments']
+neutron::agents::ml2::networking_baremetal::user: 'ironic'
+neutron::agents::ml2::networking_baremetal::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
+neutron::agents::ml2::networking_baremetal::auth_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
+neutron::agents::ml2::networking_baremetal::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
+neutron::agents::ml2::networking_baremetal::user_domain_name: "%{hiera('keystone_default_domain')}"
+neutron::agents::ml2::networking_baremetal::project_domain_name: "%{hiera('keystone_default_domain')}"
+neutron::agents::ml2::networking_baremetal::region_name: "%{hiera('keystone_region')}"
 
 # Ceilometer
 ceilometer::debug: "%{hiera('debug')}"

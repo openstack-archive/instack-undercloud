@@ -1,0 +1,5 @@
+---
+features:
+  - The undercloud now uses the ``baremetal`` neutron ML2 mechanism driver, and
+    the l2 agent ironic-neutron-agent. This enables the possibility to use
+    neutron routed networks in the undercloud.
