@@ -185,7 +185,6 @@ if str2bool(hiera('enable_telemetry', false)) {
   include ::ceilometer
   include ::ceilometer::agent::notification
   include ::ceilometer::agent::central
-  include ::ceilometer::expirer
   include ::ceilometer::agent::auth
   include ::ceilometer::dispatcher::gnocchi
 
@@ -213,9 +212,6 @@ if str2bool(hiera('enable_telemetry', false)) {
   Keystone::Resource::Service_identity<||>
   -> Openstacklib::Service_validation['gnocchi-status']
   -> Exec['ceilo-gnocchi-upgrade']
-
-  Cron <| title == 'ceilometer-expirer' |> { command =>
-    "sleep $((\$(od -A n -t d -N 3 /dev/urandom) \\% 86400)) && ${::ceilometer::params::expirer_command}" }
 
   # Aodh
   $aodh_dsn = match(hiera('aodh::db::database_connection'), $re_dsn)
