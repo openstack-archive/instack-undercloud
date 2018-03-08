@@ -30,6 +30,15 @@ file { '/etc/sysctl.d/ip-forward.conf':
 # is not enabled first.
 Sysctl::Value['net.ipv4.ip_forward'] -> Package<| title == 'docker' |>
 
+# NOTE(aschultz): LP#1754426 - remove cloud-init and disable os-collect-config
+package { 'cloud-init':
+  ensure => 'absent',
+}
+service { 'os-collect-config':
+  ensure => stopped,
+  enable => false,
+}
+
 # Run  OpenStack db-sync at every puppet run, in any case.
 Exec<| title == 'neutron-db-sync' |> { refreshonly => false }
 Exec<| title == 'keystone-manage db_sync' |> { refreshonly => false }
