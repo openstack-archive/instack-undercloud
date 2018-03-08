@@ -2046,12 +2046,10 @@ def _neutron_subnet_create(sdk, network_id, cidr, gateway, host_routes,
     try:
         # DHCP_START contains a ":" then assume a IPv6 subnet
         if ':' in allocation_pool[0]['start']:
-            host_routes = ''
             subnet = sdk.network.create_subnet(
                 name=name,
                 cidr=cidr,
                 gateway_ip=gateway,
-                host_routes=host_routes,
                 enable_dhcp=True,
                 ip_version='6',
                 ipv6_address_mode='dhcpv6-stateless',
@@ -2080,16 +2078,14 @@ def _neutron_subnet_create(sdk, network_id, cidr, gateway, host_routes,
 
 def _neutron_subnet_update(sdk, subnet_id, gateway, host_routes,
                            allocation_pool, name):
+    update_values = {'name': name, 'gateway_ip': gateway,
+                     'host_routes': host_routes,
+                     'allocation_pools': allocation_pool}
     try:
         # DHCP_START contains a ":" then assume a IPv6 subnet
         if ':' in allocation_pool[0]['start']:
-            host_routes = ''
-        subnet = sdk.network.update_subnet(
-                   subnet_id,
-                   name=name,
-                   gateway_ip=gateway,
-                   host_routes=host_routes,
-                   allocation_pools=allocation_pool)
+            del update_values['host_routes']
+        subnet = sdk.network.update_subnet(subnet_id, **update_values)
         LOG.info("Subnet updated %s", subnet)
     except Exception as e:
         LOG.error("Update subnet %s failed: %s", name, e)
