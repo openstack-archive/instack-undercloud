@@ -2299,14 +2299,6 @@ def install(instack_root, upgrade=False):
         _generate_init_data(instack_env)
         ovs_interfaces = _get_ovs_interfaces()
         if upgrade:
-            # Even if we backport https://review.openstack.org/#/c/457478/
-            # into stable branches of puppet-ironic, we still need a way
-            # to handle existing deployments.
-            # This task will fix ironic-dbsync.log ownership on existing
-            # deployments during an upgrade. It can be removed after we
-            # release Pike.
-            _run_command(['sudo', '/usr/bin/chown', 'ironic:ironic',
-                          '/var/log/ironic/ironic-dbsync.log'])
             _die_tuskar_die()
         if CONF.undercloud_update_packages:
             _run_yum_clean_all(instack_env)
