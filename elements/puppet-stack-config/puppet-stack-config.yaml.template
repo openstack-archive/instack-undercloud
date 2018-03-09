@@ -36,6 +36,8 @@ ssh::server::storeconfigs_enabled: false
 memcached::max_memory: '50%'
 memcached::verbosity: 'v'
 memcached::disable_cachedump: true
+memcached::listen_ip: '127.0.0.1'
+memcached::udp_port: 0
 
 # Apache
 apache::server_signature: 'Off'
@@ -967,6 +969,8 @@ tripleo::firewall::firewall_rules:
     dport: 3260
   '121 memcached':
     dport: 11211
+    proto: tcp
+    source: '127.0.0.1'
   '122 swift proxy':
     dport:
       - 8080
