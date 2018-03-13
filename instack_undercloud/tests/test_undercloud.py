@@ -213,10 +213,10 @@ class TestUndercloud(BaseTestCase):
     def test_extract_from_stackrc(self):
         with open(os.path.expanduser('~/stackrc'), 'w') as f:
             f.write('OS_USERNAME=aturing\n')
-            f.write('OS_AUTH_URL=http://bletchley:5000/\n')
+            f.write('OS_AUTH_URL=https://bletchley:5000/\n')
         self.assertEqual('aturing',
                          undercloud._extract_from_stackrc('OS_USERNAME'))
-        self.assertEqual('http://bletchley:5000/',
+        self.assertEqual('https://bletchley:5000/',
                          undercloud._extract_from_stackrc('OS_AUTH_URL'))
 
     @mock.patch('instack_undercloud.undercloud._check_hostname')
@@ -589,14 +589,14 @@ class TestGenerateEnvironment(BaseTestCase):
                          if k.startswith('UNDERCLOUD_ENDPOINT')}
         self.assertEqual(90, len(endpoint_vars))
         # Spot check one service
-        self.assertEqual('http://192.168.24.1:5000',
+        self.assertEqual('https://192.168.24.2:13000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.168.24.1:5000',
+        self.assertEqual('http://192.168.24.3:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.168.24.1:35357',
+        self.assertEqual('http://192.168.24.3:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
-        self.assertEqual('http://192.168.24.1:8080/v1/AUTH_%(tenant_id)s',
+        self.assertEqual('https://192.168.24.2:13808/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_generate_endpoints_ssl_manual(self):
@@ -615,18 +615,18 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual('https://192.168.24.2:13808/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
-    def test_generate_endpoints_ssl_auto(self):
-        self.conf.config(generate_service_certificate=True)
+    def test_generate_endpoints_ssl_off(self):
+        self.conf.config(generate_service_certificate=False)
         env = undercloud._generate_environment('.')
         # Spot check one service
-        self.assertEqual('https://192.168.24.2:13000',
+        self.assertEqual('http://192.168.24.1:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC'])
-        self.assertEqual('http://192.168.24.3:5000',
+        self.assertEqual('http://192.168.24.1:5000',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_INTERNAL'])
-        self.assertEqual('http://192.168.24.3:35357',
+        self.assertEqual('http://192.168.24.1:35357',
                          env['UNDERCLOUD_ENDPOINT_KEYSTONE_ADMIN'])
         # Also check that the tenant id part is preserved
-        self.assertEqual('https://192.168.24.2:13808/v1/AUTH_%(tenant_id)s',
+        self.assertEqual('http://192.168.24.1:8080/v1/AUTH_%(tenant_id)s',
                          env['UNDERCLOUD_ENDPOINT_SWIFT_PUBLIC'])
 
     def test_absolute_cert_path(self):
@@ -650,6 +650,12 @@ class TestGenerateEnvironment(BaseTestCase):
             os.chdir(cur_dir)
 
     def test_no_cert_path(self):
+        env = undercloud._generate_environment('.')
+        self.assertEqual('/etc/pki/tls/certs/undercloud-192.168.24.2.pem',
+                         env['UNDERCLOUD_SERVICE_CERTIFICATE'])
+
+    def test_no_ssl(self):
+        self.conf.config(generate_service_certificate=False)
         env = undercloud._generate_environment('.')
         self.assertEqual('', env['UNDERCLOUD_SERVICE_CERTIFICATE'])
 

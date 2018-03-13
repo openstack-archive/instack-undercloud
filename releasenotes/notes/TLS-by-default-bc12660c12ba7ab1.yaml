@@ -1,0 +1,5 @@
+---
+security:
+  - |
+    TLS is now used by default for the public endpoints. This is done through
+    the generate_service_certificates option, which now defaults to 'True'.

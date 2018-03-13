@@ -81,7 +81,7 @@
 # /etc/pki/tls/certs/undercloud-[undercloud_public_host].pem.  This
 # certificate is signed by CA selected by the
 # "certificate_generation_ca" option. (boolean value)
-#generate_service_certificate = false
+#generate_service_certificate = true
 
 # The certmonger nickname of the CA from which the certificate will be
 # requested. This is used only if the generate_service_certificate
