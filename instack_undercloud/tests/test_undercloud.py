@@ -76,10 +76,8 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
-    @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
     @mock.patch('instack_undercloud.undercloud._run_validation_groups')
-    def test_install(self, mock_run_validation_groups,
-                     mock_die_tuskar_die, mock_load_config,
+    def test_install(self, mock_run_validation_groups, mock_load_config,
                      mock_generate_environment, mock_run_instack,
                      mock_run_clean_all, mock_run_yum_update, mock_run_orc,
                      mock_post_config, mock_run_command,
@@ -95,7 +93,6 @@ class TestUndercloud(BaseTestCase):
         mock_run_command.assert_called_with(
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         mock_upgrade_fact.assert_called_with(False)
-        mock_die_tuskar_die.assert_not_called()
         mock_run_validation_groups.assert_not_called()
 
     @mock.patch(
@@ -111,15 +108,19 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
-    @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
     @mock.patch('instack_undercloud.undercloud._run_validation_groups')
     def test_install_upgrade(self, mock_run_validation_groups,
-                             mock_die_tuskar_die, mock_load_config,
-                             mock_generate_environment, mock_run_instack,
-                             mock_run_yum_clean_all, mock_run_yum_update,
-                             mock_run_orc, mock_post_config, mock_run_command,
+                             mock_load_config,
+                             mock_generate_environment,
+                             mock_run_instack,
+                             mock_run_yum_clean_all,
+                             mock_run_yum_update,
+                             mock_run_orc,
+                             mock_post_config,
+                             mock_run_command,
                              mock_validate_configuration,
-                             mock_configure_logging, mock_upgrade_fact,
+                             mock_configure_logging,
+                             mock_upgrade_fact,
                              mock_load_subnets_config_groups):
         fake_env = mock.MagicMock()
         mock_generate_environment.return_value = fake_env
@@ -131,7 +132,6 @@ class TestUndercloud(BaseTestCase):
         mock_run_command.assert_called_with(
             ['sudo', 'rm', '-f', '/tmp/svc-map-services'], None, 'rm')
         mock_upgrade_fact.assert_called_with(True)
-        mock_die_tuskar_die.assert_called_once()
         mock_run_validation_groups.assert_called_once()
 
     @mock.patch(
@@ -147,10 +147,9 @@ class TestUndercloud(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._run_instack')
     @mock.patch('instack_undercloud.undercloud._generate_environment')
     @mock.patch('instack_undercloud.undercloud._load_config')
-    @mock.patch('instack_undercloud.undercloud._die_tuskar_die')
     @mock.patch('instack_undercloud.undercloud._run_validation_groups')
     def test_install_upgrade_hieradata(self, mock_run_validation_groups,
-                                       mock_die_tuskar_die, mock_load_config,
+                                       mock_load_config,
                                        mock_generate_environment,
                                        mock_run_instack,
                                        mock_run_yum_clean_all,
@@ -178,7 +177,6 @@ class TestUndercloud(BaseTestCase):
                  '/etc/puppet/hieradata/override.yaml']),
             mock_run_command.mock_calls)
         mock_upgrade_fact.assert_called_with(True)
-        mock_die_tuskar_die.assert_called_once()
         mock_run_validation_groups.assert_called_once()
 
     @mock.patch('instack_undercloud.undercloud._configure_logging')
