@@ -1458,7 +1458,7 @@ class TestPostConfig(BaseTestCase):
         undercloud._ensure_neutron_network(mock_sdk)
         mock_sdk.network.create_network.assert_called_with(
           name='ctlplane', provider_network_type='flat',
-          provider_physical_network='ctlplane')
+          provider_physical_network='ctlplane', mtu=1500)
 
     def test_delete_default_segment(self):
         mock_sdk = self._neutron_mocks()

@@ -2038,9 +2038,10 @@ def _ensure_neutron_network(sdk):
     try:
         network = list(sdk.network.networks(name=PHYSICAL_NETWORK))
         if not network:
+            mtu = CONF.get("local_mtu")
             network = sdk.network.create_network(
                 name=PHYSICAL_NETWORK, provider_network_type='flat',
-                provider_physical_network=PHYSICAL_NETWORK)
+                provider_physical_network=PHYSICAL_NETWORK, mtu=mtu)
             LOG.info("Network created %s", network)
             # (hjensas) Delete the default segment, we create a new segment
             # per subnet later.
