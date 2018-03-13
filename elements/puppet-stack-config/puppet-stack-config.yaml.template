@@ -829,6 +829,7 @@ tripleo::ui::endpoint_proxy_heat: {{UNDERCLOUD_ENDPOINT_HEAT_UI_PROXY_INTERNAL}}
 tripleo::ui::endpoint_proxy_ironic: {{UNDERCLOUD_ENDPOINT_IRONIC_INTERNAL}}
 tripleo::ui::endpoint_proxy_ironic_inspector: {{UNDERCLOUD_ENDPOINT_IRONIC_INSPECTOR_INTERNAL}}
 tripleo::ui::endpoint_proxy_mistral: {{UNDERCLOUD_ENDPOINT_MISTRAL_UI_PROXY_INTERNAL}}
+tripleo::ui::endpoint_proxy_nova: {{UNDERCLOUD_ENDPOINT_NOVA_UI_PROXY_INTERNAL}}
 tripleo::ui::endpoint_proxy_swift: {{UNDERCLOUD_ENDPOINT_SWIFT_UI_PROXY_INTERNAL}}
 tripleo::ui::endpoint_config_zaqar: {{UNDERCLOUD_ENDPOINT_ZAQAR_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_keystone: {{UNDERCLOUD_ENDPOINT_KEYSTONE_UI_CONFIG_PUBLIC}}
@@ -836,6 +837,7 @@ tripleo::ui::endpoint_config_heat: {{UNDERCLOUD_ENDPOINT_HEAT_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_ironic: {{UNDERCLOUD_ENDPOINT_IRONIC_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_ironic_inspector: {{UNDERCLOUD_ENDPOINT_IRONIC_INSPECTOR_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_mistral: {{UNDERCLOUD_ENDPOINT_MISTRAL_UI_CONFIG_PUBLIC}}
+tripleo::ui::endpoint_config_nova: {{UNDERCLOUD_ENDPOINT_NOVA_UI_CONFIG_PUBLIC}}
 tripleo::ui::endpoint_config_swift: {{UNDERCLOUD_ENDPOINT_SWIFT_UI_CONFIG_PUBLIC}}
 
 # service tenant
