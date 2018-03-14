@@ -1447,11 +1447,7 @@ def _generate_environment(instack_root):
 
     _write_password_file(instack_env)
 
-    if CONF.generate_service_certificate:
-        public_host = CONF.undercloud_public_host
-        instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = (
-            '/etc/pki/tls/certs/undercloud-%s.pem' % public_host)
-    elif instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
+    if instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']:
         raw_value = instack_env['UNDERCLOUD_SERVICE_CERTIFICATE']
         abs_cert = os.path.abspath(raw_value)
         if abs_cert != raw_value:
@@ -1464,6 +1460,10 @@ def _generate_environment(instack_root):
             else:
                 instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = os.path.join(
                     home_dir, raw_value)
+    elif CONF.generate_service_certificate:
+        public_host = CONF.undercloud_public_host
+        instack_env['UNDERCLOUD_SERVICE_CERTIFICATE'] = (
+            '/etc/pki/tls/certs/undercloud-%s.pem' % public_host)
 
     return instack_env
 
