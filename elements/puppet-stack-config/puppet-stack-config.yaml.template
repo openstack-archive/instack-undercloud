@@ -243,7 +243,7 @@ mysql::server::root_password: {{UNDERCLOUD_DB_PASSWORD}}
 neutron::debug: "%{hiera('debug')}"
 neutron::bind_host: {{LOCAL_IP}}
 neutron::core_plugin: ml2
-neutron::service_plugins: ['router']
+neutron::service_plugins: ['router', 'segments']
 neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: {{OVERCLOUD_DOMAIN_NAME}}
 neutron::server::api_workers: "%{::os_workers}"
@@ -277,7 +277,6 @@ neutron::keystone::auth::admin_url: {{UNDERCLOUD_ENDPOINT_NEUTRON_ADMIN}}
 neutron::keystone::auth::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::keystone::auth::region: "%{hiera('keystone_region')}"
 neutron::plugins::ml2::extension_drivers: 'port_security'
-neutron::service_plugins: ['segments']
 neutron::agents::ml2::networking_baremetal::user: 'ironic'
 neutron::agents::ml2::networking_baremetal::password: {{UNDERCLOUD_IRONIC_PASSWORD}}
 neutron::agents::ml2::networking_baremetal::auth_url: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}
