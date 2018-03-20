@@ -136,9 +136,9 @@ heat::debug:  "%{hiera('debug')}"
 heat_stack_domain_admin_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
 heat::engine::configure_delegated_roles: false
 heat::engine::heat_stack_user_role: 'heat_stack_user'
-heat::engine::heat_watch_server_url: http://{{LOCAL_IP}}:8003
-heat::engine::heat_metadata_server_url: http://{{LOCAL_IP}}:8000
-heat::engine::heat_waitcondition_server_url: http://{{LOCAL_IP}}:8000/v1/waitcondition
+heat::engine::heat_watch_server_url: http://{{LOCAL_IP_WRAPPED}}:8003
+heat::engine::heat_metadata_server_url: http://{{LOCAL_IP_WRAPPED}}:8000
+heat::engine::heat_waitcondition_server_url: http://{{LOCAL_IP_WRAPPED}}:8000/v1/waitcondition
 heat::engine::reauthentication_auth_method: 'trusts'
 heat::engine::trusts_delegated_roles: []
 heat::engine::auth_encryption_key: {{UNDERCLOUD_HEAT_ENCRYPTION_KEY}}
