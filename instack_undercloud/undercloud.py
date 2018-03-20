@@ -1877,7 +1877,6 @@ def _run_validation_groups(groups=[], mistral_url='', timeout=540,
 
 def _create_default_plan(mistral, plans, timeout=360):
     plan_name = 'overcloud'
-    queue_name = str(uuid.uuid4())
 
     if plan_name in plans:
         LOG.info('Not creating default plan "%s" because it already exists.',
@@ -1888,7 +1887,6 @@ def _create_default_plan(mistral, plans, timeout=360):
         'tripleo.plan_management.v1.create_deployment_plan',
         workflow_input={
             'container': plan_name,
-            'queue_name': queue_name,
             'use_default_templates': True,
         }
     )

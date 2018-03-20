@@ -1068,7 +1068,6 @@ class TestPostConfig(BaseTestCase):
             'tripleo.plan_management.v1.create_deployment_plan',
             workflow_input={
                 'container': 'overcloud',
-                'queue_name': mock.ANY,
                 'use_default_templates': True,
             }
         )
