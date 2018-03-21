@@ -2169,11 +2169,9 @@ def _config_neutron_segments_and_subnets(sdk, ctlplane_id):
             s = CONF.get(name)
 
             phynet = name
+            metadata_nexthop = s.gateway
             if name == CONF.local_subnet:
                 phynet = PHYSICAL_NETWORK
-
-            metadata_nexthop = s.gateway
-            if str(netaddr.IPNetwork(CONF.local_ip).ip) in s.cidr:
                 metadata_nexthop = str(netaddr.IPNetwork(CONF.local_ip).ip)
 
             host_routes = [{'destination': '169.254.169.254/32',
