@@ -180,7 +180,7 @@ _opts = [
                       'For each network a section/group needs to be added to '
                       'the configuration file with these parameters set: '
                       'cidr, dhcp_start, dhcp_end, inspection_iprange, '
-                      'gateway and masquerade_network.'
+                      'gateway and masquerade.'
                       '\n\n'
                       'Example:\n\n'
                       'subnets = subnet1,subnet2\n'
@@ -193,7 +193,7 @@ _opts = [
                       'dhcp_end = 192.168.10.200\n'
                       'inspection_iprange = 192.168.10.20,192.168.10.90\n'
                       'gateway = 192.168.10.254\n'
-                      'masquerade_network = True'
+                      'masquerade = True'
                       '\n'
                       '[subnet2]\n'
                       '. . .\n')),
