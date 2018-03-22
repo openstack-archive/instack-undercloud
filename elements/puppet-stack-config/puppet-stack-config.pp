@@ -386,6 +386,7 @@ include ::nova::cell_v2::simple_setup
 include ::nova::placement
 include ::nova::wsgi::apache_placement
 include ::nova::cron::archive_deleted_rows
+include ::nova::cron::purge_shadow_tables
 include ::nova::conductor
 include ::nova::scheduler
 include ::nova::scheduler::filter
