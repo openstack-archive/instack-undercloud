@@ -522,6 +522,8 @@ include ::ironic::drivers::staging
 include ::ironic::glance
 include ::ironic::inspector
 include ::ironic::inspector::cors
+include ::ironic::inspector::pxe_filter
+include ::ironic::inspector::pxe_filter::dnsmasq
 include ::ironic::neutron
 include ::ironic::pxe
 include ::ironic::service_catalog
