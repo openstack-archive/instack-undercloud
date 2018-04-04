@@ -2158,9 +2158,9 @@ def _config_neutron_segments_and_subnets(sdk, ctlplane_id):
     s = CONF.get(CONF.local_subnet)
     subnet = _get_subnet(sdk, s.cidr, ctlplane_id)
     if subnet and not subnet.segment_id:
-        LOG.warn("Local subnet %s already exists and is not associated with a "
-                 "network segment. Any additional subnets will be ignored.",
-                 CONF.local_subnet)
+        LOG.warning("Local subnet %s already exists and is not associated "
+                    "with a network segment. Any additional subnets will "
+                    "be ignored.", CONF.local_subnet)
         host_routes = [{'destination': '169.254.169.254/32',
                         'nexthop': str(netaddr.IPNetwork(CONF.local_ip).ip)}]
         allocation_pool = [{'start': s.dhcp_start, 'end': s.dhcp_end}]
