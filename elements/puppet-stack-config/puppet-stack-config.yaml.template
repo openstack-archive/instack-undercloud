@@ -17,6 +17,7 @@ sysctl_settings: {{SYSCTL_SETTINGS}}
 # SSL
 tripleo::haproxy::service_certificate: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
 generate_service_certificates: {{GENERATE_SERVICE_CERTIFICATE}}
+{{#GENERATE_SERVICE_CERTIFICATE}}
 tripleo::profile::base::haproxy::certificates_specs:
   undercloud-haproxy-public:
     service_pem: {{UNDERCLOUD_SERVICE_CERTIFICATE}}
@@ -25,6 +26,7 @@ tripleo::profile::base::haproxy::certificates_specs:
     hostname: "%{hiera('controller_public_host')}"
     postsave_cmd: "/usr/bin/instack-haproxy-cert-update '/etc/pki/tls/certs/undercloud-front.crt' '/etc/pki/tls/private/undercloud-front.key' {{UNDERCLOUD_SERVICE_CERTIFICATE}} undercloud-haproxy-public-cert"
     principal: {{SERVICE_PRINCIPAL}}
+{{/GENERATE_SERVICE_CERTIFICATE}}
 
 # CA defaults
 certmonger_ca: {{CERTIFICATE_GENERATION_CA}}
