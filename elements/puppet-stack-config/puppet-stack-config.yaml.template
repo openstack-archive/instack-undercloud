@@ -149,7 +149,7 @@ heat::engine::max_nested_stack_depth: 7
 heat::instance_user: heat-admin
 heat::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 heat::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
-heat::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+heat::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 heat::keystone::authtoken::password: {{UNDERCLOUD_HEAT_PASSWORD}}
 heat::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 heat::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -252,7 +252,7 @@ neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 neutron::keystone::authtoken::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 neutron::server::notifications::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
-neutron::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+neutron::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 neutron::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 neutron::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 neutron::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -292,7 +292,7 @@ ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
 ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 ceilometer::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 ceilometer::keystone::authtoken::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
-ceilometer::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+ceilometer::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ceilometer::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 ceilometer::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -323,7 +323,7 @@ aodh::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 aodh::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 aodh::api::host: {{LOCAL_IP}}
 aodh::keystone::authtoken::password: {{UNDERCLOUD_AODH_PASSWORD}}
-aodh::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+aodh::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 aodh::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 ceilometer::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 ceilometer::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -348,7 +348,7 @@ gnocchi::wsgi::apache::bind_host: {{LOCAL_IP}}
 gnocchi::api::service_name: 'httpd'
 gnocchi::api::host: {{LOCAL_IP}}
 gnocchi::keystone::authtoken::password: {{UNDERCLOUD_GNOCCHI_PASSWORD}}
-gnocchi::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+gnocchi::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 gnocchi::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 gnocchi::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
 gnocchi::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -381,7 +381,7 @@ panko::api::host: {{LOCAL_IP}}
 panko::db::mysql::password: {{UNDERCLOUD_PANKO_PASSWORD}}
 panko::db::database_connection: mysql+pymysql://panko:{{UNDERCLOUD_PANKO_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/panko
 panko::keystone::authtoken::password: {{UNDERCLOUD_PANKO_PASSWORD}}
-panko::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+panko::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 panko::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 panko::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 panko::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -398,7 +398,7 @@ nova::debug:  "%{hiera('debug')}"
 nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 nova::notification_driver: messaging
 nova::rpc_response_timeout: '600'
-nova::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+nova::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 nova::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 nova::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 nova::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -659,7 +659,7 @@ mistral::rpc_backend: rabbit
 mistral::rpc_response_timeout: 120
 mistral::cron_trigger::execution_interval: 600
 mistral::keystone::authtoken::password: {{UNDERCLOUD_MISTRAL_PASSWORD}}
-mistral::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+mistral::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 mistral::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 mistral::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 mistral::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
@@ -676,7 +676,7 @@ mistral::engine::execution_field_size_limit_kb: 16384
 
 # Zaqar
 zaqar::keystone::authtoken::project_name: 'service'
-zaqar::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+zaqar::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 zaqar::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 zaqar::keystone::authtoken::password: {{UNDERCLOUD_ZAQAR_PASSWORD}}
 zaqar::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
@@ -738,7 +738,7 @@ cinder::keystone::auth::admin_url_v3: {{UNDERCLOUD_ENDPOINT_CINDER_V3_ADMIN}}
 cinder::keystone::auth::region: "%{hiera('keystone_region')}"
 cinder::keystone::auth::password: {{UNDERCLOUD_CINDER_PASSWORD}}
 cinder::keystone::authtoken::project_name: 'service'
-cinder::keystone::authtoken::auth_uri: "%{hiera('keystone_auth_uri')}"
+cinder::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 cinder::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 cinder::keystone::authtoken::password: {{UNDERCLOUD_CINDER_PASSWORD}}
 cinder::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
