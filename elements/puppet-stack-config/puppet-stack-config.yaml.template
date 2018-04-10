@@ -93,6 +93,10 @@ swift::proxy::pipeline:
   - 'authtoken'
   - 'keystone'
   - 'staticweb'
+  - 'copy'
+  - 'slo'
+  - 'dlo'
+  - 'versioned_writes'
   - 'proxy-logging'
   - 'proxy-server'
 
