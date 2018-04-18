@@ -16,6 +16,7 @@
     ],
     "exclude-element": [
       "pip-and-virtualenv",
+      "epel",
       "os-collect-config",
       "svc-map",
       "pip-manifest",
