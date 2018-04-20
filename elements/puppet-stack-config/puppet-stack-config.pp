@@ -63,9 +63,7 @@ Keystone::Resource::Service_identity {
   default_domain => hiera('keystone_default_domain'),
 }
 
-if count(hiera('ntp::servers')) > 0 {
-  include ::tripleo::profile::base::time::ntp
-}
+include ::tripleo::profile::base::time::ntp
 
 include ::rabbitmq
 Class['::rabbitmq'] -> Service['httpd']
