@@ -380,6 +380,15 @@ class TestNoIPChange(BaseTestCase):
         undercloud._validate_no_ip_change()
 
     @mock.patch('instack_undercloud.undercloud.open')
+    @mock.patch('os.path.isfile', return_value=True)
+    def test_update_empty(self, mock_isfile, mock_open):
+        # This would be a way to disable os-net-config from running
+        mock_open.side_effect = [
+            mock.mock_open(read_data='').return_value,
+        ]
+        undercloud._validate_no_ip_change()
+
+    @mock.patch('instack_undercloud.undercloud.open')
     @mock.patch('json.loads')
     @mock.patch('os.path.isfile', return_value=True)
     def test_update_mismatch(self, mock_isfile, mock_loads, mock_open):

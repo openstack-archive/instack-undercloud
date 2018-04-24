@@ -120,9 +120,8 @@
 
 # Path to network config override template. If set, this template will
 # be used to configure the networking via os-net-config. Must be in
-# json format. Templated tags can be used within the template, see
-# instack-undercloud/elements/undercloud-stack-config/net-
-# config.json.template for example tags (string value)
+# json format. If you wish to disable os-net-config you can use an
+# set this location to point to an empty file.
 #net_config_override =
 
 # Network interface on which inspection dnsmasq will listen.  If in
