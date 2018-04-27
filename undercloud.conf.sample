@@ -192,6 +192,10 @@
 # undercloud. (boolean value)
 #enable_container_images_build = true
 
+# Array of host/port combiniations of docker insecure registries.
+# (string value)
+#docker_insecure_registries =
+
 # One Time Password to register Undercloud node with an IPA server.
 # Required when enable_novajoin = True. (string value)
 #ipa_otp =
