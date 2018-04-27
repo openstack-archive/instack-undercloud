@@ -910,6 +910,8 @@ nova::api::vendordata_dynamic_auth_project_name: 'service'
 nova::api::vendordata_dynamic_auth_project_domain_name: 'Default'
 nova::api::vendordata_dynamic_auth_user_domain_name: 'Default'
 nova::api::vendordata_dynamic_auth_password: {{UNDERCLOUD_NOVA_PASSWORD}}
+nova::api::vendordata_dynamic_connect_timeout: 30
+nova::api::vendordata_dynamic_read_timeout: 30
 nova::notification_topics: ['notifications', 'novajoin_notifications']
 nova::notify_on_state_change: 'vm_state'
 {{/ENABLE_NOVAJOIN}}
