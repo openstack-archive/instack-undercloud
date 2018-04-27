@@ -120,8 +120,9 @@
 
 # Path to network config override template. If set, this template will
 # be used to configure the networking via os-net-config. Must be in
-# json format. If you wish to disable os-net-config you can use an
-# set this location to point to an empty file.
+# json format. Templated tags can be used within the template, see
+# instack-undercloud/elements/undercloud-stack-config/net-
+# config.json.template for example tags (string value)
 #net_config_override =
 
 # Network interface on which inspection dnsmasq will listen.  If in
@@ -186,6 +187,10 @@
 # Whether to enable docker container images to be build on the
 # undercloud. (boolean value)
 #enable_container_images_build = true
+
+# Array of host/port combiniations of docker insecure registries.
+# (string value)
+#docker_insecure_registries =
 
 # One Time Password to register Undercloud node with an IPA server.
 # Required when enable_novajoin = True. (string value)

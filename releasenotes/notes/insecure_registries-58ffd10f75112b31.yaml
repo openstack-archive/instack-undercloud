@@ -1,0 +1,7 @@
+---
+features:
+  - |
+    Introduce docker_insecure_registries that is an array of host/port
+    combiniations of docker insecure registries. The default value will
+    be the previous parameter that were hardcoded, but now we can easily
+    override it in undercloud.conf.
