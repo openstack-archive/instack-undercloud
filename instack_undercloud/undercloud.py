@@ -354,6 +354,11 @@ _opts = [
                 help=('Whether to enable docker container images to be build '
                       'on the undercloud.')
                 ),
+    cfg.ListOpt('docker_insecure_registries',
+                default=[],
+                help=('Array of host/port combiniations of docker insecure '
+                      'registries.')
+                ),
     cfg.StrOpt('ipa_otp',
                default='',
                help=('One Time Password to register Undercloud node with '
@@ -1222,12 +1227,21 @@ def _generate_environment(instack_root):
 
     instack_env['SYSCTL_SETTINGS'] = _generate_sysctl_settings()
 
-    if CONF.docker_registry_mirror:
-        instack_env['DOCKER_REGISTRY_MIRROR'] = CONF.docker_registry_mirror
-
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
     instack_env['LOCAL_IP_WRAPPED'] = _wrap_ipv6(instack_env['LOCAL_IP'])
+
+    if CONF.docker_registry_mirror:
+        instack_env['DOCKER_REGISTRY_MIRROR'] = CONF.docker_registry_mirror
+    if CONF.docker_insecure_registries:
+        instack_env['DOCKER_INSECURE_REGISTRIES'] = json.dumps(
+                CONF.docker_insecure_registries)
+    else:
+        # For backward compatibility with previous defaults
+        instack_env['DOCKER_INSECURE_REGISTRIES'] = json.dumps(
+                [instack_env['LOCAL_IP'] + ':' + '8787',
+                 CONF.undercloud_admin_host + ':' + '8787'])
+
     # We're not in a chroot so this doesn't make sense, and it causes weird
     # errors if it's set.
     if instack_env.get('DIB_YUM_REPO_CONF'):
