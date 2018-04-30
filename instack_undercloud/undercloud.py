@@ -1662,7 +1662,7 @@ def _ensure_ssh_selinux_permission():
                         wrong_perm = True
                         break
                 if wrong_perm:
-                    cmd = ['semanage',
+                    cmd = ['sudo', 'semanage',
                            'fcontext', '-a', '-t', 'ssh_home_t',
                            "{}(/.*)?".format(ssh_path)]
                     _run_command(cmd)
