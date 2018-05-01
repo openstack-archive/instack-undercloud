@@ -592,6 +592,13 @@ class TestGenerateEnvironment(BaseTestCase):
         self.assertEqual('http://foo/bar',
                          env['DOCKER_REGISTRY_MIRROR'])
 
+    def test_docker_insecure_registries(self):
+        self.conf.config(docker_insecure_registries=['http://foo/bar:8787'])
+        env = undercloud._generate_environment('.')
+        insecure_registries = json.loads(env['DOCKER_INSECURE_REGISTRIES'])
+        # Spot check one service
+        self.assertEqual(['http://foo/bar:8787'], insecure_registries)
+
     def test_generate_endpoints(self):
         env = undercloud._generate_environment('.')
         endpoint_vars = {k: v for (k, v) in env.items()
