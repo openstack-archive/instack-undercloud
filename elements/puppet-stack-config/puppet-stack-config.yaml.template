@@ -132,9 +132,7 @@ glance::backend::swift::swift_store_auth_version: 3
 glance::backend::swift::swift_store_user: service:glance
 glance::backend::swift::swift_store_key: {{UNDERCLOUD_GLANCE_PASSWORD}}
 glance::backend::swift::swift_store_create_container_on_put: true
-glance::notify::rabbitmq::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-glance::notify::rabbitmq::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-glance::notify::rabbitmq::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+glance::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 glance::registry::debug: "%{hiera('debug')}"
 
 # Heat
@@ -225,9 +223,7 @@ keystone::wsgi::apache::ssl: false
 keystone::wsgi::apache::bind_host: {{LOCAL_IP}}
 keystone::notification_driver: messaging
 keystone::notification_topics: notifications
-keystone::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-keystone::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-keystone::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+keystone::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 keystone::enable_credential_setup: true
 keystone::fernet_max_active_keys: 2
 
@@ -254,8 +250,7 @@ neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: {{OVERCLOUD_DOMAIN_NAME}}
 neutron::server::api_workers: "%{::os_workers}"
 neutron::server::rpc_workers: "%{::os_workers}"
-neutron::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-neutron::rabbit_user: {{UNDERCLOUD_RABBIT_USERNAME}}
+neutron::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 neutron::keystone::authtoken::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 neutron::server::notifications::project_name: "%{hiera('neutron::keystone::auth::tenant')}"
 neutron::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
@@ -294,9 +289,7 @@ neutron::agents::ml2::networking_baremetal::region_name: "%{hiera('keystone_regi
 # Ceilometer
 ceilometer::debug: "%{hiera('debug')}"
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
-ceilometer::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-ceilometer::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-ceilometer::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+ceilometer::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 ceilometer::keystone::authtoken::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -324,9 +317,7 @@ ceilometer::agent::notification::manage_event_pipeline: true
 
 # Aodh
 aodh::debug: "%{hiera('debug')}"
-aodh::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-aodh::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-aodh::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+aodh::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 aodh::api::host: {{LOCAL_IP}}
 aodh::keystone::authtoken::password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
@@ -657,9 +648,7 @@ horizon::openstack_endpoint_type: internalURL
 mistral::debug: "%{hiera('debug')}"
 mistral::api::bind_host: {{LOCAL_IP}}
 mistral::api::api_workers: "%{::os_workers}"
-mistral::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-mistral::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-mistral::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+mistral::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 mistral::database_connection: mysql+pymysql://mistral:{{UNDERCLOUD_MISTRAL_PASSWORD}}@{{LOCAL_IP_WRAPPED}}/mistral
 mistral::rpc_backend: rabbit
 mistral::rpc_response_timeout: 120
@@ -749,9 +738,7 @@ cinder::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
 cinder::keystone::authtoken::password: {{UNDERCLOUD_CINDER_PASSWORD}}
 cinder::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 cinder::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
-cinder::rabbit_userid: {{UNDERCLOUD_RABBIT_USERNAME}}
-cinder::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
-cinder::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
+cinder::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 cinder::scheduler::scheduler_driver: cinder.scheduler.filter_scheduler.FilterScheduler
 cinder::setup_test_volume::size: '10280M'
 cinder::wsgi::apache::bind_host: {{LOCAL_IP}}
