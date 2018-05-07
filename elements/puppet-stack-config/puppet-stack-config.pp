@@ -13,6 +13,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+warning('instack-undercloud is deprecated in Rocky and is replaced by containerized-undercloud.')
+
 # Deploy os-net-config before everything in the catalog
 include ::stdlib
 class { '::tripleo::network::os_net_config':
