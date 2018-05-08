@@ -580,6 +580,10 @@ include ::mistral::keystone::auth
 include ::mistral::db::sync
 include ::mistral::api
 include ::mistral::engine
+ensure_resource('user', 'mistral', {
+  'name'   => 'mistral',
+  'groups' => 'docker',
+})
 include ::mistral::executor
 include ::mistral::cors
 include ::mistral::cron_trigger
