@@ -518,7 +518,6 @@ ironic::conductor::cleaning_disk_erase: 'metadata'
 ironic::conductor::cleaning_network: 'ctlplane'
 ironic::conductor::provisioning_network: 'ctlplane'
 ironic::conductor::default_boot_option: 'local'
-ironic::conductor::enabled_drivers: {{ENABLED_DRIVERS}}
 ironic::conductor::enabled_hardware_types: {{ENABLED_HARDWARE_TYPES}}
 ironic::drivers::interfaces::default_inspect_interface: inspector
 ironic::drivers::interfaces::enabled_boot_interfaces: {{ENABLED_BOOT_INTERFACES}}
