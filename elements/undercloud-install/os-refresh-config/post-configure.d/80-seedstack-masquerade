@@ -32,10 +32,10 @@ fi
 # https://bugs.launchpad.net/tripleo/+bug/1765700
 if /bin/test -f /etc/sysconfig/iptables && /bin/grep -v "\-m comment \--comment" /etc/sysconfig/iptables | /bin/grep -q ironic-inspector
 then
-    /bin/sed -i "/-m comment --comment/p;/ironic-inspector/d" /etc/sysconfig/iptables
+    /bin/sed -i "/-m comment --comment.*ironic-inspector/p;/ironic-inspector/d" /etc/sysconfig/iptables
 fi
 
 if /bin/test -f /etc/sysconfig/ip6tables && /bin/grep -v "\-m comment \--comment" /etc/sysconfig/ip6tables | /bin/grep -q ironic-inspector
 then
-    /bin/sed -i "/-m comment --comment/p;/ironic-inspector/d" /etc/sysconfig/ip6tables
+    /bin/sed -i "/-m comment --comment.*ironic-inspector/p;/ironic-inspector/d" /etc/sysconfig/ip6tables
 fi
