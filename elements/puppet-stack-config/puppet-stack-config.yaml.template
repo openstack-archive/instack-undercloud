@@ -448,7 +448,6 @@ nova::network::neutron::neutron_project_name: "%{hiera('neutron::keystone::auth:
 nova::network::neutron::neutron_region_name: ''
 
 nova::ram_allocation_ratio: '1.0'
-nova::scheduler::filter::scheduler_host_manager: 'ironic_host_manager'
 nova::scheduler::filter::scheduler_max_attempts: {{SCHEDULER_MAX_ATTEMPTS}}
 nova::scheduler::filter::scheduler_available_filters: ['tripleo_common.filters.list.tripleo_filters']
 nova::scheduler::filter::scheduler_default_filters: ['RetryFilter', 'TripleOCapabilitiesFilter', 'ComputeCapabilitiesFilter', 'AvailabilityZoneFilter', 'RamFilter', 'DiskFilter', 'ComputeFilter', 'ImagePropertiesFilter', 'ServerGroupAntiAffinityFilter', 'ServerGroupAffinityFilter']
