@@ -2367,6 +2367,23 @@ def _is_database_upgrade_needed():
 
 def pre_upgrade():
     _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
+
+    # Don't upgrade undercloud unless overcloud is in *_COMPLETE.
+    # As we're migrating overcloud stack to convergence in post_config,
+    # which would fail otherwise. It's better to fail fast.
+    user, password, project, auth_url = _get_auth_values()
+    heat = os_client_config.make_client('orchestration',
+                                        auth_url=auth_url,
+                                        username=user,
+                                        password=password,
+                                        project_name=project,
+                                        project_domain_name='Default',
+                                        user_domain_name='Default')
+    for stack in heat.stacks.list():
+        if stack.status != 'COMPLETE':
+            LOG.error('Can not upgrade undercloud with FAILED overcloud')
+            sys.exit(1)
+
     args = ['sudo', 'systemctl', 'stop', 'openstack-*', 'neutron-*',
             'openvswitch', 'httpd']
     LOG.info('Stopping OpenStack and related services')
