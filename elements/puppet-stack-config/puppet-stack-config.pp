@@ -706,7 +706,6 @@ if str2bool($::undercloud_upgrade) {
   # sync occur prior to the cell v2 simple setup so we have to reorder these
   # only for upgrades. See LP#1649341
   include ::nova::deps
-  include ::nova::cell_v2::map_cell_and_hosts
   class { '::nova::cell_v2::map_instances':
     cell_name => 'default',
   }
@@ -715,8 +714,9 @@ if str2bool($::undercloud_upgrade) {
   # The order should be:
   #  - cell v2 setup
   #  - db sync
-  #  - cell v2 map cell and hosts
-  #  - cell v2 instances
+  #  - create cell_v2 cells
+  #  - discover hosts
+  #  - map instances
   #  - api db sync
   Anchor<| title == 'nova::cell_v2::begin' |> {
     subscribe => Anchor['nova::db::end']
@@ -728,10 +728,33 @@ if str2bool($::undercloud_upgrade) {
     subscribe => Anchor['nova::db::end']
   }
 
-  Class['nova::cell_v2::simple_setup'] ~>
-    Anchor['nova::dbsync::begin'] ~>
-      Anchor['nova::dbsync::end'] ~>
-        Class['nova::cell_v2::map_cell_and_hosts'] ~>
+  Exec<| title == 'nova-cell_v2-map_cell0' |> {
+    refreshonly => false,
+    onlyif      => 'test -z $(nova-manage cell_v2 list_cells | sed -e \'1,3d\' -e \'$d\' | awk -F \' *| *\' \'$3 == "00000000-0000-0000-0000-000000000000" {print $4}\')',
+  }
+
+  Exec<| title == 'nova-cell_v2-discover_hosts' |> {
+    refreshonly => false,
+    subscribe   => [],
+  }
+
+  # Following execs to recover from LP1773398
+  exec { 'Delete spurious cell_v2 instance mappings':
+    provider => 'shell',
+    command  => 'mysql --defaults-file=/root/.my.cnf nova_api -e "delete from instance_mappings;"',
+    unless   => 'test -z $(nova-manage cell_v2 list_cells | sed -e \'1,3d\' -e \'$d\' | awk -F \' *| *\' \'$2 == "None" {print $4}\')',
+    notify   => Class['nova::cell_v2::map_instances']
+  } ->
+  exec { 'Delete spurious cell_v2 cell mapping':
+    provider => 'shell',
+    command  => 'nova-manage cell_v2 delete_cell --force --cell_uuid $(nova-manage cell_v2 list_cells | sed -e \'1,3d\' -e \'$d\' | awk -F \' *| *\' \'$2 == "None" {print $4}\')',
+    unless   => 'test -z $(nova-manage cell_v2 list_cells | sed -e \'1,3d\' -e \'$d\' | awk -F \' *| *\' \'$2 == "None" {print $4}\')',
+  } ->
+  Anchor['nova::dbsync::end'] ~>
+    Class['nova::cell_v2::map_cell0'] ~>
+      Nova::Cell_v2::Cell<||> ~>
+        Exec['nova-cell_v2-discover_hosts'] ~>
           Class['nova::cell_v2::map_instances'] ~>
-            Anchor['nova::dbsync_api::begin']
+            Anchor['nova::cell_v2::end']
+
 }

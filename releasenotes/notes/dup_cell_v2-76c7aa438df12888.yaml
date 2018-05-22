@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    Duplicate cell_v2 cells are no longer created by a Newton to Ocata upgrade.
+    Duplicate cells in an existing Ocata deployment are also removed.
+    Fixes `bug 1773398 <https://bugs.launchpad.net/tripleo/+bug/1773398>`__.
+
