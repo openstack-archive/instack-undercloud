@@ -1919,6 +1919,11 @@ def _create_default_plan(mistral, plans, timeout=360):
                                 fail_on_error=True)
 
 
+def _upload_validations_to_swift(mistral):
+    LOG.info('Uploading default validations to Swift')
+    mistral.action_executions.create('tripleo.validations.upload')
+
+
 def _prepare_ssh_environment(mistral):
     mistral.executions.create('tripleo.validations.v1.copy_ssh_key')
 
@@ -1966,6 +1971,7 @@ def _post_config_mistral(instack_env, mistral, swift):
 
     if CONF.enable_validations:
         _prepare_ssh_environment(mistral)
+        _upload_validations_to_swift(mistral)
 
 
 def _migrate_to_convergence(heat):
