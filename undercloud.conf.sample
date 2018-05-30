@@ -141,17 +141,16 @@
 #inspection_runbench = false
 
 # Makes ironic-inspector enroll any unknown node that PXE-boots
-# introspection ramdisk in Ironic. By default, the "fake" driver is
+# introspection ramdisk in Ironic. By default, the "ipmi" driver is
 # used for new nodes (it is automatically enabled when this option is
 # set to True). Set discovery_default_driver to override.
 # Introspection rules can also be used to specify driver information
 # for newly enrolled nodes. (boolean value)
 #enable_node_discovery = false
 
-# The default driver or hardware type to use for newly discovered
-# nodes (requires enable_node_discovery set to True). It is
-# automatically added to enabled_drivers or enabled_hardware_types
-# accordingly. (string value)
+# The default hardware type to use for newly discovered nodes
+# (requires enable_node_discovery set to True). It is automatically
+# added to enabled_hardware_types. (string value)
 #discovery_default_driver = ipmi
 
 # Whether to enable the debug log level for Undercloud OpenStack
@@ -210,13 +209,6 @@
 # Whether to clean overcloud nodes (wipe the hard drive) between
 # deployments and after the introspection. (boolean value)
 #clean_nodes = false
-
-# DEPRECATED: List of enabled bare metal drivers. (list value)
-# This option is deprecated for removal.
-# Its value may be silently ignored in the future.
-# Reason: Please switch to hardware types and the
-# enabled_hardware_types option.
-#enabled_drivers = pxe_ipmitool,pxe_drac,pxe_ilo
 
 # List of enabled bare metal hardware types (next generation drivers).
 # (list value)
