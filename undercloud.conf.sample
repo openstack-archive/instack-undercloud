@@ -43,7 +43,7 @@
 # Comma separated list of names/tags. For each network a section/group
 # needs to be added to the configuration file with these parameters
 # set: cidr, dhcp_start, dhcp_end, inspection_iprange, gateway and
-# masquerade_network.
+# masquerade.
 #
 # Example:
 #
@@ -57,7 +57,7 @@
 # dhcp_end = 192.168.10.200
 # inspection_iprange = 192.168.10.20,192.168.10.90
 # gateway = 192.168.10.254
-# masquerade_network = True
+# masquerade = True
 # [subnet2]
 # . . .
 #  (list value)
