@@ -1894,9 +1894,14 @@ def _create_default_plan(mistral, plans, timeout=360):
                                 fail_on_error=True)
 
 
-def _upload_validations_to_swift(mistral):
+def _upload_validations_to_swift(mistral, timeout=60):
     LOG.info('Uploading default validations to Swift')
-    mistral.action_executions.create('tripleo.validations.upload')
+    execution = mistral.executions.create(
+        'tripleo.validations.v1.upload_validations')
+    fail_message = "error uploading default validations to Swift"
+    timeout_at = time.time() + timeout
+    _wait_for_mistral_execution(timeout_at, mistral, execution, fail_message,
+                                fail_on_error=True)
 
 
 def _prepare_ssh_environment(mistral):
