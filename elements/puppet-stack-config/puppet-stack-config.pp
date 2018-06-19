@@ -392,7 +392,6 @@ include ::nova::scheduler::filter
 include ::nova::compute
 
 class { '::neutron':
-  rabbit_hosts => [hiera('controller_host')],
   debug        => hiera('debug'),
 }
 
