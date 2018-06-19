@@ -267,6 +267,7 @@ neutron::plugins::ml2::mechanism_drivers: ['openvswitch', 'baremetal']
 neutron_bridge_mappings: ctlplane:br-ctlplane
 neutron_public_interface: {{LOCAL_INTERFACE}}
 neutron_physical_bridge: br-ctlplane
+neutron::global_physnet_mtu: {{LOCAL_MTU}}
 neutron::keystone::authtoken::password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::auth_password: {{UNDERCLOUD_NEUTRON_PASSWORD}}
 neutron::agents::metadata::metadata_workers: "%{::os_workers}"
