@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    The ordering of the cell_v2 setup steps during undercloud upgrade has been
+    corrected to ensure dbsync is run after cell0 setup.
+    Fixes `bug 1778788 <https://bugs.launchpad.net/tripleo/+bug/1778788>`__.

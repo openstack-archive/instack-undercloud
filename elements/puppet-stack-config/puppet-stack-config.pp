@@ -712,9 +712,9 @@ if str2bool($::undercloud_upgrade) {
   # NOTE(aschultz): this should pull the cell v2 items out and run them before
   # the api db sync.
   # The order should be:
-  #  - cell v2 setup
-  #  - db sync
   #  - create cell_v2 cells
+  #  - map_cell0
+  #  - db sync
   #  - discover hosts
   #  - map instances
   #  - api db sync
@@ -750,11 +750,12 @@ if str2bool($::undercloud_upgrade) {
     command  => 'nova-manage cell_v2 delete_cell --force --cell_uuid $(nova-manage cell_v2 list_cells | sed -e \'1,3d\' -e \'$d\' | awk -F \' *| *\' \'$2 == "None" {print $4}\')',
     unless   => 'test -z $(nova-manage cell_v2 list_cells | sed -e \'1,3d\' -e \'$d\' | awk -F \' *| *\' \'$2 == "None" {print $4}\')',
   } ->
-  Anchor['nova::dbsync::end'] ~>
-    Class['nova::cell_v2::map_cell0'] ~>
-      Nova::Cell_v2::Cell<||> ~>
-        Exec['nova-cell_v2-discover_hosts'] ~>
-          Class['nova::cell_v2::map_instances'] ~>
-            Anchor['nova::cell_v2::end']
-
+  Anchor['nova::cell_v2::begin'] ~>
+    Nova::Cell_v2::Cell<||> ~>
+      Class['nova::cell_v2::map_cell0'] ~>
+        Anchor['nova::dbsync::begin'] ~>
+          Anchor['nova::dbsync::end'] ~>
+            Exec['nova-cell_v2-discover_hosts'] ~>
+              Class['nova::cell_v2::map_instances'] ~>
+                Anchor['nova::cell_v2::end']
 }
