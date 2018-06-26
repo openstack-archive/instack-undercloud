@@ -43,24 +43,9 @@
 # Comma separated list of names/tags. For each network a section/group
 # needs to be added to the configuration file with these parameters
 # set: cidr, dhcp_start, dhcp_end, inspection_iprange, gateway and
-# masquerade_network.
-#
-# Example:
-#
-# subnets = subnet1,subnet2
-#
-# An example section/group in config file:
-#
-# [subnet1]
-# cidr = 192.168.10.0/24
-# dhcp_start = 192.168.10.100
-# dhcp_end = 192.168.10.200
-# inspection_iprange = 192.168.10.20,192.168.10.90
-# gateway = 192.168.10.254
-# masquerade_network = True
-# [subnet2]
-# . . .
-#  (list value)
+# masquerade. Note: The section/group must be placed before or after
+# any other section. (See the example section [ctlplane-subnet] in the
+# sample configuration file.) (list value)
 #subnets = ctlplane-subnet
 
 # Name of the local subnet, where the PXE boot and DHCP interfaces for
@@ -193,7 +178,7 @@
 #enable_container_images_build = true
 
 # Array of host/port combiniations of docker insecure registries.
-# (string value)
+# (list value)
 #docker_insecure_registries =
 
 # One Time Password to register Undercloud node with an IPA server.
