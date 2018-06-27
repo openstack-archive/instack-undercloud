@@ -555,6 +555,14 @@ Keystone_endpoint<||> -> Service['ironic-inspector']
 Keystone_endpoint <||> -> Service['nova-compute']
 Keystone_service <||> -> Service['nova-compute']
 
+# This is a workaround for a race between nova-compute and ironic
+# conductor.  When https://bugs.launchpad.net/tripleo/+bug/1777608 is
+# fixed this can be removed.  Currently we wait 1 minutes for the
+# ironic conductor service to be ready. As puppet can order thing its
+# own way and be slow (especially in CI env) we can have services
+# started at more than one minute appart, hence the need for it.
+Service[$::ironic::params::conductor_service] -> Service[$::nova::params::compute_service_name]
+
 if str2bool(hiera('enable_tempest', true)) {
   # tempest
   package{'openstack-tempest': }
