@@ -396,7 +396,8 @@ include ::glance::backend::swift
 include ::glance::notify::rabbitmq
 
 class { '::nova':
-  debug              => hiera('debug'),
+  debug               => hiera('debug'),
+  notification_format => 'unversioned',
 }
 
 class { '::nova::api':
