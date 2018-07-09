@@ -1354,7 +1354,8 @@ class TestPostConfig(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._create_mistral_config_'
                 'environment')
     @mock.patch('instack_undercloud.undercloud._create_default_plan')
-    def test_post_config_mistral(self, mock_create, mock_cmce,
+    @mock.patch('instack_undercloud.undercloud._upload_validations_to_swift')
+    def test_post_config_mistral(self, mock_upload, mock_create, mock_cmce,
                                  mock_listdir, mock_isfile):
         instack_env = {}
         mock_mistral = mock.Mock()
@@ -1393,6 +1394,7 @@ class TestPostConfig(BaseTestCase):
                          mock_mistral.workbooks.create.mock_calls)
         mock_cmce.assert_called_once_with(instack_env, mock_mistral)
         mock_create.assert_called_once_with(mock_mistral, ['hut8'])
+        mock_upload.assert_called_once_with(mock_mistral)
 
     def _neutron_mocks(self):
         mock_sdk = mock.MagicMock()
