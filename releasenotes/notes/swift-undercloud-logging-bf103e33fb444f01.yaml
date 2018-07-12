@@ -1,0 +1,5 @@
+---
+fixes:
+  - |
+    Enforce a restart of rsyslog after installing Swift rpms. Otherwise all
+    Swift logs end up in /var/log/messages instead of /var/log/swift/swift.log
