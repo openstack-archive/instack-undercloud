@@ -477,6 +477,11 @@ ring_account_device { "${controller_host}:6002/1":
 }
 Ring_account_device<||> ~> Service['swift-proxy-server']
 
+# Ensure rsyslog catches up change in /etc/rsyslog.d and forwards logs
+exec { 'restart rsyslog':
+  command => '/bin/systemctl restart rsyslog',
+}
+
 # Apache
 include ::apache
 
