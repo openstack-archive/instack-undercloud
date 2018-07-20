@@ -80,6 +80,12 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
     enable_load_balancer => true,
   }
   include ::tripleo::keepalived
+  # NOTE: The following is required because we need to make sure that keepalived
+  # is up and running before rabbitmq. The reason is that when the undercloud is
+  # with ssl the hostname is configured to one of the VIPs so rabbit will try to
+  # connect to it at startup and if the VIP is not up it will fail (LP#1782814)
+  Class['::tripleo::keepalived'] -> Class['::rabbitmq']
+
   # NOTE: This is required because the haproxy configuration should be changed
   # before any keystone operations are triggered. Without this, it will try to
   # access the new endpoints that point to haproxy even if haproxy hasn't
