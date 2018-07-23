@@ -2,14 +2,11 @@
 - project:
     templates:
       - puppet-openstack-check-jobs
-      - tripleo-multinode-baremetal-minimal
     check:
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
         - tripleo-ci-centos-7-undercloud-upgrades
-        - tripleo-ci-centos-7-containers-multinode
     gate:
       queue: tripleo
       jobs:
         - tripleo-ci-centos-7-undercloud-oooq
-        - tripleo-ci-centos-7-containers-multinode
