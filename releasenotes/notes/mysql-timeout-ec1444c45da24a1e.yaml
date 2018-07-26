@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Set the connect_timeout to 60s for mysql connections. This helps fix an
+    issue where undercloud services lose the mysql connection if it takes more
+    than 10s to complete (eg under high load).
