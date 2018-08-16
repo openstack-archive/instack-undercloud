@@ -1,0 +1,6 @@
+---
+fixes:
+  - |
+    Fixes and issue where the PXE filter in ironic-inspectors DHCP server may
+    become out of sync with the ironic-inspector service. `Bug 1780421
+    <https://bugs.launchpad.net/tripleo/+bug/1780421>`_.
