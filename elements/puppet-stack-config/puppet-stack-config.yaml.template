@@ -584,6 +584,8 @@ ironic::inspector::dnsmasq_local_ip: {{LOCAL_IP}}
 ironic::inspector::dnsmasq_interface: {{INSPECTION_INTERFACE}}
 ironic::inspector::dnsmasq_ip_subnets: {{{INSPECTION_SUBNETS}}}
 ironic::inspector::pxe_filter::driver: dnsmasq
+ironic::inspector::pxe_filter::dnsmasq::dnsmasq_start_command: 'systemctl start openstack-ironic-inspector-dnsmasq.service'
+ironic::inspector::pxe_filter::dnsmasq::dnsmasq_stop_command: 'systemctl stop openstack-ironic-inspector-dnsmasq.service'
 ironic::inspector::dnsmasq_dhcp_hostsdir: '/var/lib/ironic-inspector/dhcp-hostsdir'
 ironic::inspector::ramdisk_collectors: {{INSPECTION_COLLECTORS}}
 ironic::inspector::additional_processing_hooks: 'extra_hardware,lldp_basic,local_link_connection'
