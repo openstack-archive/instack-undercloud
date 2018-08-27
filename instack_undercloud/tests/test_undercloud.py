@@ -1050,10 +1050,10 @@ class TestPostConfig(BaseTestCase):
         mock_time.return_value = time.mktime(time.localtime())
         mock_strptime.return_value = time.mktime(time.localtime())
         with mock.patch('time.time', mock_time):
-            self.assertRaisesRegexp(RuntimeError, ("TIMEOUT waiting for "
-                                    "execution"),
-                                    undercloud._run_validation_groups,
-                                    ["post-upgrade"], "", -1, True)
+            self.assertRaisesRegex(RuntimeError, ("TIMEOUT waiting for "
+                                   "execution"),
+                                   undercloud._run_validation_groups,
+                                   ["post-upgrade"], "", -1, True)
 
     def test_create_default_plan(self):
         mock_mistral = mock.Mock()
