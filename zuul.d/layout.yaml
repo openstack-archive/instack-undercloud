@@ -1,7 +1,15 @@
-
 - project:
     templates:
       - puppet-openstack-check-jobs
       - tripleo-undercloud-jobs
       - tripleo-multinode-baremetal-minimal
       - tripleo-multinode-container-minimal
+      - openstack-python-jobs
+      - openstack-python35-jobs
+      - check-requirements
+      - release-notes-jobs
+    check:
+      jobs:
+        - openstack-tox-cover:
+            voting: false
+
