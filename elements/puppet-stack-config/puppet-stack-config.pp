@@ -509,10 +509,6 @@ include ::heat::cors
 
 include ::keystone::roles::admin
 
-nova_config {
-  'DEFAULT/sync_power_state_interval': value => hiera('nova_sync_power_state_interval');
-}
-
 include ::nova::compute::ironic
 include ::nova::network::neutron
 include ::nova::cors
