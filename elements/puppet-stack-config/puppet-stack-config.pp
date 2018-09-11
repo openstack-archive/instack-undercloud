@@ -392,6 +392,7 @@ include ::nova::placement
 include ::nova::wsgi::apache_placement
 include ::nova::cron::archive_deleted_rows
 include ::nova::cron::purge_shadow_tables
+include ::nova::config
 include ::nova::conductor
 include ::nova::scheduler
 include ::nova::scheduler::filter
