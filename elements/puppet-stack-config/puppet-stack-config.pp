@@ -244,6 +244,7 @@ if str2bool(hiera('enable_telemetry', false)) {
   include ::aodh::client
   include ::aodh::db::sync
   include ::aodh::auth
+  include ::aodh::config
 
   # Gnocchi
   $gnocchi_dsn = match(hiera('gnocchi::db::database_connection'), $re_dsn)
@@ -263,6 +264,7 @@ if str2bool(hiera('enable_telemetry', false)) {
   include ::gnocchi::storage
   include ::gnocchi::metricd
   include ::gnocchi::statsd
+  include ::gnocchi::config
   $gnocchi_backend = downcase(hiera('gnocchi_backend', 'swift'))
   case $gnocchi_backend {
       'swift': { include ::gnocchi::storage::swift }
@@ -355,6 +357,7 @@ include ::keystone::cron::token_flush
 include ::keystone::roles::admin
 include ::keystone::endpoint
 include ::keystone::cors
+include ::keystone::config
 
 include ::heat::keystone::auth
 include ::heat::keystone::auth_cfn
@@ -410,6 +413,7 @@ include ::neutron::agents::dhcp
 include ::neutron::agents::l3
 include ::neutron::plugins::ml2::networking_baremetal
 include ::neutron::agents::ml2::networking_baremetal
+include ::neutron::config
 
 # Make sure ironic endpoint exists before starting the service
 Keystone_endpoint <||> -> Service['ironic-neutron-agent']
@@ -442,6 +446,7 @@ include ::swift::proxy::catch_errors
 include ::swift::proxy::tempurl
 include ::swift::proxy::formpost
 include ::swift::objectexpirer
+include ::swift::config
 
 # swift storage
 class { '::swift::storage::all':
@@ -507,6 +512,7 @@ include ::heat::engine
 include ::heat::keystone::domain
 include ::heat::cron::purge_deleted
 include ::heat::cors
+include ::heat::config
 
 include ::keystone::roles::admin
 
@@ -539,6 +545,7 @@ include ::ironic::pxe
 include ::ironic::service_catalog
 include ::ironic::swift
 include ::ironic::cors
+include ::ironic::config
 
 Keystone_endpoint<||> -> Service['ironic-inspector']
 
@@ -602,6 +609,7 @@ ensure_resource('user', 'mistral', {
 include ::mistral::executor
 include ::mistral::cors
 include ::mistral::cron_trigger
+include ::mistral::config
 
 # ensure TripleO common entrypoints for custom Mistral actions
 # are installed before performing the Mistral action population
@@ -641,6 +649,7 @@ include ::zaqar::transport::wsgi
 
 include ::zaqar::server
 include ::zaqar::wsgi::apache
+include ::zaqar::config
 
 zaqar::server_instance{ '1':
   transport => 'websocket'
