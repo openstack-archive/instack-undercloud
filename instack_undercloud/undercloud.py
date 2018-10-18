@@ -25,6 +25,7 @@ import netaddr
 import os
 import platform
 import re
+import shutil
 import socket
 import subprocess
 import sys
@@ -65,6 +66,10 @@ class Paths(object):
     @property
     def ANSWERS_PATH(self):
         return os.path.expanduser('~/instack.answers')
+
+    @property
+    def STACKRC(self):
+        return os.path.expanduser('~/stackrc')
 
     @property
     def PASSWORD_PATH(self):
@@ -845,7 +850,7 @@ def _validate_passwords_file():
     is missing it will break the undercloud, so we should fail-fast and let
     the user know about the problem.
     """
-    if (os.path.isfile(os.path.expanduser('~/stackrc')) and
+    if (os.path.isfile(PATHS.STACKRC) and
             not os.path.isfile(PATHS.PASSWORD_PATH)):
         message = ('The %s file is missing.  This will cause all service '
                    'passwords to change and break the existing undercloud. ' %
@@ -1605,11 +1610,63 @@ def _extract_from_stackrc(name):
     :param name: The value to be extracted.  For example: OS_USERNAME or
         OS_AUTH_URL.
     """
-    with open(os.path.expanduser('~/stackrc')) as f:
+    with open(PATHS.STACKRC) as f:
         for line in f:
             if name in line:
                 parts = line.split('=')
                 return parts[1].rstrip()
+
+
+def _stackrc_v2_needs_upgrade(line):
+    number_of_seps = len(re.findall('=', line))
+    if line.lstrip().startswith("#") or \
+       number_of_seps != 1:
+        return False
+    (key, value) = line.split('=')
+    if key == 'OS_AUTH_URL' and 'v2.0' in value:
+        return True
+    if key == 'OS_TENANT_NAME':
+        return True
+    return False
+
+
+def _stackrc_v2_v3(line):
+    """Change v2 auth url and parameters to v3 or return unmodified line."""
+
+    final_line = line
+    extra_v3_config = """OS_IDENTITY_API_VERSION='3'
+export OS_IDENTITY_API_VERSION
+OS_PROJECT_DOMAIN_NAME='Default'
+export OS_PROJECT_DOMAIN_NAME
+OS_USER_DOMAIN_NAME='Default'
+export OS_USER_DOMAIN_NAME
+"""
+    if _stackrc_v2_needs_upgrade(line):
+        LOG.info("stackrc needs upgrade, because of line {}".format(line))
+        if 'OS_AUTH_URL' in line:
+            final_line = "OS_AUTH_URL={}\n{}".format(
+                line.replace('v2.0', ''),
+                extra_v3_config)
+        if 'OS_TENANT_NAME' in line:
+            final_line = line.replace('OS_TENANT_NAME', 'OS_PROJECT_NAME')
+    return final_line
+
+
+def _stackrc_upgrade_to_v3():
+    """Make sure stackrc has v3 authorisation url and paramaters."""
+
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp_file:
+            with open(PATHS.STACKRC) as stackrc_src:
+                for line in stackrc_src:
+                    tmp_file.write(_stackrc_v2_v3(line))
+
+        # Preserve perm and ensure atomic writing.
+        shutil.copystat(PATHS.STACKRC, tmp_file.name)
+        shutil.move(tmp_file.name, PATHS.STACKRC)
+    finally:
+        if os.path.exists(tmp_file.name):
+            os.remove(tmp_file.name)
 
 
 def _ensure_user_identity(id_path):
@@ -2352,7 +2409,7 @@ def install(instack_root, upgrade=False):
         LOG.info(COMPLETION_MESSAGE,
                  {'undercloud_operation': undercloud_operation,
                   'password_path': PATHS.PASSWORD_PATH,
-                  'stackrc_path': os.path.expanduser('~/stackrc')})
+                  'stackrc_path': PATHS.STACKRC})
 
 
 def _is_database_upgrade_needed():
@@ -2397,6 +2454,8 @@ def _is_database_upgrade_needed():
 
 def pre_upgrade():
     _configure_logging(DEFAULT_LOG_LEVEL, PATHS.LOG_FILE)
+
+    _stackrc_upgrade_to_v3()
 
     # Don't upgrade undercloud unless overcloud is in *_COMPLETE.
     # As we're migrating overcloud stack to convergence in post_config,
