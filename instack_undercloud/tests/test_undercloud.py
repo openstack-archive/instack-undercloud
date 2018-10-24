@@ -592,7 +592,8 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         insecure_registries = json.loads(env['DOCKER_INSECURE_REGISTRIES'])
         # Spot check one service
-        self.assertEqual(['http://foo/bar:8787'], insecure_registries)
+        self.assertEqual(['192.168.24.1:8787', '192.168.24.3:8787',
+                         'http://foo/bar:8787'], insecure_registries)
 
     def test_generate_endpoints(self):
         env = undercloud._generate_environment('.')
