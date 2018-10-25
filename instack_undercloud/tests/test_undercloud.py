@@ -273,7 +273,8 @@ class TestCheckHostname(BaseTestCase):
             undercloud._check_hostname()
             mock_run_command.assert_called_with([
                 'sudo', '/bin/bash', '-c',
-                'sed -i "s/127.0.0.1\(\s*\)/127.0.0.1\\1test.hostname test /" '
+                'sed -i "s/127.0.0.1\\(\\s*\\)/'
+                '127.0.0.1\\1test.hostname test /" '
                 '/etc/hosts'],
                 name='hostname-to-etc-hosts')
 
@@ -290,7 +291,8 @@ class TestCheckHostname(BaseTestCase):
             undercloud._check_hostname()
             mock_run_command.assert_called_with([
                 'sudo', '/bin/bash', '-c',
-                'sed -i "s/127.0.0.1\(\s*\)/127.0.0.1\\1test.hostname test /" '
+                'sed -i "s/127.0.0.1\\(\\s*\\)/'
+                '127.0.0.1\\1test.hostname test /" '
                 '/etc/hosts'],
                 name='hostname-to-etc-hosts')
 
@@ -307,7 +309,7 @@ class TestCheckHostname(BaseTestCase):
             undercloud._check_hostname()
         mock_run_command.assert_called_with([
             'sudo', '/bin/bash', '-c',
-            'sed -i "s/127.0.0.1\(\s*\)/'
+            'sed -i "s/127.0.0.1\\(\\s*\\)/'
             '127.0.0.1\\1test-hostname.domain test-hostname /" '
             '/etc/hosts'],
             name='hostname-to-etc-hosts')

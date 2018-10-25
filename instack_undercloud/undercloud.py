@@ -704,7 +704,7 @@ def _check_hostname():
             if short_hostname == detected_static_hostname:
                 raise RuntimeError('Configured hostname is not fully '
                                    'qualified.')
-            sed_cmd = ('sed -i "s/127.0.0.1\(\s*\)/127.0.0.1\\1%s %s /" '
+            sed_cmd = ('sed -i "s/127.0.0.1\\(\\s*\\)/127.0.0.1\\1%s %s /" '
                        '/etc/hosts' %
                        (detected_static_hostname, short_hostname))
             args = ['sudo', '/bin/bash', '-c', sed_cmd]
