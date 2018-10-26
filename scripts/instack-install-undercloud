@@ -1,3 +1,0 @@
-#!/bin/bash
-
-python -c "from instack_undercloud import undercloud; undercloud.install('$(dirname $0)/..')"

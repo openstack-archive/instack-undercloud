@@ -1,7 +1,0 @@
-[run]
-branch = True
-source = instack_undercloud
-omit = instack_undercloud/tests/*
-
-[report]
-ignore_errors = True

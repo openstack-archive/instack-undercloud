@@ -1,5 +1,0 @@
----
-features:
-  - |
-    Add additional endpoints to hieradata, which are used in the tripleo:ui 
-    class to facilitate proxying of API endpoints via Apache's mod_rewrite

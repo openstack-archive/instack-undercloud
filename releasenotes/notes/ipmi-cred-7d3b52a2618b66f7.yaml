@@ -1,6 +1,0 @@
----
-upgrade:
-  - |
-    No longer set deprecated ``enable_setting_ipmi_credentials``
-    ironic-inspector option to ``true``. Deployers still needing it should
-    set it explicitly via a hieradata override.

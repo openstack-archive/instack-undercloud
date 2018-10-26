@@ -1,4 +1,0 @@
----
-features:
-  - The undercloud installation now adds a keystone user and configures the
-    authtoken middleware for novajoin.

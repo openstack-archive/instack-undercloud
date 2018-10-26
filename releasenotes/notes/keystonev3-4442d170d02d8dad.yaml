@@ -1,4 +1,0 @@
----
-features:
-  - Update Keystone endpoints to be versionless, so v3 API can be used
-    by services that use service catalog in Keystone..

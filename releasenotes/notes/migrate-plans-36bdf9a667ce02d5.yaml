@@ -1,4 +1,0 @@
----
-upgrade:
-  - Deployment plan environments for existing plans will be migrated from
-    Mistral to Swift on undercloud upgrade.
