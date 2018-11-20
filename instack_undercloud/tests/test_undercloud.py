@@ -999,7 +999,12 @@ class TestPostConfig(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
     @mock.patch('instack_undercloud.undercloud._get_session')
     @mock.patch('mistralclient.api.client.client', autospec=True)
-    def test_run_validation_groups_success(self, mock_mistral_client,
+    @mock.patch('swiftclient.client.Connection', autospec=True)
+    @mock.patch('os_client_config.make_client')
+    def test_run_validation_groups_success(self,
+                                           mock_make_client,
+                                           mock_swift_client,
+                                           mock_mistral_client,
                                            mock_get_session,
                                            mock_auth_values):
         mock_mistral = mock.Mock()
@@ -1007,19 +1012,76 @@ class TestPostConfig(BaseTestCase):
         mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.return_value = mock.Mock(state="SUCCESS")
         mock_get_session.return_value = mock.MagicMock()
+
+        mock_auth_values.return_value = ('aturing', '3nigma', 'hut8',
+                                         'http://bletchley:5000/')
+
+        mock_instance_swift = mock.Mock()
+        mock_instance_swift.get_account.return_value = [None,
+                                                        [{'name': 'hut8'},
+                                                         {'name': 'mystack'}]]
+        mock_swift_client.return_value = mock_instance_swift
+
+        mock_heat = mock.Mock()
+        aux_stack = {}
+        aux_stack['stack_name'] = "mystack"
+        mock_heat.stacks.list.return_value = [aux_stack]
+        mock_make_client.return_value = mock_heat
+
         undercloud._run_validation_groups(["post-upgrade"])
         mock_mistral.executions.create.assert_called_once_with(
             'tripleo.validations.v1.run_groups',
             workflow_input={
                 'group_names': ['post-upgrade'],
+                'plan': 'mystack',
             }
         )
 
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
     @mock.patch('instack_undercloud.undercloud._get_session')
     @mock.patch('mistralclient.api.client.client', autospec=True)
+    @mock.patch('swiftclient.client.Connection', autospec=True)
+    @mock.patch('os_client_config.make_client')
+    def test_run_validation_groups_no_overcloud(self,
+                                                mock_make_client,
+                                                mock_swift_client,
+                                                mock_mistral_client,
+                                                mock_get_session,
+                                                mock_auth_values):
+        mock_mistral = mock.Mock()
+        mock_mistral_client.return_value = mock_mistral
+        mock_mistral.environments.list.return_value = []
+        mock_mistral.executions.get.return_value = mock.Mock(state="SUCCESS")
+        mock_get_session.return_value = mock.MagicMock()
+
+        mock_auth_values.return_value = ('aturing', '3nigma', 'hut8',
+                                         'http://bletchley:5000/')
+
+        mock_instance_swift = mock.Mock()
+        mock_instance_swift.get_account.return_value = [None,
+                                                        [{'name': 'hut8'},
+                                                         {'name': 'mystack'}]]
+        mock_swift_client.return_value = mock_instance_swift
+
+        mock_heat = mock.Mock()
+        aux_stack = {}
+        aux_stack['stack_name'] = "mystackooo"
+        mock_heat.stacks.list.return_value = [aux_stack]
+        mock_make_client.return_value = mock_heat
+
+        undercloud._run_validation_groups(["post-upgrade"])
+        mock_mistral.executions.create.assert_not_called()
+
+    @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._get_session')
+    @mock.patch('mistralclient.api.client.client', autospec=True)
     @mock.patch('time.strptime')
-    def test_run_validation_groups_fail(self, mock_strptime,
+    @mock.patch('swiftclient.client.Connection', autospec=True)
+    @mock.patch('os_client_config.make_client')
+    def test_run_validation_groups_fail(self,
+                                        mock_make_client,
+                                        mock_swift_client,
+                                        mock_strptime,
                                         mock_mistral_client, mock_get_session,
                                         mock_auth_values):
         mock_mistral = mock.Mock()
@@ -1029,6 +1091,22 @@ class TestPostConfig(BaseTestCase):
         mock_mistral.executions.get_output.return_value = "ERROR!"
         mock_mistral.executions.get.id = "1234"
         mock_mistral.action_executions.list.return_value = []
+
+        mock_auth_values.return_value = ('aturing', '3nigma', 'hut8',
+                                         'http://bletchley:5000/')
+
+        mock_instance_swift = mock.Mock()
+        mock_instance_swift.get_account.return_value = [None,
+                                                        [{'name': 'hut8'},
+                                                         {'name': 'mystack'}]]
+        mock_swift_client.return_value = mock_instance_swift
+
+        mock_heat = mock.Mock()
+        aux_stack = {}
+        aux_stack['stack_name'] = "mystack"
+        mock_heat.stacks.list.return_value = [aux_stack]
+        mock_make_client.return_value = mock_heat
+
         mock_strptime.return_value = time.mktime(time.localtime())
         mock_get_session.return_value = mock.MagicMock()
         self.assertRaises(
@@ -1039,7 +1117,12 @@ class TestPostConfig(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._get_session')
     @mock.patch('mistralclient.api.client.client', autospec=True)
     @mock.patch('time.strptime')
-    def test_run_validation_groups_timeout(self, mock_strptime,
+    @mock.patch('swiftclient.client.Connection', autospec=True)
+    @mock.patch('os_client_config.make_client')
+    def test_run_validation_groups_timeout(self,
+                                           mock_make_client,
+                                           mock_swift_client,
+                                           mock_strptime,
                                            mock_mistral_client,
                                            mock_get_session, mock_auth_values):
         mock_mistral = mock.Mock()
@@ -1047,7 +1130,23 @@ class TestPostConfig(BaseTestCase):
         mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.id = "1234"
         mock_mistral.action_executions.list.return_value = []
-        mock_get_session.return_value = mock.MagicMock()
+        mock_instance_swift = mock.Mock()
+
+        mock_auth_values.return_value = ('aturing', '3nigma', 'hut8',
+                                         'http://bletchley:5000/')
+
+        mock_instance_swift = mock.Mock()
+        mock_instance_swift.get_account.return_value = [None,
+                                                        [{'name': 'hut8'},
+                                                         {'name': 'mystack'}]]
+        mock_swift_client.return_value = mock_instance_swift
+
+        mock_heat = mock.Mock()
+        aux_stack = {}
+        aux_stack['stack_name'] = "mystack"
+        mock_heat.stacks.list.return_value = [aux_stack]
+        mock_make_client.return_value = mock_heat
+
         mock_time = mock.MagicMock()
         mock_time.return_value = time.mktime(time.localtime())
         mock_strptime.return_value = time.mktime(time.localtime())
