@@ -2087,7 +2087,7 @@ def _post_config(instack_env, upgrade):
     # NOTE(bnemec): We are turning on the convergence engine in Queens, so we
     # need to migrate all existing stacks on upgrade.  This functionality can
     # be removed in Rocky as all stacks should have been migrated by then.
-    if upgrade:
+    if upgrade and not os.getenv("TRIPLEO_FORCED_UPDATE", False):
         heat = os_client_config.make_client('orchestration',
                                             auth_url=auth_url,
                                             username=user,
@@ -2455,21 +2455,24 @@ def pre_upgrade():
 
     _stackrc_upgrade_to_v3()
 
-    # Don't upgrade undercloud unless overcloud is in *_COMPLETE.
-    # As we're migrating overcloud stack to convergence in post_config,
-    # which would fail otherwise. It's better to fail fast.
-    user, password, project, auth_url = _get_auth_values()
-    heat = os_client_config.make_client('orchestration',
-                                        auth_url=auth_url,
-                                        username=user,
-                                        password=password,
-                                        project_name=project,
-                                        project_domain_name='Default',
-                                        user_domain_name='Default')
-    for stack in heat.stacks.list():
-        if stack.status != 'COMPLETE':
-            LOG.error('Can not upgrade undercloud with FAILED overcloud')
-            sys.exit(1)
+    # We want to be able to override this check for undercloud update.
+    if not os.getenv("TRIPLEO_FORCED_UPDATE", False):
+        LOG.info('Check the stack status to be able to migrate heat data.')
+        # Don't upgrade undercloud unless overcloud is in *_COMPLETE.
+        # As we're migrating overcloud stack to convergence in post_config,
+        # which would fail otherwise. It's better to fail fast.
+        user, password, project, auth_url = _get_auth_values()
+        heat = os_client_config.make_client('orchestration',
+                                            auth_url=auth_url,
+                                            username=user,
+                                            password=password,
+                                            project_name=project,
+                                            project_domain_name='Default',
+                                            user_domain_name='Default')
+        for stack in heat.stacks.list():
+            if stack.status != 'COMPLETE':
+                LOG.error('Can not upgrade undercloud with FAILED overcloud')
+                sys.exit(1)
 
     args = ['sudo', 'systemctl', 'stop', 'openstack-*', 'neutron-*',
             'openvswitch', 'httpd']
