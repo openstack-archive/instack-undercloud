@@ -334,6 +334,9 @@ if str2bool(hiera('enable_telemetry', false)) {
   }
 }
 
+#Install panko client to query for event data
+include ::panko::client
+
 $ironic_dsn = split(hiera('ironic::database_connection'), '[@:/?]')
 class { '::ironic::db::mysql':
   user          => $ironic_dsn[3],
