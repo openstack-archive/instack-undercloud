@@ -161,6 +161,10 @@ heat::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')
 heat::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
 heat::keystone::domain::domain_name: 'heat_stack'
 heat::keystone::domain::domain_password: {{UNDERCLOUD_HEAT_STACK_DOMAIN_ADMIN_PASSWORD}}
+heat::policy::policies:
+  heat-deny-action:
+    key: 'actions:action'
+    value: 'rule:deny_everybody'
 heat::api::bind_host: {{LOCAL_IP}}
 heat::api::workers: "%{::os_workers}"
 heat::api::service_name: 'httpd'
