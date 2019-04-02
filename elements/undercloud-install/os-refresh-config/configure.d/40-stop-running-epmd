@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eux
+
+# When running undercloud upgrade, Erlang can be upgraded to a new
+# major version, and epmd is not restarted automatically.
+#
+# To start undercloud deployment from a known state, restart any
+# running epmd/rabbitmq processes here. epmd can be started by either
+# systemd or rabbitmq, so try not to special-case it and kill the
+# processes we find. Restarting rabbitmq will restart epmd
+# automatically.
+#
+# Note: this has to run before 50-puppet-stack-config, i.e. before
+# any puppet/facter call to rabbitmq.
+
+for pid in $(pgrep epmd); do kill $pid; done
+if systemctl is-active rabbitmq-server; then
+    systemctl restart rabbitmq-server
+fi
