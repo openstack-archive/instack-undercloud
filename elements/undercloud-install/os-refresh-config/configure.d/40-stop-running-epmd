@@ -6,14 +6,30 @@ set -eux
 #
 # To start undercloud deployment from a known state, restart any
 # running epmd/rabbitmq processes here. epmd can be started by either
-# systemd or rabbitmq, so try not to special-case it and kill the
-# processes we find. Restarting rabbitmq will restart epmd
-# automatically.
+# systemd or rabbitmq, so try to kill all the relevant processes.
+# Restarting rabbitmq will restart epmd automatically.
 #
 # Note: this has to run before 50-puppet-stack-config, i.e. before
 # any puppet/facter call to rabbitmq.
 
-for pid in $(pgrep epmd); do kill $pid; done
+RESTART_RABBITMQ=
+
+# If RabbitMQ is running, stop it and try to stop the epmd process
+# it may have spawned
 if systemctl is-active rabbitmq-server; then
-    systemctl restart rabbitmq-server
+    RESTART_RABBITMQ=yes
+    systemctl stop rabbitmq-server
+    pgrep -u rabbitmq -f 'epmd.*-daemon' | xargs -r kill
+fi
+
+# If epmd was started by systemd, restart it now to give it a
+# chance to use the up-to-date Erlang runtime on the system.
+# Since no epmd from RabbitMQ is running at this point, the
+# epmd start by systemd should succeed in binding to the
+# listen address and service should always start
+systemctl try-restart epmd@*
+
+# If we stopped RabbitMQ earlier, restart it now
+if [ -n "$RESTART_RABBITMQ" ]; then
+    systemctl start rabbitmq-server
 fi
