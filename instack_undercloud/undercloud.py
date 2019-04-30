@@ -1170,7 +1170,8 @@ class InstackEnvironment(dict):
                     'ENABLED_MANAGEMENT_INTERFACES', 'SYSCTL_SETTINGS',
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
                     'INSPECTION_SUBNETS', 'SUBNETS_CIDR_NAT_RULES',
-                    'SUBNETS_STATIC_ROUTES', 'MASQUERADE_NETWORKS'}
+                    'SUBNETS_STATIC_ROUTES', 'MASQUERADE_NETWORKS',
+                    'UNDERCLOUD_PUBLIC_HOST_WRAPPED'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1407,6 +1408,11 @@ def _generate_environment(instack_root):
     instack_env['PUBLIC_INTERFACE_IP'] = instack_env['LOCAL_IP']
     instack_env['LOCAL_IP'] = instack_env['LOCAL_IP'].split('/')[0]
     instack_env['LOCAL_IP_WRAPPED'] = _wrap_ipv6(instack_env['LOCAL_IP'])
+
+    instack_env['UNDERCLOUD_PUBLIC_HOST'] = (
+            instack_env['UNDERCLOUD_PUBLIC_HOST'].split('/')[0])
+    instack_env['UNDERCLOUD_PUBLIC_HOST_WRAPPED'] = _wrap_ipv6(
+            instack_env['UNDERCLOUD_PUBLIC_HOST'])
 
     if CONF.docker_registry_mirror:
         instack_env['DOCKER_REGISTRY_MIRROR'] = CONF.docker_registry_mirror
