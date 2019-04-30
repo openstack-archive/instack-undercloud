@@ -13,6 +13,7 @@
   "masquerade_networks": {{MASQUERADE_NETWORKS}},
   "service_certificate": "{{UNDERCLOUD_SERVICE_CERTIFICATE}}",
   "public_host": "{{UNDERCLOUD_PUBLIC_HOST}}",
+  "public_host_wrapped": "{{UNDERCLOUD_PUBLIC_HOST_WRAPPED}}",
   "admin_password": "{{UNDERCLOUD_ADMIN_PASSWORD}}",
   "neutron": {
     "dhcp_start": "{{DHCP_START}}",

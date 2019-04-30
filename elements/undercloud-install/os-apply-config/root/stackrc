@@ -7,7 +7,7 @@ export OS_PASSWORD
 OS_AUTH_TYPE=password
 export OS_AUTH_TYPE
 {{#service_certificate}}
-OS_AUTH_URL=https://{{public_host}}:13000/
+OS_AUTH_URL=https://{{public_host_wrapped}}:13000/
 PYTHONWARNINGS="ignore:Certificate has no, ignore:A true SSLContext object is not available"
 export OS_AUTH_URL
 export PYTHONWARNINGS
