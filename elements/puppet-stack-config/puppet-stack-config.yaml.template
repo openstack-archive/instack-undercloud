@@ -929,6 +929,9 @@ nova::notify_on_state_change: 'vm_state'
 # Firewall
 tripleo::firewall::manage_firewall: true
 tripleo::firewall::firewall_rules:
+  '003 ssh':
+    dport:
+      - 22
   '105 ntp':
     dport: 123
     proto: udp
