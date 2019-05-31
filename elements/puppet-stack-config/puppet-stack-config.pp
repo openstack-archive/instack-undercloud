@@ -96,7 +96,7 @@ if hiera('tripleo::haproxy::service_certificate', undef) {
 # MySQL
 include ::tripleo::profile::base::database::mysql
 # Raise the mysql file limit
-exec { 'systemctl-daemon-reload':
+exec { 'systemctl-daemon-reload-undercloud':
   command     => '/bin/systemctl daemon-reload',
   refreshonly => true,
 }
@@ -113,9 +113,9 @@ file { '/etc/systemd/system/mariadb.service.d/limits.conf':
   mode    => '0644',
   content => "[Service]\nLimitNOFILE=16384\n",
   require => File['/etc/systemd/system/mariadb.service.d'],
-  notify  => [Exec['systemctl-daemon-reload'], Service['mysqld']],
+  notify  => [Exec['systemctl-daemon-reload-undercloud'], Service['mysqld']],
 }
-Exec['systemctl-daemon-reload'] -> Service['mysqld']
+Exec['systemctl-daemon-reload-undercloud'] -> Service['mysqld']
 
 file { '/var/log/journal':
   ensure => 'directory',
