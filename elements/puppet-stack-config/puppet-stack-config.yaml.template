@@ -243,6 +243,7 @@ mysql_max_connections: '4096'
 tripleo::profile::base::database::mysql::step: 2
 tripleo::profile::base::database::mysql::manage_resources: true
 tripleo::profile::base::database::mysql::remove_default_accounts: true
+tripleo::profile::base::database::mysql::innodb_log_file_size: 256M
 tripleo::profile::base::database::mysql::mysql_server_options:
   'mysqld':
     bind-address: "%{hiera('controller_host')}"
