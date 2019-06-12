@@ -1947,7 +1947,7 @@ def _run_validation_groups(groups=[], mistral_url='', timeout=540,
                                         user_domain_name='Default')
 
     # Here we get all the stack names, we should have only one.
-    stack_names_list = [stack['stack_name'] for stack in heat.stacks.list()]
+    stack_names_list = [stack.stack_name for stack in heat.stacks.list()]
 
     # We calculate the interception of the two previous list, the
     # result should be only one value in case the Overcloud exists.
