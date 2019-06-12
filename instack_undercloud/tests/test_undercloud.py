@@ -1023,8 +1023,8 @@ class TestPostConfig(BaseTestCase):
         mock_swift_client.return_value = mock_instance_swift
 
         mock_heat = mock.Mock()
-        aux_stack = {}
-        aux_stack['stack_name'] = "mystack"
+        aux_stack = mock.Mock()
+        aux_stack.stack_name = "mystack"
         mock_heat.stacks.list.return_value = [aux_stack]
         mock_make_client.return_value = mock_heat
 
@@ -1064,8 +1064,8 @@ class TestPostConfig(BaseTestCase):
         mock_swift_client.return_value = mock_instance_swift
 
         mock_heat = mock.Mock()
-        aux_stack = {}
-        aux_stack['stack_name'] = "mystackooo"
+        aux_stack = mock.Mock()
+        aux_stack.stack_name = "mystackooo"
         mock_heat.stacks.list.return_value = [aux_stack]
         mock_make_client.return_value = mock_heat
 
@@ -1102,8 +1102,8 @@ class TestPostConfig(BaseTestCase):
         mock_swift_client.return_value = mock_instance_swift
 
         mock_heat = mock.Mock()
-        aux_stack = {}
-        aux_stack['stack_name'] = "mystack"
+        aux_stack = mock.Mock()
+        aux_stack.stack_name = "mystack"
         mock_heat.stacks.list.return_value = [aux_stack]
         mock_make_client.return_value = mock_heat
 
@@ -1142,8 +1142,8 @@ class TestPostConfig(BaseTestCase):
         mock_swift_client.return_value = mock_instance_swift
 
         mock_heat = mock.Mock()
-        aux_stack = {}
-        aux_stack['stack_name'] = "mystack"
+        aux_stack = mock.Mock()
+        aux_stack.stack_name = "mystack"
         mock_heat.stacks.list.return_value = [aux_stack]
         mock_make_client.return_value = mock_heat
 
