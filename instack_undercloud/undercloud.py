@@ -1889,12 +1889,13 @@ def _wait_for_mistral_execution(timeout_at, mistral, execution, message='',
             exe_out = ""
             exe_created_at = time.strptime(exe.created_at,
                                            "%Y-%m-%d %H:%M:%S")
-            ae_list = mistral.action_executions.list()
+            ae_list = mistral.action_executions.find(
+                name="run_validation",
+                state="ERROR"
+            )
             for ae in ae_list:
-                if ((ae.task_name == "run_validation") and
-                    (ae.state == "ERROR") and
-                    (time.strptime(ae.created_at,  "%Y-%m-%d %H:%M:%S") >
-                     exe_created_at)):
+                if (time.strptime(ae.created_at,  "%Y-%m-%d %H:%M:%S") >
+                        exe_created_at):
                     task = mistral.tasks.get(ae.task_execution_id)
                     task_res = task.to_dict().get('result')
                     exe_out = "%s %s" % (exe_out, task_res)

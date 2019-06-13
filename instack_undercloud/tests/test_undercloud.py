@@ -1097,7 +1097,7 @@ class TestPostConfig(BaseTestCase):
         mock_mistral.executions.get.return_value = mock.Mock(state="FAIL")
         mock_mistral.executions.get_output.return_value = "ERROR!"
         mock_mistral.executions.get.id = "1234"
-        mock_mistral.action_executions.list.return_value = []
+        mock_mistral.action_executions.find.return_value = []
 
         mock_auth_values.return_value = ('aturing', '3nigma', 'hut8',
                                          'http://bletchley:5000/')
@@ -1136,7 +1136,7 @@ class TestPostConfig(BaseTestCase):
         mock_mistral_client.return_value = mock_mistral
         mock_mistral.environments.list.return_value = []
         mock_mistral.executions.get.id = "1234"
-        mock_mistral.action_executions.list.return_value = []
+        mock_mistral.action_executions.find.return_value = []
         mock_instance_swift = mock.Mock()
 
         mock_auth_values.return_value = ('aturing', '3nigma', 'hut8',
@@ -1249,7 +1249,7 @@ class TestPostConfig(BaseTestCase):
     def test_create_default_plan_failed(self, mock_strptime):
         mock_mistral = mock.Mock()
         mock_mistral.executions.get.return_value = mock.Mock(state="ERROR")
-        mock_mistral.action_executions.list.return_value = []
+        mock_mistral.action_executions.find.return_value = []
         mock_strptime.return_value = time.mktime(time.localtime())
         self.assertRaises(
             RuntimeError,
