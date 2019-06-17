@@ -1851,36 +1851,42 @@ def _get_session():
 
 def _run_validation_groups(groups=[], mistral_url='', timeout=540,
                            fail_on_error=False):
-    sess = _get_session()
-    mistral = mistralclient.client(mistral_url=mistral_url, session=sess)
+    try:
+        sess = _get_session()
+        mistral = mistralclient.client(mistral_url=mistral_url, session=sess)
 
-    # Here we fetch all the containers names from swift, we should have
-    # a container called with the same name as the deployment plan.
-    swift_client = swiftclient.Connection(session=sess)
-    swift = swift_client.get_account()[1]
-    plans = [container["name"] for container in swift]
-    user, password, project, auth_url = _get_auth_values()
-    heat = os_client_config.make_client('orchestration',
-                                        auth_url=auth_url,
-                                        username=user,
-                                        password=password,
-                                        project_name=project,
-                                        project_domain_name='Default',
-                                        user_domain_name='Default')
+        # Here we fetch all the containers names from swift, we should have
+        # a container called with the same name as the deployment plan.
+        swift_client = swiftclient.Connection(session=sess)
+        swift = swift_client.get_account()[1]
+        plans = [container["name"] for container in swift]
+        user, password, project, auth_url = _get_auth_values()
+        heat = os_client_config.make_client('orchestration',
+                                            auth_url=auth_url,
+                                            username=user,
+                                            password=password,
+                                            project_name=project,
+                                            project_domain_name='Default',
+                                            user_domain_name='Default')
 
-    # Here we get all the stack names, we should have only one.
-    stack_names_list = [stack.stack_name for stack in heat.stacks.list()]
+        # Here we get all the stack names, we should have only one.
+        stack_names_list = [stack.stack_name for stack in heat.stacks.list()]
 
-    # We calculate the interception of the two previous list, the
-    # result should be only one value in case the Overcloud exists.
-    existing_stack = list(set(plans) & set(stack_names_list))
+        # We calculate the interception of the two previous list, the
+        # result should be only one value in case the Overcloud exists.
+        existing_stack = list(set(plans) & set(stack_names_list))
 
-    # We can not run the validations if we do not have the Overcloud deployed
-    # We are running a group validation and if the validation runs in both
-    # the Undercloud and Overcloud nodes is mandatory to define the Overcloud
-    # stack name. For example there are validations in the post-upgrade group
-    # that will run in both the Undercloud and Overcloud making this mistral
-    # execution fail.
+        # We can not run the validations if we do not have the Overcloud
+        # deployed. We are running a group validation and if the validation
+        # runs in both the Undercloud and Overcloud nodes is mandatory to
+        # define the Overcloud stack name. For example there are validations
+        # in the post-upgrade group that will run in both the Undercloud
+        # and Overcloud making this mistral execution fail.
+
+    except Exception as e:
+        LOG.info("We can not run validations if the Overcloud is "
+                 "not deployed or if are not able to find it, %s", e)
+        existing_stack = False
 
     if existing_stack:
         LOG.info('Starting and waiting for validation groups %s ', groups)
@@ -1898,7 +1904,8 @@ def _run_validation_groups(groups=[], mistral_url='', timeout=540,
                                     fail_message,
                                     fail_on_error)
     else:
-        LOG.info('We can not run validations if the Overcloud is not deployed')
+        LOG.info("We can not run validations if the Overcloud is "
+                 "not deployed or if are not able to find it.")
 
 
 def _create_default_plan(mistral, plans, timeout=360):
