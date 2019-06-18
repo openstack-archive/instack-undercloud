@@ -235,6 +235,8 @@ keystone::rabbit_password: {{UNDERCLOUD_RABBIT_PASSWORD}}
 keystone::rabbit_host: "{{LOCAL_IP_WRAPPED}}"
 keystone::enable_credential_setup: true
 keystone::fernet_max_active_keys: 2
+keystone::cache_memcache_servers: "%{hiera('memcached::listen_ip')}:11211"
+keystone::cache_backend: "dogpile.cache.memcached"
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
