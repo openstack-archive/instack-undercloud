@@ -10,7 +10,7 @@ ctlplane: {{LOCAL_IP}}
 controller_host_wrapped: "{{LOCAL_IP_WRAPPED}}"
 controller_admin_host: {{UNDERCLOUD_ADMIN_HOST}}
 controller_public_host: {{UNDERCLOUD_PUBLIC_HOST}}
-controller_public_host_wrapped: {{UNDERCLOUD_PUBLIC_HOST_WRAPPED}}
+controller_public_host_wrapped: "{{UNDERCLOUD_PUBLIC_HOST_WRAPPED}}"
 {{#UNDERCLOUD_NTP_SERVERS}}
 ntp::servers: {{UNDERCLOUD_NTP_SERVERS}}
 {{/UNDERCLOUD_NTP_SERVERS}}
