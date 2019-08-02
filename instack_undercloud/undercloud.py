@@ -325,7 +325,9 @@ _opts = [
     cfg.BoolOpt('enable_telemetry',
                 default=False,
                 help=('Whether to install Telemetry services '
-                      '(ceilometer, gnocchi, aodh, panko ) in the Undercloud.')
+                      '(ceilometer, gnocchi, aodh, panko ) in the Undercloud. '
+                      'If this is set to False, the notification drivers for '
+                      'the OpenStack services will be set to noop.')
                 ),
     cfg.BoolOpt('enable_ui',
                 default=True,
@@ -1182,7 +1184,7 @@ class InstackEnvironment(dict):
                     'LOCAL_IP_WRAPPED', 'ENABLE_ARCHITECTURE_PPC64LE',
                     'INSPECTION_SUBNETS', 'SUBNETS_CIDR_NAT_RULES',
                     'SUBNETS_STATIC_ROUTES', 'MASQUERADE_NETWORKS',
-                    'UNDERCLOUD_PUBLIC_HOST_WRAPPED'}
+                    'UNDERCLOUD_PUBLIC_HOST_WRAPPED', 'NOTIFICATION_DRIVER'}
     """The variables we calculate in _generate_environment call."""
 
     PUPPET_KEYS = DYNAMIC_KEYS | {opt.name.upper() for _, group in list_opts()
@@ -1423,6 +1425,12 @@ def _generate_environment(instack_root):
     if CONF.inspection_extras:
         inspection_kernel_args.append('ipa-inspection-dhcp-all-interfaces=1')
         inspection_kernel_args.append('ipa-collect-lldp=1')
+
+    # set notification driver based on if we're using telemetry or not
+    if CONF.enable_telemetry:
+        instack_env['NOTIFICATION_DRIVER'] = 'messaging'
+    else:
+        instack_env['NOTIFICATION_DRIVER'] = 'noop'
 
     instack_env['INSPECTION_KERNEL_ARGS'] = ' '.join(inspection_kernel_args)
 
