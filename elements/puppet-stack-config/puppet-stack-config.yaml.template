@@ -3,6 +3,8 @@ keystone_auth_uri: {{UNDERCLOUD_ENDPOINT_KEYSTONE_PUBLIC}}/v3
 keystone_region: 'regionOne'
 keystone_default_domain: 'Default'
 
+notification_driver: {{NOTIFICATION_DRIVER}}
+
 debug: {{UNDERCLOUD_DEBUG}}
 controller_host: {{LOCAL_IP}} #local-ipv4
 #local-ipv4 similar to the same hiera key in the overcloud
@@ -192,7 +194,7 @@ heat::keystone::auth_cfn::admin_url: {{UNDERCLOUD_ENDPOINT_HEAT_CFN_ADMIN}}
 heat::cron::purge_deleted::age: 1
 heat::cron::purge_deleted::age_type: 'days'
 heat::cron::purge_deleted::destination: '/dev/null'
-heat::notification_driver: 'messaging'
+heat::notification_driver: "%{hiera('notification_driver')}"
 heat::yaql_memory_quota: 100000
 heat::yaql_limit_iterators: 1000
 heat::max_json_body_size: 4194304
@@ -224,7 +226,7 @@ keystone::endpoint::region: "%{hiera('keystone_region')}"
 keystone::endpoint::version: ''
 keystone::wsgi::apache::ssl: false
 keystone::wsgi::apache::bind_host: {{LOCAL_IP}}
-keystone::notification_driver: messaging
+keystone::notification_driver: "%{hiera('notification_driver')}"
 keystone::notification_topics: notifications
 keystone::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
 keystone::enable_credential_setup: true
@@ -254,6 +256,7 @@ neutron::core_plugin: ml2
 neutron::service_plugins: ['router', 'segments']
 neutron::dhcp_agents_per_network: 2
 neutron::dns_domain: {{OVERCLOUD_DOMAIN_NAME}}
+neutron::notification_driver: "%{hiera('notification_driver')}"
 neutron::server::api_workers: "%{::os_workers}"
 neutron::server::rpc_workers: "%{::os_workers}"
 neutron::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
@@ -297,6 +300,7 @@ neutron::agents::ml2::networking_baremetal::region_name: "%{hiera('keystone_regi
 ceilometer::debug: "%{hiera('debug')}"
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}
 ceilometer::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
+ceilometer::notification_driver: "%{hiera('notification_driver')}"
 ceilometer::keystone::authtoken::password: {{UNDERCLOUD_CEILOMETER_PASSWORD}}
 ceilometer::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 ceilometer::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -325,6 +329,7 @@ ceilometer::agent::notification::manage_event_pipeline: true
 # Aodh
 aodh::debug: "%{hiera('debug')}"
 aodh::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
+aodh::notification_driver: "%{hiera('notification_driver')}"
 aodh::api::host: {{LOCAL_IP}}
 aodh::keystone::authtoken::password: {{UNDERCLOUD_AODH_PASSWORD}}
 aodh::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
@@ -400,7 +405,7 @@ panko::keystone::authtoken::project_name: 'service'
 # Nova
 nova::debug:  "%{hiera('debug')}"
 nova::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
-nova::notification_driver: messaging
+nova::notification_driver: "%{hiera('notification_driver')}"
 nova::rpc_response_timeout: '600'
 nova::keystone::authtoken::www_authenticate_uri: "%{hiera('keystone_auth_uri')}"
 nova::keystone::authtoken::auth_url: "%{hiera('keystone_identity_uri')}"
@@ -487,6 +492,7 @@ nova::db::sync_api::db_sync_timeout: 900
 ironic::debug: "%{hiera('debug')}"
 ironic::my_ip: {{LOCAL_IP}}
 ironic::db_online_data_migrations: true
+ironic::notification_driver: "%{hiera('notification_driver')}"
 # TODO(dtantsur): remove when support for classic drivers is removed
 ironic::db::online_data_migrations::migration_params: "--option migrate_to_hardware_types.reset_unsupported_interfaces=true"
 ironic::rpc_response_timeout: 600
@@ -653,6 +659,7 @@ horizon::openstack_endpoint_type: internalURL
 
 # Mistral
 mistral::debug: "%{hiera('debug')}"
+mistral::notification_driver: "%{hiera('notification_driver')}"
 mistral::api::bind_host: {{LOCAL_IP}}
 mistral::api::api_workers: "%{::os_workers}"
 mistral::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
@@ -746,6 +753,7 @@ cinder::keystone::authtoken::password: {{UNDERCLOUD_CINDER_PASSWORD}}
 cinder::keystone::authtoken::user_domain_name: "%{hiera('keystone_default_domain')}"
 cinder::keystone::authtoken::project_domain_name: "%{hiera('keystone_default_domain')}"
 cinder::default_transport_url: "rabbit://{{UNDERCLOUD_RABBIT_USERNAME}}:{{UNDERCLOUD_RABBIT_PASSWORD}}@{{LOCAL_IP_WRAPPED}}//"
+cinder::notification_driver: "%{hiera('notification_driver')}"
 cinder::scheduler::scheduler_driver: cinder.scheduler.filter_scheduler.FilterScheduler
 cinder::setup_test_volume::size: '10280M'
 cinder::wsgi::apache::bind_host: {{LOCAL_IP}}

@@ -422,10 +422,6 @@ class { '::neutron::agents::ml2::ovs':
   bridge_mappings => split(hiera('neutron_bridge_mappings'), ','),
 }
 
-neutron_config {
-  'DEFAULT/notification_driver': value => 'messaging';
-}
-
 # swift proxy
 include ::memcached
 include ::swift::proxy
