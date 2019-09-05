@@ -1502,7 +1502,8 @@ class TestPostConfig(BaseTestCase):
                                    '/bar.yaml')],
                          mock_mistral.workbooks.create.mock_calls)
         mock_cmce.assert_called_once_with(instack_env, mock_mistral)
-        mock_create.assert_called_once_with(mock_mistral, ['hut8'])
+        mock_create.assert_called_once_with(mock_mistral, ['hut8'],
+                                            timeout=1200)
 
     @mock.patch('os.path.isfile', return_value=True)
     @mock.patch('os.listdir')
@@ -1547,7 +1548,8 @@ class TestPostConfig(BaseTestCase):
                                    '/bar.yaml')],
                          mock_mistral.workbooks.create.mock_calls)
         mock_cmce.assert_called_once_with(instack_env, mock_mistral)
-        mock_create.assert_called_once_with(mock_mistral, ['hut8'])
+        mock_create.assert_called_once_with(mock_mistral, ['hut8'],
+                                            timeout=1200)
 
     def _neutron_mocks(self):
         mock_sdk = mock.MagicMock()

@@ -2060,7 +2060,7 @@ def _post_config_mistral(instack_env, mistral, swift):
     plans = [container["name"] for container in swift.get_account()[1]]
 
     _create_mistral_config_environment(instack_env, mistral)
-    _create_default_plan(mistral, plans)
+    _create_default_plan(mistral, plans, timeout=1200)
     _create_logging_cron(mistral)
 
     if CONF.enable_validations:
