@@ -7,7 +7,6 @@
       - openstack-python-jobs
       - openstack-python35-jobs
       - check-requirements
-      - release-notes-jobs
     check:
       jobs:
         - openstack-tox-cover:
