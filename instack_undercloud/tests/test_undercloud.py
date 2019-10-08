@@ -668,7 +668,7 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         reference = [{"tag": "ctlplane-subnet", "gateway": "192.168.24.1",
                       "ip_range": "192.168.24.100,192.168.24.120",
-                      "netmask": "255.255.255.0"}]
+                      "netmask": "255.255.255.0", "mtu": 1500}]
         actual = json.loads(env['INSPECTION_SUBNETS'])
         self.assertEqual(reference, actual)
 
@@ -690,10 +690,10 @@ class TestGenerateEnvironment(BaseTestCase):
         env = undercloud._generate_environment('.')
         reference = [{"tag": "subnet1", "gateway": "192.168.10.254",
                       "ip_range": "192.168.10.100,192.168.10.189",
-                      "netmask": "255.255.255.0"},
+                      "netmask": "255.255.255.0", "mtu": 1500},
                      {"tag": "subnet2", "gateway": "192.168.20.254",
                       "ip_range": "192.168.20.100,192.168.20.189",
-                      "netmask": "255.255.255.0"}]
+                      "netmask": "255.255.255.0", "mtu": 1500}]
         actual = json.loads(env['INSPECTION_SUBNETS'])
         self.assertEqual(reference, actual)
 
