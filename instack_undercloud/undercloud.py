@@ -34,12 +34,12 @@ import time
 import uuid
 
 from ironicclient import client as ir_client
-from keystoneauth1 import session
 from keystoneauth1 import exceptions as ks_exceptions
-from keystoneclient import discover
 import keystoneauth1.identity.generic as ks_auth
-from mistralclient.api import client as mistralclient
+from keystoneauth1 import session
+from keystoneclient import discover
 from mistralclient.api import base as mistralclient_exc
+from mistralclient.api import client as mistralclient
 from novaclient import client as novaclient
 from novaclient import exceptions
 import os_client_config
@@ -746,8 +746,7 @@ def _check_ipv6_enabled():
 
 
 def _wrap_ipv6(ip):
-    """Wrap a IP address in square brackets if IPv6
-    """
+    """Wrap a IP address in square brackets if IPv6"""
     if netutils.is_valid_ipv6(ip):
         return "[%s]" % ip
     return ip
@@ -2463,8 +2462,7 @@ def install(instack_root, upgrade=False):
 
 
 def _is_database_upgrade_needed():
-    """Check whether a yum update will cause an major version update
-       for the database.
+    """Check whether update will cause major version update for the database.
 
     :return whether an update will happen
     :rtype bool

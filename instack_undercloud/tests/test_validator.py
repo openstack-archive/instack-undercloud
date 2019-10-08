@@ -14,8 +14,8 @@
 
 import mock
 
-from oslo_config import fixture as config_fixture
 from oslo_config import cfg
+from oslo_config import fixture as config_fixture
 from oslotest import base
 
 from instack_undercloud import undercloud
