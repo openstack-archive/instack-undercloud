@@ -2091,6 +2091,20 @@ def _migrate_to_convergence(heat):
         LOG.info('Finished migrating stack "%s"', stack.id)
 
 
+def _delete_nova_cert_service(nova):
+    """Delete nova-cert service."""
+    try:
+        undercloud_host = CONF.undercloud_hostname or socket.gethostname()
+        nova.services.disable(undercloud_host, 'nova-cert')
+        service_list = nova.services.list()
+        for service in service_list:
+            if service.binary == 'nova-cert':
+                nova_cert_id = service.id
+        nova.services.delete(nova_cert_id)
+    except Exception:
+        LOG.debug('Continuing as nova-cert service is already deleted.')
+
+
 def _post_config(instack_env, upgrade):
     _copy_stackrc()
     user, password, project, auth_url = _get_auth_values()
@@ -2113,6 +2127,7 @@ def _post_config(instack_env, upgrade):
     _configure_ssh_keys(nova)
     _ensure_ssh_selinux_permission()
     _delete_default_flavors(nova)
+    _delete_nova_cert_service(nova)
 
     _ensure_node_resource_classes(ironic)
 

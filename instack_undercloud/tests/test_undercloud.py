@@ -946,13 +946,15 @@ class TestPostConfig(BaseTestCase):
     @mock.patch('instack_undercloud.undercloud._delete_default_flavors')
     @mock.patch('instack_undercloud.undercloud._copy_stackrc')
     @mock.patch('instack_undercloud.undercloud._get_auth_values')
+    @mock.patch('instack_undercloud.undercloud._delete_nova_cert_service')
     @mock.patch('instack_undercloud.undercloud._configure_ssh_keys')
     @mock.patch('instack_undercloud.undercloud._ensure_flavor')
     @mock.patch('instack_undercloud.undercloud._post_config_mistral')
     def test_post_config(self, mock_post_config_mistral, mock_ensure_flavor,
-                         mock_configure_ssh_keys, mock_get_auth_values,
-                         mock_copy_stackrc, mock_delete, mock_mistral_client,
-                         mock_swift_client, mock_nova_client, mock_ir_client,
+                         mock_configure_ssh_keys, mock_delete_nova_cert,
+                         mock_get_auth_values, mock_copy_stackrc,
+                         mock_delete, mock_mistral_client, mock_swift_client,
+                         mock_nova_client, mock_ir_client,
                          mock_get_session, mock_member_role_exists,
                          mock_ensure_neutron_network,
                          mock_config_neutron_segments_and_subnets,
@@ -987,6 +989,7 @@ class TestPostConfig(BaseTestCase):
             2, session=mock_get_session.return_value)
         self.assertTrue(mock_copy_stackrc.called)
         mock_configure_ssh_keys.assert_called_with(mock_instance_nova)
+        mock_delete_nova_cert.assert_called_with(mock_instance_nova)
         calls = [mock.call(mock_instance_nova, flavors[0], 'baremetal', None),
                  mock.call(mock_instance_nova, None, 'control', 'control'),
                  mock.call(mock_instance_nova, None, 'compute', 'compute'),
