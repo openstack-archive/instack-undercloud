@@ -653,15 +653,6 @@ rabbitmq::wipe_db_on_cookie_change: true
 rabbitmq::default_user: {{UNDERCLOUD_RABBIT_USERNAME}}
 rabbitmq::default_pass: {{UNDERCLOUD_RABBIT_PASSWORD}}
 
-# Horizon
-horizon::django_debug: "%{hiera('debug')}"
-horizon_secret_key: {{UNDERCLOUD_HORIZON_SECRET_KEY}}
-horizon::allowed_hosts:
- - "%{::fqdn}"
- - "{{LOCAL_IP}}"
-horizon::wsgi::apache::priority: 10
-horizon::openstack_endpoint_type: internalURL
-
 # Mistral
 mistral::debug: "%{hiera('debug')}"
 mistral::notification_driver: "%{hiera('notification_driver')}"
@@ -1006,10 +997,6 @@ tripleo::firewall::firewall_rules:
       - 13003
       - 8004
       - 13004
-  '126 horizon':
-    dport:
-      - 80
-      - 443
   '127 snmp':
     dport: 161
     proto: 'udp'

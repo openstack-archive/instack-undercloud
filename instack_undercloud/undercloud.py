@@ -532,8 +532,11 @@ _auth_opts = [
                      'If left unset, one will be automatically generated.')
                ),
     cfg.StrOpt('undercloud_horizon_secret_key',
+               deprecated_for_removal=True,
                help=('Horizon secret key. '
-                     'If left unset, one will be automatically generated.')
+                     'If left unset, one will be automatically generated.'
+                     'This parameter does not have any effect because '
+                     'Horizon is no more deployed in undercloud.')
                ),
     cfg.StrOpt('undercloud_cinder_password',
                help=('Cinder service password. '
