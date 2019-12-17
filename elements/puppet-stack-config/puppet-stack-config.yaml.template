@@ -1042,10 +1042,12 @@ tripleo::firewall::firewall_rules:
     dport: "%{hiera('ironic_ipxe_port')}"
   # 140 network cidr nat rules
   {{SUBNETS_CIDR_NAT_RULES}}
+{{#ENABLE_UI}}
   '142 tripleo-ui':
     dport:
       - 3000
       - 443
+{{/ENABLE_UI}}
   '143 panko-api':
     dport:
       - 8977
