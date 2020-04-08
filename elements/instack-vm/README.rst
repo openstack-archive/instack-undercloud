@@ -1,4 +1,5 @@
 Build an instack vm image
+==============
 
 This element allows building an instack vm image using diskimage-builder. To build
 the image simply include this element and the appropriate distro element.
