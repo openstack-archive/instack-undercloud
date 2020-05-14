@@ -2097,8 +2097,6 @@ def _migrate_to_convergence(heat):
 def _delete_nova_cert_service(nova):
     """Delete nova-cert service."""
     try:
-        undercloud_host = CONF.undercloud_hostname or socket.gethostname()
-        nova.services.disable(undercloud_host, 'nova-cert')
         service_list = nova.services.list()
         for service in service_list:
             if service.binary == 'nova-cert':
