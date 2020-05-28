@@ -305,6 +305,11 @@ neutron::agents::ml2::networking_baremetal::user_domain_name: "%{hiera('keystone
 neutron::agents::ml2::networking_baremetal::project_domain_name: "%{hiera('keystone_default_domain')}"
 neutron::agents::ml2::networking_baremetal::region_name: "%{hiera('keystone_region')}"
 
+# SNMPD
+tripleo::profile::base::snmp::snmpd_user: {{UNDERCLOUD_CEILOMETER_SNMPD_USER}}
+tripleo::profile::base::snmp::snmpd_password: {{UNDERCLOUD_CEILOMETER_SNMPD_PASSWORD}}
+snmp::agentaddress: ['udp:161', 'udp6:[::1]:161']
+
 # Ceilometer
 ceilometer::debug: "%{hiera('debug')}"
 ceilometer::metering_secret: {{UNDERCLOUD_CEILOMETER_METERING_SECRET}}

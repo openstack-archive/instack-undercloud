@@ -190,6 +190,10 @@ class { '::heat::db::mysql':
   allowed_hosts => $allowed_hosts,
 }
 if str2bool(hiera('enable_telemetry', false)) {
+  # SNMPD
+  class { '::tripleo::profile::base::snmp':
+    step => 4
+  }
 
   # Ceilometer
 
