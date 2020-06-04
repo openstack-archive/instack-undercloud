@@ -239,6 +239,10 @@ keystone::enable_credential_setup: true
 keystone::fernet_max_active_keys: 2
 keystone::cache_memcache_servers: "%{hiera('memcached::listen_ip')}:11211"
 keystone::cache_backend: "dogpile.cache.memcached"
+# CVE-2020-12692 set the default of 15 mins for ttl in keystone, we need that to be a lot higher
+keystone::config::keystone_config:
+  credential/auth_ttl:
+    value: 240
 
 # MySQL
 admin_password: {{UNDERCLOUD_ADMIN_PASSWORD}}
