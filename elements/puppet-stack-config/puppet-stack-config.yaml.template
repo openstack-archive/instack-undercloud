@@ -740,7 +740,7 @@ zaqar::management::sqlalchemy::uri: mysql+pymysql://zaqar:{{UNDERCLOUD_ZAQAR_PAS
 zaqar::messaging::swift::uri: swift://zaqar:{{UNDERCLOUD_ZAQAR_PASSWORD}}@/service
 zaqar::messaging::swift::auth_url: "%{hiera('keystone_auth_uri')}"
 zaqar::message_pipeline: 'zaqar.notification.notifier'
-zaqar::max_messages_post_size: 1048576
+zaqar::max_messages_post_size: 2097152
 
 # Cinder
 cinder::debug: "%{hiera('debug')}"
