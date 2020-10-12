@@ -4,9 +4,10 @@
       - puppet-openstack-check-jobs
     check:
       jobs:
-        - tripleo-ci-centos-7-undercloud-oooq
-        - tripleo-ci-centos-7-undercloud-upgrades
+        - tripleo-ci-centos-7-undercloud-oooq:
+            voting: false
     gate:
       queue: tripleo
       jobs:
-        - tripleo-ci-centos-7-undercloud-oooq
+        - tripleo-ci-centos-7-undercloud-oooq:
+            voting: false
