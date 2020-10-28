@@ -1,9 +1,9 @@
 - project:
     templates:
       - puppet-openstack-check-jobs
-      - tripleo-undercloud-jobs
+      - tripleo-undercloud-jobs-pipeline
       - tripleo-multinode-baremetal-minimal
-      - tripleo-multinode-container-minimal
+      - tripleo-multinode-container-minimal-pipeline
       - openstack-python-jobs
       - openstack-python35-jobs
       - check-requirements
